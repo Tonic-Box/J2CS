@@ -1,7 +1,13 @@
 package com.tonic.j2cs;
 
-public class Main {
+import com.tonic.j2cs.cli.Cli;
+
+public final class Main {
+
+    private Main() {
+    }
+
     public static void main(String[] args) {
-        System.out.println("Hello world!");
+        System.exit(new Cli().run(args));
     }
 }

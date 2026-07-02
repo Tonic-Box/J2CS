@@ -1,19 +1,42 @@
 plugins {
-    id("java")
+    java
+    application
 }
 
 group = "com.tonic.j2cs"
-version = "1.0-SNAPSHOT"
+version = "0.1.0"
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
+}
+
 dependencies {
-    testImplementation(platform("org.junit:junit-bom:5.9.1"))
+    implementation("com.tonic:YABR:1.0.1")
+
+    testImplementation(platform("org.junit:junit-bom:5.10.2"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+}
+
+application {
+    mainClass.set("com.tonic.j2cs.Main")
+}
+
+sourceSets.main {
+    resources.srcDir("javacompat")
 }
 
 tasks.test {
     useJUnitPlatform()
+    testLogging {
+        showStandardStreams = true
+    }
+    systemProperty("j2cs.aot", System.getProperty("j2cs.aot", "false"))
 }
