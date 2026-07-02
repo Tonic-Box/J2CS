@@ -2,7 +2,6 @@ package com.tonic.j2cs.pipeline;
 
 import com.tonic.j2cs.frontend.LoadedInput;
 import com.tonic.j2cs.report.TranspileReport;
-
 import java.nio.file.Path;
 
 /**
@@ -11,5 +10,6 @@ import java.nio.file.Path;
 public record TranspileResult(
         LoadedInput input,
         TranspileReport report,
-        Path reportPath) {
+        Path reportPath,
+        Path appDir) {
 }

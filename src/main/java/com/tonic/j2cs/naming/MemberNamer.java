@@ -20,6 +20,11 @@ import java.util.Set;
  */
 public final class MemberNamer {
 
+    private static final Map<String, String> OBJECT_OVERRIDES = Map.of(
+            "toString()Ljava/lang/String;", "toString",
+            "hashCode()I", "hashCode",
+            "equals(Ljava/lang/Object;)Z", "equals");
+
     private final Map<String, String> methodNames = new LinkedHashMap<>();
     private final Map<String, String> fieldNames = new LinkedHashMap<>();
 
@@ -30,17 +35,30 @@ public final class MemberNamer {
             if (method.getName().equals("<init>")) {
                 taken.add(initMethodName(method.getDesc()));
             }
+            String override = OBJECT_OVERRIDES.get(key(method.getName(), method.getDesc()));
+            if (override != null) {
+                methodNames.put(key(method.getName(), method.getDesc()), override);
+                taken.add(override);
+            }
         }
         assignFieldNames(classFile, taken);
         assignMethodNames(classFile, typeMapper, taken);
     }
 
+    public static boolean isObjectOverride(String name, String descriptor) {
+        return OBJECT_OVERRIDES.containsKey(key(name, descriptor));
+    }
+
     public String methodName(MethodEntry method) {
-        String name = methodNames.get(key(method.getName(), method.getDesc()));
-        if (name == null) {
-            throw new IllegalArgumentException("no name assigned for method " + method.getName() + method.getDesc());
+        return methodName(method.getName(), method.getDesc());
+    }
+
+    public String methodName(String name, String descriptor) {
+        String assigned = methodNames.get(key(name, descriptor));
+        if (assigned == null) {
+            throw new IllegalArgumentException("no name assigned for method " + name + descriptor);
         }
-        return name;
+        return assigned;
     }
 
     public String fieldName(FieldEntry field) {
@@ -83,7 +101,8 @@ public final class MemberNamer {
         List<MethodEntry> ordinary = new ArrayList<>();
         for (MethodEntry method : classFile.getMethods()) {
             String name = method.getName();
-            if (name.equals("<init>") || name.equals("<clinit>")) {
+            if (name.equals("<init>") || name.equals("<clinit>")
+                    || methodNames.containsKey(key(name, method.getDesc()))) {
                 continue;
             }
             ordinary.add(method);

@@ -26,6 +26,7 @@ public final class Cli {
             TranspileResult result = new Transpiler().transpile(options);
             System.out.println("transpiled " + result.input().appClasses().size()
                     + " class(es), entry " + result.input().entryClassInternalName());
+            System.out.println("solution: " + result.appDir());
             System.out.println("report: " + result.reportPath());
             return 0;
         } catch (J2csException e) {

@@ -33,8 +33,10 @@ application {
     mainClass.set("com.tonic.j2cs.Main")
 }
 
-sourceSets.main {
-    resources.srcDir("javacompat")
+tasks.processResources {
+    from("javacompat") {
+        into("javacompat")
+    }
 }
 
 tasks.test {
