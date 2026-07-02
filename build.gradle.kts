@@ -17,6 +17,10 @@ java {
     }
 }
 
+tasks.withType<JavaCompile>().configureEach {
+    options.encoding = "UTF-8"
+}
+
 dependencies {
     implementation("com.tonic:YABR:1.0.1")
 
