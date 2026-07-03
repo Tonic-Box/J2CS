@@ -91,13 +91,11 @@ public final class Transpiler {
     }
 
     private static void addStandingDivergences(TranspileReport report) {
-        report.divergence("checkcast failures throw System.InvalidCastException, not java.lang.ClassCastException");
-        report.divergence("integer division by zero throws System.DivideByZeroException, not java.lang.ArithmeticException");
         report.divergence("float/double formatting uses .NET shortest round-trip digits; rare values differ from Java");
-        report.divergence("array covariance violations throw System.ArrayTypeMismatchException, not java.lang.ArrayStoreException");
         report.divergence("static initializers use CLR precise timing; matches Java for field/method-triggered init");
-        report.divergence("Integer.parseInt failures throw System.FormatException, not java.lang.NumberFormatException");
-        report.divergence("System.arraycopy failures throw .NET argument exceptions, not the Java exception types");
+        report.divergence("NullPointerException/ClassCastException/ArrayIndexOutOfBoundsException carry no message; helpful-NPE text is unavailable");
+        report.divergence("transpiler stub failures throw System.NotSupportedException, which is not catchable as java.lang.Throwable");
+        report.divergence("System.arraycopy failure message text differs from the JVM");
     }
 
     private static Map<MethodEntry, MethodPlan> planMethods(ClassFile cf, IrLifter lifter,

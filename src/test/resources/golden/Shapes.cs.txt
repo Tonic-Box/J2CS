@@ -3,8 +3,16 @@ internal static class Program
 {
     internal static int Main(string[] args)
     {
-        global::jdefault.Shapes.main(global::java.lang.JRuntime.Args(args));
-        return 0;
+        try
+        {
+            global::jdefault.Shapes.main(global::java.lang.JRuntime.Args(args));
+            return 0;
+        }
+        catch (global::java.lang.JThrow __e)
+        {
+            global::System.Console.Error.Write("Exception in thread \"main\" " + __e.payload.toString().Value + "\n");
+            return 1;
+        }
     }
 }
 // ==== gen/jdefault.Circle.cs ====
