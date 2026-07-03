@@ -17,7 +17,14 @@ public final class BootstrapPolicy {
 
     private static final Map<String, Entry> POLICY = Map.of(
             "java/lang/Boolean",
-            new Entry(Set.of("<clinit>()V"), "java.lang.Boolean.native.cs"));
+            new Entry(Set.of("<clinit>()V"), "java.lang.Boolean.native.cs"),
+            "java/lang/Integer",
+            new Entry(Set.of(
+                    "<clinit>()V",
+                    "valueOf(I)Ljava/lang/Integer;",
+                    "toString()Ljava/lang/String;",
+                    "parseInt(Ljava/lang/String;)I"),
+                    "java.lang.Integer.native.cs"));
 
     private BootstrapPolicy() {
     }

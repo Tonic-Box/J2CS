@@ -12,7 +12,7 @@ public final class StubEmitter {
         String csClassName = CsNamer.classNameOf(internalName);
         return new CsWriter()
                 .open("namespace " + CsNamer.namespaceOf(internalName))
-                .open("internal class " + csClassName + " : global::java.lang.Object")
+                .open("public class " + csClassName + " : global::java.lang.Object")
                 .open("public " + csClassName + "(global::java.lang.RawNew r) : base(r)")
                 .close()
                 .close()
@@ -23,7 +23,7 @@ public final class StubEmitter {
     public String emitInterface(String internalName) {
         return new CsWriter()
                 .open("namespace " + CsNamer.namespaceOf(internalName))
-                .open("internal interface " + CsNamer.classNameOf(internalName))
+                .open("public interface " + CsNamer.classNameOf(internalName))
                 .close()
                 .close()
                 .toString();

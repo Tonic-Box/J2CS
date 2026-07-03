@@ -4,12 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d05fdbd2-bef1-4012-9f61-0cf573243b7b" name="Changes" comment="Add String.equalsIgnoreCase for the Boolean bootstrap closure">
+    <list default="true" id="d05fdbd2-bef1-4012-9f61-0cf573243b7b" name="Changes" comment="Bootstrap java.lang.Boolean from JDK bytecode with a native seam">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/bootstrap/BootstrapPolicy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/bootstrap/BootstrapPolicy.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/pipeline/Transpiler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/pipeline/Transpiler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/project/GeneratedSolution.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/project/GeneratedSolution.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/project/ShimPackager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/project/ShimPackager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/project/SolutionGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/project/SolutionGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/ClassEmitter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/ClassEmitter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/StubEmitter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/StubEmitter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/tonic/j2cs/e2e/DifferentialTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/tonic/j2cs/e2e/DifferentialTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -330,11 +330,18 @@
       <option name="project" value="LOCAL" />
       <updated>1783112871312</updated>
     </task>
-    <option name="localTasksCounter" value="36" />
+    <task id="LOCAL-00036" summary="Bootstrap java.lang.Boolean from JDK bytecode with a native seam">
+      <option name="closed" value="true" />
+      <created>1783113271480</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1783113271480</updated>
+    </task>
+    <option name="localTasksCounter" value="37" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Expand string-concat indy and complete the StringBuilder shim" />
     <MESSAGE value="Add closure scanning, type stubs, and the standing divergence list" />
     <MESSAGE value="Wire publish paths, goldens, and the shim drift guard" />
     <MESSAGE value="Add class hierarchy model and supertype-coordinated member naming" />
@@ -359,6 +366,7 @@
     <MESSAGE value="Add JDK bootstrap loader and coverage-report diagnostic" />
     <MESSAGE value="Wire the bootstrap foundation, inert for the empty set" />
     <MESSAGE value="Add String.equalsIgnoreCase for the Boolean bootstrap closure" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add String.equalsIgnoreCase for the Boolean bootstrap closure" />
+    <MESSAGE value="Bootstrap java.lang.Boolean from JDK bytecode with a native seam" />
+    <option name="LAST_COMMIT_MESSAGE" value="Bootstrap java.lang.Boolean from JDK bytecode with a native seam" />
   </component>
 </project>

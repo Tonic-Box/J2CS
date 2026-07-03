@@ -60,12 +60,13 @@ public final class ClassEmitter {
                 w.line("public static " + type.csText() + " " + namer.fieldName(field) + ";");
             }
         } else {
+            String accessPrefix = naming.isBootstrapped(internalName) ? "public " : "internal ";
             String abstractPrefix = Modifiers.isAbstract(classFile.getAccess()) ? "abstract " : "";
             String partialPrefix = naming.isBootstrapped(internalName) ? "partial " : "";
             String heritage = policy.unsupportedReason() != null
                     ? " : " + policy.baseFqcn()
                     : heritageOf(classFile, policy.baseFqcn());
-            w.open("internal " + partialPrefix + abstractPrefix + "class " + csClassName + heritage);
+            w.open(accessPrefix + abstractPrefix + partialPrefix + "class " + csClassName + heritage);
             for (FieldEntry field : classFile.getFields()) {
                 CsType type = types.storageType(field.getDesc());
                 boolean isStatic = (field.getAccess() & AccessFlags.ACC_STATIC) != 0;
