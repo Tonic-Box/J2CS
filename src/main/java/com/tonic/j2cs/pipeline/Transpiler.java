@@ -36,7 +36,8 @@ public final class Transpiler {
         report.setEntryClass(input.entryClassInternalName());
 
         TypeMapper typeMapper = new TypeMapper();
-        NamingContext naming = new NamingContext(typeMapper, input.appClasses());
+        ClassHierarchy hierarchy = new ClassHierarchy(input.appClasses());
+        NamingContext naming = new NamingContext(typeMapper, input.appClasses(), hierarchy);
         IrLifter lifter = new IrLifter(typeMapper, options.dumpIr());
         ClassEmitter classEmitter = new ClassEmitter(naming, report);
         Map<String, String> genFiles = new LinkedHashMap<>();
