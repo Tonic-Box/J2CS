@@ -29,6 +29,7 @@ public final class NamingContext {
     private final Map<String, MemberNamer> namers = new HashMap<>();
     private final Map<String, String> classUnsupportedReasons = new LinkedHashMap<>();
     private Set<String> bootstrapped = Set.of();
+    private Set<String> suppressedMethodKeys = Set.of();
 
     public NamingContext(TypeMapper typeMapper, List<ClassFile> appClasses) {
         this(typeMapper, appClasses, new ClassHierarchy(appClasses));
@@ -96,6 +97,14 @@ public final class NamingContext {
 
     public boolean isBootstrapped(String internalName) {
         return bootstrapped.contains(internalName);
+    }
+
+    public void setSuppressedMethods(Set<String> suppressedMethodKeys) {
+        this.suppressedMethodKeys = Set.copyOf(suppressedMethodKeys);
+    }
+
+    public boolean isSuppressed(String ownerInternal, String name, String descriptor) {
+        return suppressedMethodKeys.contains(ownerInternal + "." + name + descriptor);
     }
 
     public MemberNamer namerOf(String internalName) {

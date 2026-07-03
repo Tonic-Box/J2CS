@@ -19,7 +19,7 @@ import java.util.List;
  */
 public final class Cli {
 
-    private static final String USAGE = "usage: j2cs <input.class|input.jar> -o <outDir> [--main <fqcn>] [--no-build] [--self-contained] [--run] [--dump-ir]\n"
+    private static final String USAGE = "usage: j2cs <input.class|input.jar> -o <outDir> [--main <fqcn>] [--no-build] [--self-contained] [--run] [--dump-ir] [--bootstrap <fqcn>[,<fqcn>...]]\n"
             + "       j2cs --bootstrap-report <fqcn>[,<fqcn>...]";
 
     public int run(String[] args) {
@@ -96,6 +96,7 @@ public final class Cli {
         boolean selfContained = false;
         boolean run = false;
         boolean dumpIr = false;
+        java.util.List<String> bootstrap = java.util.List.of();
         for (int i = 0; i < args.length; i++) {
             String arg = args[i];
             switch (arg) {
@@ -105,6 +106,9 @@ public final class Cli {
                     break;
                 case "--main":
                     mainOverride = requireValue(args, i++, arg);
+                    break;
+                case "--bootstrap":
+                    bootstrap = splitList(requireValue(args, i++, arg));
                     break;
                 case "--no-build":
                     noBuild = true;
@@ -135,7 +139,7 @@ public final class Cli {
         if (outDir == null) {
             throw new IllegalArgumentException("no output directory given (-o <outDir>)");
         }
-        return new CliOptions(input, outDir, mainOverride, noBuild, selfContained, run, dumpIr);
+        return new CliOptions(input, outDir, mainOverride, noBuild, selfContained, run, dumpIr, bootstrap);
     }
 
     private static String requireValue(String[] args, int index, String option) {

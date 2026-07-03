@@ -4,7 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d05fdbd2-bef1-4012-9f61-0cf573243b7b" name="Changes" comment="Add HashMap and HashSet with JVM-faithful iteration order" />
+    <list default="true" id="d05fdbd2-bef1-4012-9f61-0cf573243b7b" name="Changes" comment="Add JDK bootstrap loader and coverage-report diagnostic">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/cli/Cli.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/cli/Cli.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/cli/CliOptions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/cli/CliOptions.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/ClassEmitter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/ClassEmitter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/naming/NamingContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/naming/NamingContext.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/pipeline/Transpiler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/pipeline/Transpiler.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -292,12 +299,26 @@
       <option name="project" value="LOCAL" />
       <updated>1783109547908</updated>
     </task>
-    <option name="localTasksCounter" value="32" />
+    <task id="LOCAL-00032" summary="Cover interface-typed collection usage and note divergences">
+      <option name="closed" value="true" />
+      <created>1783109762727</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1783109762727</updated>
+    </task>
+    <task id="LOCAL-00033" summary="Add JDK bootstrap loader and coverage-report diagnostic">
+      <option name="closed" value="true" />
+      <created>1783111991464</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1783111991464</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Emit real method bodies and go differential-green on three fixtures" />
-    <MESSAGE value="Emit switch dispatch and cover comparison semantics differentially" />
     <MESSAGE value="Support objects: allocation, fields, casts, and clinit ordering" />
     <MESSAGE value="Support arrays: allocation, element access, and length" />
     <MESSAGE value="Expand string-concat indy and complete the StringBuilder shim" />
@@ -321,6 +342,8 @@
     <MESSAGE value="Prove boxed generics end to end and note wrapper divergences" />
     <MESSAGE value="Add ArrayList and the collection interface hierarchy" />
     <MESSAGE value="Add HashMap and HashSet with JVM-faithful iteration order" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add HashMap and HashSet with JVM-faithful iteration order" />
+    <MESSAGE value="Cover interface-typed collection usage and note divergences" />
+    <MESSAGE value="Add JDK bootstrap loader and coverage-report diagnostic" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add JDK bootstrap loader and coverage-report diagnostic" />
   </component>
 </project>

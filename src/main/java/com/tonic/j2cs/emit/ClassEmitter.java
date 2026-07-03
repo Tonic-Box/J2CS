@@ -61,10 +61,11 @@ public final class ClassEmitter {
             }
         } else {
             String abstractPrefix = Modifiers.isAbstract(classFile.getAccess()) ? "abstract " : "";
+            String partialPrefix = naming.isBootstrapped(internalName) ? "partial " : "";
             String heritage = policy.unsupportedReason() != null
                     ? " : " + policy.baseFqcn()
                     : heritageOf(classFile, policy.baseFqcn());
-            w.open("internal " + abstractPrefix + "class " + csClassName + heritage);
+            w.open("internal " + partialPrefix + abstractPrefix + "class " + csClassName + heritage);
             for (FieldEntry field : classFile.getFields()) {
                 CsType type = types.storageType(field.getDesc());
                 boolean isStatic = (field.getAccess() & AccessFlags.ACC_STATIC) != 0;
@@ -79,6 +80,9 @@ public final class ClassEmitter {
             w.close();
         }
         for (MethodEntry method : classFile.getMethods()) {
+            if (naming.isSuppressed(internalName, method.getName(), method.getDesc())) {
+                continue;
+            }
             MethodPlan plan = plans.get(method);
             if (policy.unsupportedReason() != null) {
                 plan = new MethodPlan.Unsupported(policy.unsupportedReason());

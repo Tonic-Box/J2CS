@@ -1,11 +1,13 @@
 package com.tonic.j2cs.pipeline;
 
 import com.tonic.analysis.ssa.cfg.ExceptionHandler;
+import com.tonic.j2cs.bootstrap.BootstrapPolicy;
 import com.tonic.j2cs.cli.CliOptions;
 import com.tonic.j2cs.emit.ClassEmitter;
 import com.tonic.j2cs.emit.EntryPointEmitter;
 import com.tonic.j2cs.emit.SyntheticClasses;
 import com.tonic.j2cs.emit.StubEmitter;
+import com.tonic.j2cs.frontend.BootstrapLoader;
 import com.tonic.j2cs.frontend.InputLoader;
 import com.tonic.j2cs.frontend.IrLifter;
 import com.tonic.j2cs.frontend.LoadedInput;
@@ -14,6 +16,7 @@ import com.tonic.j2cs.model.MethodPlan;
 import com.tonic.j2cs.naming.CsNamer;
 import com.tonic.j2cs.naming.NamingContext;
 import com.tonic.j2cs.project.GeneratedSolution;
+import com.tonic.j2cs.project.NativeFragmentPackager;
 import com.tonic.j2cs.project.SolutionGenerator;
 import com.tonic.j2cs.report.ReportWriter;
 import com.tonic.j2cs.report.TranspileReport;
@@ -22,7 +25,9 @@ import com.tonic.j2cs.types.TypeMapper;
 import com.tonic.parser.ClassFile;
 import com.tonic.parser.MethodEntry;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -38,16 +43,28 @@ public final class Transpiler {
         report.setInput(options.input().toString());
         report.setEntryClass(input.entryClassInternalName());
 
+        List<ClassFile> bootstrapClasses = options.bootstrap().isEmpty()
+                ? List.of()
+                : new BootstrapLoader().load(input.pool(), options.bootstrap());
+        List<ClassFile> allClasses = new ArrayList<>(input.appClasses());
+        allClasses.addAll(bootstrapClasses);
+        Set<String> bootstrappedInternal = new TreeSet<>();
+        for (ClassFile cf : bootstrapClasses) {
+            bootstrappedInternal.add(cf.getClassName());
+        }
+
         TypeMapper typeMapper = new TypeMapper();
-        ClassHierarchy hierarchy = new ClassHierarchy(input.appClasses());
-        NamingContext naming = new NamingContext(typeMapper, input.appClasses(), hierarchy);
+        ClassHierarchy hierarchy = new ClassHierarchy(allClasses);
+        NamingContext naming = new NamingContext(typeMapper, allClasses, hierarchy);
+        naming.setBootstrapped(bootstrappedInternal);
+        naming.setSuppressedMethods(BootstrapPolicy.suppressedKeys(bootstrappedInternal));
         IrLifter lifter = new IrLifter(typeMapper, options.dumpIr());
-        Set<String> interfacePositionStubs = collectInterfacePositionStubs(input, naming);
+        Set<String> interfacePositionStubs = collectInterfacePositionStubs(allClasses, naming);
         SyntheticClasses synthetics = new SyntheticClasses();
         ClassEmitter classEmitter = new ClassEmitter(naming, report, interfacePositionStubs, synthetics);
         Map<String, String> genFiles = new LinkedHashMap<>();
         Set<String> referenced = new TreeSet<>();
-        for (ClassFile cf : input.appClasses()) {
+        for (ClassFile cf : allClasses) {
             report.classDiscovered(cf.getClassName());
             Map<MethodEntry, MethodPlan> plans = planMethods(cf, lifter, naming);
             ClosureScanner.collectReferencedTypes(cf, plans, referenced);
@@ -59,14 +76,15 @@ public final class Transpiler {
         String programCs = new EntryPointEmitter().emit(input.entryClassInternalName(), naming);
         Path appDir = new SolutionGenerator().generate(options.outDir(),
                 new GeneratedSolution(genFiles, stubFiles, programCs));
+        new NativeFragmentPackager().copy(appDir, BootstrapPolicy.nativeFragments(bootstrappedInternal));
 
         Path reportPath = new ReportWriter().write(report, options.outDir());
         return new TranspileResult(input, report, reportPath, appDir);
     }
 
-    private static Set<String> collectInterfacePositionStubs(LoadedInput input, NamingContext naming) {
+    private static Set<String> collectInterfacePositionStubs(List<ClassFile> classes, NamingContext naming) {
         Set<String> positions = new TreeSet<>();
-        for (ClassFile cf : input.appClasses()) {
+        for (ClassFile cf : classes) {
             for (String iface : cf.getInterfaceNames()) {
                 if (!naming.isAppClass(iface)) {
                     positions.add(iface);
