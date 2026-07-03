@@ -138,6 +138,11 @@ class DifferentialTest {
     }
 
     @Test
+    void bootstrapObject() throws Exception {
+        Differential.assertSameOutput("ObjectBootstrap", java.util.List.of("java.lang.Object"));
+    }
+
+    @Test
     void bootstrapWrappers2() throws Exception {
         Differential.assertSameOutput("WrapperBootstrap2", java.util.List.of(
                 "java.lang.Number", "java.lang.Integer", "java.lang.Long", "java.lang.Short",

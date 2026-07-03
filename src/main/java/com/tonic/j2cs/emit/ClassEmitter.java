@@ -121,11 +121,11 @@ public final class ClassEmitter {
         if (Modifiers.isInterface(classFile.getAccess())) {
             return new ClassPolicy("", reason);
         }
-        String superName = classFile.getSuperClassName();
-        if (superName == null) {
+        if (internalName.equals(OBJECT_INTERNAL)) {
             return new ClassPolicy(null, reason);
         }
-        if (superName.equals(OBJECT_INTERNAL)) {
+        String superName = classFile.getSuperClassName();
+        if (superName == null || superName.equals(OBJECT_INTERNAL)) {
             return new ClassPolicy("global::java.lang.Object", reason);
         }
         if (naming.isAppClass(superName)) {

@@ -4,10 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d05fdbd2-bef1-4012-9f61-0cf573243b7b" name="Changes" comment="Bootstrap Long, Short, and Byte from JDK bytecode">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/bootstrap/BootstrapPolicy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/bootstrap/BootstrapPolicy.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/tonic/j2cs/e2e/DifferentialTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/tonic/j2cs/e2e/DifferentialTest.java" afterDir="false" />
+    <list default="true" id="d05fdbd2-bef1-4012-9f61-0cf573243b7b" name="Changes" comment="Give the emitter a root-class concept for bootstrapping Object">
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/ClassEmitter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/ClassEmitter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/MethodModifiers.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/MethodModifiers.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -352,12 +351,26 @@
       <option name="project" value="LOCAL" />
       <updated>1783116948140</updated>
     </task>
-    <option name="localTasksCounter" value="39" />
+    <task id="LOCAL-00039" summary="Bootstrap Double, Float, and Character from JDK bytecode">
+      <option name="closed" value="true" />
+      <created>1783118467350</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1783118467350</updated>
+    </task>
+    <task id="LOCAL-00040" summary="Give the emitter a root-class concept for bootstrapping Object">
+      <option name="closed" value="true" />
+      <created>1783119610006</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1783119610006</updated>
+    </task>
+    <option name="localTasksCounter" value="41" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Add class hierarchy model and supertype-coordinated member naming" />
-    <MESSAGE value="Emit class inheritance: base clauses, virtual dispatch, super calls" />
     <MESSAGE value="Emit interfaces: defaults, statics, constants, and DIM dispatch" />
     <MESSAGE value="Cover generic bridges and erasure differentially" />
     <MESSAGE value="Grow the shim: Math, Integer statics, String search, arraycopy" />
@@ -381,6 +394,8 @@
     <MESSAGE value="Bootstrap java.lang.Boolean from JDK bytecode with a native seam" />
     <MESSAGE value="Bootstrap java.lang.Number and Integer from JDK bytecode" />
     <MESSAGE value="Bootstrap Long, Short, and Byte from JDK bytecode" />
-    <option name="LAST_COMMIT_MESSAGE" value="Bootstrap Long, Short, and Byte from JDK bytecode" />
+    <MESSAGE value="Bootstrap Double, Float, and Character from JDK bytecode" />
+    <MESSAGE value="Give the emitter a root-class concept for bootstrapping Object" />
+    <option name="LAST_COMMIT_MESSAGE" value="Give the emitter a root-class concept for bootstrapping Object" />
   </component>
 </project>
