@@ -100,6 +100,8 @@ public final class Transpiler {
         report.divergence("transpiler stub failures throw System.NotSupportedException, which is not catchable as java.lang.Throwable");
         report.divergence("System.arraycopy failure message text differs from the JVM");
         report.divergence("lambdas without captures allocate a fresh instance per evaluation; the JVM may reuse one");
+        report.divergence("wrapper valueOf caches match the JVM defaults (Integer/Long/Short/Byte -128..127, Character 0..127, Boolean both); Double/Float are never cached");
+        report.divergence("wrapper toString for Double/Float uses the shim float formatting, which can differ from the JVM on rare values");
     }
 
     private static Map<MethodEntry, MethodPlan> planMethods(ClassFile cf, IrLifter lifter,
