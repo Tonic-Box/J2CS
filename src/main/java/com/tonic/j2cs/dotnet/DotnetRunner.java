@@ -29,6 +29,7 @@ public final class DotnetRunner {
             command.add("--self-contained");
             command.add("true");
             command.add("-p:PublishAot=false");
+            command.add("-p:PublishSingleFile=true");
         }
         return run(command, projectDir, PUBLISH_TIMEOUT_MS);
     }

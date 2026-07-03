@@ -4,7 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d05fdbd2-bef1-4012-9f61-0cf573243b7b" name="Changes" comment="Expand string-concat indy and complete the StringBuilder shim" />
+    <list default="true" id="d05fdbd2-bef1-4012-9f61-0cf573243b7b" name="Changes" comment="Add closure scanning, type stubs, and the standing divergence list">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/cli/Cli.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/cli/Cli.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/dotnet/DotnetRunner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/dotnet/DotnetRunner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/shims/ShimRegistry.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/shims/ShimRegistry.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -132,7 +138,15 @@
       <option name="project" value="LOCAL" />
       <updated>1783077944434</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Add closure scanning, type stubs, and the standing divergence list">
+      <option name="closed" value="true" />
+      <created>1783079622854</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1783079622854</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -147,6 +161,7 @@
     <MESSAGE value="Support objects: allocation, fields, casts, and clinit ordering" />
     <MESSAGE value="Support arrays: allocation, element access, and length" />
     <MESSAGE value="Expand string-concat indy and complete the StringBuilder shim" />
-    <option name="LAST_COMMIT_MESSAGE" value="Expand string-concat indy and complete the StringBuilder shim" />
+    <MESSAGE value="Add closure scanning, type stubs, and the standing divergence list" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add closure scanning, type stubs, and the standing divergence list" />
   </component>
 </project>

@@ -1,10 +1,18 @@
 package com.tonic.j2cs.cli;
 
 import com.tonic.j2cs.J2csException;
+import com.tonic.j2cs.dotnet.DotnetLocator;
+import com.tonic.j2cs.dotnet.DotnetRunner;
+import com.tonic.j2cs.dotnet.ExecResult;
+import com.tonic.j2cs.dotnet.PublishMode;
 import com.tonic.j2cs.pipeline.TranspileResult;
 import com.tonic.j2cs.pipeline.Transpiler;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.util.List;
 
 /**
  * Command-line entry point. Parses arguments and drives the transpiler pipeline.
@@ -28,11 +36,50 @@ public final class Cli {
                     + " class(es), entry " + result.input().entryClassInternalName());
             System.out.println("solution: " + result.appDir());
             System.out.println("report: " + result.reportPath());
-            return 0;
+            if (options.noBuild()) {
+                return 0;
+            }
+            return publish(options, result);
         } catch (J2csException e) {
             System.err.println("error: " + e.getMessage());
             return 1;
         }
+    }
+
+    private int publish(CliOptions options, TranspileResult result) {
+        if (!DotnetLocator.isAvailable()) {
+            System.err.println("error: dotnet CLI not found on PATH; rerun with --no-build to keep the solution only");
+            return 1;
+        }
+        DotnetRunner runner = new DotnetRunner();
+        PublishMode mode = options.selfContained() ? PublishMode.SELF_CONTAINED : PublishMode.NATIVE_AOT;
+        Path publishDir = options.outDir().resolve("publish");
+        System.out.println("publishing (" + mode + ") ...");
+        ExecResult published = runner.publish(result.appDir(), mode, publishDir.toAbsolutePath());
+        DotnetRunner.requireSuccess(published, "dotnet publish (" + mode + ")");
+        Path exe = copyNamedExe(options, publishDir);
+        System.out.println("exe: " + exe);
+        if (options.run()) {
+            ExecResult run = runner.exec(exe.toAbsolutePath(), List.of(), options.outDir());
+            System.out.print(run.stdout());
+            System.err.print(run.stderr());
+            return run.exitCode();
+        }
+        return 0;
+    }
+
+    private static Path copyNamedExe(CliOptions options, Path publishDir) {
+        Path source = publishDir.resolve("App.exe");
+        String fileName = options.input().getFileName().toString();
+        int dot = fileName.lastIndexOf('.');
+        String baseName = dot > 0 ? fileName.substring(0, dot) : fileName;
+        Path target = options.outDir().resolve(baseName + ".exe");
+        try {
+            Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            throw new J2csException("failed to copy exe to " + target + ": " + e.getMessage(), e);
+        }
+        return target;
     }
 
     public static CliOptions parse(String[] args) {

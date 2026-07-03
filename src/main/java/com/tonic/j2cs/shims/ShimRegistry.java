@@ -67,6 +67,14 @@ public final class ShimRegistry {
         return TYPES.contains(internalName);
     }
 
+    public static Map<String, ShimTarget> methods() {
+        return METHODS;
+    }
+
+    public static Map<String, ShimTarget> fields() {
+        return FIELDS;
+    }
+
     public static Optional<ShimTarget> method(String owner, String name, String descriptor) {
         return Optional.ofNullable(METHODS.get(owner + "." + name + descriptor));
     }
