@@ -40,6 +40,11 @@ class GoldenEmitTest {
         assertGolden("Exceptions2");
     }
 
+    @Test
+    void lambdas1EmissionIsStable() throws Exception {
+        assertGolden("Lambdas1");
+    }
+
     private void assertGolden(String fixtureName) throws Exception {
         Path work = Path.of("build", "golden", fixtureName);
         Fixtures.deleteRecursively(work);

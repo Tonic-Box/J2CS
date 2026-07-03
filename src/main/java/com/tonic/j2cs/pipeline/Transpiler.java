@@ -99,6 +99,7 @@ public final class Transpiler {
         report.divergence("NullPointerException/ClassCastException/ArrayIndexOutOfBoundsException carry no message; helpful-NPE text is unavailable");
         report.divergence("transpiler stub failures throw System.NotSupportedException, which is not catchable as java.lang.Throwable");
         report.divergence("System.arraycopy failure message text differs from the JVM");
+        report.divergence("lambdas without captures allocate a fresh instance per evaluation; the JVM may reuse one");
     }
 
     private static Map<MethodEntry, MethodPlan> planMethods(ClassFile cf, IrLifter lifter,

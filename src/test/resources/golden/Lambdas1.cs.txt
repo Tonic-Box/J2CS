@@ -1,0 +1,594 @@
+// ==== Program.cs ====
+internal static class Program
+{
+    internal static int Main(string[] args)
+    {
+        try
+        {
+            global::jdefault.Lambdas1.main(global::java.lang.JRuntime.Args(args));
+            return 0;
+        }
+        catch (global::java.lang.JThrow __e)
+        {
+            global::System.Console.Error.Write("Exception in thread \"main\" " + __e.payload.toString().Value + "\n");
+            return 1;
+        }
+    }
+}
+// ==== gen/j2cs.synthetic.Lambda_Lambdas1_100.cs ====
+namespace j2cs.synthetic
+{
+    internal class Lambda_Lambdas1_100 : global::java.lang.Object, global::jdefault.IntOp
+    {
+
+        internal Lambda_Lambdas1_100()
+        {
+        }
+
+        public int apply(int p0, int p1)
+        {
+            return global::jdefault.Lambdas1.lambda_S_static_S_0(p0, p1);
+        }
+    }
+}
+// ==== gen/j2cs.synthetic.Lambda_Lambdas1_13.cs ====
+namespace j2cs.synthetic
+{
+    internal class Lambda_Lambdas1_13 : global::java.lang.Object, global::jdefault.IntOp
+    {
+
+        internal Lambda_Lambdas1_13()
+        {
+        }
+
+        public int apply(int p0, int p1)
+        {
+            return global::jdefault.Lambdas1.lambda_S_main_S_1(p0, p1);
+        }
+    }
+}
+// ==== gen/j2cs.synthetic.Lambda_Lambdas1_38.cs ====
+namespace j2cs.synthetic
+{
+    internal class Lambda_Lambdas1_38 : global::java.lang.Object, global::jdefault.IntOp
+    {
+        private readonly int c0;
+
+        internal Lambda_Lambdas1_38(int a0)
+        {
+            c0 = a0;
+        }
+
+        public int apply(int p0, int p1)
+        {
+            return global::jdefault.Lambdas1.lambda_S_main_S_2(c0, p0, p1);
+        }
+    }
+}
+// ==== gen/j2cs.synthetic.Lambda_Lambdas1_43.cs ====
+namespace j2cs.synthetic
+{
+    internal class Lambda_Lambdas1_43 : global::java.lang.Object, global::jdefault.Fn
+    {
+        private readonly global::java.lang.String c0;
+
+        internal Lambda_Lambdas1_43(global::java.lang.String a0)
+        {
+            c0 = a0;
+        }
+
+        public global::java.lang.Object apply(global::java.lang.Object p0)
+        {
+            return (global::java.lang.Object)(global::jdefault.Lambdas1.lambda_S_main_S_3(c0, (global::java.lang.String)(p0)));
+        }
+    }
+}
+// ==== gen/j2cs.synthetic.Lambda_Lambdas1_58.cs ====
+namespace j2cs.synthetic
+{
+    internal class Lambda_Lambdas1_58 : global::java.lang.Object, global::jdefault.IntOp
+    {
+        private readonly int[] c0;
+
+        internal Lambda_Lambdas1_58(int[] a0)
+        {
+            c0 = a0;
+        }
+
+        public int apply(int p0, int p1)
+        {
+            return global::jdefault.Lambdas1.lambda_S_main_S_4(c0, p0, p1);
+        }
+    }
+}
+// ==== gen/j2cs.synthetic.Lambda_Lambdas1_69.cs ====
+namespace j2cs.synthetic
+{
+    internal class Lambda_Lambdas1_69 : global::java.lang.Object, global::jdefault.IntOp
+    {
+
+        internal Lambda_Lambdas1_69()
+        {
+        }
+
+        public int apply(int p0, int p1)
+        {
+            return global::jdefault.Lambdas1.lambda_S_main_S_5(p0, p1);
+        }
+    }
+}
+// ==== gen/j2cs.synthetic.Lambda_Lambdas1_70.cs ====
+namespace j2cs.synthetic
+{
+    internal class Lambda_Lambdas1_70 : global::java.lang.Object, global::jdefault.Greeter
+    {
+
+        internal Lambda_Lambdas1_70()
+        {
+        }
+
+        public global::java.lang.String greet()
+        {
+            return global::jdefault.Lambdas1.lambda_S_main_S_6();
+        }
+    }
+}
+// ==== gen/j2cs.synthetic.Lambda_Lambdas1_82.cs ====
+namespace j2cs.synthetic
+{
+    internal class Lambda_Lambdas1_82 : global::java.lang.Object, global::jdefault.Fn
+    {
+
+        internal Lambda_Lambdas1_82()
+        {
+        }
+
+        public global::java.lang.Object apply(global::java.lang.Object p0)
+        {
+            return (global::java.lang.Object)(global::jdefault.Lambdas1.lambda_S_main_S_9((global::java.lang.String)(p0)));
+        }
+    }
+}
+// ==== gen/j2cs.synthetic.Lambda_Lambdas1_91.cs ====
+namespace j2cs.synthetic
+{
+    internal class Lambda_Lambdas1_91 : global::java.lang.Object, global::jdefault.IntOp
+    {
+        private readonly global::jdefault.Lambdas1 c0;
+
+        internal Lambda_Lambdas1_91(global::jdefault.Lambdas1 a0)
+        {
+            c0 = a0;
+        }
+
+        public int apply(int p0, int p1)
+        {
+            return ((global::jdefault.Lambdas1)c0).lambda_S_scaled_S_10(p0, p1);
+        }
+    }
+}
+// ==== gen/jdefault.Fn.cs ====
+namespace jdefault
+{
+    internal interface Fn
+    {
+
+        global::java.lang.Object apply(global::java.lang.Object p0);
+    }
+}
+// ==== gen/jdefault.Greeter.cs ====
+namespace jdefault
+{
+    internal interface Greeter
+    {
+
+        global::java.lang.String greet();
+
+        global::java.lang.String loud()
+        {
+            global::jdefault.Greeter s0 = null;
+            global::java.lang.String s1 = null;
+            global::java.lang.String s2 = null;
+            s0 = this;
+            B0: ;
+            s1 = ((global::jdefault.Greeter)s0).greet();
+            s2 = global::java.lang.String.Wrap(global::System.String.Concat(new string[] { global::java.lang.JRuntime.Str(s1), "!" }));
+            return s2;
+            throw new global::System.InvalidOperationException("j2cs: fell off method end");
+        }
+    }
+}
+// ==== gen/jdefault.IntOp.cs ====
+namespace jdefault
+{
+    internal interface IntOp
+    {
+
+        int apply(int p0, int p1);
+    }
+}
+// ==== gen/jdefault.Lambdas1.cs ====
+namespace jdefault
+{
+    internal class Lambdas1 : global::java.lang.Object
+    {
+        internal static global::jdefault.IntOp stored;
+        internal int factor;
+
+        public Lambdas1(global::java.lang.RawNew r) : base(r)
+        {
+        }
+
+        internal void __init__V()
+        {
+            global::jdefault.Lambdas1 s0 = null;
+            int s1 = 0;
+            s0 = this;
+            B0: ;
+            ((global::java.lang.Object)s0).__init__V();
+            s1 = 10;
+            s0.factor = s1;
+            return;
+        }
+
+        internal static void main(global::java.lang.String[] p0)
+        {
+            global::java.lang.String[] s0 = null;
+            global::jdefault.IntOp s1 = null;
+            global::java.io.PrintStream s2 = null;
+            int s3 = 0;
+            int s4 = 0;
+            int s5 = 0;
+            global::java.io.PrintStream s6 = null;
+            global::jdefault.IntOp s7 = null;
+            int s8 = 0;
+            int s9 = 0;
+            int s10 = 0;
+            int s11 = 0;
+            global::jdefault.IntOp s12 = null;
+            global::java.io.PrintStream s13 = null;
+            int s14 = 0;
+            int s15 = 0;
+            int s16 = 0;
+            global::java.lang.String s17 = null;
+            global::jdefault.Fn s18 = null;
+            global::java.io.PrintStream s19 = null;
+            global::java.lang.String s20 = null;
+            global::java.lang.Object s21 = null;
+            global::java.lang.String s22 = null;
+            int s23 = 0;
+            int[] s24 = null;
+            global::jdefault.IntOp s25 = null;
+            global::java.io.PrintStream s26 = null;
+            int s27 = 0;
+            int s28 = 0;
+            int s29 = 0;
+            global::java.io.PrintStream s30 = null;
+            int s31 = 0;
+            int s32 = 0;
+            int s33 = 0;
+            global::java.io.PrintStream s34 = null;
+            int s35 = 0;
+            int s36 = 0;
+            global::jdefault.Lambdas1 s37 = null;
+            global::java.io.PrintStream s38 = null;
+            global::jdefault.IntOp s39 = null;
+            int s40 = 0;
+            int s41 = 0;
+            int s42 = 0;
+            global::java.io.PrintStream s43 = null;
+            int s44 = 0;
+            int s45 = 0;
+            int s46 = 0;
+            global::java.io.PrintStream s47 = null;
+            global::jdefault.IntOp s48 = null;
+            int s49 = 0;
+            int s50 = 0;
+            int s51 = 0;
+            global::jdefault.Greeter s52 = null;
+            global::java.io.PrintStream s53 = null;
+            global::java.lang.String s54 = null;
+            global::java.io.PrintStream s55 = null;
+            global::java.lang.String s56 = null;
+            int s57 = 0;
+            int s58 = 0;
+            int s59 = 0;
+            int s60 = 0;
+            int s61 = 0;
+            global::java.io.PrintStream s62 = null;
+            global::jdefault.Fn s63 = null;
+            global::java.io.PrintStream s64 = null;
+            global::java.lang.String s65 = null;
+            global::java.lang.Object s66 = null;
+            global::jdefault.Fn s67 = null;
+            global::java.lang.String s68 = null;
+            global::java.lang.Object s69 = null;
+            global::java.lang.String s70 = null;
+            global::java.io.PrintStream s71 = null;
+            global::java.lang.String s72 = null;
+            global::jdefault.IntOp s73 = null;
+            int s74 = 0;
+            int s75 = 0;
+            int s76 = 0;
+            int s77 = 0;
+            int s78 = 0;
+            int s79 = 0;
+            s0 = p0;
+            B0: ;
+            s1 = new global::j2cs.synthetic.Lambda_Lambdas1_13();
+            s2 = global::java.lang.System.@out;
+            s3 = 3;
+            s4 = 4;
+            s5 = ((global::jdefault.IntOp)s1).apply(s3, s4);
+            s2.println(s5);
+            s6 = global::java.lang.System.@out;
+            s7 = global::jdefault.Lambdas1.stored;
+            s8 = 5;
+            s9 = 6;
+            s10 = ((global::jdefault.IntOp)s7).apply(s8, s9);
+            s6.println(s10);
+            s11 = 100;
+            s12 = new global::j2cs.synthetic.Lambda_Lambdas1_38(s11);
+            s13 = global::java.lang.System.@out;
+            s14 = 1;
+            s15 = 2;
+            s16 = ((global::jdefault.IntOp)s12).apply(s14, s15);
+            s13.println(s16);
+            s17 = global::java.lang.String.Intern("v=");
+            s18 = new global::j2cs.synthetic.Lambda_Lambdas1_43(s17);
+            s19 = global::java.lang.System.@out;
+            s20 = global::java.lang.String.Intern("7");
+            s21 = ((global::jdefault.Fn)s18).apply((global::java.lang.Object)(s20));
+            s22 = (global::java.lang.String)(global::java.lang.Object)(s21);
+            s19.println(s22);
+            s23 = 1;
+            s24 = new int[s23];
+            s25 = new global::j2cs.synthetic.Lambda_Lambdas1_58(s24);
+            s26 = global::java.lang.System.@out;
+            s27 = 2;
+            s28 = 3;
+            s29 = ((global::jdefault.IntOp)s25).apply(s27, s28);
+            s26.println(s29);
+            s30 = global::java.lang.System.@out;
+            s31 = 4;
+            s32 = 5;
+            s33 = ((global::jdefault.IntOp)s25).apply(s31, s32);
+            s30.println(s33);
+            s34 = global::java.lang.System.@out;
+            s35 = 0;
+            s36 = s24[s35];
+            s34.println(s36);
+            s37 = new global::jdefault.Lambdas1(global::java.lang.RawNew.I);
+            ((global::jdefault.Lambdas1)s37).__init__V();
+            s38 = global::java.lang.System.@out;
+            s39 = s37.scaled();
+            s40 = 2;
+            s41 = 3;
+            s42 = ((global::jdefault.IntOp)s39).apply(s40, s41);
+            s38.println(s42);
+            s43 = global::java.lang.System.@out;
+            s44 = 10;
+            s45 = 20;
+            s46 = global::jdefault.Lambdas1.applyOp(s1, s44, s45);
+            s43.println(s46);
+            s47 = global::java.lang.System.@out;
+            s48 = new global::j2cs.synthetic.Lambda_Lambdas1_69();
+            s49 = 10;
+            s50 = 20;
+            s51 = global::jdefault.Lambdas1.applyOp(s48, s49, s50);
+            s47.println(s51);
+            s52 = new global::j2cs.synthetic.Lambda_Lambdas1_70();
+            s53 = global::java.lang.System.@out;
+            s54 = ((global::jdefault.Greeter)s52).greet();
+            s53.println(s54);
+            s55 = global::java.lang.System.@out;
+            s56 = ((global::jdefault.Greeter)s52).loud();
+            s55.println(s56);
+            s57 = 0;
+            s58 = 0;
+            s59 = s57;
+            s60 = s58;
+            goto B1;
+            B1: ;
+            s61 = 3;
+            if (s60 >= s61) goto B3;
+            goto B2;
+            B3: ;
+            s62 = global::java.lang.System.@out;
+            s62.println(s59);
+            s63 = new global::j2cs.synthetic.Lambda_Lambdas1_82();
+            s64 = global::java.lang.System.@out;
+            s65 = global::java.lang.String.Intern("a");
+            s66 = ((global::jdefault.Fn)s63).apply((global::java.lang.Object)(s65));
+            s67 = (global::jdefault.Fn)(global::java.lang.Object)(s66);
+            s68 = global::java.lang.String.Intern("b");
+            s69 = ((global::jdefault.Fn)s67).apply((global::java.lang.Object)(s68));
+            s70 = (global::java.lang.String)(global::java.lang.Object)(s69);
+            s64.println(s70);
+            s71 = global::java.lang.System.@out;
+            s72 = global::java.lang.String.Intern("done");
+            s71.println(s72);
+            return;
+            B2: ;
+            s73 = new global::j2cs.synthetic.Lambda_Lambdas1_38(s60);
+            s74 = 1;
+            s75 = 1;
+            s76 = ((global::jdefault.IntOp)s73).apply(s74, s75);
+            s77 = s59 + s76;
+            s78 = 1;
+            s79 = s60 + s78;
+            s59 = s77;
+            s60 = s79;
+            goto B1;
+        }
+
+        public virtual global::jdefault.IntOp scaled()
+        {
+            global::jdefault.Lambdas1 s0 = null;
+            global::jdefault.IntOp s1 = null;
+            s0 = this;
+            B0: ;
+            s1 = new global::j2cs.synthetic.Lambda_Lambdas1_91(s0);
+            return s1;
+            throw new global::System.InvalidOperationException("j2cs: fell off method end");
+        }
+
+        internal static int applyOp(global::jdefault.IntOp p0, int p1, int p2)
+        {
+            global::jdefault.IntOp s0 = null;
+            int s1 = 0;
+            int s2 = 0;
+            int s3 = 0;
+            s0 = p0;
+            s1 = p1;
+            s2 = p2;
+            B0: ;
+            s3 = ((global::jdefault.IntOp)s0).apply(s1, s2);
+            return s3;
+            throw new global::System.InvalidOperationException("j2cs: fell off method end");
+        }
+
+        internal int lambda_S_scaled_S_10(int p0, int p1)
+        {
+            global::jdefault.Lambdas1 s0 = null;
+            int s1 = 0;
+            int s2 = 0;
+            int s3 = 0;
+            int s4 = 0;
+            int s5 = 0;
+            s0 = this;
+            s1 = p0;
+            s2 = p1;
+            B0: ;
+            s3 = s1 + s2;
+            s4 = s0.factor;
+            s5 = s3 * s4;
+            return s5;
+            throw new global::System.InvalidOperationException("j2cs: fell off method end");
+        }
+
+        internal static global::jdefault.Fn lambda_S_main_S_9(global::java.lang.String p0)
+        {
+            global::java.lang.String s0 = null;
+            global::jdefault.Fn s1 = null;
+            s0 = p0;
+            B0: ;
+            s1 = new global::j2cs.synthetic.Lambda_Lambdas1_43(s0);
+            return s1;
+            throw new global::System.InvalidOperationException("j2cs: fell off method end");
+        }
+
+        internal static global::java.lang.String lambda_S_main_S_6()
+        {
+            global::java.lang.String s0 = null;
+            B0: ;
+            s0 = global::java.lang.String.Intern("hi");
+            return s0;
+            throw new global::System.InvalidOperationException("j2cs: fell off method end");
+        }
+
+        internal static int lambda_S_main_S_5(int p0, int p1)
+        {
+            int s0 = 0;
+            int s1 = 0;
+            int s2 = 0;
+            s0 = p0;
+            s1 = p1;
+            B0: ;
+            s2 = s0 - s1;
+            return s2;
+            throw new global::System.InvalidOperationException("j2cs: fell off method end");
+        }
+
+        internal static int lambda_S_main_S_4(int[] p0, int p1, int p2)
+        {
+            int[] s0 = null;
+            int s1 = 0;
+            int s2 = 0;
+            int s3 = 0;
+            int s4 = 0;
+            int s5 = 0;
+            int s6 = 0;
+            int s7 = 0;
+            int s8 = 0;
+            s0 = p0;
+            s1 = p1;
+            s2 = p2;
+            B0: ;
+            s3 = 0;
+            s4 = s0[s3];
+            s5 = s1 + s2;
+            s6 = s4 + s5;
+            s0[s3] = s6;
+            s7 = 0;
+            s8 = s0[s7];
+            return s8;
+            throw new global::System.InvalidOperationException("j2cs: fell off method end");
+        }
+
+        internal static global::java.lang.String lambda_S_main_S_3(global::java.lang.String p0, global::java.lang.String p1)
+        {
+            global::java.lang.String s0 = null;
+            global::java.lang.String s1 = null;
+            global::java.lang.String s2 = null;
+            s0 = p0;
+            s1 = p1;
+            B0: ;
+            s2 = global::java.lang.String.Wrap(global::System.String.Concat(new string[] { global::java.lang.JRuntime.Str(s0), global::java.lang.JRuntime.Str(s1) }));
+            return s2;
+            throw new global::System.InvalidOperationException("j2cs: fell off method end");
+        }
+
+        internal static int lambda_S_main_S_2(int p0, int p1, int p2)
+        {
+            int s0 = 0;
+            int s1 = 0;
+            int s2 = 0;
+            int s3 = 0;
+            int s4 = 0;
+            s0 = p0;
+            s1 = p1;
+            s2 = p2;
+            B0: ;
+            s3 = s1 + s2;
+            s4 = s3 + s0;
+            return s4;
+            throw new global::System.InvalidOperationException("j2cs: fell off method end");
+        }
+
+        internal static int lambda_S_main_S_1(int p0, int p1)
+        {
+            int s0 = 0;
+            int s1 = 0;
+            int s2 = 0;
+            s0 = p0;
+            s1 = p1;
+            B0: ;
+            s2 = s0 + s1;
+            return s2;
+            throw new global::System.InvalidOperationException("j2cs: fell off method end");
+        }
+
+        internal static int lambda_S_static_S_0(int p0, int p1)
+        {
+            int s0 = 0;
+            int s1 = 0;
+            int s2 = 0;
+            s0 = p0;
+            s1 = p1;
+            B0: ;
+            s2 = s0 * s1;
+            return s2;
+            throw new global::System.InvalidOperationException("j2cs: fell off method end");
+        }
+
+        static Lambdas1()
+        {
+            global::jdefault.IntOp s0 = null;
+            B0: ;
+            s0 = new global::j2cs.synthetic.Lambda_Lambdas1_100();
+            global::jdefault.Lambdas1.stored = s0;
+            return;
+        }
+    }
+}
