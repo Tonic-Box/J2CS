@@ -25,10 +25,12 @@ public final class ClassEmitter {
 
     private final NamingContext naming;
     private final TranspileReport report;
+    private final MethodBodyEmitter bodyEmitter;
 
     public ClassEmitter(NamingContext naming, TranspileReport report) {
         this.naming = naming;
         this.report = report;
+        this.bodyEmitter = new MethodBodyEmitter(naming);
     }
 
     public String emit(ClassFile classFile, Map<MethodEntry, MethodPlan> plans) {
@@ -95,14 +97,27 @@ public final class ClassEmitter {
         }
         w.open(header);
         if (plan instanceof MethodPlan.Unsupported unsupported) {
-            String owner = classFile.getClassName();
-            report.unsupportedMethod(owner, name, desc, unsupported.reason());
-            w.line("throw new global::System.NotSupportedException("
-                    + CsStrings.quote("j2cs: " + owner + "." + name + desc + ": " + unsupported.reason()) + ");");
-        } else {
-            throw new IllegalStateException("supported method bodies are not implemented yet");
+            emitStubBody(w, classFile, name, desc, unsupported.reason());
+        } else if (plan instanceof MethodPlan.Supported supported) {
+            String body;
+            try {
+                body = bodyEmitter.emit(method, supported.method(), 3);
+            } catch (UnsupportedBodyException e) {
+                body = null;
+                emitStubBody(w, classFile, name, desc, e.getMessage());
+            }
+            if (body != null) {
+                w.raw(body);
+            }
         }
         w.close();
+    }
+
+    private void emitStubBody(CsWriter w, ClassFile classFile, String name, String desc, String reason) {
+        String owner = classFile.getClassName();
+        report.unsupportedMethod(owner, name, desc, reason);
+        w.line("throw new global::System.NotSupportedException("
+                + CsStrings.quote("j2cs: " + owner + "." + name + desc + ": " + reason) + ");");
     }
 
     private static String paramList(String methodDescriptor, TypeMapper types) {

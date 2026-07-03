@@ -4,6 +4,7 @@ import com.tonic.j2cs.cli.CliOptions;
 import com.tonic.j2cs.emit.ClassEmitter;
 import com.tonic.j2cs.emit.EntryPointEmitter;
 import com.tonic.j2cs.frontend.InputLoader;
+import com.tonic.j2cs.frontend.IrLifter;
 import com.tonic.j2cs.frontend.LoadedInput;
 import com.tonic.j2cs.model.MethodPlan;
 import com.tonic.j2cs.naming.CsNamer;
@@ -30,12 +31,14 @@ public final class Transpiler {
         report.setInput(options.input().toString());
         report.setEntryClass(input.entryClassInternalName());
 
-        NamingContext naming = new NamingContext(new TypeMapper(), input.appClasses());
+        TypeMapper typeMapper = new TypeMapper();
+        NamingContext naming = new NamingContext(typeMapper, input.appClasses());
+        IrLifter lifter = new IrLifter(typeMapper, options.dumpIr());
         ClassEmitter classEmitter = new ClassEmitter(naming, report);
         Map<String, String> genFiles = new LinkedHashMap<>();
         for (ClassFile cf : input.appClasses()) {
             report.classDiscovered(cf.getClassName());
-            genFiles.put(dottedName(cf.getClassName()), classEmitter.emit(cf, planMethods(cf)));
+            genFiles.put(dottedName(cf.getClassName()), classEmitter.emit(cf, planMethods(cf, lifter)));
         }
         String programCs = new EntryPointEmitter().emit(input.entryClassInternalName(), naming);
         Path appDir = new SolutionGenerator().generate(options.outDir(),
@@ -45,10 +48,10 @@ public final class Transpiler {
         return new TranspileResult(input, report, reportPath, appDir);
     }
 
-    private static Map<MethodEntry, MethodPlan> planMethods(ClassFile cf) {
+    private static Map<MethodEntry, MethodPlan> planMethods(ClassFile cf, IrLifter lifter) {
         Map<MethodEntry, MethodPlan> plans = new LinkedHashMap<>();
         for (MethodEntry method : cf.getMethods()) {
-            plans.put(method, new MethodPlan.Unsupported("body emission not yet implemented"));
+            plans.put(method, lifter.lower(cf, method));
         }
         return plans;
     }

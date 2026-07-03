@@ -10,6 +10,19 @@ public final class CsWriter {
     private final StringBuilder sb = new StringBuilder();
     private int depth;
 
+    public CsWriter() {
+        this(0);
+    }
+
+    public CsWriter(int initialDepth) {
+        this.depth = initialDepth;
+    }
+
+    public CsWriter raw(String text) {
+        sb.append(text);
+        return this;
+    }
+
     public CsWriter line(String text) {
         if (!text.isEmpty()) {
             sb.append(INDENT.repeat(depth)).append(text);

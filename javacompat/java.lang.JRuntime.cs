@@ -79,6 +79,50 @@ namespace java.lang
             return b == -1L ? 0L : a % b;
         }
 
+        public static int F2I(float v)
+        {
+            return D2I(v);
+        }
+
+        public static long F2L(float v)
+        {
+            return D2L(v);
+        }
+
+        public static int D2I(double v)
+        {
+            if (double.IsNaN(v))
+            {
+                return 0;
+            }
+            if (v >= 2147483647.0)
+            {
+                return int.MaxValue;
+            }
+            if (v <= -2147483648.0)
+            {
+                return int.MinValue;
+            }
+            return (int)v;
+        }
+
+        public static long D2L(double v)
+        {
+            if (double.IsNaN(v))
+            {
+                return 0L;
+            }
+            if (v >= 9223372036854775808.0)
+            {
+                return long.MaxValue;
+            }
+            if (v <= -9223372036854775808.0)
+            {
+                return long.MinValue;
+            }
+            return (long)v;
+        }
+
         public static string Str(int v)
         {
             return v.ToString(global::System.Globalization.CultureInfo.InvariantCulture);
