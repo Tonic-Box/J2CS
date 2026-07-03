@@ -22,7 +22,7 @@ namespace jdefault
             global::jdefault.FizzBuzz s0 = null;
             s0 = this;
             B0: ;
-            s0.__init__V();
+            ((global::java.lang.Object)s0).__init__V();
             return;
         }
 

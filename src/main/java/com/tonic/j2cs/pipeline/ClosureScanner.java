@@ -27,6 +27,7 @@ public final class ClosureScanner {
     public static void collectReferencedTypes(ClassFile classFile,
                                               Map<MethodEntry, MethodPlan> plans,
                                               Set<String> out) {
+        out.add(classFile.getSuperClassName());
         for (FieldEntry field : classFile.getFields()) {
             collectFromDescriptor(field.getDesc(), out);
         }

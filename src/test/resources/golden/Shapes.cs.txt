@@ -29,7 +29,7 @@ namespace jdefault
             s0 = this;
             s1 = p0;
             B0: ;
-            s0.__init__V();
+            ((global::java.lang.Object)s0).__init__V();
             s0.radius = s1;
             s2 = global::jdefault.Circle.count;
             s3 = 1;
@@ -38,7 +38,7 @@ namespace jdefault
             return;
         }
 
-        internal int area()
+        public virtual int area()
         {
             global::jdefault.Circle s0 = null;
             int s1 = 0;
@@ -85,7 +85,7 @@ namespace jdefault
             global::jdefault.Counter s0 = null;
             s0 = this;
             B0: ;
-            s0.__init__V();
+            ((global::java.lang.Object)s0).__init__V();
             return;
         }
 
@@ -127,7 +127,7 @@ namespace jdefault
             s1 = p0;
             s2 = p1;
             B0: ;
-            s0.__init__V();
+            ((global::java.lang.Object)s0).__init__V();
             s0.w = s1;
             s0.h = s2;
             return;
@@ -140,11 +140,11 @@ namespace jdefault
             s0 = this;
             s1 = p0;
             B0: ;
-            s0.__init_II_V(s1, s1);
+            ((global::jdefault.Rect)s0).__init_II_V(s1, s1);
             return;
         }
 
-        internal int area()
+        public virtual int area()
         {
             global::jdefault.Rect s0 = null;
             int s1 = 0;
@@ -159,7 +159,7 @@ namespace jdefault
             throw new global::System.InvalidOperationException("j2cs: fell off method end");
         }
 
-        internal global::java.lang.String describe()
+        public virtual global::java.lang.String describe()
         {
             global::jdefault.Rect s0 = null;
             int s1 = 0;
@@ -202,7 +202,7 @@ namespace jdefault
             global::jdefault.Shapes s0 = null;
             s0 = this;
             B0: ;
-            s0.__init__V();
+            ((global::java.lang.Object)s0).__init__V();
             return;
         }
 
@@ -262,11 +262,11 @@ namespace jdefault
             B0: ;
             s1 = new global::jdefault.Circle(global::java.lang.RawNew.I);
             s2 = 5;
-            s1.__init_I_V(s2);
+            ((global::jdefault.Circle)s1).__init_I_V(s2);
             s3 = new global::jdefault.Rect(global::java.lang.RawNew.I);
             s4 = 3;
             s5 = 4;
-            s3.__init_II_V(s4, s5);
+            ((global::jdefault.Rect)s3).__init_II_V(s4, s5);
             s6 = global::java.lang.System.@out;
             s7 = s1.area();
             s6.println(s7);
@@ -278,7 +278,7 @@ namespace jdefault
             s10.println(s11);
             s12 = new global::jdefault.Circle(global::java.lang.RawNew.I);
             s13 = 2;
-            s12.__init_I_V(s13);
+            ((global::jdefault.Circle)s12).__init_I_V(s13);
             s14 = global::java.lang.System.@out;
             s15 = global::jdefault.Circle.count;
             s14.println(s15);
@@ -302,12 +302,12 @@ namespace jdefault
             s27 = new global::jdefault.Rect(global::java.lang.RawNew.I);
             s28 = 4;
             s29 = 9;
-            s27.__init_II_V(s28, s29);
+            ((global::jdefault.Rect)s27).__init_II_V(s28, s29);
             s30 = s27.describe();
             s26.println(s30);
             s31 = new global::jdefault.Rect(global::java.lang.RawNew.I);
             s32 = 6;
-            s31.__init_I_V(s32);
+            ((global::jdefault.Rect)s31).__init_I_V(s32);
             s33 = global::java.lang.System.@out;
             s34 = s31.area();
             s33.println(s34);

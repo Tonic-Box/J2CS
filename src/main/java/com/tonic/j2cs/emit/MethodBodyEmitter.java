@@ -32,6 +32,8 @@ import com.tonic.j2cs.model.SlotDecl;
 import com.tonic.j2cs.naming.CsNamer;
 import com.tonic.j2cs.naming.MemberNamer;
 import com.tonic.j2cs.naming.NamingContext;
+import com.tonic.j2cs.naming.Resolved;
+import com.tonic.j2cs.naming.ResolvedField;
 import com.tonic.j2cs.shims.ShimTarget;
 import com.tonic.j2cs.shims.ShimRegistry;
 import com.tonic.j2cs.types.Coercions;
@@ -61,17 +63,23 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
     private CsType returnType;
     private Map<Integer, String> slotCs;
     private boolean terminated;
+    private String currentClass;
+    private Integer thisSlot;
 
     public MethodBodyEmitter(NamingContext naming) {
         this.naming = naming;
     }
 
-    public String emit(MethodEntry method, LoweredMethod loweredMethod, int indentDepth) {
+    public String emit(String ownerInternalName, MethodEntry method, LoweredMethod loweredMethod, int indentDepth) {
+        this.currentClass = ownerInternalName;
         this.lowered = loweredMethod;
         this.names = new ValueNames(loweredMethod.slotOf());
         this.returnType = naming.typeMapper().returnType(method.getDesc());
         this.w = new CsWriter(indentDepth);
         this.slotCs = new HashMap<>();
+        this.thisSlot = loweredMethod.ir().isStatic() || loweredMethod.ir().getParameters().isEmpty()
+                ? null
+                : loweredMethod.slotOf().get(loweredMethod.ir().getParameters().get(0));
 
         TypeMapper types = naming.typeMapper();
         for (SlotDecl slot : loweredMethod.slots()) {
@@ -273,18 +281,19 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
             throw new UnsupportedBodyException("invokedynamic not supported: "
                     + instr.getName() + instr.getDescriptor());
         }
-        if (instr.getInvokeType() == InvokeType.INTERFACE) {
-            throw new UnsupportedBodyException("invokeinterface not supported in M0: "
-                    + instr.getOwner() + "." + instr.getName());
-        }
         String owner = instr.getOwner();
         String name = instr.getName();
         String desc = instr.getDescriptor();
-        String call;
         if (name.equals("<init>")) {
-            call = names.ref(instr.getReceiver()) + "." + MemberNamer.initMethodName(desc)
-                    + "(" + renderArguments(instr, desc) + ")";
-        } else if (owner.startsWith("java/") || owner.startsWith("javax/")) {
+            assign(instr, "((" + CsNamer.fqcn(owner) + ")" + names.ref(instr.getReceiver()) + ")."
+                    + MemberNamer.initMethodName(desc) + "(" + renderArguments(instr, desc) + ")");
+            return null;
+        }
+        if (instr.getInvokeType() == InvokeType.SPECIAL) {
+            assign(instr, renderSpecial(instr, owner, name, desc));
+            return null;
+        }
+        if (owner.startsWith("java/") || owner.startsWith("javax/")) {
             Optional<ShimTarget> target = ShimRegistry.method(owner, name, desc);
             if (target.isEmpty()) {
                 throw new UnsupportedBodyException("shim member not implemented: "
@@ -292,19 +301,127 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
             }
             String receiver = target.get().isStatic()
                     ? CsNamer.fqcn(owner)
-                    : names.ref(instr.getReceiver());
-            call = receiver + "." + target.get().csMemberName() + "(" + renderArguments(instr, desc) + ")";
-        } else if (naming.isAppClass(owner)) {
-            String member = naming.namerOf(owner).methodName(name, desc);
-            String receiver = instr.getInvokeType() == InvokeType.STATIC
-                    ? CsNamer.fqcn(owner)
-                    : names.ref(instr.getReceiver());
-            call = receiver + "." + member + "(" + renderArguments(instr, desc) + ")";
-        } else {
-            throw new UnsupportedBodyException("call target not in input: " + owner + "." + name + desc);
+                    : receiverAdjusted(owner, instr.getReceiver());
+            assign(instr, receiver + "." + target.get().csMemberName()
+                    + "(" + renderArguments(instr, desc) + ")");
+            return null;
         }
+        String call = switch (instr.getInvokeType()) {
+            case STATIC -> renderStatic(instr, owner, name, desc);
+            case VIRTUAL -> renderVirtual(instr, owner, name, desc);
+            case INTERFACE -> renderInterface(instr, owner, name, desc);
+            default -> throw new UnsupportedBodyException("unexpected invoke kind: " + instr.getInvokeType());
+        };
         assign(instr, call);
         return null;
+    }
+
+    private String renderSpecial(InvokeInstruction instr, String owner, String name, String desc) {
+        if (owner.equals(currentClass)) {
+            String member = naming.namerOf(currentClass).findMethodName(name, desc);
+            if (member == null) {
+                throw new UnsupportedBodyException("invokespecial target not declared: "
+                        + owner + "." + name + desc);
+            }
+            return names.ref(instr.getReceiver()) + "." + member + "(" + renderArguments(instr, desc) + ")";
+        }
+        if (naming.hierarchy().isAppInterface(owner)) {
+            throw new UnsupportedBodyException("interface super-call not supported in M1: "
+                    + owner + "." + name);
+        }
+        requireThisReceiver(instr);
+        Resolved resolved = naming.resolveVirtual(owner, name, desc);
+        if (resolved instanceof Resolved.AppMethod appMethod) {
+            if (appMethod.viaInterface()) {
+                throw new UnsupportedBodyException("super-call resolving to interface default: "
+                        + owner + "." + name);
+            }
+            return "base." + appMethod.csName() + "(" + renderArguments(instr, desc) + ")";
+        }
+        if (resolved instanceof Resolved.ShimMethod shim) {
+            return "base." + shim.target().csMemberName() + "(" + renderArguments(instr, desc) + ")";
+        }
+        throw new UnsupportedBodyException(((Resolved.Unresolved) resolved).reason());
+    }
+
+    private String renderStatic(InvokeInstruction instr, String owner, String name, String desc) {
+        Resolved resolved = naming.resolveStatic(owner, name, desc);
+        if (resolved instanceof Resolved.AppMethod appMethod) {
+            return CsNamer.fqcn(appMethod.declaringInternal()) + "." + appMethod.csName()
+                    + "(" + renderArguments(instr, desc) + ")";
+        }
+        throw new UnsupportedBodyException(((Resolved.Unresolved) resolved).reason());
+    }
+
+    private String renderVirtual(InvokeInstruction instr, String owner, String name, String desc) {
+        Resolved resolved = naming.resolveVirtual(owner, name, desc);
+        if (resolved instanceof Resolved.AppMethod appMethod) {
+            String receiver = appMethod.viaInterface()
+                    ? "((" + CsNamer.fqcn(appMethod.declaringInternal()) + ")" + names.ref(instr.getReceiver()) + ")"
+                    : receiverAdjusted(appMethod.declaringInternal(), instr.getReceiver());
+            return receiver + "." + appMethod.csName() + "(" + renderArguments(instr, desc) + ")";
+        }
+        if (resolved instanceof Resolved.ShimMethod shim) {
+            return receiverAdjusted(shim.ownerInternal(), instr.getReceiver()) + "."
+                    + shim.target().csMemberName() + "(" + renderArguments(instr, desc) + ")";
+        }
+        throw new UnsupportedBodyException(((Resolved.Unresolved) resolved).reason());
+    }
+
+    private String renderInterface(InvokeInstruction instr, String owner, String name, String desc) {
+        if (!naming.hierarchy().isAppInterface(owner)) {
+            if (naming.isAppClass(owner)) {
+                return renderVirtual(instr, owner, name, desc);
+            }
+            throw new UnsupportedBodyException("call target not in input: " + owner + "." + name + desc);
+        }
+        Resolved resolved = naming.resolveVirtual(owner, name, desc);
+        if (resolved instanceof Resolved.AppMethod appMethod) {
+            String castTo = appMethod.viaInterface() ? owner : appMethod.declaringInternal();
+            return "((" + CsNamer.fqcn(castTo) + ")" + names.ref(instr.getReceiver()) + ")."
+                    + appMethod.csName() + "(" + renderArguments(instr, desc) + ")";
+        }
+        if (resolved instanceof Resolved.ShimMethod shim) {
+            return "((global::java.lang.Object)" + names.ref(instr.getReceiver()) + ")."
+                    + shim.target().csMemberName() + "(" + renderArguments(instr, desc) + ")";
+        }
+        throw new UnsupportedBodyException(((Resolved.Unresolved) resolved).reason());
+    }
+
+    private void requireThisReceiver(InvokeInstruction instr) {
+        Value receiver = instr.getReceiver();
+        if (!(receiver instanceof SSAValue ssa) || thisSlot == null
+                || !thisSlot.equals(lowered.slotOf().get(ssa))) {
+            throw new UnsupportedBodyException("invokespecial on non-this receiver: "
+                    + instr.getOwner() + "." + instr.getName());
+        }
+    }
+
+    private String receiverAdjusted(String declaringInternal, Value receiver) {
+        String expr = names.ref(receiver);
+        if (!(receiver instanceof SSAValue ssa) || ssa.getType() == null) {
+            return "((" + CsNamer.fqcn(declaringInternal) + ")" + expr + ")";
+        }
+        String descriptor = ssa.getType().getDescriptor();
+        if (descriptor.startsWith("[")) {
+            throw new UnsupportedBodyException(
+                    "array used as method receiver not supported (arrays are native C# arrays)");
+        }
+        if (!descriptor.startsWith("L")) {
+            throw new UnsupportedBodyException("non-reference receiver: " + descriptor);
+        }
+        String receiverInternal = descriptor.substring(1, descriptor.length() - 1);
+        return staticallyHasMember(receiverInternal, declaringInternal)
+                ? expr
+                : "((" + CsNamer.fqcn(declaringInternal) + ")" + expr + ")";
+    }
+
+    private boolean staticallyHasMember(String receiverInternal, String declaringInternal) {
+        if (receiverInternal.equals(declaringInternal) || declaringInternal.equals("java/lang/Object")) {
+            return true;
+        }
+        return naming.hierarchy().classAncestors(receiverInternal).contains(declaringInternal)
+                || naming.hierarchy().allSuperInterfaces(receiverInternal).contains(declaringInternal);
     }
 
     private String renderArguments(InvokeInstruction instr, String desc) {
@@ -433,16 +550,18 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
             assign(instr, CsNamer.fqcn(owner) + "." + target.get().csMemberName());
             return null;
         }
-        if (!naming.isAppClass(owner)) {
-            throw new UnsupportedBodyException("field owner not in input: " + owner + "." + name);
+        ResolvedField resolved = naming.resolveField(owner, name, desc);
+        if (!(resolved instanceof ResolvedField.AppField field)) {
+            throw new UnsupportedBodyException(((ResolvedField.Unresolved) resolved).reason());
         }
-        String fieldName = naming.namerOf(owner).fieldName(name, desc);
-        String ref = instr.isStatic() ? CsNamer.fqcn(owner) : names.ref(instr.getObjectRef());
+        String ref = instr.isStatic()
+                ? CsNamer.fqcn(field.declaringInternal())
+                : receiverAdjusted(field.declaringInternal(), instr.getObjectRef());
         if (instr.isLoad()) {
-            assign(instr, ref + "." + fieldName);
+            assign(instr, ref + "." + field.csName());
         } else {
             CsType storage = naming.typeMapper().storageType(desc);
-            w.line(ref + "." + fieldName + " = " + storageAdjusted(storage, instr.getValue()) + ";");
+            w.line(ref + "." + field.csName() + " = " + storageAdjusted(storage, instr.getValue()) + ";");
         }
         return null;
     }

@@ -5,23 +5,29 @@ import com.tonic.j2cs.naming.CsNamer;
 import com.tonic.j2cs.naming.MemberNamer;
 import com.tonic.j2cs.naming.NamingContext;
 import com.tonic.j2cs.report.TranspileReport;
+import com.tonic.j2cs.shims.ShimRegistry;
 import com.tonic.j2cs.types.CsType;
 import com.tonic.j2cs.types.TypeMapper;
 import com.tonic.parser.ClassFile;
 import com.tonic.parser.FieldEntry;
 import com.tonic.parser.MethodEntry;
 import com.tonic.type.AccessFlags;
+import com.tonic.util.Modifiers;
 import java.util.List;
 import java.util.Map;
 
 /**
- * Emits one generated class: field declarations, the RawNew marker constructor, __init methods
- * for each Java constructor, a static constructor for clinit, and one member per method whose
- * body comes from its MethodPlan.
+ * Emits one generated class: base clause from the closure hierarchy, field declarations, the
+ * RawNew marker constructor, __init methods for each Java constructor, a static constructor for
+ * clinit, and one member per method whose body comes from its MethodPlan. Classes whose
+ * supertype situation cannot be represented degrade to stub bodies with a report reason.
  */
 public final class ClassEmitter {
 
     private static final String OBJECT_INTERNAL = "java/lang/Object";
+
+    private record ClassPolicy(String baseFqcn, String unsupportedReason) {
+    }
 
     private final NamingContext naming;
     private final TranspileReport report;
@@ -38,11 +44,13 @@ public final class ClassEmitter {
         String csClassName = CsNamer.classNameOf(internalName);
         MemberNamer namer = naming.namerOf(internalName);
         TypeMapper types = naming.typeMapper();
-        String classReason = unsupportedClassReason(classFile);
+        ClassPolicy policy = classPolicy(classFile);
 
         CsWriter w = new CsWriter();
         w.open("namespace " + CsNamer.namespaceOf(internalName));
-        w.open("internal class " + csClassName + " : global::java.lang.Object");
+        String abstractPrefix = Modifiers.isAbstract(classFile.getAccess())
+                && !Modifiers.isInterface(classFile.getAccess()) ? "abstract " : "";
+        w.open("internal " + abstractPrefix + "class " + csClassName + " : " + policy.baseFqcn());
         for (FieldEntry field : classFile.getFields()) {
             CsType type = types.storageType(field.getDesc());
             boolean isStatic = (field.getAccess() & AccessFlags.ACC_STATIC) != 0;
@@ -53,8 +61,8 @@ public final class ClassEmitter {
         w.close();
         for (MethodEntry method : classFile.getMethods()) {
             MethodPlan plan = plans.get(method);
-            if (classReason != null) {
-                plan = new MethodPlan.Unsupported(classReason);
+            if (policy.unsupportedReason() != null) {
+                plan = new MethodPlan.Unsupported(policy.unsupportedReason());
             }
             if (plan == null) {
                 plan = new MethodPlan.Unsupported("no emission plan");
@@ -67,15 +75,25 @@ public final class ClassEmitter {
         return w.toString();
     }
 
-    private String unsupportedClassReason(ClassFile classFile) {
-        if ((classFile.getAccess() & AccessFlags.ACC_INTERFACE) != 0) {
-            return "interfaces are not supported in M0";
+    private ClassPolicy classPolicy(ClassFile classFile) {
+        String internalName = classFile.getClassName();
+        if (Modifiers.isInterface(classFile.getAccess())) {
+            return new ClassPolicy("global::java.lang.Object", "interfaces not supported yet");
         }
+        String reason = naming.classUnsupportedReason(internalName);
         String superName = classFile.getSuperClassName();
-        if (superName != null && !superName.equals(OBJECT_INTERNAL)) {
-            return "superclass other than java/lang/Object is not supported in M0: " + superName;
+        if (superName.equals(OBJECT_INTERNAL)) {
+            return new ClassPolicy("global::java.lang.Object", reason);
         }
-        return null;
+        if (naming.isAppClass(superName)) {
+            return new ClassPolicy(CsNamer.fqcn(superName), reason);
+        }
+        if (ShimRegistry.isShimType(superName)) {
+            return new ClassPolicy("global::java.lang.Object",
+                    reason != null ? reason : "superclass is a runtime shim type: " + superName);
+        }
+        return new ClassPolicy(CsNamer.fqcn(superName),
+                reason != null ? reason : "superclass not in input: " + superName);
     }
 
     private void emitMethod(CsWriter w, ClassFile classFile, String csClassName, MethodEntry method,
@@ -88,12 +106,15 @@ public final class ClassEmitter {
         } else if (name.equals("<init>")) {
             header = "internal void " + MemberNamer.initMethodName(desc) + "(" + paramList(desc, types) + ")";
         } else {
-            boolean isStatic = (method.getAccess() & AccessFlags.ACC_STATIC) != 0;
-            String prefix = MemberNamer.isObjectOverride(name, desc)
-                    ? "public override "
-                    : "internal " + (isStatic ? "static " : "");
+            String prefix = MethodModifiers.prefixFor(naming, classFile.getClassName(), method);
             CsType returnType = types.returnType(desc);
-            header = prefix + returnType.csText() + " " + namer.methodName(method) + "(" + paramList(desc, types) + ")";
+            if (Modifiers.isAbstract(method.getAccess())) {
+                w.line(prefix + returnType.csText() + " " + namer.methodName(method)
+                        + "(" + paramList(desc, types) + ");");
+                return;
+            }
+            header = prefix + returnType.csText() + " " + namer.methodName(method)
+                    + "(" + paramList(desc, types) + ")";
         }
         w.open(header);
         if (plan instanceof MethodPlan.Unsupported unsupported) {
@@ -101,7 +122,7 @@ public final class ClassEmitter {
         } else if (plan instanceof MethodPlan.Supported supported) {
             String body;
             try {
-                body = bodyEmitter.emit(method, supported.method(), 3);
+                body = bodyEmitter.emit(classFile.getClassName(), method, supported.method(), 3);
             } catch (UnsupportedBodyException e) {
                 body = null;
                 emitStubBody(w, classFile, name, desc, e.getMessage());
