@@ -96,6 +96,11 @@ class DifferentialTest {
     }
 
     @Test
+    void boxing1() throws Exception {
+        Differential.assertSameOutput("Boxing1");
+    }
+
+    @Test
     void lambdas2() throws Exception {
         Differential.assertSameOutput("Lambdas2");
         String report = java.nio.file.Files.readString(

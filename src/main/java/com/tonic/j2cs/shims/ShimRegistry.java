@@ -32,14 +32,16 @@ public final class ShimRegistry {
             "java/lang/IllegalArgumentException",
             "java/lang/NumberFormatException",
             "java/lang/IllegalStateException",
-            "java/util/Objects");
+            "java/util/Objects",
+            "java/lang/Number");
 
     private static final Map<String, String> SHIM_SUPERS = Map.ofEntries(
             Map.entry("java/lang/String", "java/lang/Object"),
             Map.entry("java/lang/StringBuilder", "java/lang/Object"),
             Map.entry("java/lang/System", "java/lang/Object"),
             Map.entry("java/lang/Math", "java/lang/Object"),
-            Map.entry("java/lang/Integer", "java/lang/Object"),
+            Map.entry("java/lang/Number", "java/lang/Object"),
+            Map.entry("java/lang/Integer", "java/lang/Number"),
             Map.entry("java/io/PrintStream", "java/lang/Object"),
             Map.entry("java/lang/Throwable", "java/lang/Object"),
             Map.entry("java/lang/Exception", "java/lang/Throwable"),
@@ -128,6 +130,14 @@ public final class ShimRegistry {
             Map.entry("java/lang/Math.sqrt(D)D", statics("sqrt")),
             Map.entry("java/lang/Integer.parseInt(Ljava/lang/String;)I", statics("parseInt")),
             Map.entry("java/lang/Integer.toString(I)Ljava/lang/String;", statics("toString")),
+            Map.entry("java/lang/Integer.valueOf(I)Ljava/lang/Integer;", statics("valueOf")),
+            Map.entry("java/lang/Integer.compareTo(Ljava/lang/Integer;)I", instance("compareTo")),
+            Map.entry("java/lang/Number.intValue()I", instance("intValue")),
+            Map.entry("java/lang/Number.longValue()J", instance("longValue")),
+            Map.entry("java/lang/Number.floatValue()F", instance("floatValue")),
+            Map.entry("java/lang/Number.doubleValue()D", instance("doubleValue")),
+            Map.entry("java/lang/Number.shortValue()S", instance("shortValue")),
+            Map.entry("java/lang/Number.byteValue()B", instance("byteValue")),
             Map.entry("java/lang/System.arraycopy(Ljava/lang/Object;ILjava/lang/Object;II)V", statics("arraycopy")),
             Map.entry("java/lang/Throwable.getMessage()Ljava/lang/String;", instance("getMessage")),
             Map.entry("java/lang/Throwable.toString()Ljava/lang/String;", instance("toString")),
