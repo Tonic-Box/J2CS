@@ -39,4 +39,9 @@ class DifferentialTest {
     void staticsTest() throws Exception {
         Differential.assertSameOutput("StaticsTest");
     }
+
+    @Test
+    void arraysTest() throws Exception {
+        Differential.assertSameOutput("ArraysTest");
+    }
 }

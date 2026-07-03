@@ -356,7 +356,7 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
                 w.line("goto B" + instr.getTarget().getId() + ";");
                 terminated = true;
             }
-            case ARRAYLENGTH -> throw new UnsupportedBodyException("arrays not supported yet");
+            case ARRAYLENGTH -> assign(instr, names.ref(instr.getOperand()) + ".Length");
             case ATHROW -> throw new UnsupportedBodyException("athrow not supported in M0");
             case MONITORENTER, MONITOREXIT ->
                     throw new UnsupportedBodyException("monitors not supported in M0");
@@ -388,12 +388,40 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
 
     @Override
     public Void visitNewArray(NewArrayInstruction instr) {
-        throw new UnsupportedBodyException("arrays not supported yet");
+        if (instr.isMultiDimensional()) {
+            throw new UnsupportedBodyException("multi-dimensional array allocation not supported in M0");
+        }
+        CsType element = naming.typeMapper().storageType(instr.getElementType().getDescriptor());
+        String length = names.ref(instr.getDimensions().get(0));
+        String csText = element.csText();
+        int bracket = csText.indexOf('[');
+        String expr = bracket < 0
+                ? "new " + csText + "[" + length + "]"
+                : "new " + csText.substring(0, bracket) + "[" + length + "]" + csText.substring(bracket);
+        assign(instr, expr);
+        return null;
     }
 
     @Override
     public Void visitArrayAccess(ArrayAccessInstruction instr) {
-        throw new UnsupportedBodyException("arrays not supported yet");
+        String array = names.ref(instr.getArray());
+        String index = names.ref(instr.getIndex());
+        if (instr.isLoad()) {
+            assign(instr, array + "[" + index + "]");
+        } else {
+            CsType elementStorage = elementStorageOf(instr.getArray());
+            w.line(array + "[" + index + "] = "
+                    + Coercions.coerce(elementStorage, names.ref(instr.getValue())) + ";");
+        }
+        return null;
+    }
+
+    private CsType elementStorageOf(Value arrayValue) {
+        String descriptor = arrayValue.getType() == null ? null : arrayValue.getType().getDescriptor();
+        if (descriptor == null || !descriptor.startsWith("[")) {
+            throw new UnsupportedBodyException("array store on non-array-typed value: " + descriptor);
+        }
+        return naming.typeMapper().storageType(descriptor.substring(1));
     }
 
     @Override
