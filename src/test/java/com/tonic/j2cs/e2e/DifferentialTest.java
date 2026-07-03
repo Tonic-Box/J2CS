@@ -71,6 +71,11 @@ class DifferentialTest {
     }
 
     @Test
+    void shimGrowth() throws Exception {
+        Differential.assertSameOutput("ShimGrowth");
+    }
+
+    @Test
     void unsupportedGraceful() throws Exception {
         Differential.assertSameOutput("UnsupportedGraceful");
         String report = java.nio.file.Files.readString(

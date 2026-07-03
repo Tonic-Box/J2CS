@@ -5,3 +5,5 @@ java.lang.System.cs
 java.io.PrintStream.cs
 java.lang.JRuntime.cs
 java.lang.StringBuilder.cs
+java.lang.Math.cs
+java.lang.Integer.cs

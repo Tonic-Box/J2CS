@@ -11,5 +11,11 @@ namespace java.lang
         private System() : base(RawNew.I)
         {
         }
+
+        public static void arraycopy(global::System.Array src, int srcPos,
+                global::System.Array dest, int destPos, int length)
+        {
+            global::System.Array.Copy(src, srcPos, dest, destPos, length);
+        }
     }
 }

@@ -42,6 +42,31 @@ namespace java.lang
             return Value.Length == 0 ? 1 : 0;
         }
 
+        public String substring(int beginIndex)
+        {
+            return Wrap(Value.Substring(beginIndex));
+        }
+
+        public String substring(int beginIndex, int endIndex)
+        {
+            return Wrap(Value.Substring(beginIndex, endIndex - beginIndex));
+        }
+
+        public int indexOf(int ch)
+        {
+            return Value.IndexOf((char)ch);
+        }
+
+        public int indexOf(String str)
+        {
+            return Value.IndexOf(str.Value, global::System.StringComparison.Ordinal);
+        }
+
+        public int startsWith(String prefix)
+        {
+            return Value.StartsWith(prefix.Value, global::System.StringComparison.Ordinal) ? 1 : 0;
+        }
+
         public override int equals(global::java.lang.Object o)
         {
             return o is String other && other.Value == Value ? 1 : 0;

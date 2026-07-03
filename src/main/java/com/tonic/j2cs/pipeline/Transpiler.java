@@ -94,6 +94,8 @@ public final class Transpiler {
         report.divergence("float/double formatting uses .NET shortest round-trip digits; rare values differ from Java");
         report.divergence("array covariance violations throw System.ArrayTypeMismatchException, not java.lang.ArrayStoreException");
         report.divergence("static initializers use CLR precise timing; matches Java for field/method-triggered init");
+        report.divergence("Integer.parseInt failures throw System.FormatException, not java.lang.NumberFormatException");
+        report.divergence("System.arraycopy failures throw .NET argument exceptions, not the Java exception types");
     }
 
     private static Map<MethodEntry, MethodPlan> planMethods(ClassFile cf, IrLifter lifter) {

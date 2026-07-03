@@ -293,6 +293,11 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
             assign(instr, renderSpecial(instr, owner, name, desc));
             return null;
         }
+        if (owner.equals("java/lang/System") && name.equals("arraycopy")
+                && desc.equals("(Ljava/lang/Object;ILjava/lang/Object;II)V")) {
+            assign(instr, "global::java.lang.System.arraycopy(" + rawArguments(instr) + ")");
+            return null;
+        }
         if (owner.startsWith("java/") || owner.startsWith("javax/")) {
             Optional<ShimTarget> target = ShimRegistry.method(owner, name, desc);
             if (target.isEmpty()) {
@@ -438,6 +443,17 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
             requireNoArrayAsObject(paramDescs.get(i), args.get(i));
             CsType storage = naming.typeMapper().storageType(paramDescs.get(i));
             sb.append(storageAdjusted(storage, args.get(i)));
+        }
+        return sb.toString();
+    }
+
+    private String rawArguments(InvokeInstruction instr) {
+        StringBuilder sb = new StringBuilder();
+        for (Value arg : instr.getMethodArguments()) {
+            if (!sb.isEmpty()) {
+                sb.append(", ");
+            }
+            sb.append(names.ref(arg));
         }
         return sb.toString();
     }
