@@ -43,7 +43,29 @@ public final class BootstrapPolicy {
                     "<clinit>()V",
                     "valueOf(B)Ljava/lang/Byte;",
                     "toString()Ljava/lang/String;"),
-                    "java.lang.Byte.native.cs"));
+                    "java.lang.Byte.native.cs"),
+            "java/lang/Double",
+            new Entry(Set.of(
+                    "<clinit>()V",
+                    "toString()Ljava/lang/String;",
+                    "parseDouble(Ljava/lang/String;)D",
+                    "doubleToRawLongBits(D)J",
+                    "longBitsToDouble(J)D"),
+                    "java.lang.Double.native.cs"),
+            "java/lang/Float",
+            new Entry(Set.of(
+                    "<clinit>()V",
+                    "toString()Ljava/lang/String;",
+                    "parseFloat(Ljava/lang/String;)F",
+                    "floatToRawIntBits(F)I",
+                    "intBitsToFloat(I)F"),
+                    "java.lang.Float.native.cs"),
+            "java/lang/Character",
+            new Entry(Set.of(
+                    "<clinit>()V",
+                    "valueOf(C)Ljava/lang/Character;",
+                    "toString()Ljava/lang/String;"),
+                    "java.lang.Character.native.cs"));
 
     private BootstrapPolicy() {
     }

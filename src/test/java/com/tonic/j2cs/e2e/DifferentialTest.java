@@ -138,6 +138,13 @@ class DifferentialTest {
     }
 
     @Test
+    void bootstrapWrappers2() throws Exception {
+        Differential.assertSameOutput("WrapperBootstrap2", java.util.List.of(
+                "java.lang.Number", "java.lang.Integer", "java.lang.Long", "java.lang.Short",
+                "java.lang.Byte", "java.lang.Double", "java.lang.Float", "java.lang.Character"));
+    }
+
+    @Test
     void lambdas2() throws Exception {
         Differential.assertSameOutput("Lambdas2");
         String report = java.nio.file.Files.readString(
