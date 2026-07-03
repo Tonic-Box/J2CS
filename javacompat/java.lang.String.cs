@@ -67,6 +67,12 @@ namespace java.lang
             return Value.StartsWith(prefix.Value, global::System.StringComparison.Ordinal) ? 1 : 0;
         }
 
+        public int equalsIgnoreCase(String other)
+        {
+            return other != null && global::System.String.Equals(Value, other.Value,
+                    global::System.StringComparison.OrdinalIgnoreCase) ? 1 : 0;
+        }
+
         public override int equals(global::java.lang.Object o)
         {
             return o is String other && other.Value == Value ? 1 : 0;

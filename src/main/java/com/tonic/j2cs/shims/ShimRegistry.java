@@ -157,6 +157,7 @@ public final class ShimRegistry {
             Map.entry("java/lang/String.indexOf(I)I", instance("indexOf")),
             Map.entry("java/lang/String.indexOf(Ljava/lang/String;)I", instance("indexOf")),
             Map.entry("java/lang/String.startsWith(Ljava/lang/String;)Z", instance("startsWith")),
+            Map.entry("java/lang/String.equalsIgnoreCase(Ljava/lang/String;)Z", instance("equalsIgnoreCase")),
             Map.entry("java/lang/Math.abs(I)I", statics("abs")),
             Map.entry("java/lang/Math.abs(D)D", statics("abs")),
             Map.entry("java/lang/Math.max(II)I", statics("max")),
