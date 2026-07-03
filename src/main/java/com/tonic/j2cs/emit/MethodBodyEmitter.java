@@ -370,7 +370,7 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
             assign(instr, "global::java.lang.System.arraycopy(" + rawArguments(instr) + ")");
             return null;
         }
-        if (owner.startsWith("java/") || owner.startsWith("javax/")) {
+        if ((owner.startsWith("java/") || owner.startsWith("javax/")) && !naming.isBootstrapped(owner)) {
             Optional<ShimRegistry.WalkResult> walked = ShimRegistry.resolveMethodWalking(owner, name, desc);
             if (walked.isEmpty()) {
                 throw new UnsupportedBodyException("shim member not implemented: "
@@ -619,7 +619,7 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
         String owner = instr.getOwner();
         String name = instr.getName();
         String desc = instr.getDescriptor();
-        if (owner.startsWith("java/") || owner.startsWith("javax/")) {
+        if ((owner.startsWith("java/") || owner.startsWith("javax/")) && !naming.isBootstrapped(owner)) {
             Optional<ShimTarget> target = ShimRegistry.field(owner, name, desc);
             if (target.isEmpty()) {
                 throw new UnsupportedBodyException("shim field not implemented: " + owner + "." + name);

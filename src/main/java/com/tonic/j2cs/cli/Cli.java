@@ -19,9 +19,15 @@ import java.util.List;
  */
 public final class Cli {
 
-    private static final String USAGE = "usage: j2cs <input.class|input.jar> -o <outDir> [--main <fqcn>] [--no-build] [--self-contained] [--run] [--dump-ir]";
+    private static final String USAGE = "usage: j2cs <input.class|input.jar> -o <outDir> [--main <fqcn>] [--no-build] [--self-contained] [--run] [--dump-ir]\n"
+            + "       j2cs --bootstrap-report <fqcn>[,<fqcn>...]";
 
     public int run(String[] args) {
+        String reportTarget = extractOption(args, "--bootstrap-report");
+        if (reportTarget != null) {
+            System.out.println(new com.tonic.j2cs.report.BootstrapCoverageReport().analyze(splitList(reportTarget)));
+            return 0;
+        }
         CliOptions options;
         try {
             options = parse(args);
@@ -137,5 +143,25 @@ public final class Cli {
             throw new IllegalArgumentException(option + " requires a value");
         }
         return args[index + 1];
+    }
+
+    private static String extractOption(String[] args, String option) {
+        for (int i = 0; i < args.length; i++) {
+            if (args[i].equals(option)) {
+                return i + 1 < args.length ? args[i + 1] : "";
+            }
+        }
+        return null;
+    }
+
+    static java.util.List<String> splitList(String csv) {
+        java.util.List<String> out = new java.util.ArrayList<>();
+        for (String part : csv.split(",")) {
+            String trimmed = part.trim();
+            if (!trimmed.isEmpty()) {
+                out.add(trimmed);
+            }
+        }
+        return out;
     }
 }

@@ -28,6 +28,7 @@ public final class NamingContext {
     private final ClassHierarchy hierarchy;
     private final Map<String, MemberNamer> namers = new HashMap<>();
     private final Map<String, String> classUnsupportedReasons = new LinkedHashMap<>();
+    private Set<String> bootstrapped = Set.of();
 
     public NamingContext(TypeMapper typeMapper, List<ClassFile> appClasses) {
         this(typeMapper, appClasses, new ClassHierarchy(appClasses));
@@ -87,6 +88,14 @@ public final class NamingContext {
 
     public boolean isAppClass(String internalName) {
         return namers.containsKey(internalName);
+    }
+
+    public void setBootstrapped(Set<String> bootstrapped) {
+        this.bootstrapped = Set.copyOf(bootstrapped);
+    }
+
+    public boolean isBootstrapped(String internalName) {
+        return bootstrapped.contains(internalName);
     }
 
     public MemberNamer namerOf(String internalName) {
