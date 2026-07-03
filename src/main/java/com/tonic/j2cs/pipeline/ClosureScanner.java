@@ -28,6 +28,7 @@ public final class ClosureScanner {
                                               Map<MethodEntry, MethodPlan> plans,
                                               Set<String> out) {
         out.add(classFile.getSuperClassName());
+        out.addAll(classFile.getInterfaceNames());
         for (FieldEntry field : classFile.getFields()) {
             collectFromDescriptor(field.getDesc(), out);
         }

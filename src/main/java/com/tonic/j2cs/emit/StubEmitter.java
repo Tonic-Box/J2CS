@@ -19,4 +19,13 @@ public final class StubEmitter {
                 .close()
                 .toString();
     }
+
+    public String emitInterface(String internalName) {
+        return new CsWriter()
+                .open("namespace " + CsNamer.namespaceOf(internalName))
+                .open("internal interface " + CsNamer.classNameOf(internalName))
+                .close()
+                .close()
+                .toString();
+    }
 }

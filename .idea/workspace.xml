@@ -4,14 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d05fdbd2-bef1-4012-9f61-0cf573243b7b" name="Changes" comment="Add class hierarchy model and supertype-coordinated member naming">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="d05fdbd2-bef1-4012-9f61-0cf573243b7b" name="Changes" comment="Emit class inheritance: base clauses, virtual dispatch, super calls">
       <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/ClassEmitter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/ClassEmitter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/MethodBodyEmitter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/MethodBodyEmitter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/StubEmitter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/StubEmitter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/pipeline/ClosureScanner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/pipeline/ClosureScanner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/pipeline/Transpiler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/pipeline/Transpiler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/com/tonic/j2cs/e2e/DifferentialTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/tonic/j2cs/e2e/DifferentialTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/golden/FizzBuzz.cs.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/golden/FizzBuzz.cs.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/golden/Shapes.cs.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/golden/Shapes.cs.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -164,7 +162,15 @@
       <option name="project" value="LOCAL" />
       <updated>1783089841066</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="Emit class inheritance: base clauses, virtual dispatch, super calls">
+      <option name="closed" value="true" />
+      <created>1783090404013</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1783090404013</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -182,6 +188,7 @@
     <MESSAGE value="Add closure scanning, type stubs, and the standing divergence list" />
     <MESSAGE value="Wire publish paths, goldens, and the shim drift guard" />
     <MESSAGE value="Add class hierarchy model and supertype-coordinated member naming" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add class hierarchy model and supertype-coordinated member naming" />
+    <MESSAGE value="Emit class inheritance: base clauses, virtual dispatch, super calls" />
+    <option name="LAST_COMMIT_MESSAGE" value="Emit class inheritance: base clauses, virtual dispatch, super calls" />
   </component>
 </project>

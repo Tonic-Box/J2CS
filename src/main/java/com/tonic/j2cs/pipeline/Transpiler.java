@@ -39,7 +39,8 @@ public final class Transpiler {
         ClassHierarchy hierarchy = new ClassHierarchy(input.appClasses());
         NamingContext naming = new NamingContext(typeMapper, input.appClasses(), hierarchy);
         IrLifter lifter = new IrLifter(typeMapper, options.dumpIr());
-        ClassEmitter classEmitter = new ClassEmitter(naming, report);
+        Set<String> interfacePositionStubs = collectInterfacePositionStubs(input, naming);
+        ClassEmitter classEmitter = new ClassEmitter(naming, report, interfacePositionStubs);
         Map<String, String> genFiles = new LinkedHashMap<>();
         Set<String> referenced = new TreeSet<>();
         for (ClassFile cf : input.appClasses()) {
@@ -48,7 +49,7 @@ public final class Transpiler {
             ClosureScanner.collectReferencedTypes(cf, plans, referenced);
             genFiles.put(dottedName(cf.getClassName()), classEmitter.emit(cf, plans));
         }
-        Map<String, String> stubFiles = emitStubs(referenced, naming, report);
+        Map<String, String> stubFiles = emitStubs(referenced, naming, interfacePositionStubs, report);
         addStandingDivergences(report);
         String programCs = new EntryPointEmitter().emit(input.entryClassInternalName(), naming);
         Path appDir = new SolutionGenerator().generate(options.outDir(),
@@ -58,7 +59,20 @@ public final class Transpiler {
         return new TranspileResult(input, report, reportPath, appDir);
     }
 
+    private static Set<String> collectInterfacePositionStubs(LoadedInput input, NamingContext naming) {
+        Set<String> positions = new TreeSet<>();
+        for (ClassFile cf : input.appClasses()) {
+            for (String iface : cf.getInterfaceNames()) {
+                if (!naming.isAppClass(iface)) {
+                    positions.add(iface);
+                }
+            }
+        }
+        return positions;
+    }
+
     private static Map<String, String> emitStubs(Set<String> referenced, NamingContext naming,
+                                                 Set<String> interfacePositionStubs,
                                                  TranspileReport report) {
         StubEmitter stubEmitter = new StubEmitter();
         Map<String, String> stubFiles = new LinkedHashMap<>();
@@ -66,8 +80,10 @@ public final class Transpiler {
             if (naming.isAppClass(internalName) || ShimRegistry.isShimType(internalName)) {
                 continue;
             }
-            report.stubbedType(internalName);
-            stubFiles.put(dottedName(internalName), stubEmitter.emit(internalName));
+            boolean asInterface = interfacePositionStubs.contains(internalName);
+            report.stubbedType(internalName + (asInterface ? " (interface)" : ""));
+            stubFiles.put(dottedName(internalName),
+                    asInterface ? stubEmitter.emitInterface(internalName) : stubEmitter.emit(internalName));
         }
         return stubFiles;
     }

@@ -15,6 +15,7 @@ import com.tonic.type.AccessFlags;
 import com.tonic.util.Modifiers;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Emits one generated class: base clause from the closure hierarchy, field declarations, the
@@ -32,11 +33,13 @@ public final class ClassEmitter {
     private final NamingContext naming;
     private final TranspileReport report;
     private final MethodBodyEmitter bodyEmitter;
+    private final Set<String> interfacePositionStubs;
 
-    public ClassEmitter(NamingContext naming, TranspileReport report) {
+    public ClassEmitter(NamingContext naming, TranspileReport report, Set<String> interfacePositionStubs) {
         this.naming = naming;
         this.report = report;
         this.bodyEmitter = new MethodBodyEmitter(naming);
+        this.interfacePositionStubs = interfacePositionStubs;
     }
 
     public String emit(ClassFile classFile, Map<MethodEntry, MethodPlan> plans) {
@@ -44,21 +47,33 @@ public final class ClassEmitter {
         String csClassName = CsNamer.classNameOf(internalName);
         MemberNamer namer = naming.namerOf(internalName);
         TypeMapper types = naming.typeMapper();
+        boolean isInterface = Modifiers.isInterface(classFile.getAccess());
         ClassPolicy policy = classPolicy(classFile);
 
         CsWriter w = new CsWriter();
         w.open("namespace " + CsNamer.namespaceOf(internalName));
-        String abstractPrefix = Modifiers.isAbstract(classFile.getAccess())
-                && !Modifiers.isInterface(classFile.getAccess()) ? "abstract " : "";
-        w.open("internal " + abstractPrefix + "class " + csClassName + " : " + policy.baseFqcn());
-        for (FieldEntry field : classFile.getFields()) {
-            CsType type = types.storageType(field.getDesc());
-            boolean isStatic = (field.getAccess() & AccessFlags.ACC_STATIC) != 0;
-            w.line("internal " + (isStatic ? "static " : "") + type.csText() + " " + namer.fieldName(field) + ";");
+        if (isInterface) {
+            w.open("internal interface " + csClassName + heritageOf(classFile, null));
+            for (FieldEntry field : classFile.getFields()) {
+                CsType type = types.storageType(field.getDesc());
+                w.line("public static " + type.csText() + " " + namer.fieldName(field) + ";");
+            }
+        } else {
+            String abstractPrefix = Modifiers.isAbstract(classFile.getAccess()) ? "abstract " : "";
+            String heritage = policy.unsupportedReason() != null
+                    ? " : " + policy.baseFqcn()
+                    : heritageOf(classFile, policy.baseFqcn());
+            w.open("internal " + abstractPrefix + "class " + csClassName + heritage);
+            for (FieldEntry field : classFile.getFields()) {
+                CsType type = types.storageType(field.getDesc());
+                boolean isStatic = (field.getAccess() & AccessFlags.ACC_STATIC) != 0;
+                w.line("internal " + (isStatic ? "static " : "") + type.csText() + " "
+                        + namer.fieldName(field) + ";");
+            }
+            w.line();
+            w.open("public " + csClassName + "(global::java.lang.RawNew r) : base(r)");
+            w.close();
         }
-        w.line();
-        w.open("public " + csClassName + "(global::java.lang.RawNew r) : base(r)");
-        w.close();
         for (MethodEntry method : classFile.getMethods()) {
             MethodPlan plan = plans.get(method);
             if (policy.unsupportedReason() != null) {
@@ -68,19 +83,33 @@ public final class ClassEmitter {
                 plan = new MethodPlan.Unsupported("no emission plan");
             }
             w.line();
-            emitMethod(w, classFile, csClassName, method, plan, namer, types);
+            emitMethod(w, classFile, csClassName, method, plan, namer, types, isInterface);
         }
         w.close();
         w.close();
         return w.toString();
     }
 
+    private String heritageOf(ClassFile classFile, String baseFqcn) {
+        StringBuilder sb = new StringBuilder();
+        if (baseFqcn != null) {
+            sb.append(baseFqcn);
+        }
+        for (String iface : classFile.getInterfaceNames()) {
+            if (!sb.isEmpty()) {
+                sb.append(", ");
+            }
+            sb.append(CsNamer.fqcn(iface));
+        }
+        return sb.isEmpty() ? "" : " : " + sb;
+    }
+
     private ClassPolicy classPolicy(ClassFile classFile) {
         String internalName = classFile.getClassName();
-        if (Modifiers.isInterface(classFile.getAccess())) {
-            return new ClassPolicy("global::java.lang.Object", "interfaces not supported yet");
-        }
         String reason = naming.classUnsupportedReason(internalName);
+        if (Modifiers.isInterface(classFile.getAccess())) {
+            return new ClassPolicy("", reason);
+        }
         String superName = classFile.getSuperClassName();
         if (superName.equals(OBJECT_INTERNAL)) {
             return new ClassPolicy("global::java.lang.Object", reason);
@@ -88,16 +117,16 @@ public final class ClassEmitter {
         if (naming.isAppClass(superName)) {
             return new ClassPolicy(CsNamer.fqcn(superName), reason);
         }
-        if (ShimRegistry.isShimType(superName)) {
+        if (ShimRegistry.isShimType(superName) || interfacePositionStubs.contains(superName)) {
             return new ClassPolicy("global::java.lang.Object",
-                    reason != null ? reason : "superclass is a runtime shim type: " + superName);
+                    reason != null ? reason : "superclass is not an input class: " + superName);
         }
         return new ClassPolicy(CsNamer.fqcn(superName),
                 reason != null ? reason : "superclass not in input: " + superName);
     }
 
     private void emitMethod(CsWriter w, ClassFile classFile, String csClassName, MethodEntry method,
-                            MethodPlan plan, MemberNamer namer, TypeMapper types) {
+                            MethodPlan plan, MemberNamer namer, TypeMapper types, boolean isInterface) {
         String name = method.getName();
         String desc = method.getDesc();
         String header;
@@ -106,7 +135,9 @@ public final class ClassEmitter {
         } else if (name.equals("<init>")) {
             header = "internal void " + MemberNamer.initMethodName(desc) + "(" + paramList(desc, types) + ")";
         } else {
-            String prefix = MethodModifiers.prefixFor(naming, classFile.getClassName(), method);
+            String prefix = isInterface
+                    ? interfacePrefix(method)
+                    : MethodModifiers.prefixFor(naming, classFile.getClassName(), method);
             CsType returnType = types.returnType(desc);
             if (Modifiers.isAbstract(method.getAccess())) {
                 w.line(prefix + returnType.csText() + " " + namer.methodName(method)
@@ -139,6 +170,16 @@ public final class ClassEmitter {
         report.unsupportedMethod(owner, name, desc, reason);
         w.line("throw new global::System.NotSupportedException("
                 + CsStrings.quote("j2cs: " + owner + "." + name + desc + ": " + reason) + ");");
+    }
+
+    private static String interfacePrefix(MethodEntry method) {
+        if (Modifiers.isStatic(method.getAccess())) {
+            return "static ";
+        }
+        if (Modifiers.isPrivate(method.getAccess())) {
+            return "private ";
+        }
+        return "";
     }
 
     private static String paramList(String methodDescriptor, TypeMapper types) {
