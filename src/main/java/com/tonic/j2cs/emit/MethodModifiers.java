@@ -26,9 +26,11 @@ public final class MethodModifiers {
             return "internal ";
         }
         boolean isAbstract = Modifiers.isAbstract(access);
-        boolean isOverride = MemberNamer.isObjectOverride(method.getName(), method.getDesc())
+        boolean isRoot = classInternalName.equals("java/lang/Object");
+        boolean isOverride = !isRoot
+                && (MemberNamer.isObjectOverride(method.getName(), method.getDesc())
                 || ancestorClassDeclares(naming, classInternalName, method.getName(), method.getDesc())
-                || shimSuperDeclares(naming, classInternalName, method.getName(), method.getDesc());
+                || shimSuperDeclares(naming, classInternalName, method.getName(), method.getDesc()));
         if (isOverride) {
             return isAbstract ? "public abstract override " : "public override ";
         }

@@ -74,7 +74,9 @@ public final class ClassEmitter {
                         + namer.fieldName(field) + ";");
             }
             w.line();
-            w.open("public " + csClassName + "(global::java.lang.RawNew r) : base(r)");
+            boolean isRoot = policy.baseFqcn() == null;
+            w.open("public " + csClassName + "(global::java.lang.RawNew r)"
+                    + (isRoot ? "" : " : base(r)"));
             if (extendsShimThrowable(internalName)) {
                 w.line("JavaClassName = " + CsStrings.quote(internalName.replace('/', '.')) + ";");
             }
@@ -120,6 +122,9 @@ public final class ClassEmitter {
             return new ClassPolicy("", reason);
         }
         String superName = classFile.getSuperClassName();
+        if (superName == null) {
+            return new ClassPolicy(null, reason);
+        }
         if (superName.equals(OBJECT_INTERNAL)) {
             return new ClassPolicy("global::java.lang.Object", reason);
         }
