@@ -46,6 +46,42 @@ public class WrapperBootstrap {
         }
         System.out.println(sum);
         System.out.println(list);
+
+        Long lg = 10000000000L;
+        long lv = lg;
+        System.out.println(lv);
+        System.out.println(lg);
+        Long la = 42L;
+        Long lb = 42L;
+        System.out.println(la == lb);
+        Long lc = 5000L;
+        Long ld = 5000L;
+        System.out.println(lc == ld);
+        System.out.println(lg.longValue());
+        System.out.println(lg.intValue());
+        System.out.println(la.compareTo(lc));
+        System.out.println(Long.parseLong("999999"));
+
+        Short sh = (short) 300;
+        short shv = sh;
+        System.out.println(shv);
+        System.out.println(sh);
+        System.out.println(sh.shortValue());
+        System.out.println(sh.intValue());
+        Short sa = (short) 10;
+        Short sb2 = (short) 10;
+        System.out.println(sa == sb2);
+        System.out.println(sa.equals(sb2));
+
+        Byte by = (byte) -5;
+        byte byv = by;
+        System.out.println(byv);
+        System.out.println(by);
+        System.out.println(by.byteValue());
+        Byte ba = (byte) 7;
+        Byte bb = (byte) 7;
+        System.out.println(ba == bb);
+        System.out.println(ba.compareTo(by));
         System.out.println("done");
     }
 }

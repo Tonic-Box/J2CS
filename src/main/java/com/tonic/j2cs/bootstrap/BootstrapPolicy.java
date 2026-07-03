@@ -24,7 +24,26 @@ public final class BootstrapPolicy {
                     "valueOf(I)Ljava/lang/Integer;",
                     "toString()Ljava/lang/String;",
                     "parseInt(Ljava/lang/String;)I"),
-                    "java.lang.Integer.native.cs"));
+                    "java.lang.Integer.native.cs"),
+            "java/lang/Long",
+            new Entry(Set.of(
+                    "<clinit>()V",
+                    "valueOf(J)Ljava/lang/Long;",
+                    "toString()Ljava/lang/String;",
+                    "parseLong(Ljava/lang/String;)J"),
+                    "java.lang.Long.native.cs"),
+            "java/lang/Short",
+            new Entry(Set.of(
+                    "<clinit>()V",
+                    "valueOf(S)Ljava/lang/Short;",
+                    "toString()Ljava/lang/String;"),
+                    "java.lang.Short.native.cs"),
+            "java/lang/Byte",
+            new Entry(Set.of(
+                    "<clinit>()V",
+                    "valueOf(B)Ljava/lang/Byte;",
+                    "toString()Ljava/lang/String;"),
+                    "java.lang.Byte.native.cs"));
 
     private BootstrapPolicy() {
     }
