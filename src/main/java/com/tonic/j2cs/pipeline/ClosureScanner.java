@@ -2,8 +2,13 @@ package com.tonic.j2cs.pipeline;
 
 import com.tonic.analysis.ssa.cfg.IRBlock;
 import com.tonic.analysis.ssa.ir.IRInstruction;
+import com.tonic.analysis.ssa.ir.InvokeInstruction;
+import com.tonic.analysis.ssa.ir.InvokeType;
 import com.tonic.analysis.ssa.ir.NewArrayInstruction;
 import com.tonic.analysis.ssa.ir.TypeCheckInstruction;
+import com.tonic.analysis.ssa.value.Constant;
+import com.tonic.analysis.ssa.value.MethodHandleConstant;
+import com.tonic.analysis.ssa.value.MethodTypeConstant;
 import com.tonic.j2cs.model.LoweredMethod;
 import com.tonic.j2cs.model.MethodPlan;
 import com.tonic.j2cs.model.SlotDecl;
@@ -56,6 +61,19 @@ public final class ClosureScanner {
                     collectFromDescriptor(typeCheck.getTargetType().getDescriptor(), out);
                 } else if (instr instanceof NewArrayInstruction newArray) {
                     collectFromDescriptor(newArray.getElementType().getDescriptor(), out);
+                } else if (instr instanceof InvokeInstruction invoke
+                        && invoke.getInvokeType() == InvokeType.DYNAMIC
+                        && invoke.getBootstrapInfo() != null
+                        && invoke.getBootstrapInfo().isLambdaMetafactory()) {
+                    collectFromDescriptor(invoke.getDescriptor(), out);
+                    for (Constant arg : invoke.getBootstrapInfo().getBootstrapArguments()) {
+                        if (arg instanceof MethodTypeConstant mt) {
+                            collectFromDescriptor(mt.getDescriptor(), out);
+                        } else if (arg instanceof MethodHandleConstant mh) {
+                            out.add(mh.getOwner());
+                            collectFromDescriptor(mh.getDescriptor(), out);
+                        }
+                    }
                 }
             }
         }

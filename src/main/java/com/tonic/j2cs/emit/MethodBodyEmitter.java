@@ -57,6 +57,7 @@ import java.util.Set;
 public final class MethodBodyEmitter implements IRVisitor<Void> {
 
     private final NamingContext naming;
+    private final LambdaExpander lambdaExpander;
 
     private CsWriter w;
     private ValueNames names;
@@ -68,8 +69,9 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
     private Integer thisSlot;
     private ExceptionLayout layout;
 
-    public MethodBodyEmitter(NamingContext naming) {
+    public MethodBodyEmitter(NamingContext naming, SyntheticClasses synthetics) {
         this.naming = naming;
+        this.lambdaExpander = new LambdaExpander(naming, synthetics);
     }
 
     public String emit(String ownerInternalName, MethodEntry method, LoweredMethod loweredMethod, int indentDepth) {
@@ -343,6 +345,11 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
                 assign(instr, renderConcat(instr));
                 return null;
             }
+            if (instr.getBootstrapInfo() != null && instr.getBootstrapInfo().isLambdaMetafactory()) {
+                LambdaExpander.Expansion expansion = lambdaExpander.expand(instr, currentClass);
+                assign(instr, "new " + expansion.fqcn() + "(" + renderArguments(instr, instr.getDescriptor()) + ")");
+                return null;
+            }
             throw new UnsupportedBodyException("invokedynamic not supported: "
                     + instr.getName() + instr.getDescriptor());
         }
@@ -482,17 +489,9 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
             throw new UnsupportedBodyException("non-reference receiver: " + descriptor);
         }
         String receiverInternal = descriptor.substring(1, descriptor.length() - 1);
-        return staticallyHasMember(receiverInternal, declaringInternal)
+        return naming.hierarchy().staticallyHasMember(receiverInternal, declaringInternal)
                 ? expr
                 : "((" + CsNamer.fqcn(declaringInternal) + ")" + expr + ")";
-    }
-
-    private boolean staticallyHasMember(String receiverInternal, String declaringInternal) {
-        if (receiverInternal.equals(declaringInternal) || declaringInternal.equals("java/lang/Object")) {
-            return true;
-        }
-        return naming.hierarchy().classAncestors(receiverInternal).contains(declaringInternal)
-                || naming.hierarchy().allSuperInterfaces(receiverInternal).contains(declaringInternal);
     }
 
     private String renderArguments(InvokeInstruction instr, String desc) {

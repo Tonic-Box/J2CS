@@ -4,6 +4,7 @@ import com.tonic.analysis.ssa.cfg.ExceptionHandler;
 import com.tonic.j2cs.cli.CliOptions;
 import com.tonic.j2cs.emit.ClassEmitter;
 import com.tonic.j2cs.emit.EntryPointEmitter;
+import com.tonic.j2cs.emit.SyntheticClasses;
 import com.tonic.j2cs.emit.StubEmitter;
 import com.tonic.j2cs.frontend.InputLoader;
 import com.tonic.j2cs.frontend.IrLifter;
@@ -42,7 +43,8 @@ public final class Transpiler {
         NamingContext naming = new NamingContext(typeMapper, input.appClasses(), hierarchy);
         IrLifter lifter = new IrLifter(typeMapper, options.dumpIr());
         Set<String> interfacePositionStubs = collectInterfacePositionStubs(input, naming);
-        ClassEmitter classEmitter = new ClassEmitter(naming, report, interfacePositionStubs);
+        SyntheticClasses synthetics = new SyntheticClasses();
+        ClassEmitter classEmitter = new ClassEmitter(naming, report, interfacePositionStubs, synthetics);
         Map<String, String> genFiles = new LinkedHashMap<>();
         Set<String> referenced = new TreeSet<>();
         for (ClassFile cf : input.appClasses()) {
@@ -51,6 +53,7 @@ public final class Transpiler {
             ClosureScanner.collectReferencedTypes(cf, plans, referenced);
             genFiles.put(dottedName(cf.getClassName()), classEmitter.emit(cf, plans));
         }
+        genFiles.putAll(synthetics.files());
         Map<String, String> stubFiles = emitStubs(referenced, naming, interfacePositionStubs, report);
         addStandingDivergences(report);
         String programCs = new EntryPointEmitter().emit(input.entryClassInternalName(), naming);

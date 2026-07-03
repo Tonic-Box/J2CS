@@ -114,6 +114,19 @@ public final class ClassHierarchy {
     }
 
     /**
+     * Whether a receiver of the given static type exposes members declared by the target type,
+     * so a call needs no upcast: true when the types match, the target is Object, or the target
+     * is a class ancestor or superinterface of the receiver type.
+     */
+    public boolean staticallyHasMember(String receiverInternal, String declaringInternal) {
+        if (receiverInternal.equals(declaringInternal) || declaringInternal.equals("java/lang/Object")) {
+            return true;
+        }
+        return classAncestors(receiverInternal).contains(declaringInternal)
+                || allSuperInterfaces(receiverInternal).contains(declaringInternal);
+    }
+
+    /**
      * All closure-internal interfaces reachable from the type: its own, its class ancestors',
      * and transitively their superinterfaces.
      */

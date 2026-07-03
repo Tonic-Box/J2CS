@@ -35,10 +35,11 @@ public final class ClassEmitter {
     private final MethodBodyEmitter bodyEmitter;
     private final Set<String> interfacePositionStubs;
 
-    public ClassEmitter(NamingContext naming, TranspileReport report, Set<String> interfacePositionStubs) {
+    public ClassEmitter(NamingContext naming, TranspileReport report, Set<String> interfacePositionStubs,
+                        SyntheticClasses synthetics) {
         this.naming = naming;
         this.report = report;
-        this.bodyEmitter = new MethodBodyEmitter(naming);
+        this.bodyEmitter = new MethodBodyEmitter(naming, synthetics);
         this.interfacePositionStubs = interfacePositionStubs;
     }
 

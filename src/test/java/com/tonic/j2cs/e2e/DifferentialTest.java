@@ -91,6 +91,11 @@ class DifferentialTest {
     }
 
     @Test
+    void lambdas1() throws Exception {
+        Differential.assertSameOutput("Lambdas1");
+    }
+
+    @Test
     void unsupportedGraceful() throws Exception {
         Differential.assertSameOutput("UnsupportedGraceful");
         String report = java.nio.file.Files.readString(
