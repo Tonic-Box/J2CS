@@ -102,6 +102,9 @@ public final class Transpiler {
         report.divergence("lambdas without captures allocate a fresh instance per evaluation; the JVM may reuse one");
         report.divergence("wrapper valueOf caches match the JVM defaults (Integer/Long/Short/Byte -128..127, Character 0..127, Boolean both); Double/Float are never cached");
         report.divergence("wrapper toString for Double/Float uses the shim float formatting, which can differ from the JVM on rare values");
+        report.divergence("HashMap does not treeify large buckets; iteration order matches the JVM for the un-treeified case");
+        report.divergence("Map keySet/values/entrySet return snapshots, not live views backed by the map");
+        report.divergence("collection index and key exceptions carry no message text");
     }
 
     private static Map<MethodEntry, MethodPlan> planMethods(ClassFile cf, IrLifter lifter,

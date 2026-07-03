@@ -121,6 +121,11 @@ class DifferentialTest {
     }
 
     @Test
+    void collections3() throws Exception {
+        Differential.assertSameOutput("Collections3");
+    }
+
+    @Test
     void lambdas2() throws Exception {
         Differential.assertSameOutput("Lambdas2");
         String report = java.nio.file.Files.readString(
