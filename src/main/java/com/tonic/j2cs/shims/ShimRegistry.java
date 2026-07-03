@@ -18,7 +18,65 @@ public final class ShimRegistry {
             "java/lang/System",
             "java/lang/Math",
             "java/lang/Integer",
-            "java/io/PrintStream");
+            "java/io/PrintStream",
+            "java/lang/Throwable",
+            "java/lang/Exception",
+            "java/lang/RuntimeException",
+            "java/lang/Error",
+            "java/lang/NullPointerException",
+            "java/lang/ArithmeticException",
+            "java/lang/ClassCastException",
+            "java/lang/IndexOutOfBoundsException",
+            "java/lang/ArrayIndexOutOfBoundsException",
+            "java/lang/ArrayStoreException",
+            "java/lang/IllegalArgumentException",
+            "java/lang/NumberFormatException",
+            "java/lang/IllegalStateException");
+
+    private static final Map<String, String> SHIM_SUPERS = Map.ofEntries(
+            Map.entry("java/lang/String", "java/lang/Object"),
+            Map.entry("java/lang/StringBuilder", "java/lang/Object"),
+            Map.entry("java/lang/System", "java/lang/Object"),
+            Map.entry("java/lang/Math", "java/lang/Object"),
+            Map.entry("java/lang/Integer", "java/lang/Object"),
+            Map.entry("java/io/PrintStream", "java/lang/Object"),
+            Map.entry("java/lang/Throwable", "java/lang/Object"),
+            Map.entry("java/lang/Exception", "java/lang/Throwable"),
+            Map.entry("java/lang/RuntimeException", "java/lang/Exception"),
+            Map.entry("java/lang/Error", "java/lang/Throwable"),
+            Map.entry("java/lang/NullPointerException", "java/lang/RuntimeException"),
+            Map.entry("java/lang/ArithmeticException", "java/lang/RuntimeException"),
+            Map.entry("java/lang/ClassCastException", "java/lang/RuntimeException"),
+            Map.entry("java/lang/IndexOutOfBoundsException", "java/lang/RuntimeException"),
+            Map.entry("java/lang/ArrayIndexOutOfBoundsException", "java/lang/IndexOutOfBoundsException"),
+            Map.entry("java/lang/ArrayStoreException", "java/lang/RuntimeException"),
+            Map.entry("java/lang/IllegalArgumentException", "java/lang/RuntimeException"),
+            Map.entry("java/lang/NumberFormatException", "java/lang/IllegalArgumentException"),
+            Map.entry("java/lang/IllegalStateException", "java/lang/RuntimeException"));
+
+    private static final Set<String> EXTENDABLE = Set.of(
+            "java/lang/Throwable",
+            "java/lang/Exception",
+            "java/lang/RuntimeException",
+            "java/lang/Error",
+            "java/lang/NullPointerException",
+            "java/lang/ArithmeticException",
+            "java/lang/ClassCastException",
+            "java/lang/IndexOutOfBoundsException",
+            "java/lang/ArrayIndexOutOfBoundsException",
+            "java/lang/ArrayStoreException",
+            "java/lang/IllegalArgumentException",
+            "java/lang/NumberFormatException",
+            "java/lang/IllegalStateException");
+
+    public static final Map<String, String> EXTENDABLE_VIRTUALS = Map.of(
+            "getMessage()Ljava/lang/String;", "getMessage");
+
+    public static final Set<String> EXTENDABLE_MEMBER_NAMES = Set.of(
+            "getMessage", "JavaClassName", "message", "__origin");
+
+    public record WalkResult(String declaringInternal, ShimTarget target) {
+    }
 
     private static final Map<String, ShimTarget> METHODS = Map.ofEntries(
             Map.entry("java/lang/Object.toString()Ljava/lang/String;", instance("toString")),
@@ -69,7 +127,9 @@ public final class ShimRegistry {
             Map.entry("java/lang/Math.sqrt(D)D", statics("sqrt")),
             Map.entry("java/lang/Integer.parseInt(Ljava/lang/String;)I", statics("parseInt")),
             Map.entry("java/lang/Integer.toString(I)Ljava/lang/String;", statics("toString")),
-            Map.entry("java/lang/System.arraycopy(Ljava/lang/Object;ILjava/lang/Object;II)V", statics("arraycopy")));
+            Map.entry("java/lang/System.arraycopy(Ljava/lang/Object;ILjava/lang/Object;II)V", statics("arraycopy")),
+            Map.entry("java/lang/Throwable.getMessage()Ljava/lang/String;", instance("getMessage")),
+            Map.entry("java/lang/Throwable.toString()Ljava/lang/String;", instance("toString")));
 
     private static final Map<String, ShimTarget> FIELDS = Map.ofEntries(
             Map.entry("java/lang/System.out Ljava/io/PrintStream;", statics("@out")),
@@ -80,6 +140,26 @@ public final class ShimRegistry {
 
     public static boolean isShimType(String internalName) {
         return TYPES.contains(internalName);
+    }
+
+    public static boolean isExtendable(String internalName) {
+        return EXTENDABLE.contains(internalName);
+    }
+
+    public static String superOf(String internalName) {
+        return SHIM_SUPERS.get(internalName);
+    }
+
+    public static Optional<WalkResult> resolveMethodWalking(String owner, String name, String descriptor) {
+        String current = owner;
+        while (current != null) {
+            Optional<ShimTarget> target = method(current, name, descriptor);
+            if (target.isPresent()) {
+                return Optional.of(new WalkResult(current, target.get()));
+            }
+            current = SHIM_SUPERS.get(current);
+        }
+        return Optional.empty();
     }
 
     public static Map<String, ShimTarget> methods() {

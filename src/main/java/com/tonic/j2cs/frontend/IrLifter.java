@@ -48,7 +48,7 @@ public final class IrLifter {
                 System.out.println(IRPrinter.format(ir));
             }
             if (!ir.getExceptionHandlers().isEmpty()) {
-                return new MethodPlan.Unsupported("try/catch not supported in M0");
+                return new MethodPlan.Unsupported("try/catch not supported yet");
             }
             stripLocalArtifacts(ir);
             DeadCodeElimination.removeUnreachableBlocks(ir);

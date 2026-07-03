@@ -8,6 +8,70 @@ namespace java.lang
     /// </summary>
     public static class JRuntime
     {
+        public static Throwable Normalize(global::System.Exception e)
+        {
+            if (e is JThrow jt)
+            {
+                return jt.payload;
+            }
+            Throwable t;
+            string msg = null;
+            if (e is global::System.NullReferenceException)
+            {
+                t = new NullPointerException(RawNew.I);
+            }
+            else if (e is global::System.DivideByZeroException)
+            {
+                t = new ArithmeticException(RawNew.I);
+                msg = "/ by zero";
+            }
+            else if (e is global::System.IndexOutOfRangeException)
+            {
+                t = new ArrayIndexOutOfBoundsException(RawNew.I);
+            }
+            else if (e is global::System.InvalidCastException)
+            {
+                t = new ClassCastException(RawNew.I);
+            }
+            else if (e is global::System.ArrayTypeMismatchException)
+            {
+                t = new ArrayStoreException(RawNew.I);
+            }
+            else if (e is global::System.FormatException)
+            {
+                t = new NumberFormatException(RawNew.I);
+                msg = e.Message;
+            }
+            else
+            {
+                t = new JForeignError(RawNew.I);
+                msg = e.GetType().FullName + ": " + e.Message;
+            }
+            if (msg == null)
+            {
+                t.__init__V();
+            }
+            else
+            {
+                t.__init_Ljava_lang_String__V(String.Wrap(msg));
+            }
+            t.__origin = e;
+            return t;
+        }
+
+        public static JThrow NumberFormat(string message)
+        {
+            var nfe = new NumberFormatException(RawNew.I);
+            nfe.__init_Ljava_lang_String__V(String.Wrap(message));
+            return JThrow.of(nfe);
+        }
+
+        public static JThrow Simple(Throwable t)
+        {
+            t.__init__V();
+            return JThrow.of(t);
+        }
+
         public static global::java.lang.String[] Args(string[] args)
         {
             var result = new global::java.lang.String[args.Length];

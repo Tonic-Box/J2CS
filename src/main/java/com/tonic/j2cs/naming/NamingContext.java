@@ -47,6 +47,9 @@ public final class NamingContext {
             String superName = hierarchy.superOf(name);
             if (superName != null && hierarchy.isAppClass(superName)) {
                 mergeAncestor(name, namers.get(superName), inheritedAssignments, inheritedTaken);
+            } else if (superName != null && ShimRegistry.isExtendable(superName)) {
+                inheritedAssignments.putAll(ShimRegistry.EXTENDABLE_VIRTUALS);
+                inheritedTaken.addAll(ShimRegistry.EXTENDABLE_MEMBER_NAMES);
             }
             for (String iface : hierarchy.interfacesOf(name)) {
                 if (hierarchy.isAppClass(iface)) {
@@ -68,7 +71,7 @@ public final class NamingContext {
             String previous = assignments.putIfAbsent(entry.getKey(), entry.getValue());
             if (previous != null && !previous.equals(entry.getValue())) {
                 classUnsupportedReasons.putIfAbsent(className,
-                        "interface method merging not supported in M1: " + entry.getKey());
+                        "interface method merging not supported: " + entry.getKey());
             }
         }
         taken.addAll(ancestor.allMemberNames());
@@ -130,6 +133,10 @@ public final class NamingContext {
             current = hierarchy.superOf(current);
         }
         if (current != null && !current.equals(OBJECT_INTERNAL)) {
+            Optional<ShimRegistry.WalkResult> walked = ShimRegistry.resolveMethodWalking(current, name, desc);
+            if (walked.isPresent()) {
+                return new Resolved.ShimMethod(walked.get().declaringInternal(), walked.get().target());
+            }
             return new Resolved.Unresolved("method resolves through non-input superclass "
                     + current + ": " + name + desc);
         }

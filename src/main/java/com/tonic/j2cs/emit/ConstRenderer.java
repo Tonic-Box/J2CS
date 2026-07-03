@@ -40,7 +40,7 @@ public final class ConstRenderer {
         if (constant instanceof NullConstant) {
             return "null";
         }
-        throw new UnsupportedBodyException("constant not supported in M0: "
+        throw new UnsupportedBodyException("constant not supported: "
                 + constant.getClass().getSimpleName());
     }
 }

@@ -2,6 +2,7 @@ package com.tonic.j2cs.emit;
 
 import com.tonic.j2cs.naming.MemberNamer;
 import com.tonic.j2cs.naming.NamingContext;
+import com.tonic.j2cs.shims.ShimRegistry;
 import com.tonic.parser.MethodEntry;
 import com.tonic.util.Modifiers;
 
@@ -26,11 +27,21 @@ public final class MethodModifiers {
         }
         boolean isAbstract = Modifiers.isAbstract(access);
         boolean isOverride = MemberNamer.isObjectOverride(method.getName(), method.getDesc())
-                || ancestorClassDeclares(naming, classInternalName, method.getName(), method.getDesc());
+                || ancestorClassDeclares(naming, classInternalName, method.getName(), method.getDesc())
+                || shimSuperDeclares(naming, classInternalName, method.getName(), method.getDesc());
         if (isOverride) {
             return isAbstract ? "public abstract override " : "public override ";
         }
         return isAbstract ? "public abstract " : "public virtual ";
+    }
+
+    private static boolean shimSuperDeclares(NamingContext naming, String classInternalName,
+                                             String name, String desc) {
+        String external = naming.hierarchy().firstExternalSuper(classInternalName);
+        if (external == null || !ShimRegistry.isExtendable(external)) {
+            return false;
+        }
+        return ShimRegistry.EXTENDABLE_VIRTUALS.containsKey(name + desc);
     }
 
     private static boolean ancestorClassDeclares(NamingContext naming, String classInternalName,

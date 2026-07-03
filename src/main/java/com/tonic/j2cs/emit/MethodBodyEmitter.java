@@ -50,8 +50,8 @@ import java.util.Set;
 /**
  * Emits one method body as goto/label-style C#: slot declarations initialized to defaults,
  * parameter copies, then each block in reverse post order ending in an explicit terminator.
- * Throws UnsupportedBodyException for constructs outside M0 scope; the caller degrades the
- * method to a stub.
+ * Throws UnsupportedBodyException for constructs outside the supported subset; the caller
+ * degrades the method to a stub.
  */
 public final class MethodBodyEmitter implements IRVisitor<Void> {
 
@@ -299,15 +299,16 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
             return null;
         }
         if (owner.startsWith("java/") || owner.startsWith("javax/")) {
-            Optional<ShimTarget> target = ShimRegistry.method(owner, name, desc);
-            if (target.isEmpty()) {
+            Optional<ShimRegistry.WalkResult> walked = ShimRegistry.resolveMethodWalking(owner, name, desc);
+            if (walked.isEmpty()) {
                 throw new UnsupportedBodyException("shim member not implemented: "
                         + owner + "." + name + desc);
             }
-            String receiver = target.get().isStatic()
+            ShimTarget target = walked.get().target();
+            String receiver = target.isStatic()
                     ? CsNamer.fqcn(owner)
-                    : receiverAdjusted(owner, instr.getReceiver());
-            assign(instr, receiver + "." + target.get().csMemberName()
+                    : receiverAdjusted(walked.get().declaringInternal(), instr.getReceiver());
+            assign(instr, receiver + "." + target.csMemberName()
                     + "(" + renderArguments(instr, desc) + ")");
             return null;
         }
@@ -331,7 +332,7 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
             return names.ref(instr.getReceiver()) + "." + member + "(" + renderArguments(instr, desc) + ")";
         }
         if (naming.hierarchy().isAppInterface(owner)) {
-            throw new UnsupportedBodyException("interface super-call not supported in M1: "
+            throw new UnsupportedBodyException("interface super-call not supported: "
                     + owner + "." + name);
         }
         requireThisReceiver(instr);
@@ -461,7 +462,7 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
     private static void requireNoArrayAsObject(String paramDesc, Value arg) {
         if (paramDesc.startsWith("L") && arg.getType() != null && arg.getType().isArray()) {
             throw new UnsupportedBodyException(
-                    "array passed as object reference not supported in M0 (arrays are native C# arrays)");
+                    "array passed as object reference not supported (arrays are native C# arrays)");
         }
     }
 
@@ -545,7 +546,7 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
                 requireNoArrayAsObject(desc, arg);
                 yield jr + ".Str(" + expr + ")";
             }
-            default -> throw new UnsupportedBodyException("array in string concat not supported in M0");
+            default -> throw new UnsupportedBodyException("array in string concat not supported");
         };
     }
 
@@ -590,9 +591,9 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
                 terminated = true;
             }
             case ARRAYLENGTH -> assign(instr, names.ref(instr.getOperand()) + ".Length");
-            case ATHROW -> throw new UnsupportedBodyException("athrow not supported in M0");
+            case ATHROW -> throw new UnsupportedBodyException("athrow not supported yet");
             case MONITORENTER, MONITOREXIT ->
-                    throw new UnsupportedBodyException("monitors not supported in M0");
+                    throw new UnsupportedBodyException("monitors not supported");
         }
         return null;
     }
@@ -622,7 +623,7 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
     @Override
     public Void visitNewArray(NewArrayInstruction instr) {
         if (instr.isMultiDimensional()) {
-            throw new UnsupportedBodyException("multi-dimensional array allocation not supported in M0");
+            throw new UnsupportedBodyException("multi-dimensional array allocation not supported");
         }
         CsType element = naming.typeMapper().storageType(instr.getElementType().getDescriptor());
         String length = names.ref(instr.getDimensions().get(0));

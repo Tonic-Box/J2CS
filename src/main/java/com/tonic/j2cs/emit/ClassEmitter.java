@@ -72,6 +72,9 @@ public final class ClassEmitter {
             }
             w.line();
             w.open("public " + csClassName + "(global::java.lang.RawNew r) : base(r)");
+            if (extendsShimThrowable(internalName)) {
+                w.line("JavaClassName = " + CsStrings.quote(internalName.replace('/', '.')) + ";");
+            }
             w.close();
         }
         for (MethodEntry method : classFile.getMethods()) {
@@ -115,6 +118,9 @@ public final class ClassEmitter {
             return new ClassPolicy("global::java.lang.Object", reason);
         }
         if (naming.isAppClass(superName)) {
+            return new ClassPolicy(CsNamer.fqcn(superName), reason);
+        }
+        if (ShimRegistry.isExtendable(superName)) {
             return new ClassPolicy(CsNamer.fqcn(superName), reason);
         }
         if (ShimRegistry.isShimType(superName) || interfacePositionStubs.contains(superName)) {
@@ -170,6 +176,11 @@ public final class ClassEmitter {
         report.unsupportedMethod(owner, name, desc, reason);
         w.line("throw new global::System.NotSupportedException("
                 + CsStrings.quote("j2cs: " + owner + "." + name + desc + ": " + reason) + ");");
+    }
+
+    private boolean extendsShimThrowable(String internalName) {
+        String external = naming.hierarchy().firstExternalSuper(internalName);
+        return external != null && ShimRegistry.isExtendable(external);
     }
 
     private static String interfacePrefix(MethodEntry method) {
