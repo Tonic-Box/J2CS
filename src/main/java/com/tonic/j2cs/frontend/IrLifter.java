@@ -6,7 +6,10 @@ import com.tonic.analysis.ssa.cfg.IRBlock;
 import com.tonic.analysis.ssa.cfg.IRMethod;
 import com.tonic.analysis.ssa.ir.IRInstruction;
 import com.tonic.analysis.ssa.ir.LoadLocalInstruction;
+import com.tonic.analysis.ssa.ir.PhiInstruction;
 import com.tonic.analysis.ssa.ir.StoreLocalInstruction;
+import com.tonic.analysis.ssa.value.SSAValue;
+import com.tonic.analysis.ssa.value.Value;
 import com.tonic.analysis.ssa.lower.PhiEliminator;
 import com.tonic.analysis.ssa.transform.DeadCodeElimination;
 import com.tonic.j2cs.model.LoweredMethod;
@@ -16,7 +19,9 @@ import com.tonic.parser.ClassFile;
 import com.tonic.parser.MethodEntry;
 import com.tonic.util.Modifiers;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Lifts a method to SSA and destructs it for C# emission: strip load/store-local artifacts,
@@ -47,11 +52,9 @@ public final class IrLifter {
             if (dumpIr) {
                 System.out.println(IRPrinter.format(ir));
             }
-            if (!ir.getExceptionHandlers().isEmpty()) {
-                return new MethodPlan.Unsupported("try/catch not supported yet");
-            }
             stripLocalArtifacts(ir);
             DeadCodeElimination.removeUnreachableBlocks(ir);
+            removeDeadPhis(ir);
             HandlerSupport.Captures captures = HandlerSupport.capture(ir);
             new PhiEliminator().eliminate(ir);
             LoweredMethod lowered = PhiCoalescer.coalesce(ir, typeMapper, captures);
@@ -59,6 +62,39 @@ public final class IrLifter {
         } catch (RuntimeException e) {
             return new MethodPlan.Unsupported(
                     "lift failed (" + e.getClass().getSimpleName() + "): " + e.getMessage());
+        }
+    }
+
+    private static void removeDeadPhis(IRMethod method) {
+        boolean changed = true;
+        while (changed) {
+            changed = false;
+            Set<SSAValue> referenced = new HashSet<>();
+            for (IRBlock block : method.getBlocks()) {
+                for (PhiInstruction phi : block.getPhiInstructions()) {
+                    for (Value incoming : phi.getIncomingValues().values()) {
+                        if (incoming instanceof SSAValue ssa) {
+                            referenced.add(ssa);
+                        }
+                    }
+                }
+                for (IRInstruction instr : block.getInstructions()) {
+                    for (Value operand : instr.getOperands()) {
+                        if (operand instanceof SSAValue ssa) {
+                            referenced.add(ssa);
+                        }
+                    }
+                }
+            }
+            for (IRBlock block : method.getBlocks()) {
+                for (PhiInstruction phi : new ArrayList<>(block.getPhiInstructions())) {
+                    SSAValue result = phi.getResult();
+                    if (result != null && !referenced.contains(result)) {
+                        block.removePhi(phi);
+                        changed = true;
+                    }
+                }
+            }
         }
     }
 

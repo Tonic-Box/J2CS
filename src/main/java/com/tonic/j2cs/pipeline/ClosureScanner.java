@@ -45,6 +45,11 @@ public final class ClosureScanner {
         for (SlotDecl slot : lowered.slots()) {
             collectFromDescriptor(slot.computeType().getDescriptor(), out);
         }
+        for (com.tonic.analysis.ssa.cfg.ExceptionHandler handler : lowered.ir().getExceptionHandlers()) {
+            if (handler.getCatchType() != null) {
+                out.add(handler.getCatchType().getInternalName());
+            }
+        }
         for (IRBlock block : lowered.ir().getBlocks()) {
             for (IRInstruction instr : block.getInstructions()) {
                 if (instr instanceof TypeCheckInstruction typeCheck) {

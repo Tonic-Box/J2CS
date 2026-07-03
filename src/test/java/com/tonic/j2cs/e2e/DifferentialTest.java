@@ -76,12 +76,15 @@ class DifferentialTest {
     }
 
     @Test
+    void exceptions1() throws Exception {
+        Differential.assertSameOutput("Exceptions1");
+    }
+
+    @Test
     void unsupportedGraceful() throws Exception {
         Differential.assertSameOutput("UnsupportedGraceful");
         String report = java.nio.file.Files.readString(
                 java.nio.file.Path.of("build", "e2e", "UnsupportedGraceful", "out", "j2cs-report.txt"));
-        org.junit.jupiter.api.Assertions.assertTrue(report.contains("try/catch"),
-                "report should list the try/catch method");
         org.junit.jupiter.api.Assertions.assertTrue(report.contains("allocation of type not in input"),
                 "report should list the ArrayList allocation");
         org.junit.jupiter.api.Assertions.assertTrue(report.contains("java/util/List"),

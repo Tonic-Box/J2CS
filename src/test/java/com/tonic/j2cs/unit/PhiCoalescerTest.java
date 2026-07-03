@@ -94,24 +94,6 @@ class PhiCoalescerTest {
         assertTrue(((MethodPlan.Unsupported) plan).reason().contains("no bytecode"));
     }
 
-    @Test
-    void tryCatchDegradesToUnsupported() throws IOException {
-        ClassFile cf = compile("TryCatch",
-                "public class TryCatch {\n"
-                        + "    static int f(int x) {\n"
-                        + "        try {\n"
-                        + "            return 100 / x;\n"
-                        + "        } catch (ArithmeticException e) {\n"
-                        + "            return -1;\n"
-                        + "        }\n"
-                        + "    }\n"
-                        + "}\n",
-                "trycatch");
-        MethodPlan plan = new IrLifter(new TypeMapper(), false).lower(cf, method(cf, "f"));
-        assertInstanceOf(MethodPlan.Unsupported.class, plan);
-        assertTrue(((MethodPlan.Unsupported) plan).reason().contains("try/catch"));
-    }
-
     private LoweredMethod lowerLoopSum(String tag) throws IOException {
         ClassFile cf = compile("Loop", LOOP_SOURCE, tag);
         MethodPlan plan = new IrLifter(new TypeMapper(), false).lower(cf, method(cf, "sum"));

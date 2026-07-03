@@ -323,7 +323,7 @@ namespace jdefault
             s41 = global::java.lang.System.@out;
             s42 = (s1 is global::jdefault.Circle) ? 1 : 0;
             s41.println_Z(s42);
-            s43 = (global::jdefault.Circle)(s1);
+            s43 = (global::jdefault.Circle)(global::java.lang.Object)(s1);
             s44 = global::java.lang.System.@out;
             s45 = s43.area();
             s44.println(s45);

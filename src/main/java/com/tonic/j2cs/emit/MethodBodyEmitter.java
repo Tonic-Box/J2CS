@@ -1,5 +1,6 @@
 package com.tonic.j2cs.emit;
 
+import com.tonic.analysis.ssa.cfg.ExceptionHandler;
 import com.tonic.analysis.ssa.cfg.IRBlock;
 import com.tonic.analysis.ssa.cfg.IRMethod;
 import com.tonic.analysis.ssa.ir.ArrayAccessInstruction;
@@ -65,6 +66,7 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
     private boolean terminated;
     private String currentClass;
     private Integer thisSlot;
+    private ExceptionLayout layout;
 
     public MethodBodyEmitter(NamingContext naming) {
         this.naming = naming;
@@ -81,6 +83,7 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
                 ? null
                 : loweredMethod.slotOf().get(loweredMethod.ir().getParameters().get(0));
 
+        this.layout = new ExceptionLayout(loweredMethod);
         TypeMapper types = naming.typeMapper();
         for (SlotDecl slot : loweredMethod.slots()) {
             CsType type = types.computeType(slot.computeType());
@@ -88,8 +91,23 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
             w.line(type.csText() + " s" + slot.slotId() + " = " + type.defaultLiteral() + ";");
         }
         emitParameterCopies();
-        for (IRBlock block : loweredMethod.blockOrder()) {
+        if (layout.hasHandlers()) {
+            emitWrappedBody();
+        } else {
+            emitBlocks();
+            if (returnType.kind() != CsType.Kind.VOID) {
+                w.line("throw new global::System.InvalidOperationException(\"j2cs: fell off method end\");");
+            }
+        }
+        return w.toString();
+    }
+
+    private void emitBlocks() {
+        for (IRBlock block : lowered.blockOrder()) {
             w.line("B" + block.getId() + ": ;");
+            if (layout.hasHandlers() && lowered.originalBlocks().contains(block)) {
+                w.line("__region = " + layout.regionOf(block) + ";");
+            }
             terminated = false;
             for (IRInstruction instr : block.getInstructions()) {
                 instr.accept(this);
@@ -98,10 +116,57 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
                 emitFallthrough(block);
             }
         }
-        if (returnType.kind() != CsType.Kind.VOID) {
-            w.line("throw new global::System.InvalidOperationException(\"j2cs: fell off method end\");");
+    }
+
+    private void emitWrappedBody() {
+        w.line("int __state = 0;");
+        w.line("int __region = -1;");
+        w.line("global::java.lang.Throwable __p = null;");
+        w.open("while (true)");
+        w.open("try");
+        w.open("switch (__state)");
+        for (Map.Entry<IRBlock, Integer> entry : layout.stateOf().entrySet()) {
+            w.line("case " + entry.getValue() + ": goto B" + entry.getKey().getId() + ";");
         }
-        return w.toString();
+        w.close();
+        emitBlocks();
+        w.close();
+        w.open("catch (global::System.Exception __e)");
+        w.line("if (__e is global::System.NotSupportedException) throw;");
+        w.line("__p = global::java.lang.JRuntime.Normalize(__e);");
+        w.open("switch (__region)");
+        emitCatchArms();
+        w.close();
+        w.line("throw;");
+        w.close();
+        w.close();
+    }
+
+    private void emitCatchArms() {
+        List<List<ExceptionHandler>> regions = layout.regions();
+        for (int region = 0; region < regions.size(); region++) {
+            w.line("case " + region + ":");
+            for (ExceptionHandler handler : regions.get(region)) {
+                Integer state = layout.stateOf().get(handler.getHandlerBlock());
+                SSAValue excValue = lowered.ir().getHandlerExceptionValue(handler.getHandlerBlock());
+                Integer excSlot = excValue == null ? null : lowered.slotOf().get(excValue);
+                String assign = "";
+                if (excSlot != null) {
+                    String cast = handler.getCatchType() == null
+                            ? "__p"
+                            : "(" + CsNamer.fqcn(handler.getCatchType().getInternalName()) + ")__p";
+                    assign = "s" + excSlot + " = " + cast + "; ";
+                }
+                String action = assign + "__state = " + state + "; continue;";
+                if (handler.getCatchType() == null) {
+                    w.line("    { " + action + " }");
+                } else {
+                    w.line("    if (__p is " + CsNamer.fqcn(handler.getCatchType().getInternalName())
+                            + ") { " + action + " }");
+                }
+            }
+            w.line("    break;");
+        }
     }
 
     private void emitParameterCopies() {
@@ -591,7 +656,10 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
                 terminated = true;
             }
             case ARRAYLENGTH -> assign(instr, names.ref(instr.getOperand()) + ".Length");
-            case ATHROW -> throw new UnsupportedBodyException("athrow not supported yet");
+            case ATHROW -> {
+                w.line("throw global::java.lang.JThrow.of(" + names.ref(instr.getOperand()) + ");");
+                terminated = true;
+            }
             case MONITORENTER, MONITOREXIT ->
                     throw new UnsupportedBodyException("monitors not supported");
         }
@@ -662,7 +730,7 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
         String operand = names.ref(instr.getOperand());
         CsType target = naming.typeMapper().computeType(instr.getTargetType());
         if (instr.isCast()) {
-            assign(instr, "(" + target.csText() + ")(" + operand + ")");
+            assign(instr, "(" + target.csText() + ")(global::java.lang.Object)(" + operand + ")");
         } else {
             assign(instr, "(" + operand + " is " + target.csText() + ") ? 1 : 0");
         }
