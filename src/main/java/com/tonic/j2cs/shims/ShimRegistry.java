@@ -40,7 +40,12 @@ public final class ShimRegistry {
             "java/lang/Boolean",
             "java/lang/Character",
             "java/lang/Short",
-            "java/lang/Byte");
+            "java/lang/Byte",
+            "java/util/Iterable",
+            "java/util/Iterator",
+            "java/util/Collection",
+            "java/util/List",
+            "java/util/ArrayList");
 
     private static final Map<String, String> SHIM_SUPERS = Map.ofEntries(
             Map.entry("java/lang/String", "java/lang/Object"),
@@ -56,6 +61,11 @@ public final class ShimRegistry {
             Map.entry("java/lang/Byte", "java/lang/Number"),
             Map.entry("java/lang/Boolean", "java/lang/Object"),
             Map.entry("java/lang/Character", "java/lang/Object"),
+            Map.entry("java/util/Iterable", "java/lang/Object"),
+            Map.entry("java/util/Iterator", "java/lang/Object"),
+            Map.entry("java/util/Collection", "java/util/Iterable"),
+            Map.entry("java/util/List", "java/util/Collection"),
+            Map.entry("java/util/ArrayList", "java/util/List"),
             Map.entry("java/io/PrintStream", "java/lang/Object"),
             Map.entry("java/lang/Throwable", "java/lang/Object"),
             Map.entry("java/lang/Exception", "java/lang/Throwable"),
@@ -182,7 +192,20 @@ public final class ShimRegistry {
             Map.entry("java/lang/System.arraycopy(Ljava/lang/Object;ILjava/lang/Object;II)V", statics("arraycopy")),
             Map.entry("java/lang/Throwable.getMessage()Ljava/lang/String;", instance("getMessage")),
             Map.entry("java/lang/Throwable.toString()Ljava/lang/String;", instance("toString")),
-            Map.entry("java/util/Objects.requireNonNull(Ljava/lang/Object;)Ljava/lang/Object;", statics("requireNonNull")));
+            Map.entry("java/util/Objects.requireNonNull(Ljava/lang/Object;)Ljava/lang/Object;", statics("requireNonNull")),
+            Map.entry("java/util/Iterable.iterator()Ljava/util/Iterator;", instance("iterator")),
+            Map.entry("java/util/Iterator.hasNext()Z", instance("hasNext")),
+            Map.entry("java/util/Iterator.next()Ljava/lang/Object;", instance("next")),
+            Map.entry("java/util/Collection.add(Ljava/lang/Object;)Z", instance("add")),
+            Map.entry("java/util/Collection.size()I", instance("size")),
+            Map.entry("java/util/Collection.isEmpty()Z", instance("isEmpty")),
+            Map.entry("java/util/Collection.contains(Ljava/lang/Object;)Z", instance("contains")),
+            Map.entry("java/util/Collection.remove(Ljava/lang/Object;)Z", instance("remove")),
+            Map.entry("java/util/List.get(I)Ljava/lang/Object;", instance("get")),
+            Map.entry("java/util/List.set(ILjava/lang/Object;)Ljava/lang/Object;", instance("set")),
+            Map.entry("java/util/List.add(ILjava/lang/Object;)V", instance("add")),
+            Map.entry("java/util/List.remove(I)Ljava/lang/Object;", instance("remove")),
+            Map.entry("java/util/List.indexOf(Ljava/lang/Object;)I", instance("indexOf")));
 
     private static final Map<String, ShimTarget> FIELDS = Map.ofEntries(
             Map.entry("java/lang/System.out Ljava/io/PrintStream;", statics("@out")),

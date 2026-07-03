@@ -111,6 +111,11 @@ class DifferentialTest {
     }
 
     @Test
+    void collections1() throws Exception {
+        Differential.assertSameOutput("Collections1");
+    }
+
+    @Test
     void lambdas2() throws Exception {
         Differential.assertSameOutput("Lambdas2");
         String report = java.nio.file.Files.readString(
@@ -126,9 +131,9 @@ class DifferentialTest {
         String report = java.nio.file.Files.readString(
                 java.nio.file.Path.of("build", "e2e", "UnsupportedGraceful", "out", "j2cs-report.txt"));
         org.junit.jupiter.api.Assertions.assertTrue(report.contains("allocation of type not in input"),
-                "report should list the ArrayList allocation");
-        org.junit.jupiter.api.Assertions.assertTrue(report.contains("java/util/List"),
-                "report should list the stubbed List type");
+                "report should list the TreeSet allocation");
+        org.junit.jupiter.api.Assertions.assertTrue(report.contains("java/util/TreeMap"),
+                "report should list the stubbed TreeMap type");
         org.junit.jupiter.api.Assertions.assertTrue(report.contains("superclass not in input: java/lang/Enum"),
                 "report should show the enum degrading via its stubbed superclass");
         org.junit.jupiter.api.Assertions.assertTrue(report.contains("native method"),

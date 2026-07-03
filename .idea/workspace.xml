@@ -4,7 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d05fdbd2-bef1-4012-9f61-0cf573243b7b" name="Changes" comment="Add the remaining wrapper types as boxed objects" />
+    <list default="true" id="d05fdbd2-bef1-4012-9f61-0cf573243b7b" name="Changes" comment="Prove boxed generics end to end and note wrapper divergences">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/javacompat/manifest.txt" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/manifest.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/shims/ShimRegistry.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/shims/ShimRegistry.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/tonic/j2cs/e2e/DifferentialTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/tonic/j2cs/e2e/DifferentialTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/fixtures/UnsupportedGraceful/UnsupportedGraceful.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/fixtures/UnsupportedGraceful/UnsupportedGraceful.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -268,11 +274,18 @@
       <option name="project" value="LOCAL" />
       <updated>1783104517898</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="Prove boxed generics end to end and note wrapper divergences">
+      <option name="closed" value="true" />
+      <created>1783105456315</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1783105456315</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Add C# naming, member collision handling, and type mapping" />
     <MESSAGE value="Generate compilable C# solutions with shim, csproj, and dotnet runner" />
     <MESSAGE value="Add SSA destruction pipeline and phi-group slot coalescing" />
     <MESSAGE value="Emit real method bodies and go differential-green on three fixtures" />
@@ -297,6 +310,7 @@
     <MESSAGE value="Lock lambda emission and test the synthetic sink" />
     <MESSAGE value="Model java.lang.Integer as a real boxed object" />
     <MESSAGE value="Add the remaining wrapper types as boxed objects" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add the remaining wrapper types as boxed objects" />
+    <MESSAGE value="Prove boxed generics end to end and note wrapper divergences" />
+    <option name="LAST_COMMIT_MESSAGE" value="Prove boxed generics end to end and note wrapper divergences" />
   </component>
 </project>

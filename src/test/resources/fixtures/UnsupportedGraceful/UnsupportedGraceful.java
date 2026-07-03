@@ -2,14 +2,14 @@ public class UnsupportedGraceful {
     public static void main(String[] args) {
         System.out.println("healthy");
         System.out.println(compute(21));
-        System.out.println(makeList() == null);
+        System.out.println(makeSorted() == null);
     }
 
     static int compute(int x) {
         return x * 2;
     }
 
-    static java.util.List<String> makeList() {
+    static java.util.TreeMap<String, String> makeSorted() {
         return null;
     }
 
@@ -21,8 +21,8 @@ public class UnsupportedGraceful {
         }
     }
 
-    static int useList() {
-        return new java.util.ArrayList<String>().size();
+    static int useSortedSet() {
+        return new java.util.TreeSet<String>().size();
     }
 
     static native int nativeThing();

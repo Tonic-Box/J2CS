@@ -31,3 +31,8 @@ java.lang.Boolean.cs
 java.lang.Character.cs
 java.lang.Short.cs
 java.lang.Byte.cs
+java.util.Iterable.cs
+java.util.Iterator.cs
+java.util.Collection.cs
+java.util.List.cs
+java.util.ArrayList.cs
