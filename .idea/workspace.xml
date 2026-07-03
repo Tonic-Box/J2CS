@@ -4,20 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d05fdbd2-bef1-4012-9f61-0cf573243b7b" name="Changes" comment="Harden degradation reporting for enums and native methods">
+    <list default="true" id="d05fdbd2-bef1-4012-9f61-0cf573243b7b" name="Changes" comment="Add the exception shim hierarchy, JThrow carrier, and Normalize">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/javacompat/java.lang.Integer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/java.lang.Integer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/javacompat/java.lang.JRuntime.cs" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/java.lang.JRuntime.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/javacompat/java.lang.System.cs" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/java.lang.System.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/javacompat/manifest.txt" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/manifest.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/ClassEmitter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/ClassEmitter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/ConstRenderer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/ConstRenderer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/MethodBodyEmitter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/MethodBodyEmitter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/MethodModifiers.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/MethodModifiers.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/UnsupportedBodyException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/UnsupportedBodyException.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/frontend/IrLifter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/frontend/IrLifter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/naming/NamingContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/naming/NamingContext.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/shims/ShimRegistry.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/shims/ShimRegistry.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/frontend/PhiCoalescer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/frontend/PhiCoalescer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/model/LoweredMethod.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/model/LoweredMethod.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/pipeline/Transpiler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/pipeline/Transpiler.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -210,7 +203,15 @@
       <option name="project" value="LOCAL" />
       <updated>1783093450495</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="Add the exception shim hierarchy, JThrow carrier, and Normalize">
+      <option name="closed" value="true" />
+      <created>1783096143181</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1783096143181</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -233,6 +234,7 @@
     <MESSAGE value="Cover generic bridges and erasure differentially" />
     <MESSAGE value="Grow the shim: Math, Integer statics, String search, arraycopy" />
     <MESSAGE value="Harden degradation reporting for enums and native methods" />
-    <option name="LAST_COMMIT_MESSAGE" value="Harden degradation reporting for enums and native methods" />
+    <MESSAGE value="Add the exception shim hierarchy, JThrow carrier, and Normalize" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add the exception shim hierarchy, JThrow carrier, and Normalize" />
   </component>
 </project>

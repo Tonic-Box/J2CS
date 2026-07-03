@@ -1,5 +1,6 @@
 package com.tonic.j2cs.pipeline;
 
+import com.tonic.analysis.ssa.cfg.ExceptionHandler;
 import com.tonic.j2cs.cli.CliOptions;
 import com.tonic.j2cs.emit.ClassEmitter;
 import com.tonic.j2cs.emit.EntryPointEmitter;
@@ -7,6 +8,7 @@ import com.tonic.j2cs.emit.StubEmitter;
 import com.tonic.j2cs.frontend.InputLoader;
 import com.tonic.j2cs.frontend.IrLifter;
 import com.tonic.j2cs.frontend.LoadedInput;
+import com.tonic.j2cs.model.LoweredMethod;
 import com.tonic.j2cs.model.MethodPlan;
 import com.tonic.j2cs.naming.CsNamer;
 import com.tonic.j2cs.naming.NamingContext;
@@ -45,7 +47,7 @@ public final class Transpiler {
         Set<String> referenced = new TreeSet<>();
         for (ClassFile cf : input.appClasses()) {
             report.classDiscovered(cf.getClassName());
-            Map<MethodEntry, MethodPlan> plans = planMethods(cf, lifter);
+            Map<MethodEntry, MethodPlan> plans = planMethods(cf, lifter, naming);
             ClosureScanner.collectReferencedTypes(cf, plans, referenced);
             genFiles.put(dottedName(cf.getClassName()), classEmitter.emit(cf, plans));
         }
@@ -98,12 +100,33 @@ public final class Transpiler {
         report.divergence("System.arraycopy failures throw .NET argument exceptions, not the Java exception types");
     }
 
-    private static Map<MethodEntry, MethodPlan> planMethods(ClassFile cf, IrLifter lifter) {
+    private static Map<MethodEntry, MethodPlan> planMethods(ClassFile cf, IrLifter lifter,
+                                                            NamingContext naming) {
         Map<MethodEntry, MethodPlan> plans = new LinkedHashMap<>();
         for (MethodEntry method : cf.getMethods()) {
-            plans.put(method, lifter.lower(cf, method));
+            MethodPlan plan = lifter.lower(cf, method);
+            if (plan instanceof MethodPlan.Supported supported) {
+                String invalidCatch = invalidCatchType(supported.method(), naming);
+                if (invalidCatch != null) {
+                    plan = new MethodPlan.Unsupported("catch type not supported: " + invalidCatch);
+                }
+            }
+            plans.put(method, plan);
         }
         return plans;
+    }
+
+    private static String invalidCatchType(LoweredMethod lowered, NamingContext naming) {
+        for (ExceptionHandler handler : lowered.ir().getExceptionHandlers()) {
+            if (handler.getCatchType() == null) {
+                continue;
+            }
+            String internalName = handler.getCatchType().getInternalName();
+            if (!naming.isAppClass(internalName) && !ShimRegistry.isExtendable(internalName)) {
+                return internalName;
+            }
+        }
+        return null;
     }
 
     private static String dottedName(String internalName) {

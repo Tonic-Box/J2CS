@@ -1,9 +1,11 @@
 package com.tonic.j2cs.frontend;
 
+import com.tonic.analysis.ssa.cfg.ExceptionHandler;
 import com.tonic.analysis.ssa.cfg.IRBlock;
 import com.tonic.analysis.ssa.cfg.IRMethod;
 import com.tonic.analysis.ssa.ir.IRInstruction;
 import com.tonic.analysis.ssa.lower.CopyInfo;
+import com.tonic.analysis.ssa.type.IRType;
 import com.tonic.analysis.ssa.value.SSAValue;
 import com.tonic.j2cs.J2csException;
 import com.tonic.j2cs.model.LoweredMethod;
@@ -19,9 +21,10 @@ import java.util.Set;
 
 /**
  * Groups SSA values into C# local slots. A phi result and every copy that feeds it share one
- * slot (union-find over the phi-copy mapping written by PhiEliminator); every other value gets
- * its own slot. Slot ids are dense and assigned in deterministic traversal order: parameters
- * first, then instruction results in reverse post order.
+ * slot (union-find over the phi-copy mapping written by PhiEliminator), handler-phi webs are
+ * merged via the captured union pairs, and every other value gets its own slot. Slot ids are
+ * dense and assigned in deterministic traversal order over the full block order, which also
+ * covers exception-handler subgraphs unreachable by normal edges.
  */
 public final class PhiCoalescer {
 
@@ -29,15 +32,24 @@ public final class PhiCoalescer {
     }
 
     public static LoweredMethod coalesce(IRMethod ir, TypeMapper typeMapper) {
+        return coalesce(ir, typeMapper, HandlerSupport.Captures.empty());
+    }
+
+    public static LoweredMethod coalesce(IRMethod ir, TypeMapper typeMapper,
+                                         HandlerSupport.Captures captures) {
         Map<SSAValue, SSAValue> parent = new HashMap<>();
         for (Map.Entry<SSAValue, List<CopyInfo>> entry : ir.getPhiCopyMapping().entrySet()) {
             for (CopyInfo copy : entry.getValue()) {
                 union(parent, entry.getKey(), copy.copyValue());
             }
         }
+        for (HandlerSupport.UnionPair pair : captures.unionPairs()) {
+            union(parent, pair.a(), pair.b());
+        }
 
+        List<IRBlock> blockOrder = HandlerSupport.buildBlockOrder(ir);
         Set<SSAValue> members = new LinkedHashSet<>(ir.getParameters());
-        for (IRBlock block : ir.getReversePostOrder()) {
+        for (IRBlock block : blockOrder) {
             for (IRInstruction instr : block.getInstructions()) {
                 if (instr.getResult() != null) {
                     members.add(instr.getResult());
@@ -50,6 +62,12 @@ public final class PhiCoalescer {
                 members.add(copy.copyValue());
             }
         }
+        for (ExceptionHandler handler : ir.getExceptionHandlers()) {
+            SSAValue handlerValue = ir.getHandlerExceptionValue(handler.getHandlerBlock());
+            if (handlerValue != null) {
+                members.add(handlerValue);
+            }
+        }
 
         Map<SSAValue, Integer> slotByRoot = new LinkedHashMap<>();
         Map<SSAValue, Integer> slotOf = new LinkedHashMap<>();
@@ -58,14 +76,15 @@ public final class PhiCoalescer {
         for (SSAValue value : members) {
             SSAValue root = find(parent, value);
             Integer slot = slotByRoot.get(root);
-            if (value.getType() == null) {
+            IRType effectiveType = captures.typeOverrides().getOrDefault(value, value.getType());
+            if (effectiveType == null) {
                 throw new J2csException("value v" + value.getId() + " has no type");
             }
-            String csText = typeMapper.computeType(value.getType()).csText();
+            String csText = typeMapper.computeType(effectiveType).csText();
             if (slot == null) {
                 slot = slots.size();
                 slotByRoot.put(root, slot);
-                slots.add(new SlotDecl(slot, value.getType()));
+                slots.add(new SlotDecl(slot, effectiveType));
                 slotTypes.put(slot, csText);
             } else if (!slotTypes.get(slot).equals(csText)) {
                 throw new J2csException("phi group type conflict in slot s" + slot + ": "
@@ -73,7 +92,10 @@ public final class PhiCoalescer {
             }
             slotOf.put(value, slot);
         }
-        return new LoweredMethod(ir, slotOf, slots);
+        return new LoweredMethod(ir, slotOf, slots, blockOrder,
+                Set.copyOf(captures.originalBlocks().isEmpty()
+                        ? new LinkedHashSet<>(ir.getBlocks())
+                        : captures.originalBlocks()));
     }
 
     private static SSAValue find(Map<SSAValue, SSAValue> parent, SSAValue value) {

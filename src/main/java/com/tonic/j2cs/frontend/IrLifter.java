@@ -52,8 +52,9 @@ public final class IrLifter {
             }
             stripLocalArtifacts(ir);
             DeadCodeElimination.removeUnreachableBlocks(ir);
+            HandlerSupport.Captures captures = HandlerSupport.capture(ir);
             new PhiEliminator().eliminate(ir);
-            LoweredMethod lowered = PhiCoalescer.coalesce(ir, typeMapper);
+            LoweredMethod lowered = PhiCoalescer.coalesce(ir, typeMapper, captures);
             return new MethodPlan.Supported(lowered);
         } catch (RuntimeException e) {
             return new MethodPlan.Unsupported(

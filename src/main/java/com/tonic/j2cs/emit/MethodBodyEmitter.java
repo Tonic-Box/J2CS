@@ -88,7 +88,7 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
             w.line(type.csText() + " s" + slot.slotId() + " = " + type.defaultLiteral() + ";");
         }
         emitParameterCopies();
-        for (IRBlock block : loweredMethod.ir().getReversePostOrder()) {
+        for (IRBlock block : loweredMethod.blockOrder()) {
             w.line("B" + block.getId() + ": ;");
             terminated = false;
             for (IRInstruction instr : block.getInstructions()) {
