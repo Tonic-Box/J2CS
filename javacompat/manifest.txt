@@ -36,3 +36,8 @@ java.util.Iterator.cs
 java.util.Collection.cs
 java.util.List.cs
 java.util.ArrayList.cs
+java.util.Set.cs
+java.util.Map.cs
+java.util.Map$Entry.cs
+java.util.HashMap.cs
+java.util.HashSet.cs

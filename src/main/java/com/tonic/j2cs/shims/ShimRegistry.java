@@ -45,7 +45,12 @@ public final class ShimRegistry {
             "java/util/Iterator",
             "java/util/Collection",
             "java/util/List",
-            "java/util/ArrayList");
+            "java/util/ArrayList",
+            "java/util/Set",
+            "java/util/Map",
+            "java/util/Map$Entry",
+            "java/util/HashMap",
+            "java/util/HashSet");
 
     private static final Map<String, String> SHIM_SUPERS = Map.ofEntries(
             Map.entry("java/lang/String", "java/lang/Object"),
@@ -66,6 +71,11 @@ public final class ShimRegistry {
             Map.entry("java/util/Collection", "java/util/Iterable"),
             Map.entry("java/util/List", "java/util/Collection"),
             Map.entry("java/util/ArrayList", "java/util/List"),
+            Map.entry("java/util/Set", "java/util/Collection"),
+            Map.entry("java/util/Map", "java/lang/Object"),
+            Map.entry("java/util/Map$Entry", "java/lang/Object"),
+            Map.entry("java/util/HashMap", "java/util/Map"),
+            Map.entry("java/util/HashSet", "java/util/Set"),
             Map.entry("java/io/PrintStream", "java/lang/Object"),
             Map.entry("java/lang/Throwable", "java/lang/Object"),
             Map.entry("java/lang/Exception", "java/lang/Throwable"),
@@ -205,7 +215,18 @@ public final class ShimRegistry {
             Map.entry("java/util/List.set(ILjava/lang/Object;)Ljava/lang/Object;", instance("set")),
             Map.entry("java/util/List.add(ILjava/lang/Object;)V", instance("add")),
             Map.entry("java/util/List.remove(I)Ljava/lang/Object;", instance("remove")),
-            Map.entry("java/util/List.indexOf(Ljava/lang/Object;)I", instance("indexOf")));
+            Map.entry("java/util/List.indexOf(Ljava/lang/Object;)I", instance("indexOf")),
+            Map.entry("java/util/Map.put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", instance("put")),
+            Map.entry("java/util/Map.get(Ljava/lang/Object;)Ljava/lang/Object;", instance("get")),
+            Map.entry("java/util/Map.containsKey(Ljava/lang/Object;)Z", instance("containsKey")),
+            Map.entry("java/util/Map.remove(Ljava/lang/Object;)Ljava/lang/Object;", instance("remove")),
+            Map.entry("java/util/Map.size()I", instance("size")),
+            Map.entry("java/util/Map.isEmpty()Z", instance("isEmpty")),
+            Map.entry("java/util/Map.keySet()Ljava/util/Set;", instance("keySet")),
+            Map.entry("java/util/Map.values()Ljava/util/Collection;", instance("values")),
+            Map.entry("java/util/Map.entrySet()Ljava/util/Set;", instance("entrySet")),
+            Map.entry("java/util/Map$Entry.getKey()Ljava/lang/Object;", instance("getKey")),
+            Map.entry("java/util/Map$Entry.getValue()Ljava/lang/Object;", instance("getValue")));
 
     private static final Map<String, ShimTarget> FIELDS = Map.ofEntries(
             Map.entry("java/lang/System.out Ljava/io/PrintStream;", statics("@out")),
