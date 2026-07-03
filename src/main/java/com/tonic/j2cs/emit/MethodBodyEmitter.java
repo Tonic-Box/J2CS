@@ -22,7 +22,9 @@ import com.tonic.analysis.ssa.ir.StoreLocalInstruction;
 import com.tonic.analysis.ssa.ir.SwitchInstruction;
 import com.tonic.analysis.ssa.ir.TypeCheckInstruction;
 import com.tonic.analysis.ssa.ir.UnaryOpInstruction;
+import com.tonic.analysis.ssa.value.Constant;
 import com.tonic.analysis.ssa.value.SSAValue;
+import com.tonic.analysis.ssa.value.StringConstant;
 import com.tonic.analysis.ssa.value.Value;
 import com.tonic.analysis.ssa.visitor.IRVisitor;
 import com.tonic.j2cs.model.LoweredMethod;
@@ -36,6 +38,7 @@ import com.tonic.j2cs.types.Coercions;
 import com.tonic.j2cs.types.CsType;
 import com.tonic.j2cs.types.TypeMapper;
 import com.tonic.parser.MethodEntry;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -254,7 +257,7 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
         if (instr.getReturnValue() == null) {
             w.line("return;");
         } else {
-            w.line("return " + Coercions.coerce(returnType, names.ref(instr.getReturnValue())) + ";");
+            w.line("return " + storageAdjusted(returnType, instr.getReturnValue()) + ";");
         }
         terminated = true;
         return null;
@@ -263,7 +266,11 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
     @Override
     public Void visitInvoke(InvokeInstruction instr) {
         if (instr.getInvokeType() == InvokeType.DYNAMIC) {
-            throw new UnsupportedBodyException("invokedynamic not supported yet: "
+            if (instr.getBootstrapInfo() != null && instr.getBootstrapInfo().isStringConcatFactory()) {
+                assign(instr, renderConcat(instr));
+                return null;
+            }
+            throw new UnsupportedBodyException("invokedynamic not supported: "
                     + instr.getName() + instr.getDescriptor());
         }
         if (instr.getInvokeType() == InvokeType.INTERFACE) {
@@ -311,10 +318,102 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
             if (i > 0) {
                 sb.append(", ");
             }
+            requireNoArrayAsObject(paramDescs.get(i), args.get(i));
             CsType storage = naming.typeMapper().storageType(paramDescs.get(i));
-            sb.append(Coercions.coerce(storage, names.ref(args.get(i))));
+            sb.append(storageAdjusted(storage, args.get(i)));
         }
         return sb.toString();
+    }
+
+    private static void requireNoArrayAsObject(String paramDesc, Value arg) {
+        if (paramDesc.startsWith("L") && arg.getType() != null && arg.getType().isArray()) {
+            throw new UnsupportedBodyException(
+                    "array passed as object reference not supported in M0 (arrays are native C# arrays)");
+        }
+    }
+
+    private String storageAdjusted(CsType storage, Value value) {
+        String expr = names.ref(value);
+        if (!storage.isReference()) {
+            return Coercions.coerce(storage, expr);
+        }
+        if (value instanceof SSAValue ssa && ssa.getType() != null) {
+            String valueCs = naming.typeMapper().computeType(ssa.getType()).csText();
+            if (!valueCs.equals(storage.csText())) {
+                return "(" + storage.csText() + ")(" + expr + ")";
+            }
+        }
+        return expr;
+    }
+
+    private String renderConcat(InvokeInstruction instr) {
+        List<String> paramDescs = TypeMapper.splitParams(instr.getDescriptor());
+        List<Value> args = instr.getMethodArguments();
+        if (args.size() != paramDescs.size()) {
+            throw new UnsupportedBodyException("concat argument count mismatch: " + instr.getDescriptor());
+        }
+        List<ConcatRecipeParser.Part> parts = concatParts(instr, args.size());
+        StringBuilder sb = new StringBuilder("global::java.lang.String.Wrap(global::System.String.Concat(new string[] { ");
+        for (int i = 0; i < parts.size(); i++) {
+            if (i > 0) {
+                sb.append(", ");
+            }
+            ConcatRecipeParser.Part part = parts.get(i);
+            if (part instanceof ConcatRecipeParser.Part.Literal literal) {
+                sb.append(CsStrings.quote(literal.text()));
+            } else if (part instanceof ConcatRecipeParser.Part.Arg arg) {
+                if (arg.index() >= args.size()) {
+                    throw new UnsupportedBodyException("concat recipe references argument " + arg.index()
+                            + " but only " + args.size() + " are supplied");
+                }
+                sb.append(concatConversion(paramDescs.get(arg.index()), args.get(arg.index())));
+            }
+        }
+        sb.append(" }))");
+        return sb.toString();
+    }
+
+    private List<ConcatRecipeParser.Part> concatParts(InvokeInstruction instr, int argCount) {
+        if (instr.getName().equals("makeConcat")) {
+            List<ConcatRecipeParser.Part> parts = new ArrayList<>();
+            for (int i = 0; i < argCount; i++) {
+                parts.add(new ConcatRecipeParser.Part.Arg(i));
+            }
+            return parts;
+        }
+        List<Constant> bootstrapArgs = instr.getBootstrapInfo().getBootstrapArguments();
+        if (bootstrapArgs.isEmpty() || !(bootstrapArgs.get(0) instanceof StringConstant recipe)) {
+            throw new UnsupportedBodyException("concat bootstrap has no recipe string");
+        }
+        List<String> constants = new ArrayList<>();
+        for (int i = 1; i < bootstrapArgs.size(); i++) {
+            if (!(bootstrapArgs.get(i) instanceof StringConstant s)) {
+                throw new UnsupportedBodyException("non-string concat bootstrap constant: "
+                        + bootstrapArgs.get(i).getClass().getSimpleName());
+            }
+            constants.add(s.getValue());
+        }
+        try {
+            return ConcatRecipeParser.parse(recipe.getValue(), constants);
+        } catch (IllegalArgumentException e) {
+            throw new UnsupportedBodyException("unparseable concat recipe: " + e.getMessage());
+        }
+    }
+
+    private String concatConversion(String desc, Value arg) {
+        String jr = "global::java.lang.JRuntime";
+        String expr = names.ref(arg);
+        return switch (desc.charAt(0)) {
+            case 'Z' -> jr + ".StrZ(" + expr + ")";
+            case 'C' -> jr + ".Str((char)(" + expr + "))";
+            case 'B', 'S', 'I' -> jr + ".Str(" + expr + ")";
+            case 'J', 'F', 'D' -> jr + ".Str(" + expr + ")";
+            case 'L' -> {
+                requireNoArrayAsObject(desc, arg);
+                yield jr + ".Str(" + expr + ")";
+            }
+            default -> throw new UnsupportedBodyException("array in string concat not supported in M0");
+        };
     }
 
     @Override
@@ -343,8 +442,7 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
             assign(instr, ref + "." + fieldName);
         } else {
             CsType storage = naming.typeMapper().storageType(desc);
-            w.line(ref + "." + fieldName + " = "
-                    + Coercions.coerce(storage, names.ref(instr.getValue())) + ";");
+            w.line(ref + "." + fieldName + " = " + storageAdjusted(storage, instr.getValue()) + ";");
         }
         return null;
     }
@@ -410,8 +508,7 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
             assign(instr, array + "[" + index + "]");
         } else {
             CsType elementStorage = elementStorageOf(instr.getArray());
-            w.line(array + "[" + index + "] = "
-                    + Coercions.coerce(elementStorage, names.ref(instr.getValue())) + ";");
+            w.line(array + "[" + index + "] = " + storageAdjusted(elementStorage, instr.getValue()) + ";");
         }
         return null;
     }

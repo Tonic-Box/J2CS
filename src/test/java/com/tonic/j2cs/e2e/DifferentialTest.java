@@ -44,4 +44,14 @@ class DifferentialTest {
     void arraysTest() throws Exception {
         Differential.assertSameOutput("ArraysTest");
     }
+
+    @Test
+    void stringsTest() throws Exception {
+        Differential.assertSameOutput("StringsTest");
+    }
+
+    @Test
+    void fizzBuzz() throws Exception {
+        Differential.assertSameOutput("FizzBuzz");
+    }
 }

@@ -14,6 +14,7 @@ public final class ShimRegistry {
     private static final Set<String> TYPES = Set.of(
             "java/lang/Object",
             "java/lang/String",
+            "java/lang/StringBuilder",
             "java/lang/System",
             "java/io/PrintStream");
 
@@ -43,7 +44,17 @@ public final class ShimRegistry {
             Map.entry("java/io/PrintStream.print(C)V", instance("print")),
             Map.entry("java/io/PrintStream.print(Z)V", instance("print_Z")),
             Map.entry("java/io/PrintStream.print(Ljava/lang/String;)V", instance("print")),
-            Map.entry("java/io/PrintStream.print(Ljava/lang/Object;)V", instance("print")));
+            Map.entry("java/io/PrintStream.print(Ljava/lang/Object;)V", instance("print")),
+            Map.entry("java/lang/StringBuilder.append(I)Ljava/lang/StringBuilder;", instance("append")),
+            Map.entry("java/lang/StringBuilder.append(J)Ljava/lang/StringBuilder;", instance("append")),
+            Map.entry("java/lang/StringBuilder.append(F)Ljava/lang/StringBuilder;", instance("append")),
+            Map.entry("java/lang/StringBuilder.append(D)Ljava/lang/StringBuilder;", instance("append")),
+            Map.entry("java/lang/StringBuilder.append(C)Ljava/lang/StringBuilder;", instance("append")),
+            Map.entry("java/lang/StringBuilder.append(Z)Ljava/lang/StringBuilder;", instance("append_Z")),
+            Map.entry("java/lang/StringBuilder.append(Ljava/lang/String;)Ljava/lang/StringBuilder;", instance("append")),
+            Map.entry("java/lang/StringBuilder.append(Ljava/lang/Object;)Ljava/lang/StringBuilder;", instance("append")),
+            Map.entry("java/lang/StringBuilder.length()I", instance("length")),
+            Map.entry("java/lang/StringBuilder.toString()Ljava/lang/String;", instance("toString")));
 
     private static final Map<String, ShimTarget> FIELDS = Map.ofEntries(
             Map.entry("java/lang/System.out Ljava/io/PrintStream;", statics("@out")),
