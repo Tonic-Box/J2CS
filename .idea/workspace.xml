@@ -4,9 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d05fdbd2-bef1-4012-9f61-0cf573243b7b" name="Changes" comment="Support method references: static, bound, unbound, ctor, and shim">
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/pipeline/Transpiler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/pipeline/Transpiler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/tonic/j2cs/golden/GoldenEmitTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/tonic/j2cs/golden/GoldenEmitTest.java" afterDir="false" />
+    <list default="true" id="d05fdbd2-bef1-4012-9f61-0cf573243b7b" name="Changes" comment="Model java.lang.Integer as a real boxed object">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/javacompat/manifest.txt" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/manifest.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/shims/ShimRegistry.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/shims/ShimRegistry.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/tonic/j2cs/e2e/DifferentialTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/tonic/j2cs/e2e/DifferentialTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -247,12 +249,26 @@
       <option name="project" value="LOCAL" />
       <updated>1783101952765</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="Lock lambda emission and test the synthetic sink">
+      <option name="closed" value="true" />
+      <created>1783102202905</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1783102202905</updated>
+    </task>
+    <task id="LOCAL-00027" summary="Model java.lang.Integer as a real boxed object">
+      <option name="closed" value="true" />
+      <created>1783103313763</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1783103313763</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="init" />
-    <MESSAGE value="Wire build to YABR via mavenLocal and prove the lift path" />
     <MESSAGE value="Add input loading, CLI parsing, and the transpile report" />
     <MESSAGE value="Add C# naming, member collision handling, and type mapping" />
     <MESSAGE value="Generate compilable C# solutions with shim, csproj, and dotnet runner" />
@@ -276,6 +292,8 @@
     <MESSAGE value="Complete exception support: user hierarchies, finally, multi-catch" />
     <MESSAGE value="Expand lambda metafactory call sites into synthetic classes" />
     <MESSAGE value="Support method references: static, bound, unbound, ctor, and shim" />
-    <option name="LAST_COMMIT_MESSAGE" value="Support method references: static, bound, unbound, ctor, and shim" />
+    <MESSAGE value="Lock lambda emission and test the synthetic sink" />
+    <MESSAGE value="Model java.lang.Integer as a real boxed object" />
+    <option name="LAST_COMMIT_MESSAGE" value="Model java.lang.Integer as a real boxed object" />
   </component>
 </project>

@@ -24,3 +24,10 @@ java.lang.IllegalStateException.cs
 java.lang.JForeignError.cs
 java.util.Objects.cs
 java.lang.Number.cs
+java.lang.Long.cs
+java.lang.Double.cs
+java.lang.Float.cs
+java.lang.Boolean.cs
+java.lang.Character.cs
+java.lang.Short.cs
+java.lang.Byte.cs
