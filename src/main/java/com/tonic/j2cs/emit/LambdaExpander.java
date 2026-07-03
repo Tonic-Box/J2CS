@@ -149,6 +149,10 @@ public final class LambdaExpander {
         }
 
         int kind = impl.getReferenceKind();
+        if (kind == MethodHandleConstant.REF_newInvokeSpecial) {
+            emitNewForward(w, impl, argExprs, implRetDesc, samRetDesc);
+            return;
+        }
         String call;
         if (kind == MethodHandleConstant.REF_invokeStatic) {
             call = staticCall(impl, argExprs);
@@ -167,6 +171,20 @@ public final class LambdaExpander {
             w.line("return " + adapt(call, types.storageType(implRetDesc).csText(),
                     types.storageType(samRetDesc).csText()) + ";");
         }
+    }
+
+    private void emitNewForward(CsWriter w, MethodHandleConstant impl, List<String> argExprs,
+                                String implRetDesc, String samRetDesc) {
+        String owner = impl.getOwner();
+        if (!naming.isAppClass(owner) && !com.tonic.j2cs.shims.ShimRegistry.isShimType(owner)) {
+            throw new UnsupportedBodyException("constructor reference to type not in input: " + owner);
+        }
+        String ownerFqcn = CsNamer.fqcn(owner);
+        w.line(ownerFqcn + " __obj = new " + ownerFqcn + "(global::java.lang.RawNew.I);");
+        w.line("__obj." + MemberNamer.initMethodName(impl.getDescriptor()) + "(" + join(argExprs) + ");");
+        String returned = adapt("__obj", naming.typeMapper().storageType(implRetDesc).csText(),
+                naming.typeMapper().storageType(samRetDesc).csText());
+        w.line("return " + returned + ";");
     }
 
     private String staticCall(MethodHandleConstant impl, List<String> argExprs) {

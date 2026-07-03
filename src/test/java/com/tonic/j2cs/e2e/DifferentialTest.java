@@ -96,6 +96,16 @@ class DifferentialTest {
     }
 
     @Test
+    void lambdas2() throws Exception {
+        Differential.assertSameOutput("Lambdas2");
+        String report = java.nio.file.Files.readString(
+                java.nio.file.Path.of("build", "e2e", "Lambdas2", "out", "j2cs-report.txt"));
+        org.junit.jupiter.api.Assertions.assertTrue(
+                report.contains("functional interface not in input: java/lang/Runnable"),
+                "report should list the unsupported Runnable lambda");
+    }
+
+    @Test
     void unsupportedGraceful() throws Exception {
         Differential.assertSameOutput("UnsupportedGraceful");
         String report = java.nio.file.Files.readString(

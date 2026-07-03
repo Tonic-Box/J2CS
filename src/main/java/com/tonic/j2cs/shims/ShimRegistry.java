@@ -31,7 +31,8 @@ public final class ShimRegistry {
             "java/lang/ArrayStoreException",
             "java/lang/IllegalArgumentException",
             "java/lang/NumberFormatException",
-            "java/lang/IllegalStateException");
+            "java/lang/IllegalStateException",
+            "java/util/Objects");
 
     private static final Map<String, String> SHIM_SUPERS = Map.ofEntries(
             Map.entry("java/lang/String", "java/lang/Object"),
@@ -78,7 +79,7 @@ public final class ShimRegistry {
     public record WalkResult(String declaringInternal, ShimTarget target) {
     }
 
-    private static final Map<String, ShimTarget> METHODS = Map.ofEntries(
+    private static final Map<String, ShimTarget> METHODS = Map.<String, ShimTarget>ofEntries(
             Map.entry("java/lang/Object.toString()Ljava/lang/String;", instance("toString")),
             Map.entry("java/lang/Object.hashCode()I", instance("hashCode")),
             Map.entry("java/lang/Object.equals(Ljava/lang/Object;)Z", instance("equals")),
@@ -129,7 +130,8 @@ public final class ShimRegistry {
             Map.entry("java/lang/Integer.toString(I)Ljava/lang/String;", statics("toString")),
             Map.entry("java/lang/System.arraycopy(Ljava/lang/Object;ILjava/lang/Object;II)V", statics("arraycopy")),
             Map.entry("java/lang/Throwable.getMessage()Ljava/lang/String;", instance("getMessage")),
-            Map.entry("java/lang/Throwable.toString()Ljava/lang/String;", instance("toString")));
+            Map.entry("java/lang/Throwable.toString()Ljava/lang/String;", instance("toString")),
+            Map.entry("java/util/Objects.requireNonNull(Ljava/lang/Object;)Ljava/lang/Object;", statics("requireNonNull")));
 
     private static final Map<String, ShimTarget> FIELDS = Map.ofEntries(
             Map.entry("java/lang/System.out Ljava/io/PrintStream;", statics("@out")),

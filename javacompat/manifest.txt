@@ -22,3 +22,4 @@ java.lang.IllegalArgumentException.cs
 java.lang.NumberFormatException.cs
 java.lang.IllegalStateException.cs
 java.lang.JForeignError.cs
+java.util.Objects.cs
