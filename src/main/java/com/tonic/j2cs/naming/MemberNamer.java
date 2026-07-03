@@ -62,11 +62,15 @@ public final class MemberNamer {
     }
 
     public String fieldName(FieldEntry field) {
-        String name = fieldNames.get(key(field.getName(), field.getDesc()));
-        if (name == null) {
-            throw new IllegalArgumentException("no name assigned for field " + field.getName() + " " + field.getDesc());
+        return fieldName(field.getName(), field.getDesc());
+    }
+
+    public String fieldName(String name, String descriptor) {
+        String assigned = fieldNames.get(key(name, descriptor));
+        if (assigned == null) {
+            throw new IllegalArgumentException("no name assigned for field " + name + " " + descriptor);
         }
-        return name;
+        return assigned;
     }
 
     public static String initMethodName(String descriptor) {

@@ -29,4 +29,14 @@ class DifferentialTest {
     void cmpTest() throws Exception {
         Differential.assertSameOutput("CmpTest");
     }
+
+    @Test
+    void shapes() throws Exception {
+        Differential.assertSameOutput("Shapes");
+    }
+
+    @Test
+    void staticsTest() throws Exception {
+        Differential.assertSameOutput("StaticsTest");
+    }
 }

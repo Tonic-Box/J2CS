@@ -33,8 +33,9 @@ public final class Differential {
         JavacHelper.compile(List.of(source), classes);
         String expected = JvmRunner.runMain(classes, fixtureName);
 
+        Path jar = TestJars.jar(work.resolve(fixtureName + ".jar"), classes, fixtureName);
         CliOptions options = new CliOptions(
-                classes.resolve(fixtureName + ".class"), work.resolve("out"), null, true, false, false, false);
+                jar, work.resolve("out"), null, true, false, false, false);
         TranspileResult result = new Transpiler().transpile(options);
 
         DotnetRunner runner = new DotnetRunner();

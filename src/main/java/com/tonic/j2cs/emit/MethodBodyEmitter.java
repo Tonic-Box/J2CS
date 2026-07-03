@@ -320,21 +320,33 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
     @Override
     public Void visitFieldAccess(FieldAccessInstruction instr) {
         String owner = instr.getOwner();
+        String name = instr.getName();
+        String desc = instr.getDescriptor();
         if (owner.startsWith("java/") || owner.startsWith("javax/")) {
-            Optional<ShimTarget> target = ShimRegistry.field(owner, instr.getName(), instr.getDescriptor());
+            Optional<ShimTarget> target = ShimRegistry.field(owner, name, desc);
             if (target.isEmpty()) {
-                throw new UnsupportedBodyException("shim field not implemented: "
-                        + owner + "." + instr.getName());
+                throw new UnsupportedBodyException("shim field not implemented: " + owner + "." + name);
             }
             if (!instr.isLoad() || !target.get().isStatic()) {
                 throw new UnsupportedBodyException("shim field access mode not supported: "
-                        + owner + "." + instr.getName());
+                        + owner + "." + name);
             }
             assign(instr, CsNamer.fqcn(owner) + "." + target.get().csMemberName());
             return null;
         }
-        throw new UnsupportedBodyException("field access not supported yet: "
-                + owner + "." + instr.getName());
+        if (!naming.isAppClass(owner)) {
+            throw new UnsupportedBodyException("field owner not in input: " + owner + "." + name);
+        }
+        String fieldName = naming.namerOf(owner).fieldName(name, desc);
+        String ref = instr.isStatic() ? CsNamer.fqcn(owner) : names.ref(instr.getObjectRef());
+        if (instr.isLoad()) {
+            assign(instr, ref + "." + fieldName);
+        } else {
+            CsType storage = naming.typeMapper().storageType(desc);
+            w.line(ref + "." + fieldName + " = "
+                    + Coercions.coerce(storage, names.ref(instr.getValue())) + ";");
+        }
+        return null;
     }
 
     @Override
@@ -366,7 +378,12 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
 
     @Override
     public Void visitNew(NewInstruction instr) {
-        throw new UnsupportedBodyException("object allocation not supported yet");
+        String className = instr.getClassName();
+        if (!naming.isAppClass(className) && !ShimRegistry.isShimType(className)) {
+            throw new UnsupportedBodyException("allocation of type not in input: " + className);
+        }
+        assign(instr, "new " + CsNamer.fqcn(className) + "(global::java.lang.RawNew.I)");
+        return null;
     }
 
     @Override
@@ -381,7 +398,14 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
 
     @Override
     public Void visitTypeCheck(TypeCheckInstruction instr) {
-        throw new UnsupportedBodyException("checkcast/instanceof not supported yet");
+        String operand = names.ref(instr.getOperand());
+        CsType target = naming.typeMapper().computeType(instr.getTargetType());
+        if (instr.isCast()) {
+            assign(instr, "(" + target.csText() + ")(" + operand + ")");
+        } else {
+            assign(instr, "(" + operand + " is " + target.csText() + ") ? 1 : 0");
+        }
+        return null;
     }
 
     @Override
