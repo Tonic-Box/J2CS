@@ -66,6 +66,11 @@ class DifferentialTest {
     }
 
     @Test
+    void generics() throws Exception {
+        Differential.assertSameOutput("Generics");
+    }
+
+    @Test
     void unsupportedGraceful() throws Exception {
         Differential.assertSameOutput("UnsupportedGraceful");
         String report = java.nio.file.Files.readString(

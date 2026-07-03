@@ -75,6 +75,23 @@ class HierarchyNamingTest {
     }
 
     @Test
+    void interfaceGenericBridgesShareTheInterfaceName() throws IOException {
+        NamingContext naming = context("gb",
+                "interface Box<T> { T get(); void put(T t); }"
+                        + " class SB implements Box<String> {"
+                        + " public String get() { return null; }"
+                        + " public void put(String t) {} }");
+        assertEquals(naming.namerOf("Box").methodName("get", "()Ljava/lang/Object;"),
+                naming.namerOf("SB").methodName("get", "()Ljava/lang/Object;"));
+        assertEquals(naming.namerOf("Box").methodName("put", "(Ljava/lang/Object;)V"),
+                naming.namerOf("SB").methodName("put", "(Ljava/lang/Object;)V"));
+        assertNotEquals(naming.namerOf("SB").methodName("get", "()Ljava/lang/Object;"),
+                naming.namerOf("SB").methodName("get", "()Ljava/lang/String;"));
+        assertNotEquals(naming.namerOf("SB").methodName("put", "(Ljava/lang/Object;)V"),
+                naming.namerOf("SB").methodName("put", "(Ljava/lang/String;)V"));
+    }
+
+    @Test
     void interfaceImplementationAdoptsInterfaceName() throws IOException {
         NamingContext naming = context("if",
                 "interface I { void x(); } class C implements I { public void x() {} }");
