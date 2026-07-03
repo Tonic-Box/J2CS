@@ -354,7 +354,14 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
 
     @Override
     public Void visitSwitch(SwitchInstruction instr) {
-        throw new UnsupportedBodyException("switch not supported yet");
+        w.open("switch (" + names.ref(instr.getKey()) + ")");
+        for (Map.Entry<Integer, IRBlock> entry : instr.getCases().entrySet()) {
+            w.line("case " + entry.getKey() + ": goto B" + entry.getValue().getId() + ";");
+        }
+        w.line("default: goto B" + instr.getDefaultTarget().getId() + ";");
+        w.close();
+        terminated = true;
+        return null;
     }
 
     @Override

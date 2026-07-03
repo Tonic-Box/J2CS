@@ -19,4 +19,14 @@ class DifferentialTest {
     void controlFlow() throws Exception {
         Differential.assertSameOutput("ControlFlow");
     }
+
+    @Test
+    void switchTest() throws Exception {
+        Differential.assertSameOutput("SwitchTest");
+    }
+
+    @Test
+    void cmpTest() throws Exception {
+        Differential.assertSameOutput("CmpTest");
+    }
 }
