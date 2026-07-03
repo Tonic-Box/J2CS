@@ -25,7 +25,7 @@ public final class SolutionGenerator {
         } catch (IOException e) {
             throw new J2csException("failed to write solution to " + appDir + ": " + e.getMessage(), e);
         }
-        shimPackager.copyShim(appDir.resolve("javacompat"));
+        shimPackager.copyShim(appDir.resolve("javacompat"), solution.bootstrappedInternal());
         return appDir;
     }
 

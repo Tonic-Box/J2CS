@@ -126,6 +126,11 @@ class DifferentialTest {
     }
 
     @Test
+    void bootstrapBoolean() throws Exception {
+        Differential.assertSameOutput("Bootstrap", java.util.List.of("java.lang.Boolean"));
+    }
+
+    @Test
     void lambdas2() throws Exception {
         Differential.assertSameOutput("Lambdas2");
         String report = java.nio.file.Files.readString(

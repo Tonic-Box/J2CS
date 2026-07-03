@@ -24,6 +24,10 @@ public final class Differential {
     }
 
     public static void assertSameOutput(String fixtureName) throws Exception {
+        assertSameOutput(fixtureName, List.of());
+    }
+
+    public static void assertSameOutput(String fixtureName, List<String> bootstrap) throws Exception {
         Assumptions.assumeTrue(DotnetLocator.isAvailable(), "dotnet CLI not available");
         Path work = Path.of("build", "e2e", fixtureName);
         Fixtures.deleteRecursively(work);
@@ -35,7 +39,7 @@ public final class Differential {
 
         Path jar = TestJars.jar(work.resolve(fixtureName + ".jar"), classes, fixtureName);
         CliOptions options = new CliOptions(
-                jar, work.resolve("out"), null, true, false, false, false);
+                jar, work.resolve("out"), null, true, false, false, false, bootstrap);
         TranspileResult result = new Transpiler().transpile(options);
 
         DotnetRunner runner = new DotnetRunner();

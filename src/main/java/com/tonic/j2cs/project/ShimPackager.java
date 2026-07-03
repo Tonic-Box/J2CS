@@ -16,10 +16,13 @@ public final class ShimPackager {
 
     private static final String RESOURCE_ROOT = "/javacompat/";
 
-    public void copyShim(Path targetDir) {
+    public void copyShim(Path targetDir, java.util.Set<String> bootstrappedInternal) {
         try {
             Files.createDirectories(targetDir);
             for (String fileName : readManifest()) {
+                if (bootstrappedInternal.contains(internalNameOf(fileName))) {
+                    continue;
+                }
                 try (InputStream in = openResource(RESOURCE_ROOT + fileName)) {
                     Files.copy(in, targetDir.resolve(fileName), StandardCopyOption.REPLACE_EXISTING);
                 }
@@ -27,6 +30,11 @@ public final class ShimPackager {
         } catch (IOException e) {
             throw new J2csException("failed to copy shim sources: " + e.getMessage(), e);
         }
+    }
+
+    private static String internalNameOf(String fileName) {
+        String dotted = fileName.endsWith(".cs") ? fileName.substring(0, fileName.length() - 3) : fileName;
+        return dotted.replace('.', '/');
     }
 
     private java.util.List<String> readManifest() throws IOException {

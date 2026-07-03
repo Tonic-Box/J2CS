@@ -15,7 +15,9 @@ public final class BootstrapPolicy {
     private record Entry(Set<String> suppressedMethodKeys, String fragmentResource) {
     }
 
-    private static final Map<String, Entry> POLICY = Map.of();
+    private static final Map<String, Entry> POLICY = Map.of(
+            "java/lang/Boolean",
+            new Entry(Set.of("<clinit>()V"), "java.lang.Boolean.native.cs"));
 
     private BootstrapPolicy() {
     }

@@ -75,7 +75,7 @@ public final class Transpiler {
         addStandingDivergences(report);
         String programCs = new EntryPointEmitter().emit(input.entryClassInternalName(), naming);
         Path appDir = new SolutionGenerator().generate(options.outDir(),
-                new GeneratedSolution(genFiles, stubFiles, programCs));
+                new GeneratedSolution(genFiles, stubFiles, programCs, bootstrappedInternal));
         new NativeFragmentPackager().copy(appDir, BootstrapPolicy.nativeFragments(bootstrappedInternal));
 
         Path reportPath = new ReportWriter().write(report, options.outDir());
