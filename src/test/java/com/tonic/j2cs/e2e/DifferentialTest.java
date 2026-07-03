@@ -86,5 +86,9 @@ class DifferentialTest {
                 "report should list the ArrayList allocation");
         org.junit.jupiter.api.Assertions.assertTrue(report.contains("java/util/List"),
                 "report should list the stubbed List type");
+        org.junit.jupiter.api.Assertions.assertTrue(report.contains("superclass not in input: java/lang/Enum"),
+                "report should show the enum degrading via its stubbed superclass");
+        org.junit.jupiter.api.Assertions.assertTrue(report.contains("native method"),
+                "report should list the native method");
     }
 }

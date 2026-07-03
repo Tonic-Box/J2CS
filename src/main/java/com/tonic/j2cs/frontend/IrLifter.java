@@ -14,6 +14,7 @@ import com.tonic.j2cs.model.MethodPlan;
 import com.tonic.j2cs.types.TypeMapper;
 import com.tonic.parser.ClassFile;
 import com.tonic.parser.MethodEntry;
+import com.tonic.util.Modifiers;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +36,9 @@ public final class IrLifter {
 
     public MethodPlan lower(ClassFile classFile, MethodEntry method) {
         if (method.getCodeAttribute() == null) {
-            return new MethodPlan.Unsupported("no bytecode (abstract or native)");
+            return new MethodPlan.Unsupported(Modifiers.isNative(method.getAccess())
+                    ? "native method"
+                    : "no bytecode (abstract)");
         }
         try {
             IRMethod ir = new SSA(classFile.getConstPool())

@@ -24,4 +24,10 @@ public class UnsupportedGraceful {
     static int useList() {
         return new java.util.ArrayList<String>().size();
     }
+
+    static native int nativeThing();
+}
+
+enum Color {
+    RED, GREEN
 }

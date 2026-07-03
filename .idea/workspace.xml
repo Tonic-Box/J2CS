@@ -4,10 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d05fdbd2-bef1-4012-9f61-0cf573243b7b" name="Changes" comment="Emit interfaces: defaults, statics, constants, and DIM dispatch">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="d05fdbd2-bef1-4012-9f61-0cf573243b7b" name="Changes" comment="Grow the shim: Math, Integer statics, String search, arraycopy">
+      <change afterPath="$PROJECT_DIR$/javacompat/java.lang.Integer.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/javacompat/java.lang.Math.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/resources/fixtures/ShimGrowth/ShimGrowth.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/javacompat/java.lang.String.cs" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/java.lang.String.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/javacompat/java.lang.System.cs" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/java.lang.System.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/javacompat/manifest.txt" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/manifest.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/MethodBodyEmitter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/MethodBodyEmitter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/pipeline/Transpiler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/pipeline/Transpiler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/shims/ShimRegistry.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/shims/ShimRegistry.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/com/tonic/j2cs/e2e/DifferentialTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/tonic/j2cs/e2e/DifferentialTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/tonic/j2cs/unit/HierarchyNamingTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/tonic/j2cs/unit/HierarchyNamingTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -176,7 +183,23 @@
       <option name="project" value="LOCAL" />
       <updated>1783091015033</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="Cover generic bridges and erasure differentially">
+      <option name="closed" value="true" />
+      <created>1783092192926</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1783092192926</updated>
+    </task>
+    <task id="LOCAL-00018" summary="Grow the shim: Math, Integer statics, String search, arraycopy">
+      <option name="closed" value="true" />
+      <created>1783093120525</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1783093120525</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -196,6 +219,8 @@
     <MESSAGE value="Add class hierarchy model and supertype-coordinated member naming" />
     <MESSAGE value="Emit class inheritance: base clauses, virtual dispatch, super calls" />
     <MESSAGE value="Emit interfaces: defaults, statics, constants, and DIM dispatch" />
-    <option name="LAST_COMMIT_MESSAGE" value="Emit interfaces: defaults, statics, constants, and DIM dispatch" />
+    <MESSAGE value="Cover generic bridges and erasure differentially" />
+    <MESSAGE value="Grow the shim: Math, Integer statics, String search, arraycopy" />
+    <option name="LAST_COMMIT_MESSAGE" value="Grow the shim: Math, Integer statics, String search, arraycopy" />
   </component>
 </project>
