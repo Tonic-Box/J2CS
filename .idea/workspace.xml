@@ -4,13 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d05fdbd2-bef1-4012-9f61-0cf573243b7b" name="Changes" comment="Shim collections tail: LinkedList/LinkedHashMap/TreeMap/StringBuffer">
-      <change beforePath="$PROJECT_DIR$/javacompat/java.lang.Boolean.cs" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/java.lang.Boolean.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/javacompat/manifest.txt" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/manifest.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/MethodBodyEmitter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/MethodBodyEmitter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/pipeline/Transpiler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/pipeline/Transpiler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/shims/ShimRegistry.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/shims/ShimRegistry.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/tonic/j2cs/e2e/DifferentialTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/tonic/j2cs/e2e/DifferentialTest.java" afterDir="false" />
+    <list default="true" id="d05fdbd2-bef1-4012-9f61-0cf573243b7b" name="Changes" comment="Multi-dim arrays + Boolean.TRUE/FALSE + NoSuchFieldError">
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/project/SolutionGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/project/SolutionGenerator.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,14 +45,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1783017158528</updated>
-    </task>
-    <task id="LOCAL-00009" summary="Support objects: allocation, fields, casts, and clinit ordering">
-      <option name="closed" value="true" />
-      <created>1783073075800</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1783073075800</updated>
     </task>
     <task id="LOCAL-00010" summary="Support arrays: allocation, element access, and length">
       <option name="closed" value="true" />
@@ -443,11 +430,18 @@
       <option name="project" value="LOCAL" />
       <updated>1783180915954</updated>
     </task>
-    <option name="localTasksCounter" value="58" />
+    <task id="LOCAL-00058" summary="Multi-dim arrays + Boolean.TRUE/FALSE + NoSuchFieldError">
+      <option name="closed" value="true" />
+      <created>1783182052789</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1783182052789</updated>
+    </task>
+    <option name="localTasksCounter" value="59" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Add JDK bootstrap loader and coverage-report diagnostic" />
     <MESSAGE value="Wire the bootstrap foundation, inert for the empty set" />
     <MESSAGE value="Add String.equalsIgnoreCase for the Boolean bootstrap closure" />
     <MESSAGE value="Bootstrap java.lang.Boolean from JDK bytecode with a native seam" />
@@ -472,6 +466,7 @@
     <MESSAGE value="Support class literals (ConstRenderer + Class shim) + Math.log" />
     <MESSAGE value="Support Runnable/Predicate lambdas + List.clear/removeIf" />
     <MESSAGE value="Shim collections tail: LinkedList/LinkedHashMap/TreeMap/StringBuffer" />
-    <option name="LAST_COMMIT_MESSAGE" value="Shim collections tail: LinkedList/LinkedHashMap/TreeMap/StringBuffer" />
+    <MESSAGE value="Multi-dim arrays + Boolean.TRUE/FALSE + NoSuchFieldError" />
+    <option name="LAST_COMMIT_MESSAGE" value="Multi-dim arrays + Boolean.TRUE/FALSE + NoSuchFieldError" />
   </component>
 </project>

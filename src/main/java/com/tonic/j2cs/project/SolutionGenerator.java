@@ -4,7 +4,9 @@ import com.tonic.j2cs.J2csException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.Map;
+import java.util.stream.Stream;
 
 /**
  * Writes the generated C# solution: App.csproj, Program.cs, gen/*.cs, stubs/*.cs, and the
@@ -12,12 +14,17 @@ import java.util.Map;
  */
 public final class SolutionGenerator {
 
+    private static final String[] GENERATED_DIRS = {"gen", "stubs", "javacompat", "native"};
+
     private final ShimPackager shimPackager = new ShimPackager();
 
     public Path generate(Path outDir, GeneratedSolution solution) {
         Path appDir = outDir.resolve("App");
         try {
             Files.createDirectories(appDir);
+            for (String generated : GENERATED_DIRS) {
+                deleteRecursively(appDir.resolve(generated));
+            }
             Files.writeString(appDir.resolve("App.csproj"), CsprojTemplate.csproj());
             Files.writeString(appDir.resolve("Program.cs"), solution.programCs());
             writeSources(appDir.resolve("gen"), solution.genFiles());
@@ -27,6 +34,17 @@ public final class SolutionGenerator {
         }
         shimPackager.copyShim(appDir.resolve("javacompat"), solution.bootstrappedInternal());
         return appDir;
+    }
+
+    private static void deleteRecursively(Path dir) throws IOException {
+        if (!Files.exists(dir)) {
+            return;
+        }
+        try (Stream<Path> walk = Files.walk(dir)) {
+            for (Path path : (Iterable<Path>) walk.sorted(Comparator.reverseOrder())::iterator) {
+                Files.delete(path);
+            }
+        }
     }
 
     private static void writeSources(Path dir, Map<String, String> files) throws IOException {
