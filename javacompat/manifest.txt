@@ -21,6 +21,11 @@ java.lang.ArrayStoreException.cs
 java.lang.IllegalArgumentException.cs
 java.lang.NumberFormatException.cs
 java.lang.IllegalStateException.cs
+java.lang.InterruptedException.cs
+java.lang.Thread.cs
+java.util.concurrent.TimeUnit.cs
+java.util.concurrent.locks.Lock.cs
+java.util.concurrent.locks.ReentrantLock.cs
 java.lang.JForeignError.cs
 java.util.Objects.cs
 java.util.UUID.cs

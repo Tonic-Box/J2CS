@@ -51,7 +51,12 @@ public final class ShimRegistry {
             "java/util/Map$Entry",
             "java/util/HashMap",
             "java/util/HashSet",
-            "java/util/UUID");
+            "java/util/UUID",
+            "java/lang/InterruptedException",
+            "java/lang/Thread",
+            "java/util/concurrent/TimeUnit",
+            "java/util/concurrent/locks/Lock",
+            "java/util/concurrent/locks/ReentrantLock");
 
     private static final Map<String, String> SHIM_SUPERS = Map.ofEntries(
             Map.entry("java/lang/String", "java/lang/Object"),
@@ -78,6 +83,11 @@ public final class ShimRegistry {
             Map.entry("java/util/HashMap", "java/util/Map"),
             Map.entry("java/util/HashSet", "java/util/Set"),
             Map.entry("java/util/UUID", "java/lang/Object"),
+            Map.entry("java/lang/InterruptedException", "java/lang/Exception"),
+            Map.entry("java/lang/Thread", "java/lang/Object"),
+            Map.entry("java/util/concurrent/TimeUnit", "java/lang/Object"),
+            Map.entry("java/util/concurrent/locks/Lock", "java/lang/Object"),
+            Map.entry("java/util/concurrent/locks/ReentrantLock", "java/lang/Object"),
             Map.entry("java/io/PrintStream", "java/lang/Object"),
             Map.entry("java/lang/Throwable", "java/lang/Object"),
             Map.entry("java/lang/Exception", "java/lang/Throwable"),
@@ -106,7 +116,8 @@ public final class ShimRegistry {
             "java/lang/ArrayStoreException",
             "java/lang/IllegalArgumentException",
             "java/lang/NumberFormatException",
-            "java/lang/IllegalStateException");
+            "java/lang/IllegalStateException",
+            "java/lang/InterruptedException");
 
     public static final Map<String, String> EXTENDABLE_VIRTUALS = Map.of(
             "getMessage()Ljava/lang/String;", "getMessage");
@@ -212,6 +223,12 @@ public final class ShimRegistry {
             Map.entry("java/lang/System.exit(I)V", statics("exit")),
             Map.entry("java/util/UUID.randomUUID()Ljava/util/UUID;", statics("randomUUID")),
             Map.entry("java/util/UUID.toString()Ljava/lang/String;", instance("toString")),
+            Map.entry("java/lang/Thread.currentThread()Ljava/lang/Thread;", statics("currentThread")),
+            Map.entry("java/lang/Thread.interrupt()V", instance("interrupt")),
+            Map.entry("java/util/concurrent/locks/Lock.lock()V", instance("@lock")),
+            Map.entry("java/util/concurrent/locks/Lock.unlock()V", instance("unlock")),
+            Map.entry("java/util/concurrent/TimeUnit.sleep(J)V", instance("sleep")),
+            Map.entry("java/util/concurrent/TimeUnit.toMillis(J)J", instance("toMillis")),
             Map.entry("java/util/Objects.requireNonNull(Ljava/lang/Object;)Ljava/lang/Object;", statics("requireNonNull")),
             Map.entry("java/util/Iterable.iterator()Ljava/util/Iterator;", instance("iterator")),
             Map.entry("java/util/Iterator.hasNext()Z", instance("hasNext")),
@@ -240,7 +257,9 @@ public final class ShimRegistry {
 
     private static final Map<String, ShimTarget> FIELDS = Map.ofEntries(
             Map.entry("java/lang/System.out Ljava/io/PrintStream;", statics("@out")),
-            Map.entry("java/lang/System.err Ljava/io/PrintStream;", statics("err")));
+            Map.entry("java/lang/System.err Ljava/io/PrintStream;", statics("err")),
+            Map.entry("java/util/concurrent/TimeUnit.MILLISECONDS Ljava/util/concurrent/TimeUnit;", statics("MILLISECONDS")),
+            Map.entry("java/util/concurrent/TimeUnit.NANOSECONDS Ljava/util/concurrent/TimeUnit;", statics("NANOSECONDS")));
 
     private ShimRegistry() {
     }

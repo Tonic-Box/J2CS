@@ -4,14 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d05fdbd2-bef1-4012-9f61-0cf573243b7b" name="Changes" comment="Bootstrap java.util.HashMap + HashSet from JDK bytecode">
+    <list default="true" id="d05fdbd2-bef1-4012-9f61-0cf573243b7b" name="Changes" comment="Shim String.format/UUID/System.nanoTime+exit/printStackTrace">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/javacompat/java.lang.String.cs" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/java.lang.String.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/javacompat/java.lang.System.cs" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/java.lang.System.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/javacompat/java.lang.Throwable.cs" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/java.lang.Throwable.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/javacompat/manifest.txt" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/manifest.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/MethodBodyEmitter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/MethodBodyEmitter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/naming/MemberNamer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/naming/MemberNamer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/shims/ShimRegistry.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/shims/ShimRegistry.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -52,14 +47,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1783017158528</updated>
-    </task>
-    <task id="LOCAL-00001" summary="init">
-      <option name="closed" value="true" />
-      <created>1783019308028</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1783019308030</updated>
     </task>
     <task id="LOCAL-00002" summary="Wire build to YABR via mavenLocal and prove the lift path">
       <option name="closed" value="true" />
@@ -445,11 +432,18 @@
       <option name="project" value="LOCAL" />
       <updated>1783168521690</updated>
     </task>
-    <option name="localTasksCounter" value="50" />
+    <task id="LOCAL-00050" summary="Shim String.format/UUID/System.nanoTime+exit/printStackTrace">
+      <option name="closed" value="true" />
+      <created>1783172408011</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1783172408011</updated>
+    </task>
+    <option name="localTasksCounter" value="51" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Support method references: static, bound, unbound, ctor, and shim" />
     <MESSAGE value="Lock lambda emission and test the synthetic sink" />
     <MESSAGE value="Model java.lang.Integer as a real boxed object" />
     <MESSAGE value="Add the remaining wrapper types as boxed objects" />
@@ -474,6 +468,7 @@
     <MESSAGE value="Fix MemberNamer to share C# names for genuine overloads" />
     <MESSAGE value="Bootstrap java.util.ArrayList from JDK bytecode" />
     <MESSAGE value="Bootstrap java.util.HashMap + HashSet from JDK bytecode" />
-    <option name="LAST_COMMIT_MESSAGE" value="Bootstrap java.util.HashMap + HashSet from JDK bytecode" />
+    <MESSAGE value="Shim String.format/UUID/System.nanoTime+exit/printStackTrace" />
+    <option name="LAST_COMMIT_MESSAGE" value="Shim String.format/UUID/System.nanoTime+exit/printStackTrace" />
   </component>
 </project>
