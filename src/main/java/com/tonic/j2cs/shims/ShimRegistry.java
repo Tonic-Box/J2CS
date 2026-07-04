@@ -61,9 +61,16 @@ public final class ShimRegistry {
             "java/time/format/DateTimeFormatter",
             "java/time/temporal/ChronoUnit",
             "java/time/temporal/Temporal",
-            "java/time/chrono/ChronoLocalDateTime");
+            "java/time/chrono/ChronoLocalDateTime",
+            "java/security/MessageDigest",
+            "java/security/SecureRandom",
+            "java/util/Base64",
+            "java/util/Base64$Encoder",
+            "java/util/Base64$Decoder",
+            "java/nio/charset/Charset",
+            "java/nio/charset/StandardCharsets");
 
-    private static final Map<String, String> SHIM_SUPERS = Map.ofEntries(
+    private static final Map<String, String> SHIM_SUPERS = Map.<String, String>ofEntries(
             Map.entry("java/lang/String", "java/lang/Object"),
             Map.entry("java/lang/StringBuilder", "java/lang/Object"),
             Map.entry("java/lang/System", "java/lang/Object"),
@@ -98,6 +105,13 @@ public final class ShimRegistry {
             Map.entry("java/time/temporal/ChronoUnit", "java/lang/Object"),
             Map.entry("java/time/temporal/Temporal", "java/lang/Object"),
             Map.entry("java/time/chrono/ChronoLocalDateTime", "java/lang/Object"),
+            Map.entry("java/security/MessageDigest", "java/lang/Object"),
+            Map.entry("java/security/SecureRandom", "java/lang/Object"),
+            Map.entry("java/util/Base64", "java/lang/Object"),
+            Map.entry("java/util/Base64$Encoder", "java/lang/Object"),
+            Map.entry("java/util/Base64$Decoder", "java/lang/Object"),
+            Map.entry("java/nio/charset/Charset", "java/lang/Object"),
+            Map.entry("java/nio/charset/StandardCharsets", "java/lang/Object"),
             Map.entry("java/io/PrintStream", "java/lang/Object"),
             Map.entry("java/lang/Throwable", "java/lang/Object"),
             Map.entry("java/lang/Exception", "java/lang/Throwable"),
@@ -247,6 +261,15 @@ public final class ShimRegistry {
             Map.entry("java/time/LocalDateTime.format(Ljava/time/format/DateTimeFormatter;)Ljava/lang/String;", instance("format")),
             Map.entry("java/time/format/DateTimeFormatter.ofPattern(Ljava/lang/String;)Ljava/time/format/DateTimeFormatter;", statics("ofPattern")),
             Map.entry("java/time/temporal/ChronoUnit.between(Ljava/time/temporal/Temporal;Ljava/time/temporal/Temporal;)J", instance("between")),
+            Map.entry("java/lang/String.getBytes(Ljava/nio/charset/Charset;)[B", instance("getBytes")),
+            Map.entry("java/security/MessageDigest.getInstance(Ljava/lang/String;)Ljava/security/MessageDigest;", statics("getInstance")),
+            Map.entry("java/security/MessageDigest.digest([B)[B", instance("digest")),
+            Map.entry("java/security/MessageDigest.reset()V", instance("reset")),
+            Map.entry("java/security/SecureRandom.nextBytes([B)V", instance("nextBytes")),
+            Map.entry("java/util/Base64.getEncoder()Ljava/util/Base64$Encoder;", statics("getEncoder")),
+            Map.entry("java/util/Base64.getDecoder()Ljava/util/Base64$Decoder;", statics("getDecoder")),
+            Map.entry("java/util/Base64$Encoder.encodeToString([B)Ljava/lang/String;", instance("encodeToString")),
+            Map.entry("java/util/Base64$Decoder.decode(Ljava/lang/String;)[B", instance("decode")),
             Map.entry("java/util/Objects.requireNonNull(Ljava/lang/Object;)Ljava/lang/Object;", statics("requireNonNull")),
             Map.entry("java/util/Iterable.iterator()Ljava/util/Iterator;", instance("iterator")),
             Map.entry("java/util/Iterator.hasNext()Z", instance("hasNext")),
@@ -278,7 +301,8 @@ public final class ShimRegistry {
             Map.entry("java/lang/System.err Ljava/io/PrintStream;", statics("err")),
             Map.entry("java/util/concurrent/TimeUnit.MILLISECONDS Ljava/util/concurrent/TimeUnit;", statics("MILLISECONDS")),
             Map.entry("java/util/concurrent/TimeUnit.NANOSECONDS Ljava/util/concurrent/TimeUnit;", statics("NANOSECONDS")),
-            Map.entry("java/time/temporal/ChronoUnit.MINUTES Ljava/time/temporal/ChronoUnit;", statics("MINUTES")));
+            Map.entry("java/time/temporal/ChronoUnit.MINUTES Ljava/time/temporal/ChronoUnit;", statics("MINUTES")),
+            Map.entry("java/nio/charset/StandardCharsets.UTF_8 Ljava/nio/charset/Charset;", statics("UTF_8")));
 
     private ShimRegistry() {
     }

@@ -42,6 +42,12 @@ namespace java.lang
             return Value.Length == 0 ? 1 : 0;
         }
 
+        public sbyte[] getBytes(global::java.nio.charset.Charset charset)
+        {
+            var encoding = charset == null ? global::System.Text.Encoding.UTF8 : charset.encoding;
+            return global::java.lang.JRuntime.SignedBytes(encoding.GetBytes(Value));
+        }
+
         public static String format(String fmt, global::java.lang.Object[] args)
         {
             string f = fmt == null ? "null" : fmt.Value;

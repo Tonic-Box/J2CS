@@ -31,6 +31,13 @@ java.time.chrono.ChronoLocalDateTime.cs
 java.time.LocalDateTime.cs
 java.time.format.DateTimeFormatter.cs
 java.time.temporal.ChronoUnit.cs
+java.nio.charset.Charset.cs
+java.nio.charset.StandardCharsets.cs
+java.security.MessageDigest.cs
+java.security.SecureRandom.cs
+java.util.Base64.cs
+java.util.Base64$Encoder.cs
+java.util.Base64$Decoder.cs
 java.lang.JForeignError.cs
 java.util.Objects.cs
 java.util.UUID.cs

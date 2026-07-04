@@ -227,6 +227,34 @@ namespace java.lang
             return o == null ? "null" : Str(o.toString());
         }
 
+        public static byte[] UnsignedBytes(sbyte[] a)
+        {
+            if (a == null)
+            {
+                return null;
+            }
+            var r = new byte[a.Length];
+            for (int i = 0; i < a.Length; i++)
+            {
+                r[i] = (byte)a[i];
+            }
+            return r;
+        }
+
+        public static sbyte[] SignedBytes(byte[] a)
+        {
+            if (a == null)
+            {
+                return null;
+            }
+            var r = new sbyte[a.Length];
+            for (int i = 0; i < a.Length; i++)
+            {
+                r[i] = (sbyte)a[i];
+            }
+            return r;
+        }
+
         public static string JavaDoubleToString(double d)
         {
             if (double.IsNaN(d))
