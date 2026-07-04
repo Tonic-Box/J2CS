@@ -197,8 +197,7 @@ public final class MemberNamer {
         }
         for (MethodEntry method : classFile.getMethods()) {
             String name = method.getName();
-            if (name.equals("<init>") || name.equals("<clinit>")
-                    || methodNames.containsKey(key(name, method.getDesc()))) {
+            if (name.equals("<init>") || name.equals("<clinit>") || methodNames.containsKey(key(name, method.getDesc()))) {
                 continue;
             }
             if (!baseByJavaName.containsKey(name)) {

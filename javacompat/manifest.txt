@@ -23,6 +23,7 @@ java.lang.NumberFormatException.cs
 java.lang.IllegalStateException.cs
 java.lang.JForeignError.cs
 java.util.Objects.cs
+java.util.UUID.cs
 java.lang.Number.cs
 java.lang.Long.cs
 java.lang.Double.cs

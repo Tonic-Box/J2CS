@@ -536,10 +536,18 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
             return Coercions.coerce(storage, expr);
         }
         if (value instanceof SSAValue ssa && ssa.getType() != null) {
+            String storageCs = storage.csText();
             String valueCs = naming.typeMapper().computeType(ssa.getType()).csText();
-            if (!valueCs.equals(storage.csText())) {
-                String bridge = storage.csText().endsWith("[]") ? "(object)" : "";
-                return "(" + storage.csText() + ")" + bridge + "(" + expr + ")";
+            if (!valueCs.equals(storageCs)) {
+                String bridge;
+                if (storageCs.endsWith("[]")) {
+                    bridge = "(object)";
+                } else if (storageCs.equals("global::java.lang.Object")) {
+                    bridge = "";
+                } else {
+                    bridge = "(global::java.lang.Object)";
+                }
+                return "(" + storageCs + ")" + bridge + "(" + expr + ")";
             }
         }
         return expr;

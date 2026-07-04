@@ -50,7 +50,8 @@ public final class ShimRegistry {
             "java/util/Map",
             "java/util/Map$Entry",
             "java/util/HashMap",
-            "java/util/HashSet");
+            "java/util/HashSet",
+            "java/util/UUID");
 
     private static final Map<String, String> SHIM_SUPERS = Map.ofEntries(
             Map.entry("java/lang/String", "java/lang/Object"),
@@ -76,6 +77,7 @@ public final class ShimRegistry {
             Map.entry("java/util/Map$Entry", "java/lang/Object"),
             Map.entry("java/util/HashMap", "java/util/Map"),
             Map.entry("java/util/HashSet", "java/util/Set"),
+            Map.entry("java/util/UUID", "java/lang/Object"),
             Map.entry("java/io/PrintStream", "java/lang/Object"),
             Map.entry("java/lang/Throwable", "java/lang/Object"),
             Map.entry("java/lang/Exception", "java/lang/Throwable"),
@@ -203,6 +205,13 @@ public final class ShimRegistry {
             Map.entry("java/lang/System.arraycopy(Ljava/lang/Object;ILjava/lang/Object;II)V", statics("arraycopy")),
             Map.entry("java/lang/Throwable.getMessage()Ljava/lang/String;", instance("getMessage")),
             Map.entry("java/lang/Throwable.toString()Ljava/lang/String;", instance("toString")),
+            Map.entry("java/lang/Throwable.printStackTrace()V", instance("printStackTrace")),
+            Map.entry("java/lang/String.format(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;", statics("format")),
+            Map.entry("java/lang/System.nanoTime()J", statics("nanoTime")),
+            Map.entry("java/lang/System.currentTimeMillis()J", statics("currentTimeMillis")),
+            Map.entry("java/lang/System.exit(I)V", statics("exit")),
+            Map.entry("java/util/UUID.randomUUID()Ljava/util/UUID;", statics("randomUUID")),
+            Map.entry("java/util/UUID.toString()Ljava/lang/String;", instance("toString")),
             Map.entry("java/util/Objects.requireNonNull(Ljava/lang/Object;)Ljava/lang/Object;", statics("requireNonNull")),
             Map.entry("java/util/Iterable.iterator()Ljava/util/Iterator;", instance("iterator")),
             Map.entry("java/util/Iterator.hasNext()Z", instance("hasNext")),

@@ -28,5 +28,10 @@ namespace java.lang
         {
             return String.Wrap(message == null ? JavaClassName : JavaClassName + ": " + message.Value);
         }
+
+        public virtual void printStackTrace()
+        {
+            global::System.Console.Error.WriteLine(toString().Value);
+        }
     }
 }
