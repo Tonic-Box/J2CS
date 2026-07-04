@@ -191,7 +191,7 @@ public final class ClassEmitter {
 
     private boolean extendsShimThrowable(String internalName) {
         String external = naming.hierarchy().firstExternalSuper(internalName);
-        return external != null && ShimRegistry.isExtendable(external);
+        return external != null && ShimRegistry.isThrowableSubtype(external);
     }
 
     private static String interfacePrefix(MethodEntry method) {

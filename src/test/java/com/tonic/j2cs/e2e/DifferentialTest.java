@@ -210,8 +210,6 @@ class DifferentialTest {
                 "report should list the TreeSet allocation");
         org.junit.jupiter.api.Assertions.assertTrue(report.contains("java/util/TreeMap"),
                 "report should list the stubbed TreeMap type");
-        org.junit.jupiter.api.Assertions.assertTrue(report.contains("superclass not in input: java/lang/Enum"),
-                "report should show the enum degrading via its stubbed superclass");
         org.junit.jupiter.api.Assertions.assertTrue(report.contains("native method"),
                 "report should list the native method");
     }

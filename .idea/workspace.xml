@@ -4,7 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d05fdbd2-bef1-4012-9f61-0cf573243b7b" name="Changes" comment="Shim java.time (LocalDateTime/ChronoUnit/DateTimeFormatter)" />
+    <list default="true" id="d05fdbd2-bef1-4012-9f61-0cf573243b7b" name="Changes" comment="Shim crypto: MessageDigest/SecureRandom/Base64/Charset">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/javacompat/manifest.txt" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/manifest.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/ClassEmitter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/ClassEmitter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/shims/ShimRegistry.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/shims/ShimRegistry.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/tonic/j2cs/e2e/DifferentialTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/tonic/j2cs/e2e/DifferentialTest.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -43,14 +49,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1783017158528</updated>
-    </task>
-    <task id="LOCAL-00004" summary="Add C# naming, member collision handling, and type mapping">
-      <option name="closed" value="true" />
-      <created>1783021386136</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1783021386136</updated>
     </task>
     <task id="LOCAL-00005" summary="Generate compilable C# solutions with shim, csproj, and dotnet runner">
       <option name="closed" value="true" />
@@ -436,11 +434,18 @@
       <option name="project" value="LOCAL" />
       <updated>1783175796115</updated>
     </task>
-    <option name="localTasksCounter" value="53" />
+    <task id="LOCAL-00053" summary="Shim crypto: MessageDigest/SecureRandom/Base64/Charset">
+      <option name="closed" value="true" />
+      <created>1783176345401</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1783176345401</updated>
+    </task>
+    <option name="localTasksCounter" value="54" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Add the remaining wrapper types as boxed objects" />
     <MESSAGE value="Prove boxed generics end to end and note wrapper divergences" />
     <MESSAGE value="Add ArrayList and the collection interface hierarchy" />
     <MESSAGE value="Add HashMap and HashSet with JVM-faithful iteration order" />
@@ -465,6 +470,7 @@
     <MESSAGE value="Shim String.format/UUID/System.nanoTime+exit/printStackTrace" />
     <MESSAGE value="Shim InterruptedException/Thread/TimeUnit/ReentrantLock" />
     <MESSAGE value="Shim java.time (LocalDateTime/ChronoUnit/DateTimeFormatter)" />
-    <option name="LAST_COMMIT_MESSAGE" value="Shim java.time (LocalDateTime/ChronoUnit/DateTimeFormatter)" />
+    <MESSAGE value="Shim crypto: MessageDigest/SecureRandom/Base64/Charset" />
+    <option name="LAST_COMMIT_MESSAGE" value="Shim crypto: MessageDigest/SecureRandom/Base64/Charset" />
   </component>
 </project>

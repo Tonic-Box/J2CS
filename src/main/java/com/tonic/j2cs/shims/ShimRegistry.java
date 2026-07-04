@@ -68,7 +68,8 @@ public final class ShimRegistry {
             "java/util/Base64$Encoder",
             "java/util/Base64$Decoder",
             "java/nio/charset/Charset",
-            "java/nio/charset/StandardCharsets");
+            "java/nio/charset/StandardCharsets",
+            "java/lang/Enum");
 
     private static final Map<String, String> SHIM_SUPERS = Map.<String, String>ofEntries(
             Map.entry("java/lang/String", "java/lang/Object"),
@@ -112,6 +113,7 @@ public final class ShimRegistry {
             Map.entry("java/util/Base64$Decoder", "java/lang/Object"),
             Map.entry("java/nio/charset/Charset", "java/lang/Object"),
             Map.entry("java/nio/charset/StandardCharsets", "java/lang/Object"),
+            Map.entry("java/lang/Enum", "java/lang/Object"),
             Map.entry("java/io/PrintStream", "java/lang/Object"),
             Map.entry("java/lang/Throwable", "java/lang/Object"),
             Map.entry("java/lang/Exception", "java/lang/Throwable"),
@@ -141,13 +143,17 @@ public final class ShimRegistry {
             "java/lang/IllegalArgumentException",
             "java/lang/NumberFormatException",
             "java/lang/IllegalStateException",
-            "java/lang/InterruptedException");
+            "java/lang/InterruptedException",
+            "java/lang/Enum");
 
     public static final Map<String, String> EXTENDABLE_VIRTUALS = Map.of(
-            "getMessage()Ljava/lang/String;", "getMessage");
+            "getMessage()Ljava/lang/String;", "getMessage",
+            "name()Ljava/lang/String;", "name",
+            "ordinal()I", "ordinal");
 
     public static final Set<String> EXTENDABLE_MEMBER_NAMES = Set.of(
-            "getMessage", "JavaClassName", "message", "__origin");
+            "getMessage", "JavaClassName", "message", "__origin",
+            "name", "ordinal", "__name", "__ordinal");
 
     public record WalkResult(String declaringInternal, ShimTarget target) {
     }
@@ -270,6 +276,9 @@ public final class ShimRegistry {
             Map.entry("java/util/Base64.getDecoder()Ljava/util/Base64$Decoder;", statics("getDecoder")),
             Map.entry("java/util/Base64$Encoder.encodeToString([B)Ljava/lang/String;", instance("encodeToString")),
             Map.entry("java/util/Base64$Decoder.decode(Ljava/lang/String;)[B", instance("decode")),
+            Map.entry("java/lang/Enum.name()Ljava/lang/String;", instance("name")),
+            Map.entry("java/lang/Enum.ordinal()I", instance("ordinal")),
+            Map.entry("java/lang/Enum.compareTo(Ljava/lang/Enum;)I", instance("compareTo")),
             Map.entry("java/util/Objects.requireNonNull(Ljava/lang/Object;)Ljava/lang/Object;", statics("requireNonNull")),
             Map.entry("java/util/Iterable.iterator()Ljava/util/Iterator;", instance("iterator")),
             Map.entry("java/util/Iterator.hasNext()Z", instance("hasNext")),
@@ -317,6 +326,17 @@ public final class ShimRegistry {
 
     public static boolean isExtendable(String internalName) {
         return EXTENDABLE.contains(internalName);
+    }
+
+    public static boolean isThrowableSubtype(String internalName) {
+        String current = internalName;
+        while (current != null) {
+            if (current.equals("java/lang/Throwable")) {
+                return true;
+            }
+            current = SHIM_SUPERS.get(current);
+        }
+        return false;
     }
 
     public static String superOf(String internalName) {
