@@ -1,5 +1,6 @@
 package com.tonic.j2cs.report;
 
+import com.tonic.j2cs.bootstrap.BootstrapPolicy;
 import com.tonic.j2cs.emit.MethodBodyEmitter;
 import com.tonic.j2cs.emit.SyntheticClasses;
 import com.tonic.j2cs.emit.UnsupportedBodyException;
@@ -26,6 +27,27 @@ import java.util.TreeSet;
  * surface exactly as they would during a real transpile. No dotnet invocation.
  */
 public final class BootstrapCoverageReport {
+
+    public String coverage() {
+        Set<String> generated = new TreeSet<>(BootstrapPolicy.bootstrappable());
+        Set<String> shim = new TreeSet<>();
+        for (String type : ShimRegistry.types()) {
+            if (!generated.contains(type)) {
+                shim.add(type);
+            }
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append("j2cs bootstrap coverage\n");
+        sb.append("generated from JDK bytecode (").append(generated.size()).append("):\n");
+        for (String g : generated) {
+            sb.append("  ").append(g).append('\n');
+        }
+        sb.append("hand-shim remaining (").append(shim.size()).append("):\n");
+        for (String s : shim) {
+            sb.append("  ").append(s).append('\n');
+        }
+        return sb.toString();
+    }
 
     public String analyze(List<String> fqcns) {
         ClassPool pool = new ClassPool(true);

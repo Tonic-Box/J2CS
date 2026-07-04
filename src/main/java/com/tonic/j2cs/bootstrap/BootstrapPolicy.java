@@ -1,5 +1,6 @@
 package com.tonic.j2cs.bootstrap;
 
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +47,29 @@ public final class BootstrapPolicy {
 
     public static boolean expandsInto(String internalName) {
         return BOOTSTRAPPABLE.contains(internalName) && !internalName.equals("java/lang/Object");
+    }
+
+    public static Set<String> bootstrappable() {
+        return BOOTSTRAPPABLE;
+    }
+
+    public static Set<String> policyOwners() {
+        return POLICY.keySet();
+    }
+
+    public static Map<String, String> fragmentByClass() {
+        Map<String, String> fragments = new LinkedHashMap<>();
+        for (Map.Entry<String, Entry> entry : POLICY.entrySet()) {
+            if (entry.getValue().fragmentResource() != null) {
+                fragments.put(entry.getKey(), entry.getValue().fragmentResource());
+            }
+        }
+        return fragments;
+    }
+
+    public static Set<String> suppressedMethodSignatures(String internalName) {
+        Entry entry = POLICY.get(internalName);
+        return entry == null ? Set.of() : entry.suppressedMethodKeys();
     }
 
     private static final Map<String, Entry> POLICY = Map.ofEntries(

@@ -4,7 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d05fdbd2-bef1-4012-9f61-0cf573243b7b" name="Changes" comment="Bootstrap java.lang.System from JDK bytecode" />
+    <list default="true" id="d05fdbd2-bef1-4012-9f61-0cf573243b7b" name="Changes" comment="Auto-pull the bootstrap closure from a root class">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/bootstrap/BootstrapPolicy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/bootstrap/BootstrapPolicy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/frontend/BootstrapLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/frontend/BootstrapLoader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/report/BootstrapCoverageReport.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/report/BootstrapCoverageReport.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/tonic/j2cs/e2e/DifferentialTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/tonic/j2cs/e2e/DifferentialTest.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -396,11 +402,18 @@
       <option name="project" value="LOCAL" />
       <updated>1783155998345</updated>
     </task>
-    <option name="localTasksCounter" value="45" />
+    <task id="LOCAL-00045" summary="Auto-pull the bootstrap closure from a root class">
+      <option name="closed" value="true" />
+      <created>1783157537181</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1783157537181</updated>
+    </task>
+    <option name="localTasksCounter" value="46" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Add the exception shim hierarchy, JThrow carrier, and Normalize" />
     <MESSAGE value="Prepare the frontend for exception handler emission" />
     <MESSAGE value="Emit try/catch via a dispatcher state machine" />
     <MESSAGE value="Complete exception support: user hierarchies, finally, multi-catch" />
@@ -425,6 +438,7 @@
     <MESSAGE value="Bootstrap Throwable and the exception hierarchy from JDK bytecode" />
     <MESSAGE value="Bootstrap java.util.Objects and java.lang.Math + StrictMath" />
     <MESSAGE value="Bootstrap java.lang.System from JDK bytecode" />
-    <option name="LAST_COMMIT_MESSAGE" value="Bootstrap java.lang.System from JDK bytecode" />
+    <MESSAGE value="Auto-pull the bootstrap closure from a root class" />
+    <option name="LAST_COMMIT_MESSAGE" value="Auto-pull the bootstrap closure from a root class" />
   </component>
 </project>

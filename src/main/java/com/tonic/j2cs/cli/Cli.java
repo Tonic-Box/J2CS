@@ -20,9 +20,16 @@ import java.util.List;
 public final class Cli {
 
     private static final String USAGE = "usage: j2cs <input.class|input.jar> -o <outDir> [--main <fqcn>] [--no-build] [--self-contained] [--run] [--dump-ir] [--bootstrap <fqcn>[,<fqcn>...]]\n"
-            + "       j2cs --bootstrap-report <fqcn>[,<fqcn>...]";
+            + "       j2cs --bootstrap-report <fqcn>[,<fqcn>...]\n"
+            + "       j2cs --bootstrap-coverage";
 
     public int run(String[] args) {
+        for (String arg : args) {
+            if (arg.equals("--bootstrap-coverage")) {
+                System.out.print(new com.tonic.j2cs.report.BootstrapCoverageReport().coverage());
+                return 0;
+            }
+        }
         String reportTarget = extractOption(args, "--bootstrap-report");
         if (reportTarget != null) {
             System.out.println(new com.tonic.j2cs.report.BootstrapCoverageReport().analyze(splitList(reportTarget)));

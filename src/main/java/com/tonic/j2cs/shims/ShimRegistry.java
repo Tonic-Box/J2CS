@@ -240,6 +240,10 @@ public final class ShimRegistry {
         return TYPES.contains(internalName);
     }
 
+    public static Set<String> types() {
+        return TYPES;
+    }
+
     public static boolean isExtendable(String internalName) {
         return EXTENDABLE.contains(internalName);
     }
