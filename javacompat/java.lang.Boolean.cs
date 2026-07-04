@@ -2,8 +2,8 @@ namespace java.lang
 {
     public sealed class Boolean : Object
     {
-        private static readonly Boolean True = new Boolean(1);
-        private static readonly Boolean False = new Boolean(0);
+        public static readonly Boolean TRUE = new Boolean(1);
+        public static readonly Boolean FALSE = new Boolean(0);
 
         private readonly int value;
 
@@ -18,7 +18,7 @@ namespace java.lang
 
         public static Boolean valueOf(int v)
         {
-            return v != 0 ? True : False;
+            return v != 0 ? TRUE : FALSE;
         }
 
         public static int parseBoolean(String s)

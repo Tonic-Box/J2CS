@@ -76,7 +76,8 @@ public final class ShimRegistry {
             "java/util/LinkedList",
             "java/util/LinkedHashMap",
             "java/util/TreeMap",
-            "java/lang/StringBuffer");
+            "java/lang/StringBuffer",
+            "java/lang/NoSuchFieldError");
 
     private static final Map<String, String> SHIM_SUPERS = Map.<String, String>ofEntries(
             Map.entry("java/lang/String", "java/lang/Object"),
@@ -128,6 +129,7 @@ public final class ShimRegistry {
             Map.entry("java/util/LinkedHashMap", "java/util/HashMap"),
             Map.entry("java/util/TreeMap", "java/util/HashMap"),
             Map.entry("java/lang/StringBuffer", "java/lang/Object"),
+            Map.entry("java/lang/NoSuchFieldError", "java/lang/Error"),
             Map.entry("java/io/PrintStream", "java/lang/Object"),
             Map.entry("java/lang/Throwable", "java/lang/Object"),
             Map.entry("java/lang/Exception", "java/lang/Throwable"),
@@ -158,7 +160,8 @@ public final class ShimRegistry {
             "java/lang/NumberFormatException",
             "java/lang/IllegalStateException",
             "java/lang/InterruptedException",
-            "java/lang/Enum");
+            "java/lang/Enum",
+            "java/lang/NoSuchFieldError");
 
     public static final Map<String, String> EXTENDABLE_VIRTUALS = Map.of(
             "getMessage()Ljava/lang/String;", "getMessage",
@@ -337,7 +340,9 @@ public final class ShimRegistry {
             Map.entry("java/util/concurrent/TimeUnit.MILLISECONDS Ljava/util/concurrent/TimeUnit;", statics("MILLISECONDS")),
             Map.entry("java/util/concurrent/TimeUnit.NANOSECONDS Ljava/util/concurrent/TimeUnit;", statics("NANOSECONDS")),
             Map.entry("java/time/temporal/ChronoUnit.MINUTES Ljava/time/temporal/ChronoUnit;", statics("MINUTES")),
-            Map.entry("java/nio/charset/StandardCharsets.UTF_8 Ljava/nio/charset/Charset;", statics("UTF_8")));
+            Map.entry("java/nio/charset/StandardCharsets.UTF_8 Ljava/nio/charset/Charset;", statics("UTF_8")),
+            Map.entry("java/lang/Boolean.TRUE Ljava/lang/Boolean;", statics("TRUE")),
+            Map.entry("java/lang/Boolean.FALSE Ljava/lang/Boolean;", statics("FALSE")));
 
     private ShimRegistry() {
     }

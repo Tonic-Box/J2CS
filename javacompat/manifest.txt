@@ -23,6 +23,7 @@ java.lang.ArrayStoreException.cs
 java.lang.IllegalArgumentException.cs
 java.lang.NumberFormatException.cs
 java.lang.IllegalStateException.cs
+java.lang.NoSuchFieldError.cs
 java.lang.InterruptedException.cs
 java.lang.Thread.cs
 java.util.concurrent.TimeUnit.cs

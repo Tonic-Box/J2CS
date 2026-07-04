@@ -46,6 +46,11 @@ class DifferentialTest {
     }
 
     @Test
+    void multiArray() throws Exception {
+        Differential.assertSameOutput("MultiArray");
+    }
+
+    @Test
     void stringsTest() throws Exception {
         Differential.assertSameOutput("StringsTest");
     }

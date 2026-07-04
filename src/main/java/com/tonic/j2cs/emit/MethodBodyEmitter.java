@@ -68,6 +68,7 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
     private String currentClass;
     private Integer thisSlot;
     private ExceptionLayout layout;
+    private int multiArrayCounter;
 
     public MethodBodyEmitter(NamingContext naming, SyntheticClasses synthetics) {
         this.naming = naming;
@@ -698,11 +699,18 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
 
     @Override
     public Void visitNewArray(NewArrayInstruction instr) {
-        if (instr.isMultiDimensional()) {
-            throw new UnsupportedBodyException("multi-dimensional array allocation not supported");
-        }
         CsType element = naming.typeMapper().storageType(instr.getElementType().getDescriptor());
-        String length = names.ref(instr.getDimensions().get(0));
+        List<Value> dims = instr.getDimensions();
+        if (dims.size() > 1) {
+            SSAValue result = instr.getResult();
+            Integer slot = lowered.slotOf().get(result);
+            if (slot == null) {
+                throw new UnsupportedBodyException("result v" + result.getId() + " has no slot");
+            }
+            emitMultiArrayLevel("s" + slot, element.csText().replace("[]", ""), dims, 0);
+            return null;
+        }
+        String length = names.ref(dims.get(0));
         String csText = element.csText();
         int bracket = csText.indexOf('[');
         String expr = bracket < 0
@@ -710,6 +718,18 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
                 : "new " + csText.substring(0, bracket) + "[" + length + "]" + csText.substring(bracket);
         assign(instr, expr);
         return null;
+    }
+
+    private void emitMultiArrayLevel(String target, String baseCs, List<Value> dims, int level) {
+        int remaining = dims.size() - level;
+        w.line(target + " = new " + baseCs + "[" + names.ref(dims.get(level)) + "]"
+                + "[]".repeat(remaining - 1) + ";");
+        if (remaining > 1) {
+            String v = "__mv" + multiArrayCounter++;
+            w.open("for (int " + v + " = 0; " + v + " < " + names.ref(dims.get(level)) + "; " + v + "++)");
+            emitMultiArrayLevel(target + "[" + v + "]", baseCs, dims, level + 1);
+            w.close();
+        }
     }
 
     @Override
