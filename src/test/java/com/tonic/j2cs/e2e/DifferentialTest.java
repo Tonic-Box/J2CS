@@ -81,6 +81,11 @@ class DifferentialTest {
     }
 
     @Test
+    void arrayClone() throws Exception {
+        Differential.assertSameOutput("ArrayClone");
+    }
+
+    @Test
     void shimGrowth() throws Exception {
         Differential.assertSameOutput("ShimGrowth");
     }

@@ -369,6 +369,13 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
             assign(instr, "global::java.lang.System.arraycopy(" + rawArguments(instr) + ")");
             return null;
         }
+        if (owner.startsWith("[") && name.equals("clone") && desc.equals("()Ljava/lang/Object;")
+                && instr.getResult() != null && instr.getResult().getType() != null
+                && instr.getResult().getType().isArray()) {
+            CsType arrayType = naming.typeMapper().computeType(instr.getResult().getType());
+            assign(instr, "(" + arrayType.csText() + ")(" + names.ref(instr.getReceiver()) + ".Clone())");
+            return null;
+        }
         if ((owner.startsWith("java/") || owner.startsWith("javax/")) && !naming.isBootstrapped(owner)) {
             Optional<ShimRegistry.WalkResult> walked = ShimRegistry.resolveMethodWalking(owner, name, desc);
             if (walked.isEmpty()) {

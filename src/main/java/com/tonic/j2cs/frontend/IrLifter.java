@@ -14,6 +14,8 @@ import com.tonic.analysis.ssa.lower.PhiEliminator;
 import com.tonic.analysis.ssa.transform.DeadCodeElimination;
 import com.tonic.j2cs.model.LoweredMethod;
 import com.tonic.j2cs.model.MethodPlan;
+import com.tonic.j2cs.pipeline.ArrayCloneRetypePass;
+import com.tonic.j2cs.pipeline.IrPass;
 import com.tonic.j2cs.types.TypeMapper;
 import com.tonic.parser.ClassFile;
 import com.tonic.parser.MethodEntry;
@@ -30,6 +32,8 @@ import java.util.Set;
  * Any failure degrades to an Unsupported plan; it never aborts the run.
  */
 public final class IrLifter {
+
+    private static final List<IrPass> NORMALIZATION_PASSES = List.of(new ArrayCloneRetypePass());
 
     private final TypeMapper typeMapper;
     private final boolean dumpIr;
@@ -53,6 +57,9 @@ public final class IrLifter {
                 System.out.println(IRPrinter.format(ir));
             }
             stripLocalArtifacts(ir);
+            for (IrPass pass : NORMALIZATION_PASSES) {
+                pass.run(ir);
+            }
             DeadCodeElimination.removeUnreachableBlocks(ir);
             removeDeadPhis(ir);
             HandlerSupport.Captures captures = HandlerSupport.capture(ir);
