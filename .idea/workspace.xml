@@ -4,17 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d05fdbd2-bef1-4012-9f61-0cf573243b7b" name="Changes" comment="Add Swing/AWT modal dialogs and the remaining widget/AWT shims">
+    <list default="true" id="d05fdbd2-bef1-4012-9f61-0cf573243b7b" name="Changes" comment="Fix modal dialog setVisible bypassed by base-type cast">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/javacompat/java.awt.BorderLayout.cs" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/java.awt.BorderLayout.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/javacompat/java.awt.Component.cs" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/java.awt.Component.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/javacompat/java.awt.Container.cs" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/java.awt.Container.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/javacompat/java.awt.FlowLayout.cs" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/java.awt.FlowLayout.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/javacompat/java.awt.Window.cs" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/java.awt.Window.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/javacompat/javax.swing.BoxLayout.cs" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/javax.swing.BoxLayout.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/javacompat/javax.swing.JDialog.cs" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/javax.swing.JDialog.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/javacompat/javax.swing.JFrame.cs" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/javax.swing.JFrame.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/cli/Cli.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/cli/Cli.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/cli/CliOptions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/cli/CliOptions.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/dotnet/DotnetRunner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/dotnet/DotnetRunner.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/pipeline/Transpiler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/pipeline/Transpiler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/tonic/j2cs/unit/CliTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/tonic/j2cs/unit/CliTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/javacompat/manifest.txt" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/manifest.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/ClassEmitter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/ClassEmitter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/EntryPointEmitter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/EntryPointEmitter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/MethodBodyEmitter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/MethodBodyEmitter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/shims/ShimRegistry.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/shims/ShimRegistry.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -67,7 +70,7 @@
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
+        <option name="scriptParameters" value="-x test" />
         <option name="taskDescriptions">
           <list />
         </option>
@@ -98,14 +101,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1783017158528</updated>
-    </task>
-    <task id="LOCAL-00014" summary="Add class hierarchy model and supertype-coordinated member naming">
-      <option name="closed" value="true" />
-      <created>1783089841066</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1783089841066</updated>
     </task>
     <task id="LOCAL-00015" summary="Emit class inheritance: base clauses, virtual dispatch, super calls">
       <option name="closed" value="true" />
@@ -491,11 +486,18 @@
       <option name="project" value="LOCAL" />
       <updated>1783187415771</updated>
     </task>
-    <option name="localTasksCounter" value="63" />
+    <task id="LOCAL-00063" summary="Fix modal dialog setVisible bypassed by base-type cast">
+      <option name="closed" value="true" />
+      <created>1783190111646</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1783190111646</updated>
+    </task>
+    <option name="localTasksCounter" value="64" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Bootstrap Long, Short, and Byte from JDK bytecode" />
     <MESSAGE value="Bootstrap Double, Float, and Character from JDK bytecode" />
     <MESSAGE value="Give the emitter a root-class concept for bootstrapping Object" />
     <MESSAGE value="Bootstrap java.lang.Object from JDK bytecode" />
@@ -520,6 +522,7 @@
     <MESSAGE value="Avalonia GUI foundation: build-system + window shims" />
     <MESSAGE value="Avalonia widgets + layout" />
     <MESSAGE value="Add Swing/AWT modal dialogs and the remaining widget/AWT shims" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add Swing/AWT modal dialogs and the remaining widget/AWT shims" />
+    <MESSAGE value="Fix modal dialog setVisible bypassed by base-type cast" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix modal dialog setVisible bypassed by base-type cast" />
   </component>
 </project>

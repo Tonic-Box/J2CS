@@ -63,8 +63,14 @@ javax.swing.JFrame.cs
 javax.swing.JDialog.cs
 javax.swing.SwingUtilities.cs
 java.awt.LayoutManager.cs
+java.awt.J2csLayout.cs
 java.awt.BorderLayout.cs
 java.awt.FlowLayout.cs
+java.awt.GridLayout.cs
+java.awt.GridBagLayout.cs
+java.awt.GridBagConstraints.cs
+java.awt.Insets.cs
+java.awt.CardLayout.cs
 java.awt.Dimension.cs
 java.awt.event.ActionListener.cs
 java.awt.event.ActionEvent.cs

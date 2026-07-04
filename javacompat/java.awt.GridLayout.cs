@@ -1,43 +1,46 @@
 namespace java.awt
 {
-    public class BorderLayout : global::java.lang.Object, LayoutManager
+    public class GridLayout : global::java.lang.Object, LayoutManager
     {
+        private int rows = 1;
+        private int cols;
         private int hgap;
         private int vgap;
 
-        public BorderLayout(global::java.lang.RawNew r) : base(r)
+        public GridLayout(global::java.lang.RawNew r) : base(r)
         {
         }
 
         public void __init__V()
         {
+            rows = 1;
+            cols = 0;
         }
 
-        public void __init_II_V(int hgap, int vgap)
+        public void __init_II_V(int rows, int cols)
         {
+            this.rows = rows;
+            this.cols = cols;
+        }
+
+        public void __init_IIII_V(int rows, int cols, int hgap, int vgap)
+        {
+            this.rows = rows;
+            this.cols = cols;
             this.hgap = hgap;
             this.vgap = vgap;
         }
 
         public global::Avalonia.Controls.Panel J2csCreatePanel()
         {
-            return new global::java.awt.J2csBorderPanel { Hgap = hgap, Vgap = vgap };
+            return new global::java.awt.J2csGridPanel { Rows = rows, Cols = cols, Hgap = hgap, Vgap = vgap };
         }
 
         public void J2csAdd(global::Avalonia.Controls.Panel panel, global::Avalonia.Controls.Control child,
                 global::java.lang.Object constraint)
         {
-            string region = constraint == null ? "Center" : global::java.lang.JRuntime.Str(constraint);
-            if (region != "North" && region != "South" && region != "East" && region != "West")
-            {
-                region = "Center";
-            }
             child.HorizontalAlignment = global::Avalonia.Layout.HorizontalAlignment.Stretch;
             child.VerticalAlignment = global::Avalonia.Layout.VerticalAlignment.Stretch;
-            if (panel is global::java.awt.J2csBorderPanel border)
-            {
-                border.SetRegion(child, region);
-            }
             panel.Children.Add(child);
         }
     }

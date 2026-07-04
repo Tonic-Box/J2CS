@@ -634,11 +634,16 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
             if (target.isEmpty()) {
                 throw new UnsupportedBodyException("shim field not implemented: " + owner + "." + name);
             }
-            if (!instr.isLoad() || !target.get().isStatic()) {
-                throw new UnsupportedBodyException("shim field access mode not supported: "
-                        + owner + "." + name);
+            String shimRef = target.get().isStatic()
+                    ? CsNamer.fqcn(owner)
+                    : receiverAdjusted(owner, instr.getObjectRef());
+            if (instr.isLoad()) {
+                assign(instr, shimRef + "." + target.get().csMemberName());
+            } else {
+                CsType shimStorage = naming.typeMapper().storageType(desc);
+                w.line(shimRef + "." + target.get().csMemberName() + " = "
+                        + storageAdjusted(shimStorage, instr.getValue()) + ";");
             }
-            assign(instr, CsNamer.fqcn(owner) + "." + target.get().csMemberName());
             return null;
         }
         ResolvedField resolved = naming.resolveField(owner, name, desc);

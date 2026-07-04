@@ -88,6 +88,11 @@ public final class ShimRegistry {
             "java/awt/LayoutManager",
             "java/awt/BorderLayout",
             "java/awt/FlowLayout",
+            "java/awt/GridLayout",
+            "java/awt/GridBagLayout",
+            "java/awt/GridBagConstraints",
+            "java/awt/Insets",
+            "java/awt/CardLayout",
             "java/awt/Dimension",
             "java/awt/event/ActionListener",
             "java/awt/event/ActionEvent",
@@ -174,6 +179,11 @@ public final class ShimRegistry {
             Map.entry("java/awt/LayoutManager", "java/lang/Object"),
             Map.entry("java/awt/BorderLayout", "java/lang/Object"),
             Map.entry("java/awt/FlowLayout", "java/lang/Object"),
+            Map.entry("java/awt/GridLayout", "java/lang/Object"),
+            Map.entry("java/awt/GridBagLayout", "java/lang/Object"),
+            Map.entry("java/awt/GridBagConstraints", "java/lang/Object"),
+            Map.entry("java/awt/Insets", "java/lang/Object"),
+            Map.entry("java/awt/CardLayout", "java/lang/Object"),
             Map.entry("java/awt/Dimension", "java/lang/Object"),
             Map.entry("java/awt/event/ActionListener", "java/lang/Object"),
             Map.entry("java/awt/event/ActionEvent", "java/lang/Object"),
@@ -424,6 +434,7 @@ public final class ShimRegistry {
             Map.entry("java/awt/Component.setEnabled(Z)V", instance("setEnabled")),
             Map.entry("java/awt/Component.setVisible(Z)V", instance("setVisible")),
             Map.entry("java/awt/Component.setPreferredSize(Ljava/awt/Dimension;)V", instance("setPreferredSize")),
+            Map.entry("java/awt/Component.setBounds(IIII)V", instance("setBounds")),
             Map.entry("java/awt/Component.requestFocusInWindow()Z", instance("requestFocusInWindow")),
             Map.entry("java/lang/Thread.sleep(J)V", statics("sleep")),
             Map.entry("javax/swing/JButton.addActionListener(Ljava/awt/event/ActionListener;)V", instance("addActionListener")),
@@ -445,7 +456,12 @@ public final class ShimRegistry {
             Map.entry("javax/swing/JLabel.setFont(Ljava/awt/Font;)V", instance("setFont")),
             Map.entry("javax/swing/JOptionPane.showMessageDialog(Ljava/awt/Component;Ljava/lang/Object;Ljava/lang/String;I)V", statics("showMessageDialog")),
             Map.entry("java/util/Arrays.fill([CC)V", statics("fill")),
-            Map.entry("java/awt/event/KeyEvent.getKeyCode()I", instance("getKeyCode")));
+            Map.entry("java/awt/event/KeyEvent.getKeyCode()I", instance("getKeyCode")),
+            Map.entry("java/awt/CardLayout.show(Ljava/awt/Container;Ljava/lang/String;)V", instance("show")),
+            Map.entry("java/awt/CardLayout.first(Ljava/awt/Container;)V", instance("first")),
+            Map.entry("java/awt/CardLayout.last(Ljava/awt/Container;)V", instance("last")),
+            Map.entry("java/awt/CardLayout.next(Ljava/awt/Container;)V", instance("next")),
+            Map.entry("java/awt/CardLayout.previous(Ljava/awt/Container;)V", instance("previous")));
 
     private static final Map<String, ShimTarget> FIELDS = Map.ofEntries(
             Map.entry("java/lang/System.out Ljava/io/PrintStream;", statics("@out")),
@@ -458,7 +474,18 @@ public final class ShimRegistry {
             Map.entry("java/lang/Boolean.FALSE Ljava/lang/Boolean;", statics("FALSE")),
             Map.entry("java/awt/Color.RED Ljava/awt/Color;", statics("RED")),
             Map.entry("java/awt/Color.ORANGE Ljava/awt/Color;", statics("ORANGE")),
-            Map.entry("java/awt/Color.DARK_GRAY Ljava/awt/Color;", statics("DARK_GRAY")));
+            Map.entry("java/awt/Color.DARK_GRAY Ljava/awt/Color;", statics("DARK_GRAY")),
+            Map.entry("java/awt/GridBagConstraints.gridx I", instance("gridx")),
+            Map.entry("java/awt/GridBagConstraints.gridy I", instance("gridy")),
+            Map.entry("java/awt/GridBagConstraints.gridwidth I", instance("gridwidth")),
+            Map.entry("java/awt/GridBagConstraints.gridheight I", instance("gridheight")),
+            Map.entry("java/awt/GridBagConstraints.weightx D", instance("weightx")),
+            Map.entry("java/awt/GridBagConstraints.weighty D", instance("weighty")),
+            Map.entry("java/awt/GridBagConstraints.anchor I", instance("anchor")),
+            Map.entry("java/awt/GridBagConstraints.fill I", instance("fill")),
+            Map.entry("java/awt/GridBagConstraints.ipadx I", instance("ipadx")),
+            Map.entry("java/awt/GridBagConstraints.ipady I", instance("ipady")),
+            Map.entry("java/awt/GridBagConstraints.insets Ljava/awt/Insets;", instance("insets")));
 
     private ShimRegistry() {
     }

@@ -28,6 +28,17 @@ namespace java.awt
             }
         }
 
+        public void setBounds(int x, int y, int width, int height)
+        {
+            if (AvControl != null)
+            {
+                global::Avalonia.Controls.Canvas.SetLeft(AvControl, x);
+                global::Avalonia.Controls.Canvas.SetTop(AvControl, y);
+                AvControl.Width = width;
+                AvControl.Height = height;
+            }
+        }
+
         public void setPreferredSize(global::java.awt.Dimension d)
         {
             if (AvControl != null && d != null)

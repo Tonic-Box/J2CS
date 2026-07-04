@@ -15,12 +15,7 @@ namespace javax.swing
 
         public global::Avalonia.Controls.Panel J2csCreatePanel()
         {
-            return new global::Avalonia.Controls.StackPanel
-            {
-                Orientation = axis == 0
-                        ? global::Avalonia.Layout.Orientation.Horizontal
-                        : global::Avalonia.Layout.Orientation.Vertical
-            };
+            return new global::java.awt.J2csBoxPanel { Axis = axis };
         }
 
         public void J2csAdd(global::Avalonia.Controls.Panel panel, global::Avalonia.Controls.Control child,

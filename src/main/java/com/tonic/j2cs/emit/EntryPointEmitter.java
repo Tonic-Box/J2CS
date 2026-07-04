@@ -40,14 +40,41 @@ public final class EntryPointEmitter {
                 .toString();
     }
 
+    private static final String TEMPLATED_FONT =
+            "global::Avalonia.Controls.Primitives.TemplatedControl.FontSizeProperty";
+
+    private static void compactStyle(CsWriter w, String type, String fontProp, String padding, boolean minZero) {
+        String v = "st" + type.substring(type.lastIndexOf('.') + 1);
+        w.line("var " + v + " = new global::Avalonia.Styling.Style(x => "
+                + "global::Avalonia.Styling.Selectors.OfType<" + type + ">(x));");
+        w.line(v + ".Setters.Add(new global::Avalonia.Styling.Setter(" + fontProp + ", 12.0));");
+        if (padding != null) {
+            w.line(v + ".Setters.Add(new global::Avalonia.Styling.Setter("
+                    + "global::Avalonia.Controls.Primitives.TemplatedControl.PaddingProperty, "
+                    + "new global::Avalonia.Thickness(" + padding + ")));");
+        }
+        if (minZero) {
+            w.line(v + ".Setters.Add(new global::Avalonia.Styling.Setter("
+                    + "global::Avalonia.Layout.Layoutable.MinHeightProperty, 0.0));");
+        }
+        w.line("Styles.Add(" + v + ");");
+    }
+
     private String guiProgram(String mainCall) {
-        return new CsWriter()
-                .line("using Avalonia;")
-                .line("")
-                .open("internal sealed class J2csApp : global::Avalonia.Application")
-                .open("public override void Initialize()")
-                .line("Styles.Add(new global::Avalonia.Themes.Fluent.FluentTheme());")
-                .close()
+        CsWriter w = new CsWriter();
+        w.line("using Avalonia;");
+        w.line("");
+        w.open("internal sealed class J2csApp : global::Avalonia.Application");
+        w.open("public override void Initialize()");
+        w.line("Styles.Add(new global::Avalonia.Themes.Fluent.FluentTheme());");
+        w.line("RequestedThemeVariant = global::Avalonia.Styling.ThemeVariant.Light;");
+        compactStyle(w, "global::Avalonia.Controls.TextBlock",
+                "global::Avalonia.Controls.TextBlock.FontSizeProperty", null, false);
+        compactStyle(w, "global::Avalonia.Controls.Button", TEMPLATED_FONT, "8.0, 3.0", true);
+        compactStyle(w, "global::Avalonia.Controls.TextBox", TEMPLATED_FONT, "5.0, 2.0", true);
+        compactStyle(w, "global::Avalonia.Controls.ListBoxItem", TEMPLATED_FONT, "6.0, 1.0", true);
+        w.close();
+        return w
                 .open("public override void OnFrameworkInitializationCompleted()")
                 .open("if (ApplicationLifetime is global::Avalonia.Controls.ApplicationLifetimes"
                         + ".IClassicDesktopStyleApplicationLifetime __desktop)")

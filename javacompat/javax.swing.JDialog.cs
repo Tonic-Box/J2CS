@@ -31,10 +31,10 @@ namespace javax.swing
                 }
                 if (Modal)
                 {
-                    var frame = new global::Avalonia.Threading.DispatcherFrame();
-                    AvWindow.Closed += (sender, e) => frame.Continue = false;
+                    __modalFrame = new global::Avalonia.Threading.DispatcherFrame();
                     AvWindow.Show();
-                    global::Avalonia.Threading.Dispatcher.UIThread.PushFrame(frame);
+                    global::Avalonia.Threading.Dispatcher.UIThread.PushFrame(__modalFrame);
+                    __modalFrame = null;
                 }
                 else
                 {

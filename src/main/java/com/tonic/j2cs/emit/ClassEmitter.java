@@ -165,6 +165,10 @@ public final class ClassEmitter {
                     + "(" + paramList(desc, types) + ")";
         }
         w.open(header);
+        if (emitEnumSynthetic(w, classFile, name, desc, namer)) {
+            w.close();
+            return;
+        }
         if (plan instanceof MethodPlan.Unsupported unsupported) {
             emitStubBody(w, classFile, name, desc, unsupported.reason());
         } else if (plan instanceof MethodPlan.Supported supported) {
@@ -180,6 +184,46 @@ public final class ClassEmitter {
             }
         }
         w.close();
+    }
+
+    private boolean emitEnumSynthetic(CsWriter w, ClassFile classFile, String name, String desc,
+                                      MemberNamer namer) {
+        if (!"java/lang/Enum".equals(classFile.getSuperClassName())) {
+            return false;
+        }
+        String self = classFile.getClassName();
+        String selfFqcn = CsNamer.fqcn(self);
+        if (name.equals("values") && desc.equals("()[L" + self + ";")) {
+            w.line("return new " + selfFqcn + "[] { " + enumConstants(classFile, namer) + " };");
+            return true;
+        }
+        if (name.equals("valueOf") && desc.equals("(Ljava/lang/String;)L" + self + ";")) {
+            w.line(selfFqcn + "[] __vals = new " + selfFqcn + "[] { " + enumConstants(classFile, namer) + " };");
+            w.open("for (int __i = 0; __i < __vals.Length; __i++)");
+            w.open("if (p0 != null && __vals[__i].name().Value == p0.Value)");
+            w.line("return __vals[__i];");
+            w.close();
+            w.close();
+            w.line("throw new global::System.ArgumentException("
+                    + CsStrings.quote("No enum constant " + self.replace('/', '.') + ".") + ");");
+            return true;
+        }
+        return false;
+    }
+
+    private String enumConstants(ClassFile classFile, MemberNamer namer) {
+        String constantDesc = "L" + classFile.getClassName() + ";";
+        StringBuilder sb = new StringBuilder();
+        for (FieldEntry field : classFile.getFields()) {
+            if ((field.getAccess() & AccessFlags.ACC_STATIC) == 0 || !field.getDesc().equals(constantDesc)) {
+                continue;
+            }
+            if (!sb.isEmpty()) {
+                sb.append(", ");
+            }
+            sb.append(namer.fieldName(field));
+        }
+        return sb.toString();
     }
 
     private void emitStubBody(CsWriter w, ClassFile classFile, String name, String desc, String reason) {

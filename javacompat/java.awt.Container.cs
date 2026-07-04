@@ -18,16 +18,16 @@ namespace java.awt
             }
         }
 
-        public void setLayout(LayoutManager lm)
+        public virtual void setLayout(LayoutManager lm)
         {
             layout = lm;
             AvPanel = lm != null
                     ? lm.J2csCreatePanel()
-                    : new global::Avalonia.Controls.StackPanel();
+                    : new global::Avalonia.Controls.Canvas();
             AvControl = AvPanel;
         }
 
-        public global::java.awt.Component add(global::java.awt.Component comp)
+        public virtual global::java.awt.Component add(global::java.awt.Component comp)
         {
             EnsurePanel();
             if (comp != null && comp.AvControl != null)
@@ -47,14 +47,23 @@ namespace java.awt
         public void setBorder(global::javax.swing.border.Border border)
         {
             EnsurePanel();
-            if (border != null)
+            if (border == null)
             {
-                AvPanel.Margin = new global::Avalonia.Thickness(
-                        border.Left, border.Top, border.Right, border.Bottom);
+                return;
+            }
+            var insets = new global::Avalonia.Thickness(border.Left, border.Top, border.Right, border.Bottom);
+            if (AvPanel is global::java.awt.J2csPanel padded)
+            {
+                padded.J2csInsets = insets;
+                padded.InvalidateMeasure();
+            }
+            else
+            {
+                AvPanel.Margin = insets;
             }
         }
 
-        public void add(global::java.awt.Component comp, global::java.lang.Object constraint)
+        public virtual void add(global::java.awt.Component comp, global::java.lang.Object constraint)
         {
             EnsurePanel();
             if (comp != null && comp.AvControl != null)

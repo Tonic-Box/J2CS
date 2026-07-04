@@ -2,7 +2,9 @@ namespace java.awt
 {
     public class FlowLayout : global::java.lang.Object, LayoutManager
     {
-        private int align;
+        private int align = 1;
+        private int hgap = 5;
+        private int vgap = 5;
 
         public FlowLayout(global::java.lang.RawNew r) : base(r)
         {
@@ -10,7 +12,6 @@ namespace java.awt
 
         public void __init__V()
         {
-            align = 1;
         }
 
         public void __init_I_V(int align)
@@ -18,18 +19,16 @@ namespace java.awt
             this.align = align;
         }
 
+        public void __init_III_V(int align, int hgap, int vgap)
+        {
+            this.align = align;
+            this.hgap = hgap;
+            this.vgap = vgap;
+        }
+
         public global::Avalonia.Controls.Panel J2csCreatePanel()
         {
-            var panel = new global::Avalonia.Controls.WrapPanel
-            {
-                Orientation = global::Avalonia.Layout.Orientation.Horizontal
-            };
-            panel.HorizontalAlignment = align == 0
-                    ? global::Avalonia.Layout.HorizontalAlignment.Left
-                    : align == 2
-                            ? global::Avalonia.Layout.HorizontalAlignment.Right
-                            : global::Avalonia.Layout.HorizontalAlignment.Center;
-            return panel;
+            return new global::java.awt.J2csFlowPanel { Align = align, Hgap = hgap, Vgap = vgap };
         }
 
         public void J2csAdd(global::Avalonia.Controls.Panel panel, global::Avalonia.Controls.Control child,
