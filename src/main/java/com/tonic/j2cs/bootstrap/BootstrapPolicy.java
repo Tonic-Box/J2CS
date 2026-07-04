@@ -86,7 +86,18 @@ public final class BootstrapPolicy {
                             "<clinit>()V",
                             "valueOf(C)Ljava/lang/Character;",
                             "toString()Ljava/lang/String;"),
-                            "java.lang.Character.native.cs")));
+                            "java.lang.Character.native.cs")),
+            Map.entry("java/lang/Math",
+                    new Entry(Set.of("<clinit>()V"), null)),
+            Map.entry("java/lang/StrictMath",
+                    new Entry(Set.of(
+                            "<clinit>()V",
+                            "sqrt(D)D", "floor(D)D", "ceil(D)D", "cbrt(D)D", "sin(D)D", "cos(D)D", "tan(D)D",
+                            "asin(D)D", "acos(D)D", "atan(D)D", "atan2(DD)D",
+                            "exp(D)D", "expm1(D)D", "log(D)D", "log10(D)D", "log1p(D)D",
+                            "pow(DD)D", "hypot(DD)D", "IEEEremainder(DD)D",
+                            "sinh(D)D", "cosh(D)D", "tanh(D)D"),
+                            "java.lang.StrictMath.native.cs")));
 
     private BootstrapPolicy() {
     }

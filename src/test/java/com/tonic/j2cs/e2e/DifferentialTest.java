@@ -143,6 +143,18 @@ class DifferentialTest {
     }
 
     @Test
+    void bootstrapObjects() throws Exception {
+        Differential.assertSameOutput("ObjectsBootstrap", java.util.List.of("java.util.Objects"));
+    }
+
+    @Test
+    void bootstrapMath() throws Exception {
+        Differential.assertSameOutput("MathBootstrap", java.util.List.of(
+                "java.lang.Number", "java.lang.Double", "java.lang.Float",
+                "java.lang.Math", "java.lang.StrictMath"));
+    }
+
+    @Test
     void bootstrapExceptions() throws Exception {
         Differential.assertSameOutput("ExceptionBootstrap", java.util.List.of(
                 "java.lang.Throwable", "java.lang.Exception", "java.lang.RuntimeException",
