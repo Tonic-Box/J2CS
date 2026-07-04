@@ -561,6 +561,14 @@ public final class ShimRegistry {
         return Optional.ofNullable(FIELDS.get(owner + "." + name + " " + descriptor));
     }
 
+    /**
+     * The single shim supertype of the given internal name (from SHIM_SUPERS), or null when the
+     * type is not a shim or has no recorded supertype. Used for shim-side assignability walks.
+     */
+    public static String shimSuperOf(String internalName) {
+        return SHIM_SUPERS.get(internalName);
+    }
+
     private static ShimTarget instance(String csName) {
         return new ShimTarget(csName, false);
     }

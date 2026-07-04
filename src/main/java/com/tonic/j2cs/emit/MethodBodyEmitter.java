@@ -24,6 +24,7 @@ import com.tonic.analysis.ssa.ir.SwitchInstruction;
 import com.tonic.analysis.ssa.ir.TypeCheckInstruction;
 import com.tonic.analysis.ssa.ir.UnaryOpInstruction;
 import com.tonic.analysis.ssa.value.Constant;
+import com.tonic.analysis.ssa.type.IRType;
 import com.tonic.analysis.ssa.value.SSAValue;
 import com.tonic.analysis.ssa.value.StringConstant;
 import com.tonic.analysis.ssa.value.Value;
@@ -37,7 +38,6 @@ import com.tonic.j2cs.naming.Resolved;
 import com.tonic.j2cs.naming.ResolvedField;
 import com.tonic.j2cs.shims.ShimTarget;
 import com.tonic.j2cs.shims.ShimRegistry;
-import com.tonic.j2cs.types.Coercions;
 import com.tonic.j2cs.types.CsType;
 import com.tonic.j2cs.types.TypeMapper;
 import com.tonic.parser.MethodEntry;
@@ -58,12 +58,13 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
 
     private final NamingContext naming;
     private final LambdaExpander lambdaExpander;
+    private final TypeReconciler reconciler;
 
     private CsWriter w;
     private ValueNames names;
     private LoweredMethod lowered;
     private CsType returnType;
-    private Map<Integer, String> slotCs;
+    private Map<Integer, CsType> slotCs;
     private boolean terminated;
     private String currentClass;
     private Integer thisSlot;
@@ -73,6 +74,7 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
     public MethodBodyEmitter(NamingContext naming, SyntheticClasses synthetics) {
         this.naming = naming;
         this.lambdaExpander = new LambdaExpander(naming, synthetics);
+        this.reconciler = new TypeReconciler(naming);
     }
 
     public String emit(String ownerInternalName, MethodEntry method, LoweredMethod loweredMethod, int indentDepth) {
@@ -90,7 +92,7 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
         TypeMapper types = naming.typeMapper();
         for (SlotDecl slot : loweredMethod.slots()) {
             CsType type = types.computeType(slot.computeType());
-            slotCs.put(slot.slotId(), type.csText());
+            slotCs.put(slot.slotId(), type);
             w.line(type.csText() + " s" + slot.slotId() + " = " + type.defaultLiteral() + ";");
         }
         emitParameterCopies();
@@ -226,11 +228,7 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
         }
         String expr = names.ref(source);
         if (source instanceof SSAValue ssa && targetSlot != null) {
-            String targetCs = slotCs.get(targetSlot);
-            String sourceCs = naming.typeMapper().computeType(ssa.getType()).csText();
-            if (!targetCs.equals(sourceCs)) {
-                expr = "(" + targetCs + ")(" + expr + ")";
-            }
+            expr = reconciler.coerce(slotCs.get(targetSlot), ssa.getType(), expr);
         }
         assign(instr, expr);
         return null;
@@ -532,26 +530,8 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
     }
 
     private String storageAdjusted(CsType storage, Value value) {
-        String expr = names.ref(value);
-        if (!storage.isReference()) {
-            return Coercions.coerce(storage, expr);
-        }
-        if (value instanceof SSAValue ssa && ssa.getType() != null) {
-            String storageCs = storage.csText();
-            String valueCs = naming.typeMapper().computeType(ssa.getType()).csText();
-            if (!valueCs.equals(storageCs)) {
-                String bridge;
-                if (storageCs.endsWith("[]")) {
-                    bridge = "(object)";
-                } else if (storageCs.equals("global::java.lang.Object")) {
-                    bridge = "";
-                } else {
-                    bridge = "(global::java.lang.Object)";
-                }
-                return "(" + storageCs + ")" + bridge + "(" + expr + ")";
-            }
-        }
-        return expr;
+        IRType sourceType = value instanceof SSAValue ssa ? ssa.getType() : null;
+        return reconciler.coerce(storage, sourceType, names.ref(value));
     }
 
     private String renderConcat(InvokeInstruction instr) {
@@ -760,11 +740,12 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
 
     @Override
     public Void visitTypeCheck(TypeCheckInstruction instr) {
-        String operand = names.ref(instr.getOperand());
+        Value operandValue = instr.getOperand();
+        String operand = names.ref(operandValue);
         CsType target = naming.typeMapper().computeType(instr.getTargetType());
         if (instr.isCast()) {
-            String bridge = target.csText().endsWith("[]") ? "(object)" : "(global::java.lang.Object)";
-            assign(instr, "(" + target.csText() + ")" + bridge + "(" + operand + ")");
+            IRType sourceType = operandValue instanceof SSAValue ssa ? ssa.getType() : null;
+            assign(instr, reconciler.cast(target, sourceType, operand));
         } else {
             assign(instr, "(" + operand + " is " + target.csText() + ") ? 1 : 0");
         }

@@ -76,6 +76,11 @@ class DifferentialTest {
     }
 
     @Test
+    void typeReconcile() throws Exception {
+        Differential.assertSameOutput("TypeReconcile");
+    }
+
+    @Test
     void shimGrowth() throws Exception {
         Differential.assertSameOutput("ShimGrowth");
     }

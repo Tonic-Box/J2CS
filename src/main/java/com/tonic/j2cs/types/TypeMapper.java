@@ -87,11 +87,12 @@ public final class TypeMapper {
                 if (!descriptor.endsWith(";")) {
                     throw new J2csException("malformed reference descriptor: " + descriptor);
                 }
-                yield new CsType(CsNamer.fqcn(descriptor.substring(1, descriptor.length() - 1)), CsType.Kind.REF);
+                yield new CsType(CsNamer.fqcn(descriptor.substring(1, descriptor.length() - 1)),
+                        CsType.Kind.REF, descriptor);
             }
             case '[' -> {
                 CsType element = map(descriptor.substring(1), false);
-                yield new CsType(element.csText() + "[]", CsType.Kind.ARRAY);
+                yield new CsType(element.csText() + "[]", CsType.Kind.ARRAY, descriptor);
             }
             default -> throw new J2csException("unknown type descriptor: " + descriptor);
         };
