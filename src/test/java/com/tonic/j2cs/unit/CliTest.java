@@ -18,12 +18,12 @@ class CliTest {
     void parsesFullArgumentSet() {
         CliOptions options = Cli.parse(new String[]{
                 "app.jar", "-o", "out", "--main", "com.example.App",
-                "--no-build", "--self-contained", "--run", "--dump-ir"});
+                "--no-build", "--aot", "--run", "--dump-ir"});
         assertEquals(Path.of("app.jar"), options.input());
         assertEquals(Path.of("out"), options.outDir());
         assertEquals("com.example.App", options.mainOverride());
         assertTrue(options.noBuild());
-        assertTrue(options.selfContained());
+        assertTrue(options.nativeAot());
         assertTrue(options.run());
         assertTrue(options.dumpIr());
     }

@@ -33,6 +33,27 @@ application {
     mainClass.set("com.tonic.j2cs.Main")
 }
 
+tasks.register<Jar>("shadedJar") {
+    group = "build"
+    description = "Builds a self-contained runnable J2CS.jar (all dependencies + shim resources bundled)."
+    archiveFileName.set("J2CS.jar")
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    manifest {
+        attributes["Main-Class"] = "com.tonic.j2cs.Main"
+    }
+    from(sourceSets.main.get().output)
+    dependsOn(configurations.runtimeClasspath)
+    from({
+        configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) }
+    }) {
+        exclude("META-INF/*.SF", "META-INF/*.RSA", "META-INF/*.DSA", "META-INF/MANIFEST.MF", "module-info.class")
+    }
+}
+
+tasks.named("build") {
+    dependsOn("shadedJar")
+}
+
 tasks.processResources {
     from("javacompat") {
         into("javacompat")

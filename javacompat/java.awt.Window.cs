@@ -24,7 +24,7 @@ namespace java.awt
             __contentPane = pane;
         }
 
-        public void setVisible(int visible)
+        public override void setVisible(int visible)
         {
             if (AvWindow == null)
             {
@@ -80,6 +80,20 @@ namespace java.awt
         public void setDefaultCloseOperation(int operation)
         {
             CloseOperation = operation;
+        }
+
+        internal void J2csWireCloseExit()
+        {
+            if (AvWindow != null)
+            {
+                AvWindow.Closed += (sender, e) =>
+                {
+                    if (CloseOperation == 3)
+                    {
+                        global::System.Environment.Exit(0);
+                    }
+                };
+            }
         }
 
         public Container getParent()

@@ -20,7 +20,7 @@ namespace java.awt
             }
         }
 
-        public void setVisible(int visible)
+        public virtual void setVisible(int visible)
         {
             if (AvControl != null)
             {

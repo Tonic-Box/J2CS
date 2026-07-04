@@ -127,6 +127,7 @@ public final class Transpiler {
         report.divergence("collection index and key exceptions carry no message text");
         report.divergence("shimmed TreeMap/LinkedHashMap use HashMap ordering, not sorted/insertion order; iteration order differs");
         report.divergence("java time/date, UUID, and SecureRandom values are runtime-dependent and do not match a specific JVM run");
+        report.divergence("Swing/AWT is rendered via Avalonia; widget structure and behavior are preserved but visual styling and pixel layout differ from the JVM");
     }
 
     private static Map<MethodEntry, MethodPlan> planMethods(ClassFile cf, IrLifter lifter,

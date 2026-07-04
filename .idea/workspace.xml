@@ -4,14 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d05fdbd2-bef1-4012-9f61-0cf573243b7b" name="Changes" comment="Avalonia widgets + layout">
+    <list default="true" id="d05fdbd2-bef1-4012-9f61-0cf573243b7b" name="Changes" comment="Add Swing/AWT modal dialogs and the remaining widget/AWT shims">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/javacompat/java.awt.Container.cs" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/java.awt.Container.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/javacompat/java.lang.String.cs" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/java.lang.String.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/javacompat/java.awt.Window.cs" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/java.awt.Window.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/javacompat/javax.swing.JDialog.cs" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/javax.swing.JDialog.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/javacompat/javax.swing.JLabel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/javax.swing.JLabel.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/javacompat/javax.swing.JTextField.cs" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/javax.swing.JTextField.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/shims/ShimRegistry.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/shims/ShimRegistry.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/javacompat/javax.swing.JFrame.cs" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/javax.swing.JFrame.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/cli/Cli.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/cli/Cli.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/cli/CliOptions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/cli/CliOptions.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/dotnet/DotnetRunner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/dotnet/DotnetRunner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/pipeline/Transpiler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/pipeline/Transpiler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/tonic/j2cs/unit/CliTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/tonic/j2cs/unit/CliTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,6 +25,21 @@
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
     </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <task path="$PROJECT_DIR$">
+          <activation />
+        </task>
+        <projects_view>
+          <tree_state>
+            <expand />
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
@@ -43,6 +61,35 @@
     "RunOnceActivity.ShowReadmeOnStart": "true"
   }
 }]]></component>
+  <component name="RunManager">
+    <configuration name="J2CS [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="build" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Gradle.J2CS [build]" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -51,14 +98,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1783017158528</updated>
-    </task>
-    <task id="LOCAL-00013" summary="Wire publish paths, goldens, and the shim drift guard">
-      <option name="closed" value="true" />
-      <created>1783081536364</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1783081536364</updated>
     </task>
     <task id="LOCAL-00014" summary="Add class hierarchy model and supertype-coordinated member naming">
       <option name="closed" value="true" />
@@ -444,11 +483,18 @@
       <option name="project" value="LOCAL" />
       <updated>1783186315367</updated>
     </task>
-    <option name="localTasksCounter" value="62" />
+    <task id="LOCAL-00062" summary="Add Swing/AWT modal dialogs and the remaining widget/AWT shims">
+      <option name="closed" value="true" />
+      <created>1783187415771</created>
+      <option name="number" value="00062" />
+      <option name="presentableId" value="LOCAL-00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1783187415771</updated>
+    </task>
+    <option name="localTasksCounter" value="63" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Bootstrap java.lang.Number and Integer from JDK bytecode" />
     <MESSAGE value="Bootstrap Long, Short, and Byte from JDK bytecode" />
     <MESSAGE value="Bootstrap Double, Float, and Character from JDK bytecode" />
     <MESSAGE value="Give the emitter a root-class concept for bootstrapping Object" />
@@ -473,6 +519,7 @@
     <MESSAGE value="Clear generated output dirs before writing" />
     <MESSAGE value="Avalonia GUI foundation: build-system + window shims" />
     <MESSAGE value="Avalonia widgets + layout" />
-    <option name="LAST_COMMIT_MESSAGE" value="Avalonia widgets + layout" />
+    <MESSAGE value="Add Swing/AWT modal dialogs and the remaining widget/AWT shims" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add Swing/AWT modal dialogs and the remaining widget/AWT shims" />
   </component>
 </project>

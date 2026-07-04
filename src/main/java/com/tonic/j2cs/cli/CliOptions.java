@@ -12,13 +12,13 @@ public record CliOptions(
         Path outDir,
         String mainOverride,
         boolean noBuild,
-        boolean selfContained,
+        boolean nativeAot,
         boolean run,
         boolean dumpIr,
         List<String> bootstrap) {
 
     public CliOptions(Path input, Path outDir, String mainOverride, boolean noBuild,
-                      boolean selfContained, boolean run, boolean dumpIr) {
-        this(input, outDir, mainOverride, noBuild, selfContained, run, dumpIr, List.of());
+                      boolean nativeAot, boolean run, boolean dumpIr) {
+        this(input, outDir, mainOverride, noBuild, nativeAot, run, dumpIr, List.of());
     }
 }

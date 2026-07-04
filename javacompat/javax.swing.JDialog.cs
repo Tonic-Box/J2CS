@@ -14,9 +14,10 @@ namespace javax.swing
             AvWindow = new global::Avalonia.Controls.Window();
             AvWindow.Title = title == null ? "" : title.Value;
             Modal = modal != 0;
+            J2csWireCloseExit();
         }
 
-        public void setVisible(int visible)
+        public override void setVisible(int visible)
         {
             if (AvWindow == null)
             {

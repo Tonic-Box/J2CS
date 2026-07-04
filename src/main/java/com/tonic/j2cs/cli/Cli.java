@@ -19,11 +19,42 @@ import java.util.List;
  */
 public final class Cli {
 
-    private static final String USAGE = "usage: j2cs <input.class|input.jar> -o <outDir> [--main <fqcn>] [--no-build] [--self-contained] [--run] [--dump-ir] [--bootstrap <fqcn>[,<fqcn>...]]\n"
-            + "       j2cs --bootstrap-report <fqcn>[,<fqcn>...]\n"
-            + "       j2cs --bootstrap-coverage";
+    private static final String USAGE = String.join("\n",
+            "J2CS - transpiles JVM bytecode (.class/.jar) to C# and builds a native Windows exe.",
+            "",
+            "usage: java -jar J2CS.jar <input.class|input.jar> -o <outDir> [options]",
+            "       java -jar J2CS.jar --bootstrap-report <fqcn>[,<fqcn>...]",
+            "       java -jar J2CS.jar --bootstrap-coverage",
+            "       java -jar J2CS.jar --help",
+            "",
+            "arguments:",
+            "  <input.class|input.jar>   the class or jar to transpile (jar entry point is its Main-Class)",
+            "  -o, --out <outDir>        output directory for the generated solution and exe (required)",
+            "",
+            "options:",
+            "  --main <fqcn>             entry-point class override (dotted name), e.g. com.example.App",
+            "  --no-build               emit the C# solution only; do not invoke dotnet",
+            "  --aot                    publish with NativeAOT (minimal native binary) instead of the default",
+            "  --self-contained         publish a self-contained single-file exe (the default)",
+            "  --run                    run the produced exe after publishing",
+            "  --dump-ir                dump the lifted IR for debugging",
+            "  --bootstrap <fqcn>[,...]  generate the named JDK classes from platform bytecode (else shimmed)",
+            "  -h, --help               show this help",
+            "",
+            "By default the publish produces a self-contained single-file exe (bundled runtime,",
+            "no .NET install required). GUI (Swing/AWT) apps are rendered via Avalonia.");
 
     public int run(String[] args) {
+        if (args.length == 0) {
+            System.err.println(USAGE);
+            return 2;
+        }
+        for (String arg : args) {
+            if (arg.equals("--help") || arg.equals("-h")) {
+                System.out.println(USAGE);
+                return 0;
+            }
+        }
         for (String arg : args) {
             if (arg.equals("--bootstrap-coverage")) {
                 System.out.print(new com.tonic.j2cs.report.BootstrapCoverageReport().coverage());
@@ -65,7 +96,7 @@ public final class Cli {
             return 1;
         }
         DotnetRunner runner = new DotnetRunner();
-        PublishMode mode = options.selfContained() ? PublishMode.SELF_CONTAINED : PublishMode.NATIVE_AOT;
+        PublishMode mode = options.nativeAot() ? PublishMode.NATIVE_AOT : PublishMode.SELF_CONTAINED;
         Path publishDir = options.outDir().resolve("publish");
         System.out.println("publishing (" + mode + ") ...");
         ExecResult published = runner.publish(result.appDir(), mode, publishDir.toAbsolutePath());
@@ -100,7 +131,7 @@ public final class Cli {
         Path outDir = null;
         String mainOverride = null;
         boolean noBuild = false;
-        boolean selfContained = false;
+        boolean nativeAot = false;
         boolean run = false;
         boolean dumpIr = false;
         java.util.List<String> bootstrap = java.util.List.of();
@@ -120,8 +151,11 @@ public final class Cli {
                 case "--no-build":
                     noBuild = true;
                     break;
+                case "--aot":
+                    nativeAot = true;
+                    break;
                 case "--self-contained":
-                    selfContained = true;
+                    nativeAot = false;
                     break;
                 case "--run":
                     run = true;
@@ -146,7 +180,7 @@ public final class Cli {
         if (outDir == null) {
             throw new IllegalArgumentException("no output directory given (-o <outDir>)");
         }
-        return new CliOptions(input, outDir, mainOverride, noBuild, selfContained, run, dumpIr, bootstrap);
+        return new CliOptions(input, outDir, mainOverride, noBuild, nativeAot, run, dumpIr, bootstrap);
     }
 
     private static String requireValue(String[] args, int index, String option) {

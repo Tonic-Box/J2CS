@@ -30,6 +30,7 @@ public final class DotnetRunner {
             command.add("true");
             command.add("-p:PublishAot=false");
             command.add("-p:PublishSingleFile=true");
+            command.add("-p:IncludeNativeLibrariesForSelfExtract=true");
         }
         return run(command, projectDir, PUBLISH_TIMEOUT_MS);
     }
