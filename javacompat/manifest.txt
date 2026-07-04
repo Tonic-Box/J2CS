@@ -26,6 +26,11 @@ java.lang.Thread.cs
 java.util.concurrent.TimeUnit.cs
 java.util.concurrent.locks.Lock.cs
 java.util.concurrent.locks.ReentrantLock.cs
+java.time.temporal.Temporal.cs
+java.time.chrono.ChronoLocalDateTime.cs
+java.time.LocalDateTime.cs
+java.time.format.DateTimeFormatter.cs
+java.time.temporal.ChronoUnit.cs
 java.lang.JForeignError.cs
 java.util.Objects.cs
 java.util.UUID.cs

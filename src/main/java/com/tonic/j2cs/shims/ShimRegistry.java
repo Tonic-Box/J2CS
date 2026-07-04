@@ -56,7 +56,12 @@ public final class ShimRegistry {
             "java/lang/Thread",
             "java/util/concurrent/TimeUnit",
             "java/util/concurrent/locks/Lock",
-            "java/util/concurrent/locks/ReentrantLock");
+            "java/util/concurrent/locks/ReentrantLock",
+            "java/time/LocalDateTime",
+            "java/time/format/DateTimeFormatter",
+            "java/time/temporal/ChronoUnit",
+            "java/time/temporal/Temporal",
+            "java/time/chrono/ChronoLocalDateTime");
 
     private static final Map<String, String> SHIM_SUPERS = Map.ofEntries(
             Map.entry("java/lang/String", "java/lang/Object"),
@@ -88,6 +93,11 @@ public final class ShimRegistry {
             Map.entry("java/util/concurrent/TimeUnit", "java/lang/Object"),
             Map.entry("java/util/concurrent/locks/Lock", "java/lang/Object"),
             Map.entry("java/util/concurrent/locks/ReentrantLock", "java/lang/Object"),
+            Map.entry("java/time/LocalDateTime", "java/lang/Object"),
+            Map.entry("java/time/format/DateTimeFormatter", "java/lang/Object"),
+            Map.entry("java/time/temporal/ChronoUnit", "java/lang/Object"),
+            Map.entry("java/time/temporal/Temporal", "java/lang/Object"),
+            Map.entry("java/time/chrono/ChronoLocalDateTime", "java/lang/Object"),
             Map.entry("java/io/PrintStream", "java/lang/Object"),
             Map.entry("java/lang/Throwable", "java/lang/Object"),
             Map.entry("java/lang/Exception", "java/lang/Throwable"),
@@ -229,6 +239,14 @@ public final class ShimRegistry {
             Map.entry("java/util/concurrent/locks/Lock.unlock()V", instance("unlock")),
             Map.entry("java/util/concurrent/TimeUnit.sleep(J)V", instance("sleep")),
             Map.entry("java/util/concurrent/TimeUnit.toMillis(J)J", instance("toMillis")),
+            Map.entry("java/time/LocalDateTime.now()Ljava/time/LocalDateTime;", statics("now")),
+            Map.entry("java/time/LocalDateTime.minusMinutes(J)Ljava/time/LocalDateTime;", instance("minusMinutes")),
+            Map.entry("java/time/LocalDateTime.plusMinutes(J)Ljava/time/LocalDateTime;", instance("plusMinutes")),
+            Map.entry("java/time/LocalDateTime.isBefore(Ljava/time/chrono/ChronoLocalDateTime;)Z", instance("isBefore")),
+            Map.entry("java/time/LocalDateTime.isAfter(Ljava/time/chrono/ChronoLocalDateTime;)Z", instance("isAfter")),
+            Map.entry("java/time/LocalDateTime.format(Ljava/time/format/DateTimeFormatter;)Ljava/lang/String;", instance("format")),
+            Map.entry("java/time/format/DateTimeFormatter.ofPattern(Ljava/lang/String;)Ljava/time/format/DateTimeFormatter;", statics("ofPattern")),
+            Map.entry("java/time/temporal/ChronoUnit.between(Ljava/time/temporal/Temporal;Ljava/time/temporal/Temporal;)J", instance("between")),
             Map.entry("java/util/Objects.requireNonNull(Ljava/lang/Object;)Ljava/lang/Object;", statics("requireNonNull")),
             Map.entry("java/util/Iterable.iterator()Ljava/util/Iterator;", instance("iterator")),
             Map.entry("java/util/Iterator.hasNext()Z", instance("hasNext")),
@@ -259,7 +277,8 @@ public final class ShimRegistry {
             Map.entry("java/lang/System.out Ljava/io/PrintStream;", statics("@out")),
             Map.entry("java/lang/System.err Ljava/io/PrintStream;", statics("err")),
             Map.entry("java/util/concurrent/TimeUnit.MILLISECONDS Ljava/util/concurrent/TimeUnit;", statics("MILLISECONDS")),
-            Map.entry("java/util/concurrent/TimeUnit.NANOSECONDS Ljava/util/concurrent/TimeUnit;", statics("NANOSECONDS")));
+            Map.entry("java/util/concurrent/TimeUnit.NANOSECONDS Ljava/util/concurrent/TimeUnit;", statics("NANOSECONDS")),
+            Map.entry("java/time/temporal/ChronoUnit.MINUTES Ljava/time/temporal/ChronoUnit;", statics("MINUTES")));
 
     private ShimRegistry() {
     }
