@@ -35,8 +35,8 @@ public final class BootstrapCoverageReport {
         ClassHierarchy hierarchy = new ClassHierarchy(classes);
         NamingContext naming = new NamingContext(types, classes, hierarchy);
         Set<String> requested = new TreeSet<>();
-        for (String fqcn : fqcns) {
-            requested.add(fqcn.replace('.', '/'));
+        for (ClassFile cf : classes) {
+            requested.add(cf.getClassName());
         }
         naming.setBootstrapped(requested);
 
@@ -44,6 +44,7 @@ public final class BootstrapCoverageReport {
         sb.append("j2cs bootstrap coverage report\n");
         sb.append("jdk: ").append(System.getProperty("java.version")).append('\n');
         sb.append("requested: ").append(String.join(", ", fqcns)).append('\n');
+        sb.append("closure: ").append(requested).append('\n');
         for (ClassFile cf : classes) {
             reportClass(cf, lifter, naming, requested, sb);
         }

@@ -4,14 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d05fdbd2-bef1-4012-9f61-0cf573243b7b" name="Changes" comment="Bootstrap java.util.Objects and java.lang.Math + StrictMath">
-      <change afterPath="$PROJECT_DIR$/javacompat/native/java.lang.StrictMath.native.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/resources/fixtures/MathBootstrap/MathBootstrap.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/resources/fixtures/ObjectsBootstrap/ObjectsBootstrap.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/bootstrap/BootstrapPolicy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/bootstrap/BootstrapPolicy.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/tonic/j2cs/e2e/DifferentialTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/tonic/j2cs/e2e/DifferentialTest.java" afterDir="false" />
-    </list>
+    <list default="true" id="d05fdbd2-bef1-4012-9f61-0cf573243b7b" name="Changes" comment="Bootstrap java.lang.System from JDK bytecode" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -395,11 +388,18 @@
       <option name="project" value="LOCAL" />
       <updated>1783155585386</updated>
     </task>
-    <option name="localTasksCounter" value="44" />
+    <task id="LOCAL-00044" summary="Bootstrap java.lang.System from JDK bytecode">
+      <option name="closed" value="true" />
+      <created>1783155998345</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1783155998345</updated>
+    </task>
+    <option name="localTasksCounter" value="45" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Harden degradation reporting for enums and native methods" />
     <MESSAGE value="Add the exception shim hierarchy, JThrow carrier, and Normalize" />
     <MESSAGE value="Prepare the frontend for exception handler emission" />
     <MESSAGE value="Emit try/catch via a dispatcher state machine" />
@@ -424,6 +424,7 @@
     <MESSAGE value="Bootstrap java.lang.Object from JDK bytecode" />
     <MESSAGE value="Bootstrap Throwable and the exception hierarchy from JDK bytecode" />
     <MESSAGE value="Bootstrap java.util.Objects and java.lang.Math + StrictMath" />
-    <option name="LAST_COMMIT_MESSAGE" value="Bootstrap java.util.Objects and java.lang.Math + StrictMath" />
+    <MESSAGE value="Bootstrap java.lang.System from JDK bytecode" />
+    <option name="LAST_COMMIT_MESSAGE" value="Bootstrap java.lang.System from JDK bytecode" />
   </component>
 </project>

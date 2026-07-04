@@ -133,8 +133,7 @@ class DifferentialTest {
     @Test
     void bootstrapWrappers() throws Exception {
         Differential.assertSameOutput("WrapperBootstrap", java.util.List.of(
-                "java.lang.Number", "java.lang.Integer", "java.lang.Long",
-                "java.lang.Short", "java.lang.Byte"));
+                "java.lang.Integer", "java.lang.Long", "java.lang.Short", "java.lang.Byte"));
     }
 
     @Test
@@ -154,18 +153,14 @@ class DifferentialTest {
 
     @Test
     void bootstrapMath() throws Exception {
-        Differential.assertSameOutput("MathBootstrap", java.util.List.of(
-                "java.lang.Number", "java.lang.Double", "java.lang.Float",
-                "java.lang.Math", "java.lang.StrictMath"));
+        Differential.assertSameOutput("MathBootstrap", java.util.List.of("java.lang.Math"));
     }
 
     @Test
     void bootstrapExceptions() throws Exception {
         Differential.assertSameOutput("ExceptionBootstrap", java.util.List.of(
-                "java.lang.Throwable", "java.lang.Exception", "java.lang.RuntimeException",
-                "java.lang.Error", "java.lang.NullPointerException", "java.lang.ArithmeticException",
-                "java.lang.ClassCastException", "java.lang.IndexOutOfBoundsException",
-                "java.lang.ArrayIndexOutOfBoundsException", "java.lang.ArrayStoreException",
+                "java.lang.NullPointerException", "java.lang.ArithmeticException",
+                "java.lang.ClassCastException", "java.lang.ArrayIndexOutOfBoundsException",
                 "java.lang.IllegalArgumentException", "java.lang.IllegalStateException",
                 "java.lang.NumberFormatException"));
     }
@@ -173,8 +168,8 @@ class DifferentialTest {
     @Test
     void bootstrapWrappers2() throws Exception {
         Differential.assertSameOutput("WrapperBootstrap2", java.util.List.of(
-                "java.lang.Number", "java.lang.Integer", "java.lang.Long", "java.lang.Short",
-                "java.lang.Byte", "java.lang.Double", "java.lang.Float", "java.lang.Character"));
+                "java.lang.Integer", "java.lang.Long", "java.lang.Short", "java.lang.Byte",
+                "java.lang.Double", "java.lang.Float", "java.lang.Character"));
     }
 
     @Test

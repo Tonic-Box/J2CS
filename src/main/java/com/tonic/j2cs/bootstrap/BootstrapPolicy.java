@@ -15,6 +15,39 @@ public final class BootstrapPolicy {
     private record Entry(Set<String> suppressedMethodKeys, String fragmentResource) {
     }
 
+    private static final Set<String> BOOTSTRAPPABLE = Set.of(
+            "java/lang/Object",
+            "java/lang/Number",
+            "java/lang/Boolean",
+            "java/lang/Integer",
+            "java/lang/Long",
+            "java/lang/Short",
+            "java/lang/Byte",
+            "java/lang/Double",
+            "java/lang/Float",
+            "java/lang/Character",
+            "java/lang/Throwable",
+            "java/lang/Exception",
+            "java/lang/RuntimeException",
+            "java/lang/Error",
+            "java/lang/NullPointerException",
+            "java/lang/ArithmeticException",
+            "java/lang/ClassCastException",
+            "java/lang/IndexOutOfBoundsException",
+            "java/lang/ArrayIndexOutOfBoundsException",
+            "java/lang/ArrayStoreException",
+            "java/lang/IllegalArgumentException",
+            "java/lang/IllegalStateException",
+            "java/lang/NumberFormatException",
+            "java/util/Objects",
+            "java/lang/Math",
+            "java/lang/StrictMath",
+            "java/lang/System");
+
+    public static boolean expandsInto(String internalName) {
+        return BOOTSTRAPPABLE.contains(internalName) && !internalName.equals("java/lang/Object");
+    }
+
     private static final Map<String, Entry> POLICY = Map.ofEntries(
             Map.entry("java/lang/Object",
                     new Entry(Set.of("hashCode()I", "toString()Ljava/lang/String;"),
