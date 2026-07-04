@@ -15,5 +15,35 @@ namespace javax.swing
             AvWindow.Title = title == null ? "" : title.Value;
             Modal = modal != 0;
         }
+
+        public void setVisible(int visible)
+        {
+            if (AvWindow == null)
+            {
+                return;
+            }
+            if (visible != 0)
+            {
+                if (__contentPane != null && __contentPane.AvControl != null)
+                {
+                    AvWindow.Content = __contentPane.AvControl;
+                }
+                if (Modal)
+                {
+                    var frame = new global::Avalonia.Threading.DispatcherFrame();
+                    AvWindow.Closed += (sender, e) => frame.Continue = false;
+                    AvWindow.Show();
+                    global::Avalonia.Threading.Dispatcher.UIThread.PushFrame(frame);
+                }
+                else
+                {
+                    AvWindow.Show();
+                }
+            }
+            else
+            {
+                AvWindow.Hide();
+            }
+        }
     }
 }

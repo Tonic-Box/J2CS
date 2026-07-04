@@ -24,5 +24,25 @@ namespace javax.swing
                 label.Text = text == null ? "" : text.Value;
             }
         }
+
+        public void setForeground(global::java.awt.Color color)
+        {
+            if (label != null && color != null)
+            {
+                label.Foreground = color.Brush;
+            }
+        }
+
+        public void setFont(global::java.awt.Font font)
+        {
+            if (label != null && font != null)
+            {
+                label.FontFamily = new global::Avalonia.Media.FontFamily(font.Family);
+                label.FontSize = font.Size;
+                label.FontWeight = (font.Style & 1) != 0
+                        ? global::Avalonia.Media.FontWeight.Bold
+                        : global::Avalonia.Media.FontWeight.Normal;
+            }
+        }
     }
 }

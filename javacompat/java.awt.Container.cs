@@ -44,6 +44,16 @@ namespace java.awt
             return comp;
         }
 
+        public void setBorder(global::javax.swing.border.Border border)
+        {
+            EnsurePanel();
+            if (border != null)
+            {
+                AvPanel.Margin = new global::Avalonia.Thickness(
+                        border.Left, border.Top, border.Right, border.Bottom);
+            }
+        }
+
         public void add(global::java.awt.Component comp, global::java.lang.Object constraint)
         {
             EnsurePanel();

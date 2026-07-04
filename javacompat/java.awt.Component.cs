@@ -37,12 +37,13 @@ namespace java.awt
             }
         }
 
-        public void requestFocusInWindow()
+        public int requestFocusInWindow()
         {
             if (AvControl != null)
             {
                 AvControl.Focus();
             }
+            return 1;
         }
     }
 }

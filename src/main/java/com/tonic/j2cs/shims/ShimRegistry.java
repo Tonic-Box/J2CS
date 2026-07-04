@@ -98,7 +98,20 @@ public final class ShimRegistry {
             "javax/swing/JList",
             "javax/swing/JScrollPane",
             "javax/swing/ListModel",
-            "javax/swing/DefaultListModel");
+            "javax/swing/DefaultListModel",
+            "javax/swing/JPasswordField",
+            "javax/swing/JProgressBar",
+            "javax/swing/BoxLayout",
+            "javax/swing/Box",
+            "javax/swing/BorderFactory",
+            "javax/swing/border/Border",
+            "javax/swing/JOptionPane",
+            "java/awt/Color",
+            "java/awt/Font",
+            "java/awt/event/KeyListener",
+            "java/awt/event/KeyAdapter",
+            "java/awt/event/KeyEvent",
+            "java/util/Arrays");
 
     private static final Map<String, String> SHIM_SUPERS = Map.<String, String>ofEntries(
             Map.entry("java/lang/String", "java/lang/Object"),
@@ -172,6 +185,19 @@ public final class ShimRegistry {
             Map.entry("javax/swing/JScrollPane", "java/awt/Component"),
             Map.entry("javax/swing/ListModel", "java/lang/Object"),
             Map.entry("javax/swing/DefaultListModel", "java/lang/Object"),
+            Map.entry("javax/swing/JPasswordField", "javax/swing/JTextField"),
+            Map.entry("javax/swing/JProgressBar", "java/awt/Component"),
+            Map.entry("javax/swing/BoxLayout", "java/lang/Object"),
+            Map.entry("javax/swing/Box", "java/lang/Object"),
+            Map.entry("javax/swing/BorderFactory", "java/lang/Object"),
+            Map.entry("javax/swing/border/Border", "java/lang/Object"),
+            Map.entry("javax/swing/JOptionPane", "java/lang/Object"),
+            Map.entry("java/awt/Color", "java/lang/Object"),
+            Map.entry("java/awt/Font", "java/lang/Object"),
+            Map.entry("java/awt/event/KeyListener", "java/lang/Object"),
+            Map.entry("java/awt/event/KeyAdapter", "java/lang/Object"),
+            Map.entry("java/awt/event/KeyEvent", "java/lang/Object"),
+            Map.entry("java/util/Arrays", "java/lang/Object"),
             Map.entry("java/io/PrintStream", "java/lang/Object"),
             Map.entry("java/lang/Throwable", "java/lang/Object"),
             Map.entry("java/lang/Exception", "java/lang/Throwable"),
@@ -205,12 +231,16 @@ public final class ShimRegistry {
             "java/lang/Enum",
             "java/lang/NoSuchFieldError",
             "javax/swing/JFrame",
-            "javax/swing/JDialog");
+            "javax/swing/JDialog",
+            "java/awt/event/KeyAdapter");
 
     public static final Map<String, String> EXTENDABLE_VIRTUALS = Map.of(
             "getMessage()Ljava/lang/String;", "getMessage",
             "name()Ljava/lang/String;", "name",
-            "ordinal()I", "ordinal");
+            "ordinal()I", "ordinal",
+            "keyPressed(Ljava/awt/event/KeyEvent;)V", "keyPressed",
+            "keyReleased(Ljava/awt/event/KeyEvent;)V", "keyReleased",
+            "keyTyped(Ljava/awt/event/KeyEvent;)V", "keyTyped");
 
     public static final Set<String> EXTENDABLE_MEMBER_NAMES = Set.of(
             "getMessage", "JavaClassName", "message", "__origin",
@@ -394,7 +424,8 @@ public final class ShimRegistry {
             Map.entry("java/awt/Component.setEnabled(Z)V", instance("setEnabled")),
             Map.entry("java/awt/Component.setVisible(Z)V", instance("setVisible")),
             Map.entry("java/awt/Component.setPreferredSize(Ljava/awt/Dimension;)V", instance("setPreferredSize")),
-            Map.entry("java/awt/Component.requestFocusInWindow()V", instance("requestFocusInWindow")),
+            Map.entry("java/awt/Component.requestFocusInWindow()Z", instance("requestFocusInWindow")),
+            Map.entry("java/lang/Thread.sleep(J)V", statics("sleep")),
             Map.entry("javax/swing/JButton.addActionListener(Ljava/awt/event/ActionListener;)V", instance("addActionListener")),
             Map.entry("javax/swing/JLabel.setText(Ljava/lang/String;)V", instance("setText")),
             Map.entry("javax/swing/JTextField.getText()Ljava/lang/String;", instance("getText")),
@@ -402,7 +433,19 @@ public final class ShimRegistry {
             Map.entry("javax/swing/JList.getSelectedIndex()I", instance("getSelectedIndex")),
             Map.entry("javax/swing/DefaultListModel.addElement(Ljava/lang/Object;)V", instance("addElement")),
             Map.entry("javax/swing/DefaultListModel.clear()V", instance("clear")),
-            Map.entry("java/awt/event/ActionListener.actionPerformed(Ljava/awt/event/ActionEvent;)V", instance("actionPerformed")));
+            Map.entry("java/awt/event/ActionListener.actionPerformed(Ljava/awt/event/ActionEvent;)V", instance("actionPerformed")),
+            Map.entry("javax/swing/JPasswordField.addKeyListener(Ljava/awt/event/KeyListener;)V", instance("addKeyListener")),
+            Map.entry("javax/swing/JPasswordField.getPassword()[C", instance("getPassword")),
+            Map.entry("javax/swing/JPasswordField.setEchoChar(C)V", instance("setEchoChar")),
+            Map.entry("javax/swing/JProgressBar.setIndeterminate(Z)V", instance("setIndeterminate")),
+            Map.entry("javax/swing/Box.createVerticalStrut(I)Ljava/awt/Component;", statics("createVerticalStrut")),
+            Map.entry("javax/swing/BorderFactory.createEmptyBorder(IIII)Ljavax/swing/border/Border;", statics("createEmptyBorder")),
+            Map.entry("java/awt/Container.setBorder(Ljavax/swing/border/Border;)V", instance("setBorder")),
+            Map.entry("javax/swing/JLabel.setForeground(Ljava/awt/Color;)V", instance("setForeground")),
+            Map.entry("javax/swing/JLabel.setFont(Ljava/awt/Font;)V", instance("setFont")),
+            Map.entry("javax/swing/JOptionPane.showMessageDialog(Ljava/awt/Component;Ljava/lang/Object;Ljava/lang/String;I)V", statics("showMessageDialog")),
+            Map.entry("java/util/Arrays.fill([CC)V", statics("fill")),
+            Map.entry("java/awt/event/KeyEvent.getKeyCode()I", instance("getKeyCode")));
 
     private static final Map<String, ShimTarget> FIELDS = Map.ofEntries(
             Map.entry("java/lang/System.out Ljava/io/PrintStream;", statics("@out")),
@@ -412,7 +455,10 @@ public final class ShimRegistry {
             Map.entry("java/time/temporal/ChronoUnit.MINUTES Ljava/time/temporal/ChronoUnit;", statics("MINUTES")),
             Map.entry("java/nio/charset/StandardCharsets.UTF_8 Ljava/nio/charset/Charset;", statics("UTF_8")),
             Map.entry("java/lang/Boolean.TRUE Ljava/lang/Boolean;", statics("TRUE")),
-            Map.entry("java/lang/Boolean.FALSE Ljava/lang/Boolean;", statics("FALSE")));
+            Map.entry("java/lang/Boolean.FALSE Ljava/lang/Boolean;", statics("FALSE")),
+            Map.entry("java/awt/Color.RED Ljava/awt/Color;", statics("RED")),
+            Map.entry("java/awt/Color.ORANGE Ljava/awt/Color;", statics("ORANGE")),
+            Map.entry("java/awt/Color.DARK_GRAY Ljava/awt/Color;", statics("DARK_GRAY")));
 
     private ShimRegistry() {
     }

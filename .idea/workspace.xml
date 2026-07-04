@@ -4,13 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d05fdbd2-bef1-4012-9f61-0cf573243b7b" name="Changes" comment="Avalonia GUI foundation: build-system + window shims">
+    <list default="true" id="d05fdbd2-bef1-4012-9f61-0cf573243b7b" name="Changes" comment="Avalonia widgets + layout">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/javacompat/java.awt.Component.cs" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/java.awt.Component.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/javacompat/java.awt.Container.cs" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/java.awt.Container.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/javacompat/java.awt.Window.cs" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/java.awt.Window.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/javacompat/java.lang.String.cs" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/java.lang.String.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/javacompat/manifest.txt" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/manifest.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/javacompat/javax.swing.JDialog.cs" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/javax.swing.JDialog.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/javacompat/javax.swing.JLabel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/javax.swing.JLabel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/javacompat/javax.swing.JTextField.cs" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/javax.swing.JTextField.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/shims/ShimRegistry.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/shims/ShimRegistry.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -51,14 +51,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1783017158528</updated>
-    </task>
-    <task id="LOCAL-00012" summary="Add closure scanning, type stubs, and the standing divergence list">
-      <option name="closed" value="true" />
-      <created>1783079622854</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1783079622854</updated>
     </task>
     <task id="LOCAL-00013" summary="Wire publish paths, goldens, and the shim drift guard">
       <option name="closed" value="true" />
@@ -444,11 +436,18 @@
       <option name="project" value="LOCAL" />
       <updated>1783185292133</updated>
     </task>
-    <option name="localTasksCounter" value="61" />
+    <task id="LOCAL-00061" summary="Avalonia widgets + layout">
+      <option name="closed" value="true" />
+      <created>1783186315367</created>
+      <option name="number" value="00061" />
+      <option name="presentableId" value="LOCAL-00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1783186315367</updated>
+    </task>
+    <option name="localTasksCounter" value="62" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Bootstrap java.lang.Boolean from JDK bytecode with a native seam" />
     <MESSAGE value="Bootstrap java.lang.Number and Integer from JDK bytecode" />
     <MESSAGE value="Bootstrap Long, Short, and Byte from JDK bytecode" />
     <MESSAGE value="Bootstrap Double, Float, and Character from JDK bytecode" />
@@ -473,6 +472,7 @@
     <MESSAGE value="Multi-dim arrays + Boolean.TRUE/FALSE + NoSuchFieldError" />
     <MESSAGE value="Clear generated output dirs before writing" />
     <MESSAGE value="Avalonia GUI foundation: build-system + window shims" />
-    <option name="LAST_COMMIT_MESSAGE" value="Avalonia GUI foundation: build-system + window shims" />
+    <MESSAGE value="Avalonia widgets + layout" />
+    <option name="LAST_COMMIT_MESSAGE" value="Avalonia widgets + layout" />
   </component>
 </project>

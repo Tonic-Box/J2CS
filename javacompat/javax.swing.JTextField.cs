@@ -2,7 +2,7 @@ namespace javax.swing
 {
     public class JTextField : global::java.awt.Component
     {
-        private global::Avalonia.Controls.TextBox field;
+        internal global::Avalonia.Controls.TextBox field;
 
         public JTextField(global::java.lang.RawNew r) : base(r)
         {

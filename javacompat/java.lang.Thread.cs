@@ -16,5 +16,13 @@ namespace java.lang
         public void interrupt()
         {
         }
+
+        public static void sleep(long millis)
+        {
+            if (millis > 0)
+            {
+                global::System.Threading.Thread.Sleep((int)(millis > int.MaxValue ? int.MaxValue : millis));
+            }
+        }
     }
 }

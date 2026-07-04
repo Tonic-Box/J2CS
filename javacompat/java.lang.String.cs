@@ -5,11 +5,16 @@ namespace java.lang
         private static readonly global::System.Collections.Concurrent.ConcurrentDictionary<string, String> Pool =
                 new global::System.Collections.Concurrent.ConcurrentDictionary<string, String>();
 
-        public readonly string Value;
+        public string Value;
 
         public String(RawNew r) : base(r)
         {
             Value = "";
+        }
+
+        public void __init__C_V(char[] value)
+        {
+            Value = value == null ? "" : new string(value);
         }
 
         private String(string value) : base(RawNew.I)
