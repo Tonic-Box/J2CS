@@ -147,6 +147,11 @@ class DifferentialTest {
     }
 
     @Test
+    void bootstrapCollections() throws Exception {
+        Differential.assertSameOutput("CollectionsBootstrap", java.util.List.of("java.util.ArrayList"));
+    }
+
+    @Test
     void bootstrapAll() throws Exception {
         Differential.assertSameOutput("AllBootstrap", java.util.List.of(
                 "java.lang.Object", "java.lang.Math", "java.lang.System",

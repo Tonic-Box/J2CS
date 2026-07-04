@@ -43,7 +43,13 @@ public final class BootstrapPolicy {
             "java/util/Objects",
             "java/lang/Math",
             "java/lang/StrictMath",
-            "java/lang/System");
+            "java/lang/System",
+            "java/util/ArrayList",
+            "java/util/ArrayList$Itr",
+            "java/util/AbstractList",
+            "java/util/AbstractCollection",
+            "java/util/ConcurrentModificationException",
+            "java/util/NoSuchElementException");
 
     public static boolean expandsInto(String internalName) {
         return BOOTSTRAPPABLE.contains(internalName) && !internalName.equals("java/lang/Object");
@@ -146,6 +152,12 @@ public final class BootstrapPolicy {
                             "java.lang.Character.native.cs")),
             Map.entry("java/lang/Math",
                     new Entry(Set.of("<clinit>()V"), null)),
+            Map.entry("java/util/ArrayList",
+                    new Entry(Set.of("grow()[Ljava/lang/Object;"),
+                            "java.util.ArrayList.native.cs")),
+            Map.entry("java/util/Objects",
+                    new Entry(Set.of("checkIndex(II)I"),
+                            "java.util.Objects.native.cs")),
             Map.entry("java/lang/System",
                     new Entry(Set.of(
                             "<clinit>()V",

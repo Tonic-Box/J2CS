@@ -204,6 +204,7 @@ public final class MemberNamer {
             if (!baseByJavaName.containsKey(name)) {
                 String candidate = unique(CsNamer.identifier(name), localReserved);
                 localReserved.add(candidate);
+                taken.add(candidate);
                 baseByJavaName.put(name, candidate);
             }
         }
