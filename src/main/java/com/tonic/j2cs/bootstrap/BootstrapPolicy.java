@@ -49,7 +49,21 @@ public final class BootstrapPolicy {
             "java/util/AbstractList",
             "java/util/AbstractCollection",
             "java/util/ConcurrentModificationException",
-            "java/util/NoSuchElementException");
+            "java/util/NoSuchElementException",
+            "java/util/HashMap",
+            "java/util/AbstractMap",
+            "java/util/HashSet",
+            "java/util/AbstractSet",
+            "java/util/HashMap$Node",
+            "java/util/HashMap$KeySet",
+            "java/util/HashMap$Values",
+            "java/util/HashMap$EntrySet",
+            "java/util/HashMap$HashIterator",
+            "java/util/HashMap$KeyIterator",
+            "java/util/HashMap$ValueIterator",
+            "java/util/HashMap$EntryIterator",
+            "java/util/HashMap$TreeNode",
+            "java/util/LinkedHashMap$Entry");
 
     public static boolean expandsInto(String internalName) {
         return BOOTSTRAPPABLE.contains(internalName) && !internalName.equals("java/lang/Object");

@@ -268,6 +268,22 @@ public final class ShimRegistry {
         return METHODS;
     }
 
+    /**
+     * The instance (non-static) methods a shim type declares, as (name+descriptor) → C# name.
+     * A bootstrapped class implementing a shim interface adopts these so its overrides keep the
+     * interface's member name and a colliding field yields instead of hijacking it.
+     */
+    public static Map<String, String> instanceVirtualsOf(String owner) {
+        Map<String, String> result = new java.util.LinkedHashMap<>();
+        String prefix = owner + ".";
+        for (Map.Entry<String, ShimTarget> entry : METHODS.entrySet()) {
+            if (entry.getKey().startsWith(prefix) && !entry.getValue().isStatic()) {
+                result.put(entry.getKey().substring(prefix.length()), entry.getValue().csMemberName());
+            }
+        }
+        return result;
+    }
+
     public static Map<String, ShimTarget> fields() {
         return FIELDS;
     }

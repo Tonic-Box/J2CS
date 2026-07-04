@@ -152,6 +152,12 @@ class DifferentialTest {
     }
 
     @Test
+    void bootstrapHashMap() throws Exception {
+        Differential.assertSameOutput("HashMapBootstrap",
+                java.util.List.of("java.util.HashMap", "java.util.HashSet"));
+    }
+
+    @Test
     void bootstrapAll() throws Exception {
         Differential.assertSameOutput("AllBootstrap", java.util.List.of(
                 "java.lang.Object", "java.lang.Math", "java.lang.System",

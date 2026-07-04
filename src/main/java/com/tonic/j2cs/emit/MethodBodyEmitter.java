@@ -538,7 +538,8 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
         if (value instanceof SSAValue ssa && ssa.getType() != null) {
             String valueCs = naming.typeMapper().computeType(ssa.getType()).csText();
             if (!valueCs.equals(storage.csText())) {
-                return "(" + storage.csText() + ")(" + expr + ")";
+                String bridge = storage.csText().endsWith("[]") ? "(object)" : "";
+                return "(" + storage.csText() + ")" + bridge + "(" + expr + ")";
             }
         }
         return expr;
@@ -729,7 +730,8 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
         String operand = names.ref(instr.getOperand());
         CsType target = naming.typeMapper().computeType(instr.getTargetType());
         if (instr.isCast()) {
-            assign(instr, "(" + target.csText() + ")(global::java.lang.Object)(" + operand + ")");
+            String bridge = target.csText().endsWith("[]") ? "(object)" : "(global::java.lang.Object)";
+            assign(instr, "(" + target.csText() + ")" + bridge + "(" + operand + ")");
         } else {
             assign(instr, "(" + operand + " is " + target.csText() + ") ? 1 : 0");
         }

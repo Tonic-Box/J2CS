@@ -5,5 +5,9 @@ namespace java.util
         global::java.lang.Object getKey();
 
         global::java.lang.Object getValue();
+
+        int hashCode();
+
+        int equals(global::java.lang.Object o);
     }
 }

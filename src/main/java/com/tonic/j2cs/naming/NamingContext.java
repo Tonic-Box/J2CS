@@ -56,6 +56,12 @@ public final class NamingContext {
             for (String iface : hierarchy.interfacesOf(name)) {
                 if (hierarchy.isAppClass(iface)) {
                     mergeAncestor(name, namers.get(iface), inheritedAssignments, inheritedTaken);
+                } else if (ShimRegistry.isShimType(iface)) {
+                    for (Map.Entry<String, String> shimVirtual
+                            : ShimRegistry.instanceVirtualsOf(iface).entrySet()) {
+                        inheritedAssignments.putIfAbsent(shimVirtual.getKey(), shimVirtual.getValue());
+                        inheritedTaken.add(shimVirtual.getValue());
+                    }
                 }
             }
             MemberNamer namer = new MemberNamer(cf, typeMapper, inheritedAssignments, inheritedTaken);
