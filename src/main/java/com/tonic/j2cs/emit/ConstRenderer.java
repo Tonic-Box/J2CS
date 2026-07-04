@@ -1,5 +1,6 @@
 package com.tonic.j2cs.emit;
 
+import com.tonic.analysis.ssa.value.ClassConstant;
 import com.tonic.analysis.ssa.value.Constant;
 import com.tonic.analysis.ssa.value.DoubleConstant;
 import com.tonic.analysis.ssa.value.FloatConstant;
@@ -39,6 +40,9 @@ public final class ConstRenderer {
         }
         if (constant instanceof NullConstant) {
             return "null";
+        }
+        if (constant instanceof ClassConstant c) {
+            return "global::java.lang.Class.Of(" + CsStrings.quote(c.getClassName().replace('/', '.')) + ")";
         }
         throw new UnsupportedBodyException("constant not supported: "
                 + constant.getClass().getSimpleName());

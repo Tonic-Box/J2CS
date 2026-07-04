@@ -9,6 +9,7 @@ java.lang.Math.cs
 java.lang.Integer.cs
 java.lang.Throwable.cs
 java.lang.Enum.cs
+java.lang.Class.cs
 java.lang.JThrow.cs
 java.lang.Exception.cs
 java.lang.RuntimeException.cs

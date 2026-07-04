@@ -30,5 +30,10 @@ namespace java.lang
         {
             return global::System.Math.Sqrt(v);
         }
+
+        public static double log(double v)
+        {
+            return global::System.Math.Log(v);
+        }
     }
 }

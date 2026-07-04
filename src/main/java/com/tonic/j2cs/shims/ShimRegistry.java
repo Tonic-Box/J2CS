@@ -69,7 +69,8 @@ public final class ShimRegistry {
             "java/util/Base64$Decoder",
             "java/nio/charset/Charset",
             "java/nio/charset/StandardCharsets",
-            "java/lang/Enum");
+            "java/lang/Enum",
+            "java/lang/Class");
 
     private static final Map<String, String> SHIM_SUPERS = Map.<String, String>ofEntries(
             Map.entry("java/lang/String", "java/lang/Object"),
@@ -114,6 +115,7 @@ public final class ShimRegistry {
             Map.entry("java/nio/charset/Charset", "java/lang/Object"),
             Map.entry("java/nio/charset/StandardCharsets", "java/lang/Object"),
             Map.entry("java/lang/Enum", "java/lang/Object"),
+            Map.entry("java/lang/Class", "java/lang/Object"),
             Map.entry("java/io/PrintStream", "java/lang/Object"),
             Map.entry("java/lang/Throwable", "java/lang/Object"),
             Map.entry("java/lang/Exception", "java/lang/Throwable"),
@@ -206,6 +208,7 @@ public final class ShimRegistry {
             Map.entry("java/lang/Math.max(II)I", statics("max")),
             Map.entry("java/lang/Math.min(II)I", statics("min")),
             Map.entry("java/lang/Math.sqrt(D)D", statics("sqrt")),
+            Map.entry("java/lang/Math.log(D)D", statics("log")),
             Map.entry("java/lang/Integer.parseInt(Ljava/lang/String;)I", statics("parseInt")),
             Map.entry("java/lang/Integer.toString(I)Ljava/lang/String;", statics("toString")),
             Map.entry("java/lang/Integer.valueOf(I)Ljava/lang/Integer;", statics("valueOf")),
@@ -279,6 +282,8 @@ public final class ShimRegistry {
             Map.entry("java/lang/Enum.name()Ljava/lang/String;", instance("name")),
             Map.entry("java/lang/Enum.ordinal()I", instance("ordinal")),
             Map.entry("java/lang/Enum.compareTo(Ljava/lang/Enum;)I", instance("compareTo")),
+            Map.entry("java/lang/Class.getName()Ljava/lang/String;", instance("getName")),
+            Map.entry("java/lang/Class.getSimpleName()Ljava/lang/String;", instance("getSimpleName")),
             Map.entry("java/util/Objects.requireNonNull(Ljava/lang/Object;)Ljava/lang/Object;", statics("requireNonNull")),
             Map.entry("java/util/Iterable.iterator()Ljava/util/Iterator;", instance("iterator")),
             Map.entry("java/util/Iterator.hasNext()Z", instance("hasNext")),
