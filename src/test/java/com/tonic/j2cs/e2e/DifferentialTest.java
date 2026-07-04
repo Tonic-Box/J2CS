@@ -148,6 +148,11 @@ class DifferentialTest {
     }
 
     @Test
+    void bootstrapSystem() throws Exception {
+        Differential.assertSameOutput("SystemBootstrap", java.util.List.of("java.lang.System"));
+    }
+
+    @Test
     void bootstrapMath() throws Exception {
         Differential.assertSameOutput("MathBootstrap", java.util.List.of(
                 "java.lang.Number", "java.lang.Double", "java.lang.Float",

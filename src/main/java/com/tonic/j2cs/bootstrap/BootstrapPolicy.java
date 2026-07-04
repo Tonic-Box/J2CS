@@ -89,6 +89,14 @@ public final class BootstrapPolicy {
                             "java.lang.Character.native.cs")),
             Map.entry("java/lang/Math",
                     new Entry(Set.of("<clinit>()V"), null)),
+            Map.entry("java/lang/System",
+                    new Entry(Set.of(
+                            "<clinit>()V",
+                            "arraycopy(Ljava/lang/Object;ILjava/lang/Object;II)V",
+                            "identityHashCode(Ljava/lang/Object;)I",
+                            "currentTimeMillis()J",
+                            "nanoTime()J"),
+                            "java.lang.System.native.cs")),
             Map.entry("java/lang/StrictMath",
                     new Entry(Set.of(
                             "<clinit>()V",
