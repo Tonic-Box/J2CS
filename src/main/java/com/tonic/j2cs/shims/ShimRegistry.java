@@ -72,7 +72,11 @@ public final class ShimRegistry {
             "java/lang/Enum",
             "java/lang/Class",
             "java/lang/Runnable",
-            "java/util/function/Predicate");
+            "java/util/function/Predicate",
+            "java/util/LinkedList",
+            "java/util/LinkedHashMap",
+            "java/util/TreeMap",
+            "java/lang/StringBuffer");
 
     private static final Map<String, String> SHIM_SUPERS = Map.<String, String>ofEntries(
             Map.entry("java/lang/String", "java/lang/Object"),
@@ -120,6 +124,10 @@ public final class ShimRegistry {
             Map.entry("java/lang/Class", "java/lang/Object"),
             Map.entry("java/lang/Runnable", "java/lang/Object"),
             Map.entry("java/util/function/Predicate", "java/lang/Object"),
+            Map.entry("java/util/LinkedList", "java/util/ArrayList"),
+            Map.entry("java/util/LinkedHashMap", "java/util/HashMap"),
+            Map.entry("java/util/TreeMap", "java/util/HashMap"),
+            Map.entry("java/lang/StringBuffer", "java/lang/Object"),
             Map.entry("java/io/PrintStream", "java/lang/Object"),
             Map.entry("java/lang/Throwable", "java/lang/Object"),
             Map.entry("java/lang/Exception", "java/lang/Throwable"),
@@ -292,6 +300,11 @@ public final class ShimRegistry {
             Map.entry("java/util/function/Predicate.test(Ljava/lang/Object;)Z", instance("test")),
             Map.entry("java/util/List.clear()V", instance("clear")),
             Map.entry("java/util/List.removeIf(Ljava/util/function/Predicate;)Z", instance("removeIf")),
+            Map.entry("java/lang/StringBuffer.append(Ljava/lang/String;)Ljava/lang/StringBuffer;", instance("append")),
+            Map.entry("java/lang/StringBuffer.append(I)Ljava/lang/StringBuffer;", instance("append")),
+            Map.entry("java/lang/StringBuffer.append(Ljava/lang/Object;)Ljava/lang/StringBuffer;", instance("append")),
+            Map.entry("java/lang/StringBuffer.length()I", instance("length")),
+            Map.entry("java/lang/StringBuffer.toString()Ljava/lang/String;", instance("toString")),
             Map.entry("java/util/Objects.requireNonNull(Ljava/lang/Object;)Ljava/lang/Object;", statics("requireNonNull")),
             Map.entry("java/util/Iterable.iterator()Ljava/util/Iterator;", instance("iterator")),
             Map.entry("java/util/Iterator.hasNext()Z", instance("hasNext")),

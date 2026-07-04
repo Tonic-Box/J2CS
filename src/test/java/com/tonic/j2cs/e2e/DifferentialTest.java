@@ -203,8 +203,6 @@ class DifferentialTest {
                 java.nio.file.Path.of("build", "e2e", "UnsupportedGraceful", "out", "j2cs-report.txt"));
         org.junit.jupiter.api.Assertions.assertTrue(report.contains("allocation of type not in input"),
                 "report should list the TreeSet allocation");
-        org.junit.jupiter.api.Assertions.assertTrue(report.contains("java/util/TreeMap"),
-                "report should list the stubbed TreeMap type");
         org.junit.jupiter.api.Assertions.assertTrue(report.contains("native method"),
                 "report should list the native method");
     }

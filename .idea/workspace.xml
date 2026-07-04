@@ -4,12 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d05fdbd2-bef1-4012-9f61-0cf573243b7b" name="Changes" comment="Support class literals (ConstRenderer + Class shim) + Math.log">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/javacompat/java.util.ArrayList.cs" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/java.util.ArrayList.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/javacompat/java.util.List.cs" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/java.util.List.cs" afterDir="false" />
+    <list default="true" id="d05fdbd2-bef1-4012-9f61-0cf573243b7b" name="Changes" comment="Support Runnable/Predicate lambdas + List.clear/removeIf">
       <change beforePath="$PROJECT_DIR$/javacompat/manifest.txt" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/manifest.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/LambdaExpander.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/LambdaExpander.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/shims/ShimRegistry.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/shims/ShimRegistry.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/com/tonic/j2cs/e2e/DifferentialTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/tonic/j2cs/e2e/DifferentialTest.java" afterDir="false" />
     </list>
@@ -51,14 +47,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1783017158528</updated>
-    </task>
-    <task id="LOCAL-00007" summary="Emit real method bodies and go differential-green on three fixtures">
-      <option name="closed" value="true" />
-      <created>1783070781606</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1783070781606</updated>
     </task>
     <task id="LOCAL-00008" summary="Emit switch dispatch and cover comparison semantics differentially">
       <option name="closed" value="true" />
@@ -444,11 +432,18 @@
       <option name="project" value="LOCAL" />
       <updated>1783179554624</updated>
     </task>
-    <option name="localTasksCounter" value="56" />
+    <task id="LOCAL-00056" summary="Support Runnable/Predicate lambdas + List.clear/removeIf">
+      <option name="closed" value="true" />
+      <created>1783180397520</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1783180397520</updated>
+    </task>
+    <option name="localTasksCounter" value="57" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Add HashMap and HashSet with JVM-faithful iteration order" />
     <MESSAGE value="Cover interface-typed collection usage and note divergences" />
     <MESSAGE value="Add JDK bootstrap loader and coverage-report diagnostic" />
     <MESSAGE value="Wire the bootstrap foundation, inert for the empty set" />
@@ -473,6 +468,7 @@
     <MESSAGE value="Shim crypto: MessageDigest/SecureRandom/Base64/Charset" />
     <MESSAGE value="Add enum support via java.lang.Enum shim" />
     <MESSAGE value="Support class literals (ConstRenderer + Class shim) + Math.log" />
-    <option name="LAST_COMMIT_MESSAGE" value="Support class literals (ConstRenderer + Class shim) + Math.log" />
+    <MESSAGE value="Support Runnable/Predicate lambdas + List.clear/removeIf" />
+    <option name="LAST_COMMIT_MESSAGE" value="Support Runnable/Predicate lambdas + List.clear/removeIf" />
   </component>
 </project>
