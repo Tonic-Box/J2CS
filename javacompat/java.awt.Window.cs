@@ -4,9 +4,24 @@ namespace java.awt
     {
         internal global::Avalonia.Controls.Window AvWindow;
         internal int CloseOperation;
+        internal Container __contentPane;
 
         public Window(global::java.lang.RawNew r) : base(r)
         {
+        }
+
+        public Container getContentPane()
+        {
+            if (__contentPane == null)
+            {
+                __contentPane = new Container(global::java.lang.RawNew.I);
+            }
+            return __contentPane;
+        }
+
+        public void setContentPane(Container pane)
+        {
+            __contentPane = pane;
         }
 
         public void setVisible(int visible)
@@ -17,6 +32,10 @@ namespace java.awt
             }
             if (visible != 0)
             {
+                if (__contentPane != null && __contentPane.AvControl != null)
+                {
+                    AvWindow.Content = __contentPane.AvControl;
+                }
                 AvWindow.Show();
             }
             else
