@@ -78,6 +78,25 @@ class MemberNamerTest {
     }
 
     @Test
+    void overloadOfInheritedMethodSharesName() throws IOException {
+        ClassFile cf = compile("D",
+                "public class D { public boolean add(Object o) { return false; } public void add(int i, Object o) {} }");
+        MemberNamer namer = new MemberNamer(cf, new TypeMapper(),
+                java.util.Map.of("add(Ljava/lang/Object;)Z", "add"), java.util.Set.of("add"));
+        assertEquals("add", namer.methodName(method(cf, "add", "(Ljava/lang/Object;)Z")));
+        assertEquals("add", namer.methodName(method(cf, "add", "(ILjava/lang/Object;)V")));
+    }
+
+    @Test
+    void inheritedOverrideKeepsNameFieldYields() throws IOException {
+        ClassFile cf = compile("S2", "public class S2 { int size; public int size() { return size; } }");
+        MemberNamer namer = new MemberNamer(cf, new TypeMapper(),
+                java.util.Map.of("size()I", "size"), java.util.Set.of("size"));
+        assertEquals("size__2", namer.fieldName(field(cf, "size")));
+        assertEquals("size", namer.methodName(method(cf, "size", "()I")));
+    }
+
+    @Test
     void descriptorSuffixIsStable() {
         assertEquals("_ILjava_lang_String__V", MemberNamer.descriptorSuffix("(ILjava/lang/String;)V"));
         assertEquals("__V", MemberNamer.descriptorSuffix("()V"));

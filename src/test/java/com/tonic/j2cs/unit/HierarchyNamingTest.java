@@ -48,11 +48,11 @@ class HierarchyNamingTest {
     }
 
     @Test
-    void newOverloadAvoidsInheritedName() throws IOException {
+    void newOverloadSharesInheritedName() throws IOException {
         NamingContext naming = context("hj",
                 "class B { void foo(int a) {} } class D extends B { void foo(long a) {} }");
         assertEquals("foo", naming.namerOf("B").methodName("foo", "(I)V"));
-        assertEquals("foo__2", naming.namerOf("D").methodName("foo", "(J)V"));
+        assertEquals("foo", naming.namerOf("D").methodName("foo", "(J)V"));
     }
 
     @Test
@@ -87,7 +87,7 @@ class HierarchyNamingTest {
                 naming.namerOf("SB").methodName("put", "(Ljava/lang/Object;)V"));
         assertNotEquals(naming.namerOf("SB").methodName("get", "()Ljava/lang/Object;"),
                 naming.namerOf("SB").methodName("get", "()Ljava/lang/String;"));
-        assertNotEquals(naming.namerOf("SB").methodName("put", "(Ljava/lang/Object;)V"),
+        assertEquals(naming.namerOf("SB").methodName("put", "(Ljava/lang/Object;)V"),
                 naming.namerOf("SB").methodName("put", "(Ljava/lang/String;)V"));
     }
 

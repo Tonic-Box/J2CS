@@ -33,6 +33,7 @@ public final class MemberNamer {
     private final Map<String, String> fieldNames = new LinkedHashMap<>();
     private final Map<String, String> inheritedAssignments;
     private final Set<String> taken = new HashSet<>();
+    private final Set<String> localReserved = new HashSet<>();
     private boolean classNameConflict;
 
     public MemberNamer(ClassFile classFile, TypeMapper typeMapper) {
@@ -44,13 +45,16 @@ public final class MemberNamer {
         this.inheritedAssignments = Map.copyOf(inheritedAssignments);
         String csClassName = CsNamer.classNameOf(classFile.getClassName());
         taken.add(csClassName);
+        localReserved.add(csClassName);
         taken.addAll(OBJECT_OVERRIDES.values());
+        localReserved.addAll(OBJECT_OVERRIDES.values());
         taken.addAll(inheritedTaken);
         for (MethodEntry method : classFile.getMethods()) {
             String key = key(method.getName(), method.getDesc());
             methodAccess.put(key, method.getAccess());
             if (method.getName().equals("<init>")) {
                 taken.add(initMethodName(method.getDesc()));
+                localReserved.add(initMethodName(method.getDesc()));
             }
             String override = OBJECT_OVERRIDES.get(key);
             if (override != null) {
@@ -178,33 +182,49 @@ public final class MemberNamer {
         for (FieldEntry field : classFile.getFields()) {
             String candidate = unique(CsNamer.identifier(field.getName()), taken);
             taken.add(candidate);
+            localReserved.add(candidate);
             fieldNames.put(key(field.getName(), field.getDesc()), candidate);
         }
     }
 
     private void assignMethodNames(ClassFile classFile, TypeMapper typeMapper, Set<String> taken) {
         Map<String, String> baseByJavaName = new LinkedHashMap<>();
-        List<MethodEntry> ordinary = new ArrayList<>();
+        for (MethodEntry method : classFile.getMethods()) {
+            String assigned = methodNames.get(key(method.getName(), method.getDesc()));
+            if (assigned != null) {
+                baseByJavaName.putIfAbsent(method.getName(), assigned);
+            }
+        }
         for (MethodEntry method : classFile.getMethods()) {
             String name = method.getName();
             if (name.equals("<init>") || name.equals("<clinit>")
                     || methodNames.containsKey(key(name, method.getDesc()))) {
                 continue;
             }
-            ordinary.add(method);
             if (!baseByJavaName.containsKey(name)) {
-                String candidate = unique(CsNamer.identifier(name), taken);
-                taken.add(candidate);
+                String candidate = unique(CsNamer.identifier(name), localReserved);
+                localReserved.add(candidate);
                 baseByJavaName.put(name, candidate);
             }
         }
         Map<String, List<MethodEntry>> byBaseAndParams = new LinkedHashMap<>();
-        for (MethodEntry method : ordinary) {
-            String group = baseByJavaName.get(method.getName()) + "|" + paramSignature(method.getDesc(), typeMapper);
+        for (MethodEntry method : classFile.getMethods()) {
+            String name = method.getName();
+            if (name.equals("<init>") || name.equals("<clinit>")) {
+                continue;
+            }
+            String base = baseByJavaName.get(name);
+            if (base == null) {
+                continue;
+            }
+            String group = base + "|" + paramSignature(method.getDesc(), typeMapper);
             byBaseAndParams.computeIfAbsent(group, g -> new ArrayList<>()).add(method);
         }
         for (List<MethodEntry> group : byBaseAndParams.values()) {
             for (MethodEntry method : group) {
+                if (methodNames.containsKey(key(method.getName(), method.getDesc()))) {
+                    continue;
+                }
                 String base = baseByJavaName.get(method.getName());
                 String name = group.size() == 1
                         ? base
