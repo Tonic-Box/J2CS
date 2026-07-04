@@ -143,6 +143,17 @@ class DifferentialTest {
     }
 
     @Test
+    void bootstrapExceptions() throws Exception {
+        Differential.assertSameOutput("ExceptionBootstrap", java.util.List.of(
+                "java.lang.Throwable", "java.lang.Exception", "java.lang.RuntimeException",
+                "java.lang.Error", "java.lang.NullPointerException", "java.lang.ArithmeticException",
+                "java.lang.ClassCastException", "java.lang.IndexOutOfBoundsException",
+                "java.lang.ArrayIndexOutOfBoundsException", "java.lang.ArrayStoreException",
+                "java.lang.IllegalArgumentException", "java.lang.IllegalStateException",
+                "java.lang.NumberFormatException"));
+    }
+
+    @Test
     void bootstrapWrappers2() throws Exception {
         Differential.assertSameOutput("WrapperBootstrap2", java.util.List.of(
                 "java.lang.Number", "java.lang.Integer", "java.lang.Long", "java.lang.Short",

@@ -19,6 +19,24 @@ public final class BootstrapPolicy {
             Map.entry("java/lang/Object",
                     new Entry(Set.of("hashCode()I", "toString()Ljava/lang/String;"),
                             "java.lang.Object.native.cs")),
+            Map.entry("java/lang/Throwable",
+                    new Entry(Set.of(
+                            "<clinit>()V",
+                            "<init>()V",
+                            "<init>(Ljava/lang/String;)V",
+                            "<init>(Ljava/lang/String;Ljava/lang/Throwable;)V",
+                            "<init>(Ljava/lang/Throwable;)V",
+                            "<init>(Ljava/lang/String;Ljava/lang/Throwable;ZZ)V",
+                            "fillInStackTrace()Ljava/lang/Throwable;",
+                            "fillInStackTrace(I)Ljava/lang/Throwable;",
+                            "toString()Ljava/lang/String;"),
+                            "java.lang.Throwable.native.cs")),
+            Map.entry("java/lang/NullPointerException",
+                    new Entry(Set.of(
+                            "getMessage()Ljava/lang/String;",
+                            "getExtendedNPEMessage()Ljava/lang/String;",
+                            "fillInStackTrace()Ljava/lang/Throwable;"),
+                            null)),
             Map.entry("java/lang/Boolean",
                     new Entry(Set.of("<clinit>()V"), "java.lang.Boolean.native.cs")),
             Map.entry("java/lang/Integer",
@@ -90,7 +108,7 @@ public final class BootstrapPolicy {
         List<String> fragments = new java.util.ArrayList<>();
         for (String internal : bootstrapped) {
             Entry entry = POLICY.get(internal);
-            if (entry != null) {
+            if (entry != null && entry.fragmentResource() != null) {
                 fragments.add(entry.fragmentResource());
             }
         }
