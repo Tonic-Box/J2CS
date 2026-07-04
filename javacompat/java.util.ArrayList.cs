@@ -32,6 +32,18 @@ namespace java.util
             return 1;
         }
 
+        public void clear()
+        {
+            items.Clear();
+        }
+
+        public int removeIf(global::java.util.function.Predicate filter)
+        {
+            int before = items.Count;
+            items.RemoveAll(e => filter.test(e) != 0);
+            return items.Count != before ? 1 : 0;
+        }
+
         public void add(int index, global::java.lang.Object element)
         {
             if (index < 0 || index > items.Count)

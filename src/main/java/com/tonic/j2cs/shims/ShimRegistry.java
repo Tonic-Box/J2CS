@@ -70,7 +70,9 @@ public final class ShimRegistry {
             "java/nio/charset/Charset",
             "java/nio/charset/StandardCharsets",
             "java/lang/Enum",
-            "java/lang/Class");
+            "java/lang/Class",
+            "java/lang/Runnable",
+            "java/util/function/Predicate");
 
     private static final Map<String, String> SHIM_SUPERS = Map.<String, String>ofEntries(
             Map.entry("java/lang/String", "java/lang/Object"),
@@ -116,6 +118,8 @@ public final class ShimRegistry {
             Map.entry("java/nio/charset/StandardCharsets", "java/lang/Object"),
             Map.entry("java/lang/Enum", "java/lang/Object"),
             Map.entry("java/lang/Class", "java/lang/Object"),
+            Map.entry("java/lang/Runnable", "java/lang/Object"),
+            Map.entry("java/util/function/Predicate", "java/lang/Object"),
             Map.entry("java/io/PrintStream", "java/lang/Object"),
             Map.entry("java/lang/Throwable", "java/lang/Object"),
             Map.entry("java/lang/Exception", "java/lang/Throwable"),
@@ -284,6 +288,10 @@ public final class ShimRegistry {
             Map.entry("java/lang/Enum.compareTo(Ljava/lang/Enum;)I", instance("compareTo")),
             Map.entry("java/lang/Class.getName()Ljava/lang/String;", instance("getName")),
             Map.entry("java/lang/Class.getSimpleName()Ljava/lang/String;", instance("getSimpleName")),
+            Map.entry("java/lang/Runnable.run()V", instance("run")),
+            Map.entry("java/util/function/Predicate.test(Ljava/lang/Object;)Z", instance("test")),
+            Map.entry("java/util/List.clear()V", instance("clear")),
+            Map.entry("java/util/List.removeIf(Ljava/util/function/Predicate;)Z", instance("removeIf")),
             Map.entry("java/util/Objects.requireNonNull(Ljava/lang/Object;)Ljava/lang/Object;", statics("requireNonNull")),
             Map.entry("java/util/Iterable.iterator()Ljava/util/Iterator;", instance("iterator")),
             Map.entry("java/util/Iterator.hasNext()Z", instance("hasNext")),

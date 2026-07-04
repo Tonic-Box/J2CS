@@ -52,6 +52,8 @@ java.lang.Character.cs
 java.lang.Short.cs
 java.lang.Byte.cs
 java.util.JCollections.cs
+java.lang.Runnable.cs
+java.util.function.Predicate.cs
 java.util.Iterable.cs
 java.util.Iterator.cs
 java.util.Collection.cs

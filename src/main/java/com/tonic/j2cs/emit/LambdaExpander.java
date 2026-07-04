@@ -9,10 +9,13 @@ import com.tonic.j2cs.naming.CsNamer;
 import com.tonic.j2cs.naming.MemberNamer;
 import com.tonic.j2cs.naming.NamingContext;
 import com.tonic.j2cs.naming.Resolved;
+import com.tonic.j2cs.shims.ShimRegistry;
+import com.tonic.j2cs.shims.ShimTarget;
 import com.tonic.j2cs.types.TypeMapper;
 import com.tonic.util.Modifiers;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Expands a LambdaMetafactory invokedynamic call site into a synthetic C# class implementing the
@@ -46,21 +49,34 @@ public final class LambdaExpander {
         }
         String indyDesc = instr.getDescriptor();
         String ifaceInternal = returnReference(indyDesc);
-        if (ifaceInternal == null || !naming.hierarchy().isAppInterface(ifaceInternal)) {
+        boolean appIface = ifaceInternal != null && naming.hierarchy().isAppInterface(ifaceInternal);
+        boolean shimIface = ifaceInternal != null && ShimRegistry.isShimType(ifaceInternal);
+        if (!appIface && !shimIface) {
             throw new UnsupportedBodyException("functional interface not in input: "
                     + (ifaceInternal == null ? indyDesc : ifaceInternal));
         }
         String samDesc = samType.getDescriptor();
-        Resolved samResolved = naming.resolveVirtual(ifaceInternal, instr.getName(), samDesc);
-        if (!(samResolved instanceof Resolved.AppMethod samMethod)) {
-            throw new UnsupportedBodyException("abstract method not found on functional interface: "
-                    + ifaceInternal + "." + instr.getName() + samDesc);
+        String samCsName;
+        if (appIface) {
+            Resolved samResolved = naming.resolveVirtual(ifaceInternal, instr.getName(), samDesc);
+            if (!(samResolved instanceof Resolved.AppMethod samMethod)) {
+                throw new UnsupportedBodyException("abstract method not found on functional interface: "
+                        + ifaceInternal + "." + instr.getName() + samDesc);
+            }
+            samCsName = samMethod.csName();
+        } else {
+            Optional<ShimTarget> shimSam = ShimRegistry.method(ifaceInternal, instr.getName(), samDesc);
+            if (shimSam.isEmpty()) {
+                throw new UnsupportedBodyException("abstract method not found on functional interface: "
+                        + ifaceInternal + "." + instr.getName() + samDesc);
+            }
+            samCsName = shimSam.get().csMemberName();
         }
 
         int cpIndex = instr.getOriginalCpIndex();
         String className = synthetics.claimClassName(enclosingInternalName, cpIndex);
         if (!synthetics.isRegistered(enclosingInternalName, cpIndex)) {
-            String source = buildSynthetic(className, ifaceInternal, samMethod.csName(), samDesc,
+            String source = buildSynthetic(className, ifaceInternal, samCsName, samDesc,
                     indyDesc, impl);
             synthetics.register(enclosingInternalName, cpIndex, className, source);
         }
