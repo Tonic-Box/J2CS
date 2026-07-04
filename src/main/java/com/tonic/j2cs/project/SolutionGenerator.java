@@ -25,14 +25,14 @@ public final class SolutionGenerator {
             for (String generated : GENERATED_DIRS) {
                 deleteRecursively(appDir.resolve(generated));
             }
-            Files.writeString(appDir.resolve("App.csproj"), CsprojTemplate.csproj());
+            Files.writeString(appDir.resolve("App.csproj"), CsprojTemplate.csproj(solution.usesGui()));
             Files.writeString(appDir.resolve("Program.cs"), solution.programCs());
             writeSources(appDir.resolve("gen"), solution.genFiles());
             writeSources(appDir.resolve("stubs"), solution.stubFiles());
         } catch (IOException e) {
             throw new J2csException("failed to write solution to " + appDir + ": " + e.getMessage(), e);
         }
-        shimPackager.copyShim(appDir.resolve("javacompat"), solution.bootstrappedInternal());
+        shimPackager.copyShim(appDir.resolve("javacompat"), solution.bootstrappedInternal(), solution.usesGui());
         return appDir;
     }
 

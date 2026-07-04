@@ -77,7 +77,14 @@ public final class ShimRegistry {
             "java/util/LinkedHashMap",
             "java/util/TreeMap",
             "java/lang/StringBuffer",
-            "java/lang/NoSuchFieldError");
+            "java/lang/NoSuchFieldError",
+            "java/awt/Component",
+            "java/awt/Container",
+            "java/awt/Window",
+            "java/awt/Frame",
+            "javax/swing/JFrame",
+            "javax/swing/JDialog",
+            "javax/swing/SwingUtilities");
 
     private static final Map<String, String> SHIM_SUPERS = Map.<String, String>ofEntries(
             Map.entry("java/lang/String", "java/lang/Object"),
@@ -130,6 +137,13 @@ public final class ShimRegistry {
             Map.entry("java/util/TreeMap", "java/util/HashMap"),
             Map.entry("java/lang/StringBuffer", "java/lang/Object"),
             Map.entry("java/lang/NoSuchFieldError", "java/lang/Error"),
+            Map.entry("java/awt/Component", "java/lang/Object"),
+            Map.entry("java/awt/Container", "java/awt/Component"),
+            Map.entry("java/awt/Window", "java/awt/Container"),
+            Map.entry("java/awt/Frame", "java/awt/Window"),
+            Map.entry("javax/swing/JFrame", "java/awt/Frame"),
+            Map.entry("javax/swing/JDialog", "java/awt/Window"),
+            Map.entry("javax/swing/SwingUtilities", "java/lang/Object"),
             Map.entry("java/io/PrintStream", "java/lang/Object"),
             Map.entry("java/lang/Throwable", "java/lang/Object"),
             Map.entry("java/lang/Exception", "java/lang/Throwable"),
@@ -161,7 +175,9 @@ public final class ShimRegistry {
             "java/lang/IllegalStateException",
             "java/lang/InterruptedException",
             "java/lang/Enum",
-            "java/lang/NoSuchFieldError");
+            "java/lang/NoSuchFieldError",
+            "javax/swing/JFrame",
+            "javax/swing/JDialog");
 
     public static final Map<String, String> EXTENDABLE_VIRTUALS = Map.of(
             "getMessage()Ljava/lang/String;", "getMessage",
@@ -332,7 +348,15 @@ public final class ShimRegistry {
             Map.entry("java/util/Map.values()Ljava/util/Collection;", instance("values")),
             Map.entry("java/util/Map.entrySet()Ljava/util/Set;", instance("entrySet")),
             Map.entry("java/util/Map$Entry.getKey()Ljava/lang/Object;", instance("getKey")),
-            Map.entry("java/util/Map$Entry.getValue()Ljava/lang/Object;", instance("getValue")));
+            Map.entry("java/util/Map$Entry.getValue()Ljava/lang/Object;", instance("getValue")),
+            Map.entry("java/awt/Window.setVisible(Z)V", instance("setVisible")),
+            Map.entry("java/awt/Window.dispose()V", instance("dispose")),
+            Map.entry("java/awt/Window.setSize(II)V", instance("setSize")),
+            Map.entry("java/awt/Window.setResizable(Z)V", instance("setResizable")),
+            Map.entry("java/awt/Window.setLocationRelativeTo(Ljava/awt/Component;)V", instance("setLocationRelativeTo")),
+            Map.entry("java/awt/Window.setDefaultCloseOperation(I)V", instance("setDefaultCloseOperation")),
+            Map.entry("java/awt/Window.getParent()Ljava/awt/Container;", instance("getParent")),
+            Map.entry("javax/swing/SwingUtilities.invokeLater(Ljava/lang/Runnable;)V", statics("invokeLater")));
 
     private static final Map<String, ShimTarget> FIELDS = Map.ofEntries(
             Map.entry("java/lang/System.out Ljava/io/PrintStream;", statics("@out")),

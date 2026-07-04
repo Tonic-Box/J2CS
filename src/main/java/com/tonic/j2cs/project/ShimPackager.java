@@ -17,10 +17,17 @@ public final class ShimPackager {
     private static final String RESOURCE_ROOT = "/javacompat/";
 
     public void copyShim(Path targetDir, java.util.Set<String> bootstrappedInternal) {
+        copyShim(targetDir, bootstrappedInternal, false);
+    }
+
+    public void copyShim(Path targetDir, java.util.Set<String> bootstrappedInternal, boolean usesGui) {
         try {
             Files.createDirectories(targetDir);
             for (String fileName : readManifest()) {
                 if (bootstrappedInternal.contains(internalNameOf(fileName))) {
+                    continue;
+                }
+                if (!usesGui && isGuiShim(fileName)) {
                     continue;
                 }
                 try (InputStream in = openResource(RESOURCE_ROOT + fileName)) {
@@ -30,6 +37,10 @@ public final class ShimPackager {
         } catch (IOException e) {
             throw new J2csException("failed to copy shim sources: " + e.getMessage(), e);
         }
+    }
+
+    private static boolean isGuiShim(String fileName) {
+        return fileName.startsWith("javax.swing.") || fileName.startsWith("java.awt.");
     }
 
     private static String internalNameOf(String fileName) {

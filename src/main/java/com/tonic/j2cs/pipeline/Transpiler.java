@@ -73,9 +73,11 @@ public final class Transpiler {
         genFiles.putAll(synthetics.files());
         Map<String, String> stubFiles = emitStubs(referenced, naming, interfacePositionStubs, report);
         addStandingDivergences(report);
-        String programCs = new EntryPointEmitter().emit(input.entryClassInternalName(), naming);
+        boolean usesGui = referenced.stream()
+                .anyMatch(name -> name.startsWith("javax/swing/") || name.startsWith("java/awt/"));
+        String programCs = new EntryPointEmitter().emit(input.entryClassInternalName(), naming, usesGui);
         Path appDir = new SolutionGenerator().generate(options.outDir(),
-                new GeneratedSolution(genFiles, stubFiles, programCs, bootstrappedInternal));
+                new GeneratedSolution(genFiles, stubFiles, programCs, bootstrappedInternal, usesGui));
         new NativeFragmentPackager().copy(appDir, BootstrapPolicy.nativeFragments(bootstrappedInternal));
 
         Path reportPath = new ReportWriter().write(report, options.outDir());

@@ -4,8 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d05fdbd2-bef1-4012-9f61-0cf573243b7b" name="Changes" comment="Multi-dim arrays + Boolean.TRUE/FALSE + NoSuchFieldError">
+    <list default="true" id="d05fdbd2-bef1-4012-9f61-0cf573243b7b" name="Changes" comment="Clear generated output dirs before writing">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/javacompat/manifest.txt" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/manifest.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/EntryPointEmitter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/EntryPointEmitter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/pipeline/Transpiler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/pipeline/Transpiler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/project/CsprojTemplate.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/project/CsprojTemplate.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/project/GeneratedSolution.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/project/GeneratedSolution.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/project/ShimPackager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/project/ShimPackager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/project/SolutionGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/project/SolutionGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/shims/ShimRegistry.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/shims/ShimRegistry.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,14 +53,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1783017158528</updated>
-    </task>
-    <task id="LOCAL-00010" summary="Support arrays: allocation, element access, and length">
-      <option name="closed" value="true" />
-      <created>1783075481889</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1783075481889</updated>
     </task>
     <task id="LOCAL-00011" summary="Expand string-concat indy and complete the StringBuilder shim">
       <option name="closed" value="true" />
@@ -438,11 +438,18 @@
       <option name="project" value="LOCAL" />
       <updated>1783182052789</updated>
     </task>
-    <option name="localTasksCounter" value="59" />
+    <task id="LOCAL-00059" summary="Clear generated output dirs before writing">
+      <option name="closed" value="true" />
+      <created>1783182318778</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1783182318778</updated>
+    </task>
+    <option name="localTasksCounter" value="60" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Wire the bootstrap foundation, inert for the empty set" />
     <MESSAGE value="Add String.equalsIgnoreCase for the Boolean bootstrap closure" />
     <MESSAGE value="Bootstrap java.lang.Boolean from JDK bytecode with a native seam" />
     <MESSAGE value="Bootstrap java.lang.Number and Integer from JDK bytecode" />
@@ -467,6 +474,7 @@
     <MESSAGE value="Support Runnable/Predicate lambdas + List.clear/removeIf" />
     <MESSAGE value="Shim collections tail: LinkedList/LinkedHashMap/TreeMap/StringBuffer" />
     <MESSAGE value="Multi-dim arrays + Boolean.TRUE/FALSE + NoSuchFieldError" />
-    <option name="LAST_COMMIT_MESSAGE" value="Multi-dim arrays + Boolean.TRUE/FALSE + NoSuchFieldError" />
+    <MESSAGE value="Clear generated output dirs before writing" />
+    <option name="LAST_COMMIT_MESSAGE" value="Clear generated output dirs before writing" />
   </component>
 </project>

@@ -12,9 +12,10 @@ public record GeneratedSolution(
         Map<String, String> genFiles,
         Map<String, String> stubFiles,
         String programCs,
-        Set<String> bootstrappedInternal) {
+        Set<String> bootstrappedInternal,
+        boolean usesGui) {
 
     public GeneratedSolution(Map<String, String> genFiles, Map<String, String> stubFiles, String programCs) {
-        this(genFiles, stubFiles, programCs, Set.of());
+        this(genFiles, stubFiles, programCs, Set.of(), false);
     }
 }

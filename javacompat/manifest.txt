@@ -55,6 +55,13 @@ java.lang.Byte.cs
 java.util.JCollections.cs
 java.lang.Runnable.cs
 java.util.function.Predicate.cs
+java.awt.Component.cs
+java.awt.Container.cs
+java.awt.Window.cs
+java.awt.Frame.cs
+javax.swing.JFrame.cs
+javax.swing.JDialog.cs
+javax.swing.SwingUtilities.cs
 java.util.Iterable.cs
 java.util.Iterator.cs
 java.util.Collection.cs
