@@ -5,11 +5,20 @@ import com.tonic.analysis.source.ast.stmt.IRRegionStmt;
 import com.tonic.analysis.source.ast.stmt.LabeledStmt;
 import com.tonic.analysis.source.recovery.MethodRecoverer;
 import com.tonic.analysis.ssa.SSA;
+import com.tonic.analysis.ssa.cfg.IRBlock;
 import com.tonic.analysis.ssa.cfg.IRMethod;
+import com.tonic.analysis.ssa.ir.IRInstruction;
+import com.tonic.analysis.ssa.ir.InvokeInstruction;
+import com.tonic.analysis.ssa.ir.InvokeType;
 import com.tonic.analysis.ssa.transform.ControlFlowReducibility;
 import com.tonic.analysis.ssa.transform.DuplicateBlockMerging;
+import com.tonic.analysis.ssa.value.Constant;
+import com.tonic.analysis.ssa.value.MethodHandleConstant;
 import com.tonic.parser.ClassFile;
 import com.tonic.parser.MethodEntry;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -20,7 +29,20 @@ import java.util.Optional;
  */
 final class StructuredRecovery {
 
-    record Recovered(BlockStmt body, IRMethod ir) {
+    /**
+     * A recovered body plus what lambda emission needs: the recoverer (its naming maps SSA
+     * values to recovered variable names) and the method's lambda indy sites keyed by impl
+     * method name+descriptor plus the functional interface — the same pair a recovered
+     * LambdaExpr/MethodRefExpr carries (the interface disambiguates e.g. a bound and an
+     * unbound reference to one method). A key shared by two sites maps to null (ambiguous;
+     * the method degrades if it needs it).
+     */
+    record Recovered(BlockStmt body, IRMethod ir, MethodRecoverer recoverer,
+                     Map<String, InvokeInstruction> indySites) {
+    }
+
+    static String siteKey(String implMethodKey, String ifaceInternal) {
+        return implMethodKey + "|" + ifaceInternal;
     }
 
     Optional<Recovered> recover(ClassFile classFile, MethodEntry method) {
@@ -33,15 +55,40 @@ final class StructuredRecovery {
                 new ControlFlowReducibility().run(ir);
                 new DuplicateBlockMerging().run(ir);
             }
-            BlockStmt body = MethodRecoverer.recoverMethod(ir, method);
-            new AstNormalizer(classFile).normalize(body, method.getName());
+            Map<String, InvokeInstruction> indySites = collectLambdaSites(ir);
+            MethodRecoverer recoverer = new MethodRecoverer(ir, method);
+            BlockStmt body = recoverer.recover();
+            new AstNormalizer().normalize(body, method.getName());
             if (!body.findAll(IRRegionStmt.class).isEmpty() || hasDispatchLoop(body)) {
                 return Optional.empty();
             }
-            return Optional.of(new Recovered(body, ir));
+            return Optional.of(new Recovered(body, ir, recoverer, indySites));
         } catch (RuntimeException e) {
             return Optional.empty();
         }
+    }
+
+    private static Map<String, InvokeInstruction> collectLambdaSites(IRMethod ir) {
+        Map<String, InvokeInstruction> sites = new HashMap<>();
+        for (IRBlock block : ir.getBlocks()) {
+            for (IRInstruction instr : block.getInstructions()) {
+                if (!(instr instanceof InvokeInstruction invoke)
+                        || invoke.getInvokeType() != InvokeType.DYNAMIC
+                        || invoke.getBootstrapInfo() == null
+                        || !invoke.getBootstrapInfo().isLambdaMetafactory()) {
+                    continue;
+                }
+                List<Constant> args = invoke.getBootstrapInfo().getBootstrapArguments();
+                if (args.size() < 2 || !(args.get(1) instanceof MethodHandleConstant impl)) {
+                    continue;
+                }
+                String iface = com.tonic.j2cs.types.TypeMapper.unwrapReference(
+                        com.tonic.j2cs.types.TypeMapper.returnDescriptor(invoke.getDescriptor()));
+                String key = siteKey(impl.getName() + impl.getDescriptor(), iface);
+                sites.put(key, sites.containsKey(key) ? null : invoke);
+            }
+        }
+        return sites;
     }
 
     private static boolean hasDispatchLoop(BlockStmt body) {

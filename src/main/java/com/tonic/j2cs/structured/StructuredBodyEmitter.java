@@ -8,9 +8,11 @@ import com.tonic.analysis.source.ast.expr.ClassExpr;
 import com.tonic.analysis.source.ast.expr.Expression;
 import com.tonic.analysis.source.ast.expr.FieldAccessExpr;
 import com.tonic.analysis.source.ast.expr.InstanceOfExpr;
+import com.tonic.analysis.source.ast.expr.LambdaExpr;
 import com.tonic.analysis.source.ast.expr.LiteralExpr;
 import com.tonic.analysis.source.ast.expr.ArrayInitExpr;
 import com.tonic.analysis.source.ast.expr.MethodCallExpr;
+import com.tonic.analysis.source.ast.expr.MethodRefExpr;
 import com.tonic.analysis.source.ast.expr.NewArrayExpr;
 import com.tonic.analysis.source.ast.expr.NewExpr;
 import com.tonic.analysis.source.ast.expr.SuperExpr;
@@ -44,6 +46,8 @@ import com.tonic.j2cs.emit.CallRenderer;
 import com.tonic.j2cs.emit.ConcatEmitter;
 import com.tonic.j2cs.emit.ConstRenderer;
 import com.tonic.j2cs.emit.CsWriter;
+import com.tonic.j2cs.emit.LambdaExpander;
+import com.tonic.j2cs.emit.SyntheticClasses;
 import com.tonic.j2cs.emit.TypeReconciler;
 import com.tonic.j2cs.emit.UnsupportedBodyException;
 import com.tonic.j2cs.naming.CsNamer;
@@ -72,25 +76,30 @@ final class StructuredBodyEmitter {
     private final NamingContext naming;
     private final TypeReconciler reconciler;
     private final CallRenderer calls;
+    private final LambdaExpander lambdaExpander;
 
     private CsWriter w;
     private String currentClass;
     private String returnDesc;
+    private StructuredRecovery.Recovered recovered;
     private Map<String, String> names;
     private Set<String> usedNames;
     private Map<String, String> breakLabels;
+    private Map<SSAValue, String> paramNames;
     private java.util.Deque<Set<String>> scopes;
     private int hoistCounter;
     private boolean allowHoist;
 
-    StructuredBodyEmitter(NamingContext naming) {
+    StructuredBodyEmitter(NamingContext naming, SyntheticClasses synthetics) {
         this.naming = naming;
         this.reconciler = new TypeReconciler(naming);
         this.calls = new CallRenderer(naming, reconciler);
+        this.lambdaExpander = new LambdaExpander(naming, synthetics);
     }
 
     String emit(ClassFile classFile, MethodEntry method, StructuredRecovery.Recovered recovered, int indentDepth) {
         this.w = new CsWriter(indentDepth);
+        this.recovered = recovered;
         this.currentClass = classFile.getClassName();
         this.returnDesc = TypeMapper.returnDescriptor(method.getDesc());
         this.names = new HashMap<>();
@@ -108,19 +117,20 @@ final class StructuredBodyEmitter {
     }
 
     private void mapParameters(StructuredRecovery.Recovered recovered) {
-        Map<SSAValue, String> targets = new IdentityHashMap<>();
+        paramNames = new IdentityHashMap<>();
         List<SSAValue> params = recovered.ir().getParameters();
         boolean isStatic = recovered.ir().isStatic();
         for (int i = 0; i < params.size(); i++) {
-            targets.put(params.get(i), isStatic ? "p" + i : (i == 0 ? "this" : "p" + (i - 1)));
+            String pname = isStatic ? "p" + i : (i == 0 ? "this" : "p" + (i - 1));
+            paramNames.put(params.get(i), pname);
+            usedNames.add(pname);
+            declareInScope(pname);
         }
         recovered.body().walk(node -> {
             if (node instanceof VarRefExpr ref && ref.getSsaValue() != null) {
-                String target = targets.get(ref.getSsaValue());
+                String target = paramNames.get(ref.getSsaValue());
                 if (target != null) {
                     names.put(ref.getName(), target);
-                    usedNames.add(target);
-                    declareInScope(target);
                 }
             }
         });
@@ -610,6 +620,15 @@ final class StructuredBodyEmitter {
         if (e instanceof NewArrayExpr n) {
             return newArray(n);
         }
+        if (e instanceof LambdaExpr lambda) {
+            return lambdaSite(require(lambda.getImplMethodKey(), "lambda impl method key"),
+                    internalOf(lambda.getType()));
+        }
+        if (e instanceof MethodRefExpr ref) {
+            String implName = ref.isConstructorRef() ? "<init>" : ref.getMethodName();
+            return lambdaSite(implName + require(ref.getDescriptor(),
+                    "method-ref descriptor for " + ref.getMethodName()), internalOf(ref.getType()));
+        }
         if (e instanceof BinaryExpr b) {
             return binary(b);
         }
@@ -685,6 +704,64 @@ final class StructuredBodyEmitter {
             return calls.interfaceCall(owner, name, desc, receiverOf(call.getReceiver()), args);
         }
         return calls.virtualCall(owner, name, desc, receiverOf(call.getReceiver()), args);
+    }
+
+    /**
+     * A recovered lambda or method reference maps back to its invokedynamic site by impl-method
+     * key; the site expands to the same synthetic class the goto path builds (shared cp-index
+     * keying), constructed with the site's captured arguments rendered through the recovery's
+     * SSA-value naming.
+     */
+    private String lambdaSite(String implMethodKey, String ifaceInternal) {
+        String key = StructuredRecovery.siteKey(implMethodKey, ifaceInternal);
+        com.tonic.analysis.ssa.ir.InvokeInstruction site = recovered.indySites().get(key);
+        if (site == null) {
+            throw new UnsupportedBodyException("structured: lambda site not correlated: " + key);
+        }
+        LambdaExpander.Expansion expansion = lambdaExpander.expand(site, currentClass);
+        List<String> paramDescs = TypeMapper.splitParams(site.getDescriptor());
+        List<com.tonic.analysis.ssa.value.Value> args = site.getMethodArguments();
+        if (args.size() != paramDescs.size()) {
+            throw new UnsupportedBodyException("structured: captured argument count mismatch");
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < args.size(); i++) {
+            if (i > 0) {
+                sb.append(", ");
+            }
+            sb.append(capturedArg(paramDescs.get(i), args.get(i)));
+        }
+        return "new " + expansion.fqcn() + "(" + sb + ")";
+    }
+
+    private String capturedArg(String paramDesc, com.tonic.analysis.ssa.value.Value value) {
+        String sourceDesc = value.getType() == null ? null : value.getType().getDescriptor();
+        if (paramDesc.startsWith("L") && sourceDesc != null && sourceDesc.startsWith("[")) {
+            throw new UnsupportedBodyException(
+                    "array passed as object reference not supported (arrays are native C# arrays)");
+        }
+        String raw;
+        if (value instanceof com.tonic.analysis.ssa.value.Constant constant) {
+            raw = ConstRenderer.render(constant);
+        } else if (value instanceof SSAValue ssa
+                && ssa.getDefinition() instanceof com.tonic.analysis.ssa.ir.ConstantInstruction constDef) {
+            raw = ConstRenderer.render(constDef.getConstant());
+        } else if (value instanceof SSAValue ssa && paramNames.containsKey(ssa)) {
+            raw = paramNames.get(ssa);
+        } else if (value instanceof SSAValue ssa) {
+            String recoveredName = recovered.recoverer().getRecoveryContext().getVariableName(ssa);
+            if (recoveredName == null) {
+                throw new UnsupportedBodyException("structured: captured value has no recovered name");
+            }
+            raw = "this".equals(recoveredName) ? "this" : localName(recoveredName);
+            if (!"this".equals(raw) && !inScope(raw)) {
+                throw new UnsupportedBodyException("structured: captured value out of scope: " + recoveredName);
+            }
+        } else {
+            throw new UnsupportedBodyException("structured: captured value kind "
+                    + value.getClass().getSimpleName());
+        }
+        return sourceDesc == null ? raw : reconciler.coerce(paramDesc, sourceDesc, raw);
     }
 
     private String newInstance(NewExpr n) {

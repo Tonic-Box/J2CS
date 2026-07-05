@@ -16,8 +16,9 @@ public final class StructuredEmission implements com.tonic.j2cs.emit.BodyOverrid
     private final StructuredBodyEmitter emitter;
     private final TranspileReport report;
 
-    public StructuredEmission(NamingContext naming, TranspileReport report) {
-        this.emitter = new StructuredBodyEmitter(naming);
+    public StructuredEmission(NamingContext naming, com.tonic.j2cs.emit.SyntheticClasses synthetics,
+                              TranspileReport report) {
+        this.emitter = new StructuredBodyEmitter(naming, synthetics);
         this.report = report;
     }
 

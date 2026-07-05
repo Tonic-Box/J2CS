@@ -61,7 +61,7 @@ public final class Transpiler {
         Set<String> interfacePositionStubs = collectInterfacePositionStubs(allClasses, naming);
         SyntheticClasses synthetics = new SyntheticClasses();
         StructuredEmission structured = options.structured()
-                ? new StructuredEmission(naming, report)
+                ? new StructuredEmission(naming, synthetics, report)
                 : null;
         ClassEmitter classEmitter = new ClassEmitter(naming, report, interfacePositionStubs, synthetics, structured);
         Map<String, String> genFiles = new LinkedHashMap<>();
