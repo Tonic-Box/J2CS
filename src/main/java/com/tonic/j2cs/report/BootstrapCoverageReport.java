@@ -9,6 +9,7 @@ import com.tonic.j2cs.frontend.IrLifter;
 import com.tonic.j2cs.model.MethodPlan;
 import com.tonic.j2cs.naming.NamingContext;
 import com.tonic.j2cs.pipeline.ClassHierarchy;
+import com.tonic.j2cs.pipeline.MethodPlanner;
 import com.tonic.j2cs.shims.ShimRegistry;
 import com.tonic.j2cs.types.TypeMapper;
 import com.tonic.parser.ClassFile;
@@ -53,9 +54,9 @@ public final class BootstrapCoverageReport {
         ClassPool pool = new ClassPool(true);
         List<ClassFile> classes = new BootstrapLoader().load(pool, fqcns);
         TypeMapper types = new TypeMapper();
-        IrLifter lifter = new IrLifter(types, false);
         ClassHierarchy hierarchy = new ClassHierarchy(classes);
         NamingContext naming = new NamingContext(types, classes, hierarchy);
+        MethodPlanner planner = new MethodPlanner(new IrLifter(types, false), naming);
         Set<String> requested = new TreeSet<>();
         for (ClassFile cf : classes) {
             requested.add(cf.getClassName());
@@ -68,12 +69,12 @@ public final class BootstrapCoverageReport {
         sb.append("requested: ").append(String.join(", ", fqcns)).append('\n');
         sb.append("closure: ").append(requested).append('\n');
         for (ClassFile cf : classes) {
-            reportClass(cf, lifter, naming, requested, sb);
+            reportClass(cf, planner, naming, requested, sb);
         }
         return sb.toString();
     }
 
-    private void reportClass(ClassFile cf, IrLifter lifter, NamingContext naming,
+    private void reportClass(ClassFile cf, MethodPlanner planner, NamingContext naming,
                              Set<String> requested, StringBuilder sb) {
         sb.append('\n').append("class ").append(cf.getClassName())
                 .append("  (super ").append(cf.getSuperClassName());
@@ -87,7 +88,7 @@ public final class BootstrapCoverageReport {
         List<String> stubbed = new ArrayList<>();
         for (MethodEntry method : cf.getMethods()) {
             total++;
-            String reason = wallReason(cf, method, lifter, naming);
+            String reason = wallReason(cf, method, planner, naming);
             if (reason == null) {
                 emitted++;
             } else {
@@ -121,8 +122,8 @@ public final class BootstrapCoverageReport {
         sb.append("    would-stub:   ").append(wouldStub).append('\n');
     }
 
-    private String wallReason(ClassFile cf, MethodEntry method, IrLifter lifter, NamingContext naming) {
-        MethodPlan plan = lifter.lower(cf, method);
+    private String wallReason(ClassFile cf, MethodEntry method, MethodPlanner planner, NamingContext naming) {
+        MethodPlan plan = planner.plan(cf, method);
         if (plan instanceof MethodPlan.Unsupported unsupported) {
             return unsupported.reason();
         }

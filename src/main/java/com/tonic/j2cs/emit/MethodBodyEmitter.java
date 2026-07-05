@@ -37,7 +37,6 @@ import com.tonic.j2cs.naming.NamingContext;
 import com.tonic.j2cs.naming.Resolved;
 import com.tonic.j2cs.naming.ResolvedField;
 import com.tonic.j2cs.shims.ShimTarget;
-import com.tonic.j2cs.shims.ShimRegistry;
 import com.tonic.j2cs.types.CsType;
 import com.tonic.j2cs.types.TypeMapper;
 import com.tonic.parser.MethodEntry;
@@ -377,15 +376,14 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
             return null;
         }
         if ((owner.startsWith("java/") || owner.startsWith("javax/")) && !naming.isBootstrapped(owner)) {
-            Optional<ShimRegistry.WalkResult> walked = ShimRegistry.resolveMethodWalking(owner, name, desc);
-            if (walked.isEmpty()) {
-                throw new UnsupportedBodyException("shim member not implemented: "
-                        + owner + "." + name + desc);
+            Resolved resolved = naming.resolveShim(owner, name, desc);
+            if (!(resolved instanceof Resolved.ShimMethod shim)) {
+                throw new UnsupportedBodyException(((Resolved.Unresolved) resolved).reason());
             }
-            ShimTarget target = walked.get().target();
+            ShimTarget target = shim.target();
             String receiver = target.isStatic()
                     ? CsNamer.fqcn(owner)
-                    : receiverAdjusted(walked.get().declaringInternal(), instr.getReceiver());
+                    : receiverAdjusted(shim.ownerInternal(), instr.getReceiver());
             assign(instr, receiver + "." + target.csMemberName()
                     + "(" + renderArguments(instr, desc) + ")");
             return null;
@@ -603,7 +601,7 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
         String name = instr.getName();
         String desc = instr.getDescriptor();
         if ((owner.startsWith("java/") || owner.startsWith("javax/")) && !naming.isBootstrapped(owner)) {
-            Optional<ShimTarget> target = ShimRegistry.field(owner, name, desc);
+            Optional<ShimTarget> target = naming.shimField(owner, name, desc);
             if (target.isEmpty()) {
                 throw new UnsupportedBodyException("shim field not implemented: " + owner + "." + name);
             }
@@ -668,7 +666,7 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
     @Override
     public Void visitNew(NewInstruction instr) {
         String className = instr.getClassName();
-        if (!naming.isAppClass(className) && !ShimRegistry.isShimType(className)) {
+        if (!naming.isAppClass(className) && !naming.isShimType(className)) {
             throw new UnsupportedBodyException("allocation of type not in input: " + className);
         }
         assign(instr, "new " + CsNamer.fqcn(className) + "(global::java.lang.RawNew.I)");

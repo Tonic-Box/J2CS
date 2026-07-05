@@ -113,6 +113,26 @@ public final class NamingContext {
         return suppressedMethodKeys.contains(ownerInternal + "." + name + descriptor);
     }
 
+    public boolean isShimType(String internalName) {
+        return ShimRegistry.isShimType(internalName);
+    }
+
+    public Optional<ShimTarget> shimMethod(String owner, String name, String desc) {
+        return ShimRegistry.method(owner, name, desc);
+    }
+
+    public Optional<ShimTarget> shimField(String owner, String name, String desc) {
+        return ShimRegistry.field(owner, name, desc);
+    }
+
+    /** Resolves a java/javax member against the shim registry, walking shim supertypes. */
+    public Resolved resolveShim(String owner, String name, String desc) {
+        return ShimRegistry.resolveMethodWalking(owner, name, desc)
+                .<Resolved>map(w -> new Resolved.ShimMethod(w.declaringInternal(), w.target()))
+                .orElseGet(() -> new Resolved.Unresolved(
+                        "shim member not implemented: " + owner + "." + name + desc));
+    }
+
     public MemberNamer namerOf(String internalName) {
         MemberNamer namer = namers.get(internalName);
         if (namer == null) {

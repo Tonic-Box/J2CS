@@ -25,22 +25,17 @@ import java.util.Set;
  */
 public final class ClassEmitter {
 
-    private static final String OBJECT_INTERNAL = "java/lang/Object";
-
-    private record ClassPolicy(String baseFqcn, String unsupportedReason) {
-    }
-
     private final NamingContext naming;
     private final TranspileReport report;
     private final MethodBodyEmitter bodyEmitter;
-    private final Set<String> interfacePositionStubs;
+    private final ClassPolicyResolver policyResolver;
 
     public ClassEmitter(NamingContext naming, TranspileReport report, Set<String> interfacePositionStubs,
                         SyntheticClasses synthetics) {
         this.naming = naming;
         this.report = report;
         this.bodyEmitter = new MethodBodyEmitter(naming, synthetics);
-        this.interfacePositionStubs = interfacePositionStubs;
+        this.policyResolver = new ClassPolicyResolver(naming, interfacePositionStubs);
     }
 
     public String emit(ClassFile classFile, Map<MethodEntry, MethodPlan> plans) {
@@ -49,7 +44,7 @@ public final class ClassEmitter {
         MemberNamer namer = naming.namerOf(internalName);
         TypeMapper types = naming.typeMapper();
         boolean isInterface = Modifiers.isInterface(classFile.getAccess());
-        ClassPolicy policy = classPolicy(classFile);
+        ClassPolicyResolver.ClassPolicy policy = policyResolver.resolve(classFile);
 
         CsWriter w = new CsWriter();
         w.open("namespace " + CsNamer.namespaceOf(internalName));
@@ -115,33 +110,6 @@ public final class ClassEmitter {
         return sb.isEmpty() ? "" : " : " + sb;
     }
 
-    private ClassPolicy classPolicy(ClassFile classFile) {
-        String internalName = classFile.getClassName();
-        String reason = naming.classUnsupportedReason(internalName);
-        if (Modifiers.isInterface(classFile.getAccess())) {
-            return new ClassPolicy("", reason);
-        }
-        if (internalName.equals(OBJECT_INTERNAL)) {
-            return new ClassPolicy(null, reason);
-        }
-        String superName = classFile.getSuperClassName();
-        if (superName == null || superName.equals(OBJECT_INTERNAL)) {
-            return new ClassPolicy("global::java.lang.Object", reason);
-        }
-        if (naming.isAppClass(superName)) {
-            return new ClassPolicy(CsNamer.fqcn(superName), reason);
-        }
-        if (ShimRegistry.isExtendable(superName)) {
-            return new ClassPolicy(CsNamer.fqcn(superName), reason);
-        }
-        if (ShimRegistry.isShimType(superName) || interfacePositionStubs.contains(superName)) {
-            return new ClassPolicy("global::java.lang.Object",
-                    reason != null ? reason : "superclass is not an input class: " + superName);
-        }
-        return new ClassPolicy(CsNamer.fqcn(superName),
-                reason != null ? reason : "superclass not in input: " + superName);
-    }
-
     private void emitMethod(CsWriter w, ClassFile classFile, String csClassName, MethodEntry method,
                             MethodPlan plan, MemberNamer namer, TypeMapper types, boolean isInterface) {
         String name = method.getName();
@@ -165,7 +133,7 @@ public final class ClassEmitter {
                     + "(" + paramList(desc, types) + ")";
         }
         w.open(header);
-        if (emitEnumSynthetic(w, classFile, name, desc, namer)) {
+        if (EnumSynthesis.emit(w, classFile, name, desc, namer)) {
             w.close();
             return;
         }
@@ -184,46 +152,6 @@ public final class ClassEmitter {
             }
         }
         w.close();
-    }
-
-    private boolean emitEnumSynthetic(CsWriter w, ClassFile classFile, String name, String desc,
-                                      MemberNamer namer) {
-        if (!"java/lang/Enum".equals(classFile.getSuperClassName())) {
-            return false;
-        }
-        String self = classFile.getClassName();
-        String selfFqcn = CsNamer.fqcn(self);
-        if (name.equals("values") && desc.equals("()[L" + self + ";")) {
-            w.line("return new " + selfFqcn + "[] { " + enumConstants(classFile, namer) + " };");
-            return true;
-        }
-        if (name.equals("valueOf") && desc.equals("(Ljava/lang/String;)L" + self + ";")) {
-            w.line(selfFqcn + "[] __vals = new " + selfFqcn + "[] { " + enumConstants(classFile, namer) + " };");
-            w.open("for (int __i = 0; __i < __vals.Length; __i++)");
-            w.open("if (p0 != null && __vals[__i].name().Value == p0.Value)");
-            w.line("return __vals[__i];");
-            w.close();
-            w.close();
-            w.line("throw new global::System.ArgumentException("
-                    + CsStrings.quote("No enum constant " + self.replace('/', '.') + ".") + ");");
-            return true;
-        }
-        return false;
-    }
-
-    private String enumConstants(ClassFile classFile, MemberNamer namer) {
-        String constantDesc = "L" + classFile.getClassName() + ";";
-        StringBuilder sb = new StringBuilder();
-        for (FieldEntry field : classFile.getFields()) {
-            if ((field.getAccess() & AccessFlags.ACC_STATIC) == 0 || !field.getDesc().equals(constantDesc)) {
-                continue;
-            }
-            if (!sb.isEmpty()) {
-                sb.append(", ");
-            }
-            sb.append(namer.fieldName(field));
-        }
-        return sb.toString();
     }
 
     private void emitStubBody(CsWriter w, ClassFile classFile, String name, String desc, String reason) {

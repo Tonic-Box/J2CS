@@ -9,7 +9,6 @@ import com.tonic.j2cs.naming.CsNamer;
 import com.tonic.j2cs.naming.MemberNamer;
 import com.tonic.j2cs.naming.NamingContext;
 import com.tonic.j2cs.naming.Resolved;
-import com.tonic.j2cs.shims.ShimRegistry;
 import com.tonic.j2cs.shims.ShimTarget;
 import com.tonic.j2cs.types.TypeMapper;
 import com.tonic.util.Modifiers;
@@ -52,7 +51,7 @@ public final class LambdaExpander {
         String indyDesc = instr.getDescriptor();
         String ifaceInternal = TypeMapper.unwrapReference(TypeMapper.returnDescriptor(indyDesc));
         boolean appIface = ifaceInternal != null && naming.hierarchy().isAppInterface(ifaceInternal);
-        boolean shimIface = ifaceInternal != null && ShimRegistry.isShimType(ifaceInternal);
+        boolean shimIface = ifaceInternal != null && naming.isShimType(ifaceInternal);
         if (!appIface && !shimIface) {
             throw new UnsupportedBodyException("functional interface not in input: "
                     + (ifaceInternal == null ? indyDesc : ifaceInternal));
@@ -67,7 +66,7 @@ public final class LambdaExpander {
             }
             samCsName = samMethod.csName();
         } else {
-            Optional<ShimTarget> shimSam = ShimRegistry.method(ifaceInternal, instr.getName(), samDesc);
+            Optional<ShimTarget> shimSam = naming.shimMethod(ifaceInternal, instr.getName(), samDesc);
             if (shimSam.isEmpty()) {
                 throw new UnsupportedBodyException("abstract method not found on functional interface: "
                         + ifaceInternal + "." + instr.getName() + samDesc);
@@ -191,7 +190,7 @@ public final class LambdaExpander {
     private void emitNewForward(CsWriter w, MethodHandleConstant impl, List<String> argExprs,
                                 String implRetDesc, String samRetDesc) {
         String owner = impl.getOwner();
-        if (!naming.isAppClass(owner) && !com.tonic.j2cs.shims.ShimRegistry.isShimType(owner)) {
+        if (!naming.isAppClass(owner) && !naming.isShimType(owner)) {
             throw new UnsupportedBodyException("constructor reference to type not in input: " + owner);
         }
         String ownerFqcn = CsNamer.fqcn(owner);
@@ -236,12 +235,13 @@ public final class LambdaExpander {
         String receiver = argExprs.get(0);
         List<String> rest = argExprs.subList(1, argExprs.size());
         if (owner.startsWith("java/") || owner.startsWith("javax/")) {
-            com.tonic.j2cs.shims.ShimRegistry.WalkResult walked =
-                    com.tonic.j2cs.shims.ShimRegistry.resolveMethodWalking(owner, impl.getName(), impl.getDescriptor())
-                            .orElseThrow(() -> new UnsupportedBodyException("lambda shim target not implemented: "
-                                    + owner + "." + impl.getName()));
-            return reconciler.castTo(walked.declaringInternal(), receiver) + "."
-                    + walked.target().csMemberName() + "(" + join(rest) + ")";
+            if (!(naming.resolveShim(owner, impl.getName(), impl.getDescriptor())
+                    instanceof Resolved.ShimMethod shim)) {
+                throw new UnsupportedBodyException("lambda shim target not implemented: "
+                        + owner + "." + impl.getName());
+            }
+            return reconciler.castTo(shim.ownerInternal(), receiver) + "."
+                    + shim.target().csMemberName() + "(" + join(rest) + ")";
         }
         Resolved resolved = naming.resolveVirtual(owner, impl.getName(), impl.getDescriptor());
         if (resolved instanceof Resolved.AppMethod method) {
@@ -256,9 +256,9 @@ public final class LambdaExpander {
     }
 
     private String shimStatic(MethodHandleConstant impl) {
-        return com.tonic.j2cs.shims.ShimRegistry.method(impl.getOwner(), impl.getName(), impl.getDescriptor())
-                .filter(com.tonic.j2cs.shims.ShimTarget::isStatic)
-                .map(com.tonic.j2cs.shims.ShimTarget::csMemberName)
+        return naming.shimMethod(impl.getOwner(), impl.getName(), impl.getDescriptor())
+                .filter(ShimTarget::isStatic)
+                .map(ShimTarget::csMemberName)
                 .orElseThrow(() -> new UnsupportedBodyException("lambda shim target not implemented: "
                         + impl.getOwner() + "." + impl.getName()));
     }

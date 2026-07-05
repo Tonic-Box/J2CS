@@ -1,6 +1,5 @@
 package com.tonic.j2cs.pipeline;
 
-import com.tonic.analysis.ssa.cfg.ExceptionHandler;
 import com.tonic.j2cs.bootstrap.BootstrapPolicy;
 import com.tonic.j2cs.cli.CliOptions;
 import com.tonic.j2cs.emit.ClassEmitter;
@@ -11,7 +10,6 @@ import com.tonic.j2cs.frontend.BootstrapLoader;
 import com.tonic.j2cs.frontend.InputLoader;
 import com.tonic.j2cs.frontend.IrLifter;
 import com.tonic.j2cs.frontend.LoadedInput;
-import com.tonic.j2cs.model.LoweredMethod;
 import com.tonic.j2cs.model.MethodPlan;
 import com.tonic.j2cs.naming.CsNamer;
 import com.tonic.j2cs.naming.NamingContext;
@@ -58,7 +56,7 @@ public final class Transpiler {
         NamingContext naming = new NamingContext(typeMapper, allClasses, hierarchy);
         naming.setBootstrapped(bootstrappedInternal);
         naming.setSuppressedMethods(BootstrapPolicy.suppressedKeys(bootstrappedInternal));
-        IrLifter lifter = new IrLifter(typeMapper, options.dumpIr());
+        MethodPlanner planner = new MethodPlanner(new IrLifter(typeMapper, options.dumpIr()), naming);
         Set<String> interfacePositionStubs = collectInterfacePositionStubs(allClasses, naming);
         SyntheticClasses synthetics = new SyntheticClasses();
         ClassEmitter classEmitter = new ClassEmitter(naming, report, interfacePositionStubs, synthetics);
@@ -66,7 +64,7 @@ public final class Transpiler {
         Set<String> referenced = new TreeSet<>();
         for (ClassFile cf : allClasses) {
             report.classDiscovered(cf.getClassName());
-            Map<MethodEntry, MethodPlan> plans = planMethods(cf, lifter, naming);
+            Map<MethodEntry, MethodPlan> plans = planMethods(cf, planner);
             ClosureScanner.collectReferencedTypes(cf, plans, referenced);
             genFiles.put(dottedName(cf.getClassName()), classEmitter.emit(cf, plans));
         }
@@ -130,33 +128,12 @@ public final class Transpiler {
         report.divergence("Swing/AWT is rendered via Avalonia; widget structure and behavior are preserved but visual styling and pixel layout differ from the JVM");
     }
 
-    private static Map<MethodEntry, MethodPlan> planMethods(ClassFile cf, IrLifter lifter,
-                                                            NamingContext naming) {
+    private static Map<MethodEntry, MethodPlan> planMethods(ClassFile cf, MethodPlanner planner) {
         Map<MethodEntry, MethodPlan> plans = new LinkedHashMap<>();
         for (MethodEntry method : cf.getMethods()) {
-            MethodPlan plan = lifter.lower(cf, method);
-            if (plan instanceof MethodPlan.Supported supported) {
-                String invalidCatch = invalidCatchType(supported.method(), naming);
-                if (invalidCatch != null) {
-                    plan = new MethodPlan.Unsupported("catch type not supported: " + invalidCatch);
-                }
-            }
-            plans.put(method, plan);
+            plans.put(method, planner.plan(cf, method));
         }
         return plans;
-    }
-
-    private static String invalidCatchType(LoweredMethod lowered, NamingContext naming) {
-        for (ExceptionHandler handler : lowered.ir().getExceptionHandlers()) {
-            if (handler.getCatchType() == null) {
-                continue;
-            }
-            String internalName = handler.getCatchType().getInternalName();
-            if (!naming.isAppClass(internalName) && !ShimRegistry.isExtendable(internalName)) {
-                return internalName;
-            }
-        }
-        return null;
     }
 
     private static String dottedName(String internalName) {
