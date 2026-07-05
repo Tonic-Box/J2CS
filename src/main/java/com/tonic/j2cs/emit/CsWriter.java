@@ -55,6 +55,16 @@ public final class CsWriter {
         return this;
     }
 
+    public CsWriter indent() {
+        depth++;
+        return this;
+    }
+
+    public CsWriter dedent() {
+        depth--;
+        return this;
+    }
+
     @Override
     public String toString() {
         return sb.toString();

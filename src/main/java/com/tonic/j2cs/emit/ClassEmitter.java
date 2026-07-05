@@ -120,6 +120,9 @@ public final class ClassEmitter {
         if (name.equals("<clinit>")) {
             header = "static " + csClassName + "()";
         } else if (name.equals("<init>")) {
+            if (structured != null && naming.hasRealConstructor(classFile.getClassName(), desc)) {
+                emitRealConstructor(w, csClassName, desc, types);
+            }
             header = "internal void " + MemberNamer.initMethodName(desc) + "(" + paramList(desc, types) + ")";
         } else {
             String prefix = isInterface
@@ -162,6 +165,27 @@ public final class ClassEmitter {
             }
         }
         w.close();
+    }
+
+    private void emitRealConstructor(CsWriter w, String csClassName, String desc, TypeMapper types) {
+        List<CsType> params = types.paramTypes(desc);
+        String args = argNames(params.size());
+        w.open("internal " + csClassName + "(" + paramList(desc, types)
+                + ") : this(global::java.lang.RawNew.I)");
+        w.line(MemberNamer.initMethodName(desc) + "(" + args + ");");
+        w.close();
+        w.line();
+    }
+
+    private static String argNames(int count) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < count; i++) {
+            if (i > 0) {
+                sb.append(", ");
+            }
+            sb.append("p").append(i);
+        }
+        return sb.toString();
     }
 
     private void emitStubBody(CsWriter w, ClassFile classFile, String name, String desc, String reason) {

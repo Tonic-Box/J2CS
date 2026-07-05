@@ -9,7 +9,9 @@ import com.tonic.analysis.source.ast.expr.Expression;
 import com.tonic.analysis.source.ast.expr.FieldAccessExpr;
 import com.tonic.analysis.source.ast.expr.InstanceOfExpr;
 import com.tonic.analysis.source.ast.expr.LiteralExpr;
+import com.tonic.analysis.source.ast.expr.ArrayInitExpr;
 import com.tonic.analysis.source.ast.expr.MethodCallExpr;
+import com.tonic.analysis.source.ast.expr.NewArrayExpr;
 import com.tonic.analysis.source.ast.expr.NewExpr;
 import com.tonic.analysis.source.ast.expr.SuperExpr;
 import com.tonic.analysis.source.ast.expr.TernaryExpr;
@@ -17,11 +19,18 @@ import com.tonic.analysis.source.ast.expr.ThisExpr;
 import com.tonic.analysis.source.ast.expr.UnaryExpr;
 import com.tonic.analysis.source.ast.expr.VarRefExpr;
 import com.tonic.analysis.source.ast.stmt.BlockStmt;
+import com.tonic.analysis.source.ast.stmt.BreakStmt;
+import com.tonic.analysis.source.ast.stmt.ContinueStmt;
 import com.tonic.analysis.source.ast.stmt.DoWhileStmt;
 import com.tonic.analysis.source.ast.stmt.ExprStmt;
+import com.tonic.analysis.source.ast.stmt.ForEachStmt;
+import com.tonic.analysis.source.ast.stmt.ForStmt;
 import com.tonic.analysis.source.ast.stmt.IfStmt;
+import com.tonic.analysis.source.ast.stmt.LabeledStmt;
 import com.tonic.analysis.source.ast.stmt.ReturnStmt;
 import com.tonic.analysis.source.ast.stmt.Statement;
+import com.tonic.analysis.source.ast.stmt.SwitchCase;
+import com.tonic.analysis.source.ast.stmt.SwitchStmt;
 import com.tonic.analysis.source.ast.stmt.ThrowStmt;
 import com.tonic.analysis.source.ast.stmt.VarDeclStmt;
 import com.tonic.analysis.source.ast.stmt.WhileStmt;
@@ -66,7 +75,9 @@ final class StructuredBodyEmitter {
     private String returnDesc;
     private Map<String, String> names;
     private Set<String> usedNames;
+    private Map<String, String> breakLabels;
     private int hoistCounter;
+    private boolean allowHoist;
 
     StructuredBodyEmitter(NamingContext naming) {
         this.naming = naming;
@@ -80,7 +91,9 @@ final class StructuredBodyEmitter {
         this.returnDesc = TypeMapper.returnDescriptor(method.getDesc());
         this.names = new HashMap<>();
         this.usedNames = new HashSet<>();
+        this.breakLabels = new HashMap<>();
         this.hoistCounter = 0;
+        this.allowHoist = true;
         mapParameters(recovered);
         for (Statement s : recovered.body().getStatements()) {
             stmt(s);
@@ -131,15 +144,33 @@ final class StructuredBodyEmitter {
                 w.close();
             }
         } else if (s instanceof WhileStmt l) {
-            requireNoLabel(l.getLabel());
-            w.open("while (" + condition(l.getCondition()) + ")");
-            stmt(l.getBody());
-            w.close();
+            String cond = noHoist(() -> condition(l.getCondition()));
+            emitLoop(l.getLabel(), () -> {
+                w.open("while (" + cond + ")");
+                stmt(l.getBody());
+                w.close();
+            });
         } else if (s instanceof DoWhileStmt l) {
-            requireNoLabel(l.getLabel());
-            w.open("do");
-            stmt(l.getBody());
-            w.closeWith("while (" + condition(l.getCondition()) + ");");
+            emitLoop(l.getLabel(), () -> {
+                w.open("do");
+                stmt(l.getBody());
+                w.closeWith("while (" + noHoist(() -> condition(l.getCondition())) + ");");
+            });
+        } else if (s instanceof ForStmt f) {
+            emitFor(f);
+        } else if (s instanceof ForEachStmt f) {
+            emitForEach(f);
+        } else if (s instanceof SwitchStmt sw) {
+            emitSwitch(sw);
+        } else if (s instanceof LabeledStmt labeled) {
+            emitLabeled(labeled);
+        } else if (s instanceof BreakStmt b) {
+            w.line(b.getTargetLabel() == null ? "break;" : "goto " + breakLabel(b.getTargetLabel()) + ";");
+        } else if (s instanceof ContinueStmt c) {
+            if (c.getTargetLabel() != null) {
+                throw new UnsupportedBodyException("structured: labeled continue");
+            }
+            w.line("continue;");
         } else if (s instanceof ReturnStmt r) {
             if (r.getValue() == null) {
                 w.line("return;");
@@ -153,9 +184,147 @@ final class StructuredBodyEmitter {
         }
     }
 
-    private void requireNoLabel(String label) {
-        if (label != null) {
-            throw new UnsupportedBodyException("structured: labeled loop");
+    /** A loop that may carry a Java label; break-to-label lowers to a goto past a trailing label. */
+    private void emitLoop(String label, Runnable body) {
+        if (label == null) {
+            body.run();
+            return;
+        }
+        String endLabel = freshName(CsNamer.identifier(label) + "_end");
+        breakLabels.put(label, endLabel);
+        body.run();
+        breakLabels.remove(label);
+        w.line(endLabel + ": ;");
+    }
+
+    private void emitLabeled(LabeledStmt labeled) {
+        Statement inner = labeled.getStatement();
+        if (inner instanceof WhileStmt || inner instanceof DoWhileStmt
+                || inner instanceof ForStmt || inner instanceof ForEachStmt) {
+            String label = labeled.getLabel();
+            String endLabel = freshName(CsNamer.identifier(label) + "_end");
+            breakLabels.put(label, endLabel);
+            stmt(inner);
+            breakLabels.remove(label);
+            w.line(endLabel + ": ;");
+            return;
+        }
+        throw new UnsupportedBodyException("structured: label on non-loop statement");
+    }
+
+    private String breakLabel(String javaLabel) {
+        String csLabel = breakLabels.get(javaLabel);
+        if (csLabel == null) {
+            throw new UnsupportedBodyException("structured: break to unknown label " + javaLabel);
+        }
+        return csLabel;
+    }
+
+    private void emitFor(ForStmt f) {
+        for (Statement init : f.getInit()) {
+            stmt(init);
+        }
+        String cond = f.getCondition() == null ? "" : noHoist(() -> condition(f.getCondition()));
+        List<String> updates = new ArrayList<>();
+        for (Expression u : f.getUpdate()) {
+            updates.add(noHoist(() -> updateExpr(u)));
+        }
+        emitLoop(f.getLabel(), () -> {
+            w.open("for (; " + cond + "; " + String.join(", ", updates) + ")");
+            stmt(f.getBody());
+            w.close();
+        });
+    }
+
+    private String updateExpr(Expression e) {
+        if (e instanceof UnaryExpr u && isIncDec(u.getOperator())) {
+            return expr(u.getOperand()) + u.getOperator().getSymbol();
+        }
+        if (e instanceof BinaryExpr b && isAssignOp(b.getOperator())) {
+            return assignmentText(b);
+        }
+        return expr(e);
+    }
+
+    private void emitForEach(ForEachStmt f) {
+        String iterableDesc = descOf(f.getIterable().getType());
+        if (iterableDesc == null || !iterableDesc.startsWith("[")) {
+            throw new UnsupportedBodyException("structured: for-each over non-array");
+        }
+        VarDeclStmt var = f.getVariable();
+        String elemDesc = descOf(var.getType());
+        CsType elemType = naming.typeMapper().storageType(elemDesc);
+        String arr = freshName("__a");
+        String idx = freshName("__i");
+        CsType arrType = naming.typeMapper().computeType(iterableDesc);
+        w.line(arrType.csText() + " " + arr + " = " + expr(f.getIterable()) + ";");
+        String elemName = localName(var.getName());
+        emitLoop(f.getLabel(), () -> {
+            w.open("for (int " + idx + " = 0; " + idx + " < " + arr + ".Length; " + idx + "++)");
+            w.line(elemType.csText() + " " + elemName + " = " + arr + "[" + idx + "];");
+            stmt(f.getBody());
+            w.close();
+        });
+    }
+
+    private void emitSwitch(SwitchStmt sw) {
+        String selector = expr(sw.getSelector());
+        List<SwitchCase> cases = sw.getCases();
+        w.open("switch (" + selector + ")");
+        for (int i = 0; i < cases.size(); i++) {
+            SwitchCase c = cases.get(i);
+            if (c.hasExpressionLabels()) {
+                throw new UnsupportedBodyException("structured: expression-label switch case");
+            }
+            if (c.isDefault()) {
+                w.line("default:");
+            } else {
+                for (int label : c.labels()) {
+                    w.line("case " + label + ":");
+                }
+            }
+            w.indent();
+            for (Statement st : c.statements()) {
+                stmt(st);
+            }
+            emitCaseTerminator(cases, i, c);
+            w.dedent();
+        }
+        w.close();
+    }
+
+    private void emitCaseTerminator(List<SwitchCase> cases, int i, SwitchCase c) {
+        if (endsInTerminator(c.statements())) {
+            return;
+        }
+        if (!c.fallsThrough()) {
+            w.line("break;");
+            return;
+        }
+        if (i + 1 >= cases.size()) {
+            throw new UnsupportedBodyException("structured: fall-through on final switch case");
+        }
+        SwitchCase next = cases.get(i + 1);
+        w.line(next.isDefault() ? "goto default;" : "goto case " + next.labels().get(0) + ";");
+    }
+
+    private static boolean endsInTerminator(List<Statement> statements) {
+        if (statements.isEmpty()) {
+            return false;
+        }
+        Statement last = statements.get(statements.size() - 1);
+        return last instanceof ReturnStmt || last instanceof ThrowStmt
+                || last instanceof BreakStmt || last instanceof ContinueStmt;
+    }
+
+    /** Runs the supplier with hoisting disabled — for re-evaluated/conditional positions. */
+    private String noHoist(java.util.function.Supplier<String> f) {
+        boolean prev = allowHoist;
+        allowHoist = false;
+        try {
+            return f.get();
+        } finally {
+            allowHoist = prev;
         }
     }
 
@@ -187,16 +356,18 @@ final class StructuredBodyEmitter {
     }
 
     private void emitAssignment(BinaryExpr assign) {
+        w.line(assignmentText(assign) + ";");
+    }
+
+    private String assignmentText(BinaryExpr assign) {
         String lhs = lvalue(assign.getLeft());
         String targetDesc = descOf(assign.getLeft().getType());
         if (assign.getOperator() == BinaryOperator.ASSIGN) {
-            w.line(lhs + " = " + coerced(targetDesc, assign.getRight()) + ";");
-            return;
+            return lhs + " = " + coerced(targetDesc, assign.getRight());
         }
         BinaryOperator base = compoundBase(assign.getOperator());
-        String value = binaryValue(base, lhs, targetDesc,
-                expr(assign.getRight()), descOf(assign.getRight().getType()), targetDesc);
-        w.line(lhs + " = " + value + ";");
+        String value = binaryValue(base, lhs, expr(assign.getRight()), targetDesc);
+        return lhs + " = " + value;
     }
 
     private static BinaryOperator compoundBase(BinaryOperator op) {
@@ -255,7 +426,7 @@ final class StructuredBodyEmitter {
                 }
                 case AND, OR -> {
                     return "(" + condition(b.getLeft()) + ") " + b.getOperator().getSymbol()
-                            + " (" + condition(b.getRight()) + ")";
+                            + " (" + noHoist(() -> condition(b.getRight())) + ")";
                 }
                 default -> {
                 }
@@ -305,7 +476,10 @@ final class StructuredBodyEmitter {
             return call(call);
         }
         if (e instanceof NewExpr n) {
-            return hoistNew(n);
+            return newInstance(n);
+        }
+        if (e instanceof NewArrayExpr n) {
+            return newArray(n);
         }
         if (e instanceof BinaryExpr b) {
             return binary(b);
@@ -317,8 +491,8 @@ final class StructuredBodyEmitter {
             return cast(c);
         }
         if (e instanceof TernaryExpr t) {
-            return "((" + condition(t.getCondition()) + ") ? (" + expr(t.getThenExpr())
-                    + ") : (" + expr(t.getElseExpr()) + "))";
+            return "((" + condition(t.getCondition()) + ") ? (" + noHoist(() -> expr(t.getThenExpr()))
+                    + ") : (" + noHoist(() -> expr(t.getElseExpr())) + "))";
         }
         if (e instanceof ArrayAccessExpr access) {
             return expr(access.getArray()) + "[" + expr(access.getIndex()) + "]";
@@ -368,7 +542,7 @@ final class StructuredBodyEmitter {
         return calls.virtualCall(owner, name, desc, receiverOf(call.getReceiver()), args);
     }
 
-    private String hoistNew(NewExpr n) {
+    private String newInstance(NewExpr n) {
         if (n.getEnclosingInstance() != null) {
             throw new UnsupportedBodyException("structured: inner-class construction");
         }
@@ -378,11 +552,72 @@ final class StructuredBodyEmitter {
         }
         String desc = require(n.getDescriptor(), "constructor descriptor for " + className);
         String args = arguments(desc, n.getArguments());
-        String temp = freshName("__t");
         String fqcn = CsNamer.fqcn(className);
+        if (naming.isAppClass(className) && naming.hasRealConstructor(className, desc)) {
+            return "new " + fqcn + "(" + args + ")";
+        }
+        if (!allowHoist) {
+            throw new UnsupportedBodyException("structured: allocation in conditional context");
+        }
+        String temp = freshName("__t");
         w.line(fqcn + " " + temp + " = new " + fqcn + "(global::java.lang.RawNew.I);");
         w.line(temp + "." + MemberNamer.initMethodName(desc) + "(" + args + ");");
         return temp;
+    }
+
+    private String newArray(NewArrayExpr n) {
+        String fullDesc = descOf(n.getType());
+        if (fullDesc == null || !fullDesc.startsWith("[")) {
+            throw new UnsupportedBodyException("structured: array type " + n.getType());
+        }
+        if (n.getInitializer() != null) {
+            return arrayLiteral(fullDesc, n.getInitializer());
+        }
+        List<Expression> dims = n.getDimensions();
+        if (dims.size() == 1) {
+            String csText = naming.typeMapper().computeType(fullDesc).csText();
+            int bracket = csText.indexOf('[');
+            return "new " + csText.substring(0, bracket) + "[" + expr(dims.get(0)) + "]"
+                    + csText.substring(bracket + 2);
+        }
+        if (!allowHoist) {
+            throw new UnsupportedBodyException("structured: multi-dim array in conditional context");
+        }
+        return hoistMultiArray(fullDesc, dims);
+    }
+
+    private String arrayLiteral(String arrayDesc, ArrayInitExpr init) {
+        String elemDesc = arrayDesc.substring(1);
+        CsType csType = naming.typeMapper().computeType(arrayDesc);
+        List<String> parts = new ArrayList<>();
+        for (Expression el : init.getElements()) {
+            parts.add(el instanceof ArrayInitExpr nested
+                    ? arrayLiteral(elemDesc, nested)
+                    : coerced(elemDesc, el));
+        }
+        return "new " + csType.csText() + " { " + String.join(", ", parts) + " }";
+    }
+
+    private String hoistMultiArray(String fullDesc, List<Expression> dims) {
+        String temp = freshName("__t");
+        String csFull = naming.typeMapper().computeType(fullDesc).csText();
+        w.line(csFull + " " + temp + ";");
+        String base = csFull.substring(0, csFull.indexOf('['));
+        emitMultiArrayLevel(temp, base, dims, 0);
+        return temp;
+    }
+
+    private void emitMultiArrayLevel(String target, String base, List<Expression> dims, int level) {
+        int remaining = dims.size() - level;
+        String size = freshName("__n");
+        w.line("int " + size + " = " + expr(dims.get(level)) + ";");
+        w.line(target + " = new " + base + "[" + size + "]" + "[]".repeat(remaining - 1) + ";");
+        if (remaining > 1) {
+            String idx = freshName("__i");
+            w.open("for (int " + idx + " = 0; " + idx + " < " + size + "; " + idx + "++)");
+            emitMultiArrayLevel(target + "[" + idx + "]", base, dims, level + 1);
+            w.close();
+        }
     }
 
     private String binary(BinaryExpr b) {
@@ -390,12 +625,10 @@ final class StructuredBodyEmitter {
         if (b.getOperator() == BinaryOperator.ADD && "Ljava/lang/String;".equals(resultDesc)) {
             return concat(b);
         }
-        return binaryValue(b.getOperator(), atom(b.getLeft()), descOf(b.getLeft().getType()),
-                atom(b.getRight()), descOf(b.getRight().getType()), resultDesc);
+        return binaryValue(b.getOperator(), atom(b.getLeft()), atom(b.getRight()), resultDesc);
     }
 
-    private String binaryValue(BinaryOperator op, String left, String leftDesc,
-                               String right, String rightDesc, String resultDesc) {
+    private String binaryValue(BinaryOperator op, String left, String right, String resultDesc) {
         String jr = "global::java.lang.JRuntime";
         boolean wraps = "I".equals(resultDesc) || "J".equals(resultDesc);
         return switch (op) {
@@ -523,6 +756,18 @@ final class StructuredBodyEmitter {
         String raw = expr(e);
         String sourceDesc = descOf(e.getType());
         if (sourceDesc == null) {
+            return raw;
+        }
+        if (TypeMapper.isPrimitiveDescriptor(targetDesc) && TypeMapper.isPrimitiveDescriptor(sourceDesc)) {
+            if (targetDesc.equals("Z") || sourceDesc.equals("Z")) {
+                return raw;
+            }
+            // char/byte/short are real C# types but constants render as int, so a value entering
+            // such a slot always needs an explicit cast; wider slots only when the type differs.
+            boolean subInt = targetDesc.equals("C") || targetDesc.equals("B") || targetDesc.equals("S");
+            if (subInt || !sourceDesc.equals(targetDesc)) {
+                return primitiveCast(targetDesc, sourceDesc, raw);
+            }
             return raw;
         }
         if (targetDesc.startsWith("L") && sourceDesc.startsWith("[")) {

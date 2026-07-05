@@ -3,8 +3,10 @@ package com.tonic.j2cs.naming;
 import com.tonic.j2cs.pipeline.ClassHierarchy;
 import com.tonic.j2cs.shims.ShimRegistry;
 import com.tonic.j2cs.shims.ShimTarget;
+import com.tonic.j2cs.types.CsType;
 import com.tonic.j2cs.types.TypeMapper;
 import com.tonic.parser.ClassFile;
+import com.tonic.parser.MethodEntry;
 import com.tonic.util.Modifiers;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -13,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Per-run naming state: one MemberNamer per application class, built supertypes-first so
@@ -27,6 +30,8 @@ public final class NamingContext {
     private final TypeMapper typeMapper;
     private final ClassHierarchy hierarchy;
     private final Map<String, MemberNamer> namers = new HashMap<>();
+    private final Map<String, ClassFile> appClassFiles = new HashMap<>();
+    private final Map<String, Set<String>> uniqueCtorDescs = new HashMap<>();
     private final Map<String, String> classUnsupportedReasons = new LinkedHashMap<>();
     private Set<String> bootstrapped = Set.of();
     private Set<String> suppressedMethodKeys = Set.of();
@@ -42,6 +47,7 @@ public final class NamingContext {
         for (ClassFile cf : appClasses) {
             byName.put(cf.getClassName(), cf);
         }
+        this.appClassFiles.putAll(byName);
         for (String name : hierarchy.topologicalOrder()) {
             ClassFile cf = byName.get(name);
             Map<String, String> inheritedAssignments = new LinkedHashMap<>();
@@ -143,6 +149,42 @@ public final class NamingContext {
 
     public String classUnsupportedReason(String internalName) {
         return classUnsupportedReasons.get(internalName);
+    }
+
+    /**
+     * True if the app class declares a constructor with this descriptor whose C# parameter
+     * signature is unique among its constructors — the condition under which a real C#
+     * constructor is emitted (descriptor erasure can otherwise collide two Java ctors).
+     */
+    public boolean hasRealConstructor(String internalName, String desc) {
+        return uniqueCtorDescs.computeIfAbsent(internalName, this::computeUniqueCtorDescs).contains(desc);
+    }
+
+    private Set<String> computeUniqueCtorDescs(String internalName) {
+        ClassFile cf = appClassFiles.get(internalName);
+        if (cf == null || Modifiers.isInterface(cf.getAccess())) {
+            return Set.of();
+        }
+        Map<String, Integer> signatureCounts = new HashMap<>();
+        Map<String, String> descToSignature = new LinkedHashMap<>();
+        for (MethodEntry method : cf.getMethods()) {
+            if (!method.getName().equals("<init>")
+                    || isSuppressed(internalName, method.getName(), method.getDesc())) {
+                continue;
+            }
+            String signature = typeMapper.paramTypes(method.getDesc()).stream()
+                    .map(CsType::csText)
+                    .collect(Collectors.joining(","));
+            signatureCounts.merge(signature, 1, Integer::sum);
+            descToSignature.put(method.getDesc(), signature);
+        }
+        Set<String> unique = new LinkedHashSet<>();
+        descToSignature.forEach((desc, signature) -> {
+            if (signatureCounts.get(signature) == 1) {
+                unique.add(desc);
+            }
+        });
+        return unique;
     }
 
     /**
