@@ -63,6 +63,9 @@ public final class Transpiler {
         StructuredEmission structured = options.classicBodies()
                 ? null
                 : new StructuredEmission(naming, synthetics, report);
+        if (structured != null) {
+            registerEnumSwitchMaps(allClasses);
+        }
         ClassEmitter classEmitter = new ClassEmitter(naming, report, interfacePositionStubs, synthetics, structured);
         Map<String, String> genFiles = new LinkedHashMap<>();
         Set<String> referenced = new TreeSet<>();
@@ -84,6 +87,29 @@ public final class Transpiler {
 
         Path reportPath = new ReportWriter().write(report, options.outDir());
         return new TranspileResult(input, report, reportPath, appDir);
+    }
+
+    /**
+     * Populates YABR's enum-switch-map registry from every $SwitchMap$ holder's static
+     * initializer. ClassDecompiler does this itself, but J2CS drives MethodRecoverer directly;
+     * without it, enum switches never resolve to constant labels and recovery falls back to a
+     * miscompiled ordinal switch.
+     */
+    private static void registerEnumSwitchMaps(List<ClassFile> classes) {
+        for (ClassFile cf : classes) {
+            boolean hasSwitchMap = cf.getFields().stream()
+                    .anyMatch(f -> f.getName() != null && f.getName().startsWith("$SwitchMap$"));
+            if (!hasSwitchMap) {
+                continue;
+            }
+            List<com.tonic.analysis.ssa.cfg.IRMethod> methods = new ArrayList<>();
+            for (MethodEntry method : cf.getMethods()) {
+                if (method.getName().equals("<clinit>") && method.getCodeAttribute() != null) {
+                    methods.add(new com.tonic.analysis.ssa.SSA(cf.getConstPool()).lift(method));
+                }
+            }
+            com.tonic.analysis.source.recovery.SwitchMapAnalyzer.analyzeClass(cf.getFields(), methods);
+        }
     }
 
     private static Set<String> collectInterfacePositionStubs(List<ClassFile> classes, NamingContext naming) {

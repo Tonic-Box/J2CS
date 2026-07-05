@@ -29,6 +29,7 @@ class DifferentialTest {
                 fixture("NestedLoops"),
                 fixture("Monitors"),
                 fixture("SwitchTest"),
+                fixture("EnumSwitch"),
                 fixture("CmpTest"),
                 fixture("Shapes"),
                 fixture("StaticsTest"),
