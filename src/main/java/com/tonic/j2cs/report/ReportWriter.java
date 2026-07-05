@@ -17,6 +17,10 @@ public final class ReportWriter {
         sb.append("j2cs transpile report\n");
         sb.append("input: ").append(report.getInput()).append('\n');
         sb.append("entry: ").append(report.getEntryClass()).append('\n');
+        if (report.getStructuredBodies() + report.getClassicBodies() > 0) {
+            sb.append("bodies: structured ").append(report.getStructuredBodies())
+                    .append(", classic fallback ").append(report.getClassicBodies()).append('\n');
+        }
         section(sb, "classes (" + report.getClasses().size() + ")", report.getClasses());
         section(sb, "unsupported methods (" + report.getUnsupportedMethods().size() + ")", report.getUnsupportedMethods());
         section(sb, "unsupported by reason (" + report.getUnsupportedMethods().size() + ")", report.unsupportedSummary());

@@ -29,13 +29,15 @@ public final class ClassEmitter {
     private final TranspileReport report;
     private final MethodBodyEmitter bodyEmitter;
     private final ClassPolicyResolver policyResolver;
+    private final BodyOverride structured;
 
     public ClassEmitter(NamingContext naming, TranspileReport report, Set<String> interfacePositionStubs,
-                        SyntheticClasses synthetics) {
+                        SyntheticClasses synthetics, BodyOverride structured) {
         this.naming = naming;
         this.report = report;
         this.bodyEmitter = new MethodBodyEmitter(naming, synthetics);
         this.policyResolver = new ClassPolicyResolver(naming, interfacePositionStubs);
+        this.structured = structured;
     }
 
     public String emit(ClassFile classFile, Map<MethodEntry, MethodPlan> plans) {
@@ -136,6 +138,14 @@ public final class ClassEmitter {
         if (EnumSynthesis.emit(w, classFile, name, desc, namer)) {
             w.close();
             return;
+        }
+        if (structured != null && plan instanceof MethodPlan.Supported) {
+            java.util.Optional<String> body = structured.tryEmit(classFile, method, 3);
+            if (body.isPresent()) {
+                w.raw(body.get());
+                w.close();
+                return;
+            }
         }
         if (plan instanceof MethodPlan.Unsupported unsupported) {
             emitStubBody(w, classFile, name, desc, unsupported.reason());

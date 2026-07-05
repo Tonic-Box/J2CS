@@ -33,14 +33,15 @@ public final class Cli {
             "",
             "options:",
             "  --main <fqcn>             entry-point class override (dotted name), e.g. com.example.App",
-            "  --no-build               emit the C# solution only; do not invoke dotnet",
-            "  --aot                    publish with NativeAOT (minimal native binary) instead of the default",
-            "  --self-contained         publish a self-contained single-file exe (the default)",
-            "  --run                    run the produced exe after publishing",
-            "  --dump-ir                dump the lifted IR for debugging",
+            "  --no-build                emit the C# solution only; do not invoke dotnet",
+            "  --aot                     publish with NativeAOT (minimal native binary) instead of the default",
+            "  --self-contained          publish a self-contained single-file exe (the default)",
+            "  --structured              emit structured method bodies (loops/ifs) where recoverable",
+            "  --run                     run the produced exe after publishing",
+            "  --dump-ir                 dump the lifted IR for debugging",
             "  --bootstrap <fqcn>[,...]  generate the named JDK classes from platform bytecode (else shimmed)",
-            "  -h, --help               show this help",
-            "  --version                print the j2cs version",
+            "  -h, --help                show this help",
+            "  --version                 print the j2cs version",
             "",
             "By default the publish produces a self-contained single-file exe (bundled runtime,",
             "no .NET install required). GUI (Swing/AWT) apps are rendered via Avalonia.");
@@ -143,6 +144,7 @@ public final class Cli {
         String mainOverride = null;
         boolean noBuild = false;
         boolean nativeAot = false;
+        boolean structured = false;
         boolean run = false;
         boolean dumpIr = false;
         java.util.List<String> bootstrap = java.util.List.of();
@@ -164,6 +166,9 @@ public final class Cli {
                     break;
                 case "--aot":
                     nativeAot = true;
+                    break;
+                case "--structured":
+                    structured = true;
                     break;
                 case "--self-contained":
                     nativeAot = false;
@@ -191,7 +196,7 @@ public final class Cli {
         if (outDir == null) {
             throw new IllegalArgumentException("no output directory given (-o <outDir>)");
         }
-        return new CliOptions(input, outDir, mainOverride, noBuild, nativeAot, run, dumpIr, bootstrap);
+        return new CliOptions(input, outDir, mainOverride, noBuild, nativeAot, run, dumpIr, structured, bootstrap);
     }
 
     private static String requireValue(String[] args, int index, String option) {

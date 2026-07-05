@@ -15,6 +15,7 @@ public record CliOptions(
         boolean nativeAot,
         boolean run,
         boolean dumpIr,
+        boolean structured,
         List<String> bootstrap) {
 
     public static CliOptions noBuild(Path input, Path outDir) {
@@ -22,6 +23,10 @@ public record CliOptions(
     }
 
     public static CliOptions noBuild(Path input, Path outDir, List<String> bootstrap) {
-        return new CliOptions(input, outDir, null, true, false, false, false, bootstrap);
+        return new CliOptions(input, outDir, null, true, false, false, false, false, bootstrap);
+    }
+
+    public static CliOptions noBuildStructured(Path input, Path outDir, List<String> bootstrap) {
+        return new CliOptions(input, outDir, null, true, false, false, false, true, bootstrap);
     }
 }

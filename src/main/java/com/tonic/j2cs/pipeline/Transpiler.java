@@ -19,6 +19,7 @@ import com.tonic.j2cs.project.SolutionGenerator;
 import com.tonic.j2cs.report.ReportWriter;
 import com.tonic.j2cs.report.TranspileReport;
 import com.tonic.j2cs.shims.ShimRegistry;
+import com.tonic.j2cs.structured.StructuredEmission;
 import com.tonic.j2cs.types.TypeMapper;
 import com.tonic.parser.ClassFile;
 import com.tonic.parser.MethodEntry;
@@ -59,7 +60,10 @@ public final class Transpiler {
         MethodPlanner planner = new MethodPlanner(new IrLifter(typeMapper, options.dumpIr()), naming);
         Set<String> interfacePositionStubs = collectInterfacePositionStubs(allClasses, naming);
         SyntheticClasses synthetics = new SyntheticClasses();
-        ClassEmitter classEmitter = new ClassEmitter(naming, report, interfacePositionStubs, synthetics);
+        StructuredEmission structured = options.structured()
+                ? new StructuredEmission(naming, report)
+                : null;
+        ClassEmitter classEmitter = new ClassEmitter(naming, report, interfacePositionStubs, synthetics, structured);
         Map<String, String> genFiles = new LinkedHashMap<>();
         Set<String> referenced = new TreeSet<>();
         for (ClassFile cf : allClasses) {

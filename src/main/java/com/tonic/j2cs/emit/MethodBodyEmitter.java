@@ -29,15 +29,12 @@ import com.tonic.j2cs.model.LoweredMethod;
 import com.tonic.j2cs.model.SlotDecl;
 import com.tonic.j2cs.naming.CsNamer;
 import com.tonic.j2cs.naming.NamingContext;
-import com.tonic.j2cs.naming.ResolvedField;
-import com.tonic.j2cs.shims.ShimTarget;
 import com.tonic.j2cs.types.CsType;
 import com.tonic.j2cs.types.TypeMapper;
 import com.tonic.parser.MethodEntry;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -284,48 +281,18 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
         return null;
     }
 
-    private String receiverAdjusted(String declaringInternal, Value receiver) {
-        return invokes.receiverAdjusted(declaringInternal, receiver);
-    }
-
     private String storageAdjusted(CsType storage, Value value) {
         return invokes.storageAdjusted(storage, value);
     }
 
     @Override
     public Void visitFieldAccess(FieldAccessInstruction instr) {
-        String owner = instr.getOwner();
-        String name = instr.getName();
-        String desc = instr.getDescriptor();
-        if ((owner.startsWith("java/") || owner.startsWith("javax/")) && !naming.isBootstrapped(owner)) {
-            Optional<ShimTarget> target = naming.shimField(owner, name, desc);
-            if (target.isEmpty()) {
-                throw new UnsupportedBodyException("shim field not implemented: " + owner + "." + name);
-            }
-            String shimRef = target.get().isStatic()
-                    ? CsNamer.fqcn(owner)
-                    : receiverAdjusted(owner, instr.getObjectRef());
-            if (instr.isLoad()) {
-                assign(instr, shimRef + "." + target.get().csMemberName());
-            } else {
-                CsType shimStorage = naming.typeMapper().storageType(desc);
-                w.line(shimRef + "." + target.get().csMemberName() + " = "
-                        + storageAdjusted(shimStorage, instr.getValue()) + ";");
-            }
-            return null;
-        }
-        ResolvedField resolved = naming.resolveField(owner, name, desc);
-        if (!(resolved instanceof ResolvedField.AppField field)) {
-            throw new UnsupportedBodyException(((ResolvedField.Unresolved) resolved).reason());
-        }
-        String ref = instr.isStatic()
-                ? CsNamer.fqcn(field.declaringInternal())
-                : receiverAdjusted(field.declaringInternal(), instr.getObjectRef());
+        String ref = invokes.fieldRef(instr);
         if (instr.isLoad()) {
-            assign(instr, ref + "." + field.csName());
+            assign(instr, ref);
         } else {
-            CsType storage = naming.typeMapper().storageType(desc);
-            w.line(ref + "." + field.csName() + " = " + storageAdjusted(storage, instr.getValue()) + ";");
+            CsType storage = naming.typeMapper().storageType(instr.getDescriptor());
+            w.line(ref + " = " + storageAdjusted(storage, instr.getValue()) + ";");
         }
         return null;
     }

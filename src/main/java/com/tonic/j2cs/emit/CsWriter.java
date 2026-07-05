@@ -49,6 +49,12 @@ public final class CsWriter {
         return this;
     }
 
+    public CsWriter closeWith(String trailer) {
+        depth--;
+        line("} " + trailer);
+        return this;
+    }
+
     @Override
     public String toString() {
         return sb.toString();

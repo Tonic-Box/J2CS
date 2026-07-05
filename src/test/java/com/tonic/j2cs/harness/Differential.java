@@ -29,8 +29,13 @@ public final class Differential {
     }
 
     public static void assertSameOutput(String fixtureName, List<String> bootstrap) throws Exception {
+        assertSameOutput(fixtureName, bootstrap, false);
+    }
+
+    public static void assertSameOutput(String fixtureName, List<String> bootstrap, boolean structured)
+            throws Exception {
         Assumptions.assumeTrue(DotnetLocator.isAvailable(), "dotnet CLI not available");
-        Path work = Path.of("build", "e2e", fixtureName);
+        Path work = Path.of("build", "e2e", structured ? fixtureName + "-structured" : fixtureName);
         Fixtures.deleteRecursively(work);
 
         Path source = Fixtures.materialize(fixtureName, work.resolve("src"));
@@ -39,7 +44,9 @@ public final class Differential {
         String expected = JvmRunner.runMain(classes, fixtureName);
 
         Path jar = TestJars.jar(work.resolve(fixtureName + ".jar"), classes, fixtureName);
-        CliOptions options = CliOptions.noBuild(jar, work.resolve("out"), bootstrap);
+        CliOptions options = structured
+                ? CliOptions.noBuildStructured(jar, work.resolve("out"), bootstrap)
+                : CliOptions.noBuild(jar, work.resolve("out"), bootstrap);
         TranspileResult result = new Transpiler().transpile(options);
 
         DotnetRunner runner = new DotnetRunner();

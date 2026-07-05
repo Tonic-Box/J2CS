@@ -72,6 +72,14 @@ public final class TypeReconciler {
         if (receiverInternal == null) {
             throw new UnsupportedBodyException("non-reference receiver: " + descriptor);
         }
+        return receiver(declaringInternal, receiverInternal, expr);
+    }
+
+    /** Same, from a known internal name; null means statically unknown and always casts. */
+    public String receiver(String declaringInternal, String receiverInternal, String expr) {
+        if (receiverInternal == null) {
+            return castTo(declaringInternal, expr);
+        }
         return naming.hierarchy().staticallyHasMember(receiverInternal, declaringInternal)
                 ? expr
                 : castTo(declaringInternal, expr);

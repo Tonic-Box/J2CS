@@ -17,6 +17,8 @@ public final class TranspileReport {
     private final List<String> classes = new ArrayList<>();
     private final List<String> unsupportedMethods = new ArrayList<>();
     private final List<String> unsupportedReasons = new ArrayList<>();
+    private int structuredBodies;
+    private int classicBodies;
     private final List<String> stubbedTypes = new ArrayList<>();
     private final List<String> divergences = new ArrayList<>();
 
@@ -75,6 +77,22 @@ public final class TranspileReport {
 
     public void divergence(String text) {
         divergences.add(text);
+    }
+
+    public void structuredBody() {
+        structuredBodies++;
+    }
+
+    public void classicBody() {
+        classicBodies++;
+    }
+
+    public int getStructuredBodies() {
+        return structuredBodies;
+    }
+
+    public int getClassicBodies() {
+        return classicBodies;
     }
 
     public String getInput() {

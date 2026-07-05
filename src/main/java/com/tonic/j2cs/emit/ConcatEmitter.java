@@ -12,7 +12,7 @@ import java.util.List;
  * Renders a string-concat invokedynamic (makeConcat/makeConcatWithConstants) as a
  * String.Wrap(System.String.Concat(...)) expression over the recipe's parts.
  */
-final class ConcatEmitter {
+public final class ConcatEmitter {
 
     private final ValueNames names;
 
@@ -75,17 +75,19 @@ final class ConcatEmitter {
     }
 
     private String conversion(String desc, Value arg) {
+        if (desc.charAt(0) == 'L') {
+            InvokeRenderer.requireNoArrayAsObject(desc, arg);
+        }
+        return stringConversion(desc, names.ref(arg));
+    }
+
+    /** JRuntime string conversion of a value by its JVM descriptor. */
+    public static String stringConversion(String desc, String expr) {
         String jr = "global::java.lang.JRuntime";
-        String expr = names.ref(arg);
         return switch (desc.charAt(0)) {
             case 'Z' -> jr + ".StrZ(" + expr + ")";
             case 'C' -> jr + ".Str((char)(" + expr + "))";
-            case 'B', 'S', 'I' -> jr + ".Str(" + expr + ")";
-            case 'J', 'F', 'D' -> jr + ".Str(" + expr + ")";
-            case 'L' -> {
-                InvokeRenderer.requireNoArrayAsObject(desc, arg);
-                yield jr + ".Str(" + expr + ")";
-            }
+            case 'B', 'S', 'I', 'J', 'F', 'D', 'L' -> jr + ".Str(" + expr + ")";
             default -> throw new UnsupportedBodyException("array in string concat not supported");
         };
     }
