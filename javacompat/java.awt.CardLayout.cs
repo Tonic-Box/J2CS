@@ -38,7 +38,7 @@ namespace java.awt
 
         public void show(global::java.awt.Container parent, global::java.lang.String name)
         {
-            Of(parent)?.ShowCard(name == null ? "" : name.Value);
+            Of(parent)?.ShowCard(global::java.lang.JRuntime.Cs(name));
         }
 
         public void first(global::java.awt.Container parent)

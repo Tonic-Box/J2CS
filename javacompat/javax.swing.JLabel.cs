@@ -12,7 +12,7 @@ namespace javax.swing
         {
             label = new global::Avalonia.Controls.TextBlock
             {
-                Text = text == null ? "" : text.Value
+                Text = global::java.lang.JRuntime.Cs(text)
             };
             AvControl = label;
         }
@@ -21,7 +21,7 @@ namespace javax.swing
         {
             if (label != null)
             {
-                label.Text = text == null ? "" : text.Value;
+                label.Text = global::java.lang.JRuntime.Cs(text);
             }
         }
 

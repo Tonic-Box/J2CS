@@ -9,7 +9,7 @@ namespace java.util
         public sbyte[] decode(global::java.lang.String src)
         {
             return global::java.lang.JRuntime.SignedBytes(global::System.Convert.FromBase64String(
-                    src == null ? "" : src.Value));
+                    global::java.lang.JRuntime.Cs(src)));
         }
     }
 }

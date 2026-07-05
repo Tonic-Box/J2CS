@@ -23,7 +23,7 @@ namespace javax.swing
         {
             if (field != null)
             {
-                field.Text = text == null ? "" : text.Value;
+                field.Text = global::java.lang.JRuntime.Cs(text);
             }
         }
     }

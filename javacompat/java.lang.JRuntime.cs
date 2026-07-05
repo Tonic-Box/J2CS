@@ -222,6 +222,12 @@ namespace java.lang
             return s == null ? "null" : s.Value;
         }
 
+        /// <summary>Unwraps for widget/text positions, where Java treats null as empty.</summary>
+        public static string Cs(global::java.lang.String s)
+        {
+            return s == null ? "" : s.Value;
+        }
+
         public static string Str(global::java.lang.Object o)
         {
             return o == null ? "null" : Str(o.toString());

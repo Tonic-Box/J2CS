@@ -9,6 +9,22 @@ namespace java.awt
     internal abstract class J2csPanel : global::Avalonia.Controls.Panel
     {
         internal global::Avalonia.Thickness J2csInsets;
+
+        protected double InnerWidth(global::Avalonia.Size size)
+        {
+            return size.Width - J2csInsets.Left - J2csInsets.Right;
+        }
+
+        protected double InnerHeight(global::Avalonia.Size size)
+        {
+            return size.Height - J2csInsets.Top - J2csInsets.Bottom;
+        }
+
+        protected global::Avalonia.Size AddInsets(double width, double height)
+        {
+            return new global::Avalonia.Size(width + J2csInsets.Left + J2csInsets.Right,
+                    height + J2csInsets.Top + J2csInsets.Bottom);
+        }
     }
 
     internal sealed class J2csFlowPanel : J2csPanel
@@ -47,7 +63,7 @@ namespace java.awt
             {
                 child.Measure(global::Avalonia.Size.Infinity);
             }
-            double avail = double.IsInfinity(availableSize.Width) ? double.PositiveInfinity : availableSize.Width - J2csInsets.Left - J2csInsets.Right;
+            double avail = double.IsInfinity(availableSize.Width) ? double.PositiveInfinity : InnerWidth(availableSize);
             double totalW = 0;
             double totalH = Vgap;
             foreach (var row in Rows(avail))
@@ -66,13 +82,13 @@ namespace java.awt
             {
                 totalW = 0;
             }
-            return new global::Avalonia.Size(totalW + J2csInsets.Left + J2csInsets.Right, totalH + J2csInsets.Top + J2csInsets.Bottom);
+            return AddInsets(totalW, totalH);
         }
 
         protected override global::Avalonia.Size ArrangeOverride(global::Avalonia.Size finalSize)
         {
             double left = J2csInsets.Left;
-            double width = finalSize.Width - J2csInsets.Left - J2csInsets.Right;
+            double width = InnerWidth(finalSize);
             double y = J2csInsets.Top + Vgap;
             foreach (var row in Rows(width))
             {
@@ -145,8 +161,7 @@ namespace java.awt
             double midH = System.Math.Max(System.Math.Max(D(w, true), D(e, true)), D(c, true));
             double height = D(n, true) + D(s, true) + midH
                     + (n != null ? Vgap : 0) + (s != null ? Vgap : 0);
-            return new global::Avalonia.Size(width + J2csInsets.Left + J2csInsets.Right,
-                    height + J2csInsets.Top + J2csInsets.Bottom);
+            return AddInsets(width, height);
         }
 
         protected override global::Avalonia.Size ArrangeOverride(global::Avalonia.Size finalSize)
@@ -250,14 +265,14 @@ namespace java.awt
                 w = System.Math.Max(w, child.DesiredSize.Width);
                 h = System.Math.Max(h, child.DesiredSize.Height);
             }
-            return new global::Avalonia.Size(w + J2csInsets.Left + J2csInsets.Right, h + J2csInsets.Top + J2csInsets.Bottom);
+            return AddInsets(w, h);
         }
 
         protected override global::Avalonia.Size ArrangeOverride(global::Avalonia.Size finalSize)
         {
             var rect = new global::Avalonia.Rect(J2csInsets.Left, J2csInsets.Top,
-                    System.Math.Max(0, finalSize.Width - J2csInsets.Left - J2csInsets.Right),
-                    System.Math.Max(0, finalSize.Height - J2csInsets.Top - J2csInsets.Bottom));
+                    System.Math.Max(0, InnerWidth(finalSize)),
+                    System.Math.Max(0, InnerHeight(finalSize)));
             foreach (var child in Children)
             {
                 child.Arrange(rect);
@@ -390,7 +405,7 @@ namespace java.awt
             {
                 h += r;
             }
-            return new global::Avalonia.Size(w + J2csInsets.Left + J2csInsets.Right, h + J2csInsets.Top + J2csInsets.Bottom);
+            return AddInsets(w, h);
         }
 
         protected override global::Avalonia.Size ArrangeOverride(global::Avalonia.Size finalSize)
@@ -404,8 +419,8 @@ namespace java.awt
             foreach (var r in rowH) { baseH += r; }
             foreach (var wt in colWt) { sumCw += wt; }
             foreach (var wt in rowWt) { sumRw += wt; }
-            double innerW = finalSize.Width - J2csInsets.Left - J2csInsets.Right;
-            double innerH = finalSize.Height - J2csInsets.Top - J2csInsets.Bottom;
+            double innerW = InnerWidth(finalSize);
+            double innerH = InnerHeight(finalSize);
             double extraW = innerW - baseW;
             double extraH = innerH - baseH;
             if (sumCw > 0)
@@ -504,16 +519,14 @@ namespace java.awt
                 ch = System.Math.Max(ch, child.DesiredSize.Height);
             }
             Dims(out int nrows, out int ncols);
-            return new global::Avalonia.Size(
-                    ncols * cw + (ncols - 1) * Hgap + J2csInsets.Left + J2csInsets.Right,
-                    nrows * ch + (nrows - 1) * Vgap + J2csInsets.Top + J2csInsets.Bottom);
+            return AddInsets(ncols * cw + (ncols - 1) * Hgap, nrows * ch + (nrows - 1) * Vgap);
         }
 
         protected override global::Avalonia.Size ArrangeOverride(global::Avalonia.Size finalSize)
         {
             Dims(out int nrows, out int ncols);
-            double innerW = finalSize.Width - J2csInsets.Left - J2csInsets.Right;
-            double innerH = finalSize.Height - J2csInsets.Top - J2csInsets.Bottom;
+            double innerW = InnerWidth(finalSize);
+            double innerH = InnerHeight(finalSize);
             double cw = (innerW - (ncols - 1) * Hgap) / ncols;
             double ch = (innerH - (nrows - 1) * Vgap) / nrows;
             int i = 0;
@@ -558,13 +571,13 @@ namespace java.awt
             }
             double w = Axis == 1 ? cross : along;
             double h = Axis == 1 ? along : cross;
-            return new global::Avalonia.Size(w + J2csInsets.Left + J2csInsets.Right, h + J2csInsets.Top + J2csInsets.Bottom);
+            return AddInsets(w, h);
         }
 
         protected override global::Avalonia.Size ArrangeOverride(global::Avalonia.Size finalSize)
         {
-            double innerW = finalSize.Width - J2csInsets.Left - J2csInsets.Right;
-            double innerH = finalSize.Height - J2csInsets.Top - J2csInsets.Bottom;
+            double innerW = InnerWidth(finalSize);
+            double innerH = InnerHeight(finalSize);
             double pos = Axis == 1 ? J2csInsets.Top : J2csInsets.Left;
             foreach (var child in Children)
             {

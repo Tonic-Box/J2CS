@@ -12,7 +12,7 @@ namespace javax.swing
         {
             button = new global::Avalonia.Controls.Button
             {
-                Content = text == null ? "" : text.Value
+                Content = global::java.lang.JRuntime.Cs(text)
             };
             AvControl = button;
         }

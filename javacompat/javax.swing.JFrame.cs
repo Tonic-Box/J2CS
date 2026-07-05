@@ -15,7 +15,7 @@ namespace javax.swing
         public void __init_Ljava_lang_String__V(global::java.lang.String title)
         {
             AvWindow = new global::Avalonia.Controls.Window();
-            AvWindow.Title = title == null ? "" : title.Value;
+            AvWindow.Title = global::java.lang.JRuntime.Cs(title);
             J2csWireCloseExit();
         }
     }

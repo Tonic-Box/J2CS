@@ -11,7 +11,7 @@ namespace javax.swing
         {
             var win = new global::Avalonia.Controls.Window
             {
-                Title = title == null ? "" : title.Value,
+                Title = global::java.lang.JRuntime.Cs(title),
                 Width = 340,
                 Height = 150,
                 WindowStartupLocation = global::Avalonia.Controls.WindowStartupLocation.CenterScreen

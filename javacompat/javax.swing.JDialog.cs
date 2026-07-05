@@ -12,7 +12,7 @@ namespace javax.swing
                 global::java.awt.Frame owner, global::java.lang.String title, int modal)
         {
             AvWindow = new global::Avalonia.Controls.Window();
-            AvWindow.Title = title == null ? "" : title.Value;
+            AvWindow.Title = global::java.lang.JRuntime.Cs(title);
             Modal = modal != 0;
             J2csWireCloseExit();
         }
