@@ -10,13 +10,15 @@ public final class CsprojTemplate {
     private CsprojTemplate() {
     }
 
+    public static final String TARGET_FRAMEWORK = "net9.0";
+
     private static final String AVALONIA_VERSION = "11.2.1";
 
     public static String csproj(boolean usesGui) {
         return "<Project Sdk=\"Microsoft.NET.Sdk\">\n"
                 + "  <PropertyGroup>\n"
                 + "    <OutputType>Exe</OutputType>\n"
-                + "    <TargetFramework>net9.0</TargetFramework>\n"
+                + "    <TargetFramework>" + TARGET_FRAMEWORK + "</TargetFramework>\n"
                 + "    <ImplicitUsings>disable</ImplicitUsings>\n"
                 + "    <Nullable>disable</Nullable>\n"
                 + "    <LangVersion>latest</LangVersion>\n"

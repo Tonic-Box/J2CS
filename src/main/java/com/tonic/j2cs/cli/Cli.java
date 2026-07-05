@@ -40,6 +40,7 @@ public final class Cli {
             "  --dump-ir                dump the lifted IR for debugging",
             "  --bootstrap <fqcn>[,...]  generate the named JDK classes from platform bytecode (else shimmed)",
             "  -h, --help               show this help",
+            "  --version                print the j2cs version",
             "",
             "By default the publish produces a self-contained single-file exe (bundled runtime,",
             "no .NET install required). GUI (Swing/AWT) apps are rendered via Avalonia.");
@@ -52,6 +53,11 @@ public final class Cli {
         for (String arg : args) {
             if (arg.equals("--help") || arg.equals("-h")) {
                 System.out.println(USAGE);
+                return 0;
+            }
+            if (arg.equals("--version")) {
+                String v = Cli.class.getPackage().getImplementationVersion();
+                System.out.println("j2cs " + (v != null ? v : "dev"));
                 return 0;
             }
         }

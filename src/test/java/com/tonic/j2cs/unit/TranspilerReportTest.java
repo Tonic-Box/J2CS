@@ -27,7 +27,7 @@ class TranspilerReportTest {
         Path jar = TestJars.jar(dir.resolve("app.jar"), classes, "com.example.App");
         Path outDir = dir.resolve("out");
 
-        CliOptions options = new CliOptions(jar, outDir, null, true, false, false, false);
+        CliOptions options = CliOptions.noBuild(jar, outDir);
         TranspileResult result = new Transpiler().transpile(options);
 
         assertTrue(Files.isRegularFile(result.reportPath()));

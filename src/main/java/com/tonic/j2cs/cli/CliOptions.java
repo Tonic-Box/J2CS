@@ -17,8 +17,11 @@ public record CliOptions(
         boolean dumpIr,
         List<String> bootstrap) {
 
-    public CliOptions(Path input, Path outDir, String mainOverride, boolean noBuild,
-                      boolean nativeAot, boolean run, boolean dumpIr) {
-        this(input, outDir, mainOverride, noBuild, nativeAot, run, dumpIr, List.of());
+    public static CliOptions noBuild(Path input, Path outDir) {
+        return noBuild(input, outDir, List.of());
+    }
+
+    public static CliOptions noBuild(Path input, Path outDir, List<String> bootstrap) {
+        return new CliOptions(input, outDir, null, true, false, false, false, bootstrap);
     }
 }

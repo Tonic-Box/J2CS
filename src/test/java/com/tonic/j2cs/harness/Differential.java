@@ -6,6 +6,7 @@ import com.tonic.j2cs.dotnet.DotnetRunner;
 import com.tonic.j2cs.dotnet.ExecResult;
 import com.tonic.j2cs.pipeline.TranspileResult;
 import com.tonic.j2cs.pipeline.Transpiler;
+import com.tonic.j2cs.project.CsprojTemplate;
 import org.junit.jupiter.api.Assumptions;
 
 import java.nio.file.Path;
@@ -38,15 +39,16 @@ public final class Differential {
         String expected = JvmRunner.runMain(classes, fixtureName);
 
         Path jar = TestJars.jar(work.resolve(fixtureName + ".jar"), classes, fixtureName);
-        CliOptions options = new CliOptions(
-                jar, work.resolve("out"), null, true, false, false, false, bootstrap);
+        CliOptions options = CliOptions.noBuild(jar, work.resolve("out"), bootstrap);
         TranspileResult result = new Transpiler().transpile(options);
 
         DotnetRunner runner = new DotnetRunner();
         ExecResult build = runner.build(result.appDir());
         DotnetRunner.requireSuccess(build, "dotnet build of " + fixtureName);
 
-        Path dll = result.appDir().resolve(Path.of("bin", "Release", "net9.0", "App.dll")).toAbsolutePath();
+        Path dll = result.appDir()
+                .resolve(Path.of("bin", "Release", CsprojTemplate.TARGET_FRAMEWORK, "App.dll"))
+                .toAbsolutePath();
         ExecResult run = runner.run(List.of("dotnet", dll.toString()), result.appDir(), 60_000);
         DotnetRunner.requireSuccess(run, "running transpiled " + fixtureName);
 

@@ -4,22 +4,22 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d05fdbd2-bef1-4012-9f61-0cf573243b7b" name="Changes" comment="Support assertions and String.valueOf(Object); cover enum valueOf">
+    <list default="true" id="d05fdbd2-bef1-4012-9f61-0cf573243b7b" name="Changes" comment="Harden test suite and CLI ergonomics">
+      <change afterPath="$PROJECT_DIR$/.gitattributes" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/com/tonic/j2cs/unit/ShimManifestDriftTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/resources/junit-platform.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/javacompat/java.awt.J2csLayout.cs" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/java.awt.J2csLayout.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/javacompat/javax.swing.JDialog.cs" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/javax.swing.JDialog.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/cli/Cli.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/cli/Cli.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/EntryPointEmitter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/EntryPointEmitter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/ExceptionLayout.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/ExceptionLayout.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/frontend/HandlerSupport.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/frontend/HandlerSupport.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/frontend/IrLifter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/frontend/IrLifter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/frontend/PhiCoalescer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/frontend/PhiCoalescer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/pipeline/ArrayCloneRetypePass.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/pipeline/ClassHierarchy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/pipeline/ClassHierarchy.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/pipeline/IrPass.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/cli/CliOptions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/cli/CliOptions.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/project/CsprojTemplate.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/project/CsprojTemplate.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/project/GeneratedSolution.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/project/GeneratedSolution.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/project/ShimPackager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/project/ShimPackager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/tonic/j2cs/e2e/DifferentialTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/tonic/j2cs/e2e/DifferentialTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/tonic/j2cs/e2e/NativeAotSmokeTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/tonic/j2cs/e2e/NativeAotSmokeTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/tonic/j2cs/e2e/SkeletonBuildTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/tonic/j2cs/e2e/SkeletonBuildTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/tonic/j2cs/golden/GoldenEmitTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/tonic/j2cs/golden/GoldenEmitTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/tonic/j2cs/harness/Differential.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/tonic/j2cs/harness/Differential.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/tonic/j2cs/unit/ShimRegistryDriftTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/tonic/j2cs/unit/ShimRegistryDriftTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/tonic/j2cs/unit/TranspilerReportTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/tonic/j2cs/unit/TranspilerReportTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -103,14 +103,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1783017158528</updated>
-    </task>
-    <task id="LOCAL-00019" summary="Harden degradation reporting for enums and native methods">
-      <option name="closed" value="true" />
-      <created>1783093450495</created>
-      <option name="number" value="00019" />
-      <option name="presentableId" value="LOCAL-00019" />
-      <option name="project" value="LOCAL" />
-      <updated>1783093450495</updated>
     </task>
     <task id="LOCAL-00020" summary="Add the exception shim hierarchy, JThrow carrier, and Normalize">
       <option name="closed" value="true" />
@@ -496,12 +488,18 @@
       <option name="project" value="LOCAL" />
       <updated>1783250628817</updated>
     </task>
-    <option name="localTasksCounter" value="68" />
+    <task id="LOCAL-00068" summary="Fix modal hide unblock and report arg validation; sweep dead code">
+      <option name="closed" value="true" />
+      <created>1783252278503</created>
+      <option name="number" value="00068" />
+      <option name="presentableId" value="LOCAL-00068" />
+      <option name="project" value="LOCAL" />
+      <updated>1783252278503</updated>
+    </task>
+    <option name="localTasksCounter" value="69" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Bootstrap Throwable and the exception hierarchy from JDK bytecode" />
-    <MESSAGE value="Bootstrap java.util.Objects and java.lang.Math + StrictMath" />
     <MESSAGE value="Bootstrap java.lang.System from JDK bytecode" />
     <MESSAGE value="Auto-pull the bootstrap closure from a root class" />
     <MESSAGE value="Consolidate and harden the bootstrap surface" />
@@ -525,6 +523,8 @@
     <MESSAGE value="Match Swing box alignment and tighten control chrome" />
     <MESSAGE value="Consolidate C# cast/bridge insertion into a TypeReconciler" />
     <MESSAGE value="Support assertions and String.valueOf(Object); cover enum valueOf" />
-    <option name="LAST_COMMIT_MESSAGE" value="Support assertions and String.valueOf(Object); cover enum valueOf" />
+    <MESSAGE value="Fix modal hide unblock and report arg validation; sweep dead code" />
+    <MESSAGE value="Harden test suite and CLI ergonomics" />
+    <option name="LAST_COMMIT_MESSAGE" value="Harden test suite and CLI ergonomics" />
   </component>
 </project>

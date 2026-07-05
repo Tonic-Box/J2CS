@@ -9,13 +9,15 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * Drift guard: every ShimRegistry entry's C# member name must appear textually in the
- * corresponding shim source file, so the registry cannot silently outrun the shim.
+ * Drift guard: every ShimRegistry entry's C# member must be declared in the corresponding shim
+ * source file, so the registry cannot silently outrun the shim. Methods match the name at a
+ * non-member call/declaration position followed by '('; fields match a type-preceded declaration.
  */
 class ShimRegistryDriftTest {
 
@@ -24,22 +26,26 @@ class ShimRegistryDriftTest {
     @Test
     void everyRegisteredMethodExistsInShimSource() throws IOException {
         for (Map.Entry<String, ShimTarget> entry : ShimRegistry.methods().entrySet()) {
-            assertMemberPresent(entry.getKey(), entry.getValue());
+            String name = entry.getValue().csMemberName();
+            assertMemberPresent(entry.getKey(), name,
+                    Pattern.compile("(?<![\\w@.])" + Pattern.quote(name) + "\\s*\\("));
         }
     }
 
     @Test
     void everyRegisteredFieldExistsInShimSource() throws IOException {
         for (Map.Entry<String, ShimTarget> entry : ShimRegistry.fields().entrySet()) {
-            assertMemberPresent(entry.getKey(), entry.getValue());
+            String name = entry.getValue().csMemberName();
+            assertMemberPresent(entry.getKey(), name,
+                    Pattern.compile("\\w\\s+" + Pattern.quote(name) + "\\s*[;=]"));
         }
     }
 
-    private void assertMemberPresent(String key, ShimTarget target) throws IOException {
+    private void assertMemberPresent(String key, String name, Pattern declaration) throws IOException {
         String owner = key.substring(0, key.indexOf('.'));
         String source = shimSource(owner);
-        assertTrue(source.contains(target.csMemberName()),
-                "shim source for " + owner + " lacks member '" + target.csMemberName()
+        assertTrue(declaration.matcher(source).find(),
+                "shim source for " + owner + " lacks member '" + name
                         + "' required by registry entry " + key);
     }
 

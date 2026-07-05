@@ -39,7 +39,7 @@ class NativeAotSmokeTest {
         String expected = JvmRunner.runMain(classes, "FizzBuzz");
 
         Path jar = TestJars.jar(work.resolve("FizzBuzz.jar"), classes, "FizzBuzz");
-        CliOptions options = new CliOptions(jar, work.resolve("out"), null, true, false, false, false);
+        CliOptions options = CliOptions.noBuild(jar, work.resolve("out"));
         TranspileResult result = new Transpiler().transpile(options);
 
         DotnetRunner runner = new DotnetRunner();

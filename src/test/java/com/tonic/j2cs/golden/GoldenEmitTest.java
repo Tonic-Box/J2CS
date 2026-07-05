@@ -53,7 +53,7 @@ class GoldenEmitTest {
         Path classes = work.resolve("classes");
         JavacHelper.compile(List.of(source), classes);
         Path jar = TestJars.jar(work.resolve(fixtureName + ".jar"), classes, fixtureName);
-        CliOptions options = new CliOptions(jar, work.resolve("out"), null, true, false, false, false);
+        CliOptions options = CliOptions.noBuild(jar, work.resolve("out"));
         TranspileResult result = new Transpiler().transpile(options);
 
         String actual = canonicalText(result.appDir());

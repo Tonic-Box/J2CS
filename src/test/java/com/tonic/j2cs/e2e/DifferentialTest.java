@@ -1,229 +1,94 @@
 package com.tonic.j2cs.e2e;
 
 import com.tonic.j2cs.harness.Differential;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.stream.Stream;
+
+@Execution(ExecutionMode.CONCURRENT)
 class DifferentialTest {
 
-    @Test
-    void helloWorld() throws Exception {
-        Differential.assertSameOutput("HelloWorld");
+    private static Arguments fixture(String name, String... bootstrap) {
+        return Arguments.of(name, List.of(bootstrap));
     }
 
-    @Test
-    void arith() throws Exception {
-        Differential.assertSameOutput("Arith");
+    static Stream<Arguments> fixtures() {
+        return Stream.of(
+                fixture("HelloWorld"),
+                fixture("Arith"),
+                fixture("ControlFlow"),
+                fixture("SwitchTest"),
+                fixture("CmpTest"),
+                fixture("Shapes"),
+                fixture("StaticsTest"),
+                fixture("ArraysTest"),
+                fixture("MultiArray"),
+                fixture("StringsTest"),
+                fixture("FizzBuzz"),
+                fixture("Inherit"),
+                fixture("Interfaces"),
+                fixture("Generics"),
+                fixture("TypeReconcile"),
+                fixture("ArrayClone"),
+                fixture("EnumAssert"),
+                fixture("ShimGrowth"),
+                fixture("Exceptions1"),
+                fixture("Exceptions2"),
+                fixture("Exceptions3"),
+                fixture("Lambdas1"),
+                fixture("Lambdas2"),
+                fixture("Boxing1"),
+                fixture("Boxing2"),
+                fixture("BoxingGenerics"),
+                fixture("Collections1"),
+                fixture("Collections2"),
+                fixture("Collections3"),
+                fixture("Bootstrap", "java.lang.Boolean"),
+                fixture("WrapperBootstrap",
+                        "java.lang.Integer", "java.lang.Long", "java.lang.Short", "java.lang.Byte"),
+                fixture("WrapperBootstrap2",
+                        "java.lang.Integer", "java.lang.Long", "java.lang.Short", "java.lang.Byte",
+                        "java.lang.Double", "java.lang.Float", "java.lang.Character"),
+                fixture("ObjectBootstrap", "java.lang.Object"),
+                fixture("ObjectsBootstrap", "java.util.Objects"),
+                fixture("CollectionsBootstrap", "java.util.ArrayList"),
+                fixture("HashMapBootstrap", "java.util.HashMap", "java.util.HashSet"),
+                fixture("SystemBootstrap", "java.lang.System"),
+                fixture("MathBootstrap", "java.lang.Math"),
+                fixture("ExceptionBootstrap",
+                        "java.lang.NullPointerException", "java.lang.ArithmeticException",
+                        "java.lang.ClassCastException", "java.lang.ArrayIndexOutOfBoundsException",
+                        "java.lang.IllegalArgumentException", "java.lang.IllegalStateException",
+                        "java.lang.NumberFormatException"),
+                fixture("AllBootstrap",
+                        "java.lang.Object", "java.lang.Math", "java.lang.System",
+                        "java.util.Objects", "java.lang.Long", "java.lang.Character",
+                        "java.lang.ClassCastException", "java.lang.ArrayStoreException"));
     }
 
-    @Test
-    void controlFlow() throws Exception {
-        Differential.assertSameOutput("ControlFlow");
-    }
-
-    @Test
-    void switchTest() throws Exception {
-        Differential.assertSameOutput("SwitchTest");
-    }
-
-    @Test
-    void cmpTest() throws Exception {
-        Differential.assertSameOutput("CmpTest");
-    }
-
-    @Test
-    void shapes() throws Exception {
-        Differential.assertSameOutput("Shapes");
-    }
-
-    @Test
-    void staticsTest() throws Exception {
-        Differential.assertSameOutput("StaticsTest");
-    }
-
-    @Test
-    void arraysTest() throws Exception {
-        Differential.assertSameOutput("ArraysTest");
-    }
-
-    @Test
-    void multiArray() throws Exception {
-        Differential.assertSameOutput("MultiArray");
-    }
-
-    @Test
-    void stringsTest() throws Exception {
-        Differential.assertSameOutput("StringsTest");
-    }
-
-    @Test
-    void fizzBuzz() throws Exception {
-        Differential.assertSameOutput("FizzBuzz");
-    }
-
-    @Test
-    void inherit() throws Exception {
-        Differential.assertSameOutput("Inherit");
-    }
-
-    @Test
-    void interfaces() throws Exception {
-        Differential.assertSameOutput("Interfaces");
-    }
-
-    @Test
-    void generics() throws Exception {
-        Differential.assertSameOutput("Generics");
-    }
-
-    @Test
-    void typeReconcile() throws Exception {
-        Differential.assertSameOutput("TypeReconcile");
-    }
-
-    @Test
-    void arrayClone() throws Exception {
-        Differential.assertSameOutput("ArrayClone");
-    }
-
-    @Test
-    void enumAssert() throws Exception {
-        Differential.assertSameOutput("EnumAssert");
-    }
-
-    @Test
-    void shimGrowth() throws Exception {
-        Differential.assertSameOutput("ShimGrowth");
-    }
-
-    @Test
-    void exceptions1() throws Exception {
-        Differential.assertSameOutput("Exceptions1");
-    }
-
-    @Test
-    void exceptions2() throws Exception {
-        Differential.assertSameOutput("Exceptions2");
-    }
-
-    @Test
-    void exceptions3() throws Exception {
-        Differential.assertSameOutput("Exceptions3");
-    }
-
-    @Test
-    void lambdas1() throws Exception {
-        Differential.assertSameOutput("Lambdas1");
-    }
-
-    @Test
-    void boxing1() throws Exception {
-        Differential.assertSameOutput("Boxing1");
-    }
-
-    @Test
-    void boxing2() throws Exception {
-        Differential.assertSameOutput("Boxing2");
-    }
-
-    @Test
-    void boxingGenerics() throws Exception {
-        Differential.assertSameOutput("BoxingGenerics");
-    }
-
-    @Test
-    void collections1() throws Exception {
-        Differential.assertSameOutput("Collections1");
-    }
-
-    @Test
-    void collections2() throws Exception {
-        Differential.assertSameOutput("Collections2");
-    }
-
-    @Test
-    void collections3() throws Exception {
-        Differential.assertSameOutput("Collections3");
-    }
-
-    @Test
-    void bootstrapBoolean() throws Exception {
-        Differential.assertSameOutput("Bootstrap", java.util.List.of("java.lang.Boolean"));
-    }
-
-    @Test
-    void bootstrapWrappers() throws Exception {
-        Differential.assertSameOutput("WrapperBootstrap", java.util.List.of(
-                "java.lang.Integer", "java.lang.Long", "java.lang.Short", "java.lang.Byte"));
-    }
-
-    @Test
-    void bootstrapObject() throws Exception {
-        Differential.assertSameOutput("ObjectBootstrap", java.util.List.of("java.lang.Object"));
-    }
-
-    @Test
-    void bootstrapObjects() throws Exception {
-        Differential.assertSameOutput("ObjectsBootstrap", java.util.List.of("java.util.Objects"));
-    }
-
-    @Test
-    void bootstrapCollections() throws Exception {
-        Differential.assertSameOutput("CollectionsBootstrap", java.util.List.of("java.util.ArrayList"));
-    }
-
-    @Test
-    void bootstrapHashMap() throws Exception {
-        Differential.assertSameOutput("HashMapBootstrap",
-                java.util.List.of("java.util.HashMap", "java.util.HashSet"));
-    }
-
-    @Test
-    void bootstrapAll() throws Exception {
-        Differential.assertSameOutput("AllBootstrap", java.util.List.of(
-                "java.lang.Object", "java.lang.Math", "java.lang.System",
-                "java.util.Objects", "java.lang.Long", "java.lang.Character",
-                "java.lang.ClassCastException", "java.lang.ArrayStoreException"));
-    }
-
-    @Test
-    void bootstrapSystem() throws Exception {
-        Differential.assertSameOutput("SystemBootstrap", java.util.List.of("java.lang.System"));
-    }
-
-    @Test
-    void bootstrapMath() throws Exception {
-        Differential.assertSameOutput("MathBootstrap", java.util.List.of("java.lang.Math"));
-    }
-
-    @Test
-    void bootstrapExceptions() throws Exception {
-        Differential.assertSameOutput("ExceptionBootstrap", java.util.List.of(
-                "java.lang.NullPointerException", "java.lang.ArithmeticException",
-                "java.lang.ClassCastException", "java.lang.ArrayIndexOutOfBoundsException",
-                "java.lang.IllegalArgumentException", "java.lang.IllegalStateException",
-                "java.lang.NumberFormatException"));
-    }
-
-    @Test
-    void bootstrapWrappers2() throws Exception {
-        Differential.assertSameOutput("WrapperBootstrap2", java.util.List.of(
-                "java.lang.Integer", "java.lang.Long", "java.lang.Short", "java.lang.Byte",
-                "java.lang.Double", "java.lang.Float", "java.lang.Character"));
-    }
-
-    @Test
-    void lambdas2() throws Exception {
-        Differential.assertSameOutput("Lambdas2");
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("fixtures")
+    void sameOutput(String fixture, List<String> bootstrap) throws Exception {
+        Differential.assertSameOutput(fixture, bootstrap);
     }
 
     @Test
     void unsupportedGraceful() throws Exception {
         Differential.assertSameOutput("UnsupportedGraceful");
-        String report = java.nio.file.Files.readString(
-                java.nio.file.Path.of("build", "e2e", "UnsupportedGraceful", "out", "j2cs-report.txt"));
-        org.junit.jupiter.api.Assertions.assertTrue(report.contains("allocation of type not in input"),
+        String report = Files.readString(
+                Path.of("build", "e2e", "UnsupportedGraceful", "out", "j2cs-report.txt"));
+        Assertions.assertTrue(report.contains("allocation of type not in input"),
                 "report should list the TreeSet allocation");
-        org.junit.jupiter.api.Assertions.assertTrue(report.contains("native method"),
+        Assertions.assertTrue(report.contains("native method"),
                 "report should list the native method");
     }
 }

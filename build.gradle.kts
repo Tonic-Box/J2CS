@@ -40,6 +40,7 @@ tasks.register<Jar>("shadedJar") {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     manifest {
         attributes["Main-Class"] = "com.tonic.j2cs.Main"
+        attributes["Implementation-Version"] = version
     }
     from(sourceSets.main.get().output)
     dependsOn(configurations.runtimeClasspath)

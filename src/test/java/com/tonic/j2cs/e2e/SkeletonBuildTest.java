@@ -28,8 +28,7 @@ class SkeletonBuildTest {
         Path classes = work.resolve("classes");
         JavacHelper.compile(List.of(source), classes);
 
-        CliOptions options = new CliOptions(
-                classes.resolve("HelloWorld.class"), work.resolve("out"), null, true, false, false, false);
+        CliOptions options = CliOptions.noBuild(classes.resolve("HelloWorld.class"), work.resolve("out"));
         TranspileResult result = new Transpiler().transpile(options);
 
         ExecResult build = new DotnetRunner().build(result.appDir());
