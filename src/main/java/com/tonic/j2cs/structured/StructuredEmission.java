@@ -23,17 +23,18 @@ public final class StructuredEmission implements com.tonic.j2cs.emit.BodyOverrid
 
     @Override
     public Optional<String> tryEmit(ClassFile classFile, MethodEntry method, int indentDepth) {
+        String where = classFile.getClassName() + "." + method.getName() + method.getDesc();
         try {
             Optional<StructuredRecovery.Recovered> recovered = recovery.recover(classFile, method);
             if (recovered.isEmpty()) {
-                report.classicBody();
+                report.classicBody(where + ": recovery degraded");
                 return Optional.empty();
             }
             String body = emitter.emit(classFile, method, recovered.get(), indentDepth);
             report.structuredBody();
             return Optional.of(body);
         } catch (RuntimeException e) {
-            report.classicBody();
+            report.classicBody(where + ": " + e.getMessage());
             return Optional.empty();
         }
     }

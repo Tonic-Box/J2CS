@@ -10,6 +10,7 @@ import com.tonic.analysis.source.ast.transform.ForLoopCounterFolder;
 import com.tonic.analysis.source.ast.transform.PatternInstanceOfReconstructor;
 import com.tonic.analysis.source.ast.transform.PatternSwitchReconstructor;
 import com.tonic.analysis.source.ast.transform.RedundantAssignmentEliminator;
+import com.tonic.analysis.source.ast.transform.ScopeEscapeHoister;
 import com.tonic.analysis.source.ast.transform.SingleUseInliner;
 import com.tonic.analysis.source.ast.transform.SwitchExpressionReconstructor;
 import com.tonic.analysis.source.ast.transform.VarargsReconstructor;
@@ -31,6 +32,7 @@ final class AstNormalizer {
     private final RedundantAssignmentEliminator redundantAssigns = new RedundantAssignmentEliminator();
     private final PatternSwitchReconstructor patternSwitch = new PatternSwitchReconstructor();
     private final SwitchExpressionReconstructor switchExpr = new SwitchExpressionReconstructor();
+    private final ScopeEscapeHoister scopeEscapes = new ScopeEscapeHoister();
     private final VarargsReconstructor varargs;
 
     AstNormalizer(ClassFile classFile) {
@@ -64,6 +66,7 @@ final class AstNormalizer {
         redundantAssigns.transform(body);
         patternSwitch.transform(body);
         switchExpr.transform(body);
+        scopeEscapes.transform(body);
     }
 
     private void normalizeConstructor(BlockStmt body) {
@@ -77,6 +80,7 @@ final class AstNormalizer {
         inliner.transform(body);
         patternSwitch.transform(body);
         switchExpr.transform(body);
+        scopeEscapes.transform(body);
     }
 
     private void normalizeClinit(BlockStmt body) {
@@ -91,5 +95,6 @@ final class AstNormalizer {
         inliner.transform(body);
         patternSwitch.transform(body);
         switchExpr.transform(body);
+        scopeEscapes.transform(body);
     }
 }

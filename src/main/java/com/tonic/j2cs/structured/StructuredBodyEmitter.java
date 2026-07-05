@@ -20,6 +20,7 @@ import com.tonic.analysis.source.ast.expr.UnaryExpr;
 import com.tonic.analysis.source.ast.expr.VarRefExpr;
 import com.tonic.analysis.source.ast.stmt.BlockStmt;
 import com.tonic.analysis.source.ast.stmt.BreakStmt;
+import com.tonic.analysis.source.ast.stmt.CatchClause;
 import com.tonic.analysis.source.ast.stmt.ContinueStmt;
 import com.tonic.analysis.source.ast.stmt.DoWhileStmt;
 import com.tonic.analysis.source.ast.stmt.ExprStmt;
@@ -31,7 +32,9 @@ import com.tonic.analysis.source.ast.stmt.ReturnStmt;
 import com.tonic.analysis.source.ast.stmt.Statement;
 import com.tonic.analysis.source.ast.stmt.SwitchCase;
 import com.tonic.analysis.source.ast.stmt.SwitchStmt;
+import com.tonic.analysis.source.ast.stmt.SynchronizedStmt;
 import com.tonic.analysis.source.ast.stmt.ThrowStmt;
+import com.tonic.analysis.source.ast.stmt.TryCatchStmt;
 import com.tonic.analysis.source.ast.stmt.VarDeclStmt;
 import com.tonic.analysis.source.ast.stmt.WhileStmt;
 import com.tonic.analysis.source.ast.type.ReferenceSourceType;
@@ -76,6 +79,7 @@ final class StructuredBodyEmitter {
     private Map<String, String> names;
     private Set<String> usedNames;
     private Map<String, String> breakLabels;
+    private java.util.Deque<Set<String>> scopes;
     private int hoistCounter;
     private boolean allowHoist;
 
@@ -92,8 +96,10 @@ final class StructuredBodyEmitter {
         this.names = new HashMap<>();
         this.usedNames = new HashSet<>();
         this.breakLabels = new HashMap<>();
+        this.scopes = new java.util.ArrayDeque<>();
         this.hoistCounter = 0;
         this.allowHoist = true;
+        pushScope();
         mapParameters(recovered);
         for (Statement s : recovered.body().getStatements()) {
             stmt(s);
@@ -114,10 +120,43 @@ final class StructuredBodyEmitter {
                 if (target != null) {
                     names.put(ref.getName(), target);
                     usedNames.add(target);
+                    declareInScope(target);
                 }
             }
         });
         usedNames.add("this");
+        declareInScope("this");
+    }
+
+    private void pushScope() {
+        scopes.push(new HashSet<>());
+    }
+
+    private void popScope() {
+        scopes.pop();
+    }
+
+    private void declareInScope(String csName) {
+        scopes.getFirst().add(csName);
+    }
+
+    private boolean inScope(String csName) {
+        for (Set<String> scope : scopes) {
+            if (scope.contains(csName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** Emits a braced body as its own C# scope. */
+    private void scoped(Statement body) {
+        pushScope();
+        try {
+            stmt(body);
+        } finally {
+            popScope();
+        }
     }
 
     private void stmt(Statement s) {
@@ -131,29 +170,35 @@ final class StructuredBodyEmitter {
             String init = v.getInitializer() != null
                     ? coerced(targetDesc, v.getInitializer())
                     : type.defaultLiteral();
-            w.line(type.csText() + " " + localName(v.getName()) + " = " + init + ";");
+            String name = localName(v.getName());
+            if (inScope(name)) {
+                w.line(name + " = " + init + ";");
+            } else {
+                declareInScope(name);
+                w.line(type.csText() + " " + name + " = " + init + ";");
+            }
         } else if (s instanceof ExprStmt e) {
             statementExpr(e.getExpression());
         } else if (s instanceof IfStmt i) {
             w.open("if (" + condition(i.getCondition()) + ")");
-            stmt(i.getThenBranch());
+            scoped(i.getThenBranch());
             w.close();
             if (i.getElseBranch() != null) {
                 w.open("else");
-                stmt(i.getElseBranch());
+                scoped(i.getElseBranch());
                 w.close();
             }
         } else if (s instanceof WhileStmt l) {
             String cond = noHoist(() -> condition(l.getCondition()));
             emitLoop(l.getLabel(), () -> {
                 w.open("while (" + cond + ")");
-                stmt(l.getBody());
+                scoped(l.getBody());
                 w.close();
             });
         } else if (s instanceof DoWhileStmt l) {
             emitLoop(l.getLabel(), () -> {
                 w.open("do");
-                stmt(l.getBody());
+                scoped(l.getBody());
                 w.closeWith("while (" + noHoist(() -> condition(l.getCondition())) + ");");
             });
         } else if (s instanceof ForStmt f) {
@@ -171,6 +216,12 @@ final class StructuredBodyEmitter {
                 throw new UnsupportedBodyException("structured: labeled continue");
             }
             w.line("continue;");
+        } else if (s instanceof TryCatchStmt t) {
+            emitTryCatch(t);
+        } else if (s instanceof SynchronizedStmt sync) {
+            w.open("lock (" + expr(sync.getLock()) + ")");
+            scoped(sync.getBody());
+            w.close();
         } else if (s instanceof ReturnStmt r) {
             if (r.getValue() == null) {
                 w.line("return;");
@@ -182,6 +233,78 @@ final class StructuredBodyEmitter {
         } else {
             throw new UnsupportedBodyException("structured: " + s.getClass().getSimpleName());
         }
+    }
+
+    /**
+     * Java catch clauses become one CLR catch that normalizes the exception and dispatches an
+     * is-chain, mirroring the goto path's machine: CLR exceptions map to their java.lang
+     * equivalents first, and stub markers always propagate.
+     */
+    private void emitTryCatch(TryCatchStmt t) {
+        if (!t.getResources().isEmpty()) {
+            throw new UnsupportedBodyException("structured: try-with-resources");
+        }
+        w.open("try");
+        scoped(t.getTryBlock());
+        w.close();
+        if (!t.getCatches().isEmpty()) {
+            String raw = freshName("__e");
+            String normalized = freshName("__ex");
+            pushScope();
+            declareInScope(raw);
+            declareInScope(normalized);
+            w.open("catch (global::System.Exception " + raw + ")");
+            w.line("if (" + raw + " is global::System.NotSupportedException) throw;");
+            w.line("global::java.lang.Throwable " + normalized
+                    + " = global::java.lang.JRuntime.Normalize(" + raw + ");");
+            boolean first = true;
+            for (CatchClause clause : t.getCatches()) {
+                StringBuilder test = new StringBuilder();
+                for (SourceType type : clause.exceptionTypes()) {
+                    if (!test.isEmpty()) {
+                        test.append(" || ");
+                    }
+                    test.append(normalized).append(" is ").append(catchTypeText(type));
+                }
+                w.open((first ? "if (" : "else if (") + test + ")");
+                emitCatchBody(clause, normalized);
+                w.close();
+                first = false;
+            }
+            w.open("else");
+            w.line("throw;");
+            w.close();
+            w.close();
+            popScope();
+        }
+        if (t.getFinallyBlock() != null) {
+            w.open("finally");
+            scoped(t.getFinallyBlock());
+            w.close();
+        }
+    }
+
+    private void emitCatchBody(CatchClause clause, String normalized) {
+        pushScope();
+        String name = localName(clause.variableName());
+        declareInScope(name);
+        if (clause.isMultiCatch()) {
+            w.line("global::java.lang.Throwable " + name + " = " + normalized + ";");
+        } else {
+            String text = catchTypeText(clause.getPrimaryType());
+            w.line(text + " " + name + " = (" + text + ")" + normalized + ";");
+        }
+        stmt(clause.body());
+        popScope();
+    }
+
+    private String catchTypeText(SourceType type) {
+        String internal = internalOf(type);
+        if (internal == null || (!naming.isAppClass(internal) && !naming.isShimType(internal)
+                && !naming.isBootstrapped(internal))) {
+            throw new UnsupportedBodyException("structured: catch type " + type);
+        }
+        return naming.typeMapper().computeType(descOf(type)).csText();
     }
 
     /** A loop that may carry a Java label; break-to-label lowers to a goto past a trailing label. */
@@ -231,7 +354,7 @@ final class StructuredBodyEmitter {
         }
         emitLoop(f.getLabel(), () -> {
             w.open("for (; " + cond + "; " + String.join(", ", updates) + ")");
-            stmt(f.getBody());
+            scoped(f.getBody());
             w.close();
         });
     }
@@ -257,12 +380,16 @@ final class StructuredBodyEmitter {
         String arr = freshName("__a");
         String idx = freshName("__i");
         CsType arrType = naming.typeMapper().computeType(iterableDesc);
+        declareInScope(arr);
         w.line(arrType.csText() + " " + arr + " = " + expr(f.getIterable()) + ";");
         String elemName = localName(var.getName());
         emitLoop(f.getLabel(), () -> {
             w.open("for (int " + idx + " = 0; " + idx + " < " + arr + ".Length; " + idx + "++)");
+            pushScope();
+            declareInScope(elemName);
             w.line(elemType.csText() + " " + elemName + " = " + arr + "[" + idx + "];");
             stmt(f.getBody());
+            popScope();
             w.close();
         });
     }
@@ -270,6 +397,7 @@ final class StructuredBodyEmitter {
     private void emitSwitch(SwitchStmt sw) {
         String selector = expr(sw.getSelector());
         List<SwitchCase> cases = sw.getCases();
+        pushScope();
         w.open("switch (" + selector + ")");
         for (int i = 0; i < cases.size(); i++) {
             SwitchCase c = cases.get(i);
@@ -291,6 +419,7 @@ final class StructuredBodyEmitter {
             w.dedent();
         }
         w.close();
+        popScope();
     }
 
     private void emitCaseTerminator(List<SwitchCase> cases, int i, SwitchCase c) {
@@ -389,7 +518,7 @@ final class StructuredBodyEmitter {
 
     private String lvalue(Expression e) {
         if (e instanceof VarRefExpr ref) {
-            return localName(ref.getName());
+            return scopedRef(ref);
         }
         if (e instanceof FieldAccessExpr field) {
             return fieldRef(field);
@@ -464,7 +593,7 @@ final class StructuredBodyEmitter {
             return ConstRenderer.renderValue(literal.getValue());
         }
         if (e instanceof VarRefExpr ref) {
-            return localName(ref.getName());
+            return scopedRef(ref);
         }
         if (e instanceof ThisExpr) {
             return "this";
@@ -530,6 +659,22 @@ final class StructuredBodyEmitter {
         if (call.isSuperCall() || call.getReceiver() instanceof SuperExpr) {
             return calls.superCall(owner, name, desc, args);
         }
+        if (owner.equals("java/lang/System") && name.equals("arraycopy")
+                && desc.equals("(Ljava/lang/Object;ILjava/lang/Object;II)V")) {
+            StringBuilder raw = new StringBuilder();
+            for (Expression arg : call.getArguments()) {
+                if (!raw.isEmpty()) {
+                    raw.append(", ");
+                }
+                raw.append(expr(arg));
+            }
+            return "global::java.lang.System.arraycopy(" + raw + ")";
+        }
+        String receiverDesc = call.getReceiver() == null ? null : descOf(call.getReceiver().getType());
+        if (name.equals("clone") && receiverDesc != null && receiverDesc.startsWith("[")) {
+            CsType arrayType = naming.typeMapper().computeType(receiverDesc);
+            return "(" + arrayType.csText() + ")(" + atom(call.getReceiver()) + ".Clone())";
+        }
         if (calls.isShimOwner(owner)) {
             return calls.shimCall(owner, name, desc, receiverOf(call.getReceiver()), args);
         }
@@ -560,6 +705,7 @@ final class StructuredBodyEmitter {
             throw new UnsupportedBodyException("structured: allocation in conditional context");
         }
         String temp = freshName("__t");
+        declareInScope(temp);
         w.line(fqcn + " " + temp + " = new " + fqcn + "(global::java.lang.RawNew.I);");
         w.line(temp + "." + MemberNamer.initMethodName(desc) + "(" + args + ");");
         return temp;
@@ -600,6 +746,7 @@ final class StructuredBodyEmitter {
 
     private String hoistMultiArray(String fullDesc, List<Expression> dims) {
         String temp = freshName("__t");
+        declareInScope(temp);
         String csFull = naming.typeMapper().computeType(fullDesc).csText();
         w.line(csFull + " " + temp + ";");
         String base = csFull.substring(0, csFull.indexOf('['));
@@ -610,12 +757,16 @@ final class StructuredBodyEmitter {
     private void emitMultiArrayLevel(String target, String base, List<Expression> dims, int level) {
         int remaining = dims.size() - level;
         String size = freshName("__n");
+        declareInScope(size);
         w.line("int " + size + " = " + expr(dims.get(level)) + ";");
         w.line(target + " = new " + base + "[" + size + "]" + "[]".repeat(remaining - 1) + ";");
         if (remaining > 1) {
             String idx = freshName("__i");
             w.open("for (int " + idx + " = 0; " + idx + " < " + size + "; " + idx + "++)");
+            pushScope();
+            declareInScope(idx);
             emitMultiArrayLevel(target + "[" + idx + "]", base, dims, level + 1);
+            popScope();
             w.close();
         }
     }
@@ -806,6 +957,15 @@ final class StructuredBodyEmitter {
 
     private String internalOf(SourceType type) {
         return type instanceof ReferenceSourceType ref ? ref.getInternalName() : null;
+    }
+
+    /** A variable read/write must resolve to an active scope or the emitted C# won't compile. */
+    private String scopedRef(VarRefExpr ref) {
+        String name = localName(ref.getName());
+        if (!inScope(name)) {
+            throw new UnsupportedBodyException("structured: variable used out of scope: " + ref.getName());
+        }
+        return name;
     }
 
     private String localName(String recovered) {

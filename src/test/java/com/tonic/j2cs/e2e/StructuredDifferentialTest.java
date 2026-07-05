@@ -18,7 +18,7 @@ class StructuredDifferentialTest {
 
     @ParameterizedTest(name = "{0}")
     @ValueSource(strings = {
-            "HelloWorld", "Arith", "ControlFlow", "SwitchTest", "CmpTest", "Shapes",
+            "HelloWorld", "Arith", "ControlFlow", "NestedLoops", "Monitors", "SwitchTest", "CmpTest", "Shapes",
             "StaticsTest", "ArraysTest", "MultiArray", "StringsTest", "FizzBuzz", "Inherit",
             "Interfaces", "Generics", "TypeReconcile", "ArrayClone", "EnumAssert", "ShimGrowth",
             "Exceptions1", "Exceptions2", "Exceptions3", "Lambdas1", "Lambdas2",

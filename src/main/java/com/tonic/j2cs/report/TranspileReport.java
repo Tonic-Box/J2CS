@@ -19,6 +19,7 @@ public final class TranspileReport {
     private final List<String> unsupportedReasons = new ArrayList<>();
     private int structuredBodies;
     private int classicBodies;
+    private final List<String> classicFallbackReasons = new ArrayList<>();
     private final List<String> stubbedTypes = new ArrayList<>();
     private final List<String> divergences = new ArrayList<>();
 
@@ -83,8 +84,9 @@ public final class TranspileReport {
         structuredBodies++;
     }
 
-    public void classicBody() {
+    public void classicBody(String reason) {
         classicBodies++;
+        classicFallbackReasons.add(reason);
     }
 
     public int getStructuredBodies() {
@@ -93,6 +95,10 @@ public final class TranspileReport {
 
     public int getClassicBodies() {
         return classicBodies;
+    }
+
+    public List<String> getClassicFallbackReasons() {
+        return Collections.unmodifiableList(classicFallbackReasons);
     }
 
     public String getInput() {

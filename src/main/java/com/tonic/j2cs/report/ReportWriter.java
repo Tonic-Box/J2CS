@@ -21,6 +21,10 @@ public final class ReportWriter {
             sb.append("bodies: structured ").append(report.getStructuredBodies())
                     .append(", classic fallback ").append(report.getClassicBodies()).append('\n');
         }
+        if (!report.getClassicFallbackReasons().isEmpty()) {
+            section(sb, "structured fallbacks (" + report.getClassicFallbackReasons().size() + ")",
+                    report.getClassicFallbackReasons());
+        }
         section(sb, "classes (" + report.getClasses().size() + ")", report.getClasses());
         section(sb, "unsupported methods (" + report.getUnsupportedMethods().size() + ")", report.getUnsupportedMethods());
         section(sb, "unsupported by reason (" + report.getUnsupportedMethods().size() + ")", report.unsupportedSummary());
