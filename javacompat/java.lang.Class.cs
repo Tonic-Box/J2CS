@@ -24,6 +24,11 @@ namespace java.lang
             return String.Wrap(name);
         }
 
+        public int desiredAssertionStatus()
+        {
+            return 0;
+        }
+
         public String getSimpleName()
         {
             int cut = 0;

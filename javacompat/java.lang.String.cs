@@ -32,6 +32,11 @@ namespace java.lang
             return new String(s);
         }
 
+        public static String valueOf(global::java.lang.Object o)
+        {
+            return o == null ? Wrap("null") : o.toString();
+        }
+
         public int length()
         {
             return Value.Length;

@@ -86,6 +86,11 @@ class DifferentialTest {
     }
 
     @Test
+    void enumAssert() throws Exception {
+        Differential.assertSameOutput("EnumAssert");
+    }
+
+    @Test
     void shimGrowth() throws Exception {
         Differential.assertSameOutput("ShimGrowth");
     }

@@ -14,6 +14,7 @@ java.lang.JThrow.cs
 java.lang.Exception.cs
 java.lang.RuntimeException.cs
 java.lang.Error.cs
+java.lang.AssertionError.cs
 java.lang.NullPointerException.cs
 java.lang.ArithmeticException.cs
 java.lang.ClassCastException.cs
