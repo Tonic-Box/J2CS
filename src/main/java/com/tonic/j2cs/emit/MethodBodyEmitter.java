@@ -1,6 +1,5 @@
 package com.tonic.j2cs.emit;
 
-import com.tonic.analysis.ssa.cfg.ExceptionHandler;
 import com.tonic.analysis.ssa.cfg.IRBlock;
 import com.tonic.analysis.ssa.cfg.IRMethod;
 import com.tonic.analysis.ssa.ir.ArrayAccessInstruction;
@@ -12,7 +11,6 @@ import com.tonic.analysis.ssa.ir.CopyInstruction;
 import com.tonic.analysis.ssa.ir.FieldAccessInstruction;
 import com.tonic.analysis.ssa.ir.IRInstruction;
 import com.tonic.analysis.ssa.ir.InvokeInstruction;
-import com.tonic.analysis.ssa.ir.InvokeType;
 import com.tonic.analysis.ssa.ir.LoadLocalInstruction;
 import com.tonic.analysis.ssa.ir.NewArrayInstruction;
 import com.tonic.analysis.ssa.ir.NewInstruction;
@@ -23,24 +21,19 @@ import com.tonic.analysis.ssa.ir.StoreLocalInstruction;
 import com.tonic.analysis.ssa.ir.SwitchInstruction;
 import com.tonic.analysis.ssa.ir.TypeCheckInstruction;
 import com.tonic.analysis.ssa.ir.UnaryOpInstruction;
-import com.tonic.analysis.ssa.value.Constant;
 import com.tonic.analysis.ssa.type.IRType;
 import com.tonic.analysis.ssa.value.SSAValue;
-import com.tonic.analysis.ssa.value.StringConstant;
 import com.tonic.analysis.ssa.value.Value;
 import com.tonic.analysis.ssa.visitor.IRVisitor;
 import com.tonic.j2cs.model.LoweredMethod;
 import com.tonic.j2cs.model.SlotDecl;
 import com.tonic.j2cs.naming.CsNamer;
-import com.tonic.j2cs.naming.MemberNamer;
 import com.tonic.j2cs.naming.NamingContext;
-import com.tonic.j2cs.naming.Resolved;
 import com.tonic.j2cs.naming.ResolvedField;
 import com.tonic.j2cs.shims.ShimTarget;
 import com.tonic.j2cs.types.CsType;
 import com.tonic.j2cs.types.TypeMapper;
 import com.tonic.parser.MethodEntry;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,9 +58,8 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
     private CsType returnType;
     private Map<Integer, CsType> slotCs;
     private boolean terminated;
-    private String currentClass;
-    private Integer thisSlot;
     private ExceptionLayout layout;
+    private InvokeRenderer invokes;
     private int multiArrayCounter;
 
     public MethodBodyEmitter(NamingContext naming, SyntheticClasses synthetics) {
@@ -77,15 +69,16 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
     }
 
     public String emit(String ownerInternalName, MethodEntry method, LoweredMethod loweredMethod, int indentDepth) {
-        this.currentClass = ownerInternalName;
         this.lowered = loweredMethod;
         this.names = new ValueNames(loweredMethod.slotOf());
         this.returnType = naming.typeMapper().returnType(method.getDesc());
         this.w = new CsWriter(indentDepth);
         this.slotCs = new HashMap<>();
-        this.thisSlot = loweredMethod.ir().isStatic() || loweredMethod.ir().getParameters().isEmpty()
+        Integer thisSlot = loweredMethod.ir().isStatic() || loweredMethod.ir().getParameters().isEmpty()
                 ? null
                 : loweredMethod.slotOf().get(loweredMethod.ir().getParameters().get(0));
+        this.invokes = new InvokeRenderer(naming, reconciler, lambdaExpander, names,
+                ownerInternalName, thisSlot, loweredMethod.slotOf());
 
         this.layout = new ExceptionLayout(loweredMethod);
         TypeMapper types = naming.typeMapper();
@@ -96,7 +89,7 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
         }
         emitParameterCopies();
         if (layout.hasHandlers()) {
-            emitWrappedBody();
+            new ExceptionMachineEmitter(w, layout, lowered).emitWrappedBody(this::emitBlocks);
         } else {
             emitBlocks();
             if (returnType.kind() != CsType.Kind.VOID) {
@@ -119,57 +112,6 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
             if (!terminated) {
                 emitFallthrough(block);
             }
-        }
-    }
-
-    private void emitWrappedBody() {
-        w.line("int __state = 0;");
-        w.line("int __region = -1;");
-        w.line("global::java.lang.Throwable __p = null;");
-        w.open("while (true)");
-        w.open("try");
-        w.open("switch (__state)");
-        for (Map.Entry<IRBlock, Integer> entry : layout.stateOf().entrySet()) {
-            w.line("case " + entry.getValue() + ": goto B" + entry.getKey().getId() + ";");
-        }
-        w.close();
-        emitBlocks();
-        w.close();
-        w.open("catch (global::System.Exception __e)");
-        w.line("if (__e is global::System.NotSupportedException) throw;");
-        w.line("__p = global::java.lang.JRuntime.Normalize(__e);");
-        w.open("switch (__region)");
-        emitCatchArms();
-        w.close();
-        w.line("throw;");
-        w.close();
-        w.close();
-    }
-
-    private void emitCatchArms() {
-        List<List<ExceptionHandler>> regions = layout.regions();
-        for (int region = 0; region < regions.size(); region++) {
-            w.line("case " + region + ":");
-            for (ExceptionHandler handler : regions.get(region)) {
-                Integer state = layout.stateOf().get(handler.getHandlerBlock());
-                SSAValue excValue = lowered.ir().getHandlerExceptionValue(handler.getHandlerBlock());
-                Integer excSlot = excValue == null ? null : lowered.slotOf().get(excValue);
-                String assign = "";
-                if (excSlot != null) {
-                    String cast = handler.getCatchType() == null
-                            ? "__p"
-                            : "(" + CsNamer.fqcn(handler.getCatchType().getInternalName()) + ")__p";
-                    assign = "s" + excSlot + " = " + cast + "; ";
-                }
-                String action = assign + "__state = " + state + "; continue;";
-                if (handler.getCatchType() == null) {
-                    w.line("    { " + action + " }");
-                } else {
-                    w.line("    if (__p is " + CsNamer.fqcn(handler.getCatchType().getInternalName())
-                            + ") { " + action + " }");
-                }
-            }
-            w.line("    break;");
         }
     }
 
@@ -338,261 +280,16 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
 
     @Override
     public Void visitInvoke(InvokeInstruction instr) {
-        if (instr.getInvokeType() == InvokeType.DYNAMIC) {
-            if (instr.getBootstrapInfo() != null && instr.getBootstrapInfo().isStringConcatFactory()) {
-                assign(instr, renderConcat(instr));
-                return null;
-            }
-            if (instr.getBootstrapInfo() != null && instr.getBootstrapInfo().isLambdaMetafactory()) {
-                LambdaExpander.Expansion expansion = lambdaExpander.expand(instr, currentClass);
-                assign(instr, "new " + expansion.fqcn() + "(" + renderArguments(instr, instr.getDescriptor()) + ")");
-                return null;
-            }
-            throw new UnsupportedBodyException("invokedynamic not supported: "
-                    + instr.getName() + instr.getDescriptor());
-        }
-        String owner = instr.getOwner();
-        String name = instr.getName();
-        String desc = instr.getDescriptor();
-        if (name.equals("<init>")) {
-            assign(instr, reconciler.castTo(owner, names.ref(instr.getReceiver())) + "."
-                    + MemberNamer.initMethodName(desc) + "(" + renderArguments(instr, desc) + ")");
-            return null;
-        }
-        if (instr.getInvokeType() == InvokeType.SPECIAL) {
-            assign(instr, renderSpecial(instr, owner, name, desc));
-            return null;
-        }
-        if (owner.equals("java/lang/System") && name.equals("arraycopy")
-                && desc.equals("(Ljava/lang/Object;ILjava/lang/Object;II)V")) {
-            assign(instr, "global::java.lang.System.arraycopy(" + rawArguments(instr) + ")");
-            return null;
-        }
-        if (owner.startsWith("[") && name.equals("clone") && desc.equals("()Ljava/lang/Object;")
-                && instr.getResult() != null && instr.getResult().getType() != null
-                && instr.getResult().getType().isArray()) {
-            CsType arrayType = naming.typeMapper().computeType(instr.getResult().getType());
-            assign(instr, "(" + arrayType.csText() + ")(" + names.ref(instr.getReceiver()) + ".Clone())");
-            return null;
-        }
-        if ((owner.startsWith("java/") || owner.startsWith("javax/")) && !naming.isBootstrapped(owner)) {
-            Resolved resolved = naming.resolveShim(owner, name, desc);
-            if (!(resolved instanceof Resolved.ShimMethod shim)) {
-                throw new UnsupportedBodyException(((Resolved.Unresolved) resolved).reason());
-            }
-            ShimTarget target = shim.target();
-            String receiver = target.isStatic()
-                    ? CsNamer.fqcn(owner)
-                    : receiverAdjusted(shim.ownerInternal(), instr.getReceiver());
-            assign(instr, receiver + "." + target.csMemberName()
-                    + "(" + renderArguments(instr, desc) + ")");
-            return null;
-        }
-        String call = switch (instr.getInvokeType()) {
-            case STATIC -> renderStatic(instr, owner, name, desc);
-            case VIRTUAL -> renderVirtual(instr, owner, name, desc);
-            case INTERFACE -> renderInterface(instr, owner, name, desc);
-            default -> throw new UnsupportedBodyException("unexpected invoke kind: " + instr.getInvokeType());
-        };
-        assign(instr, call);
+        assign(instr, invokes.render(instr));
         return null;
     }
 
-    private String renderSpecial(InvokeInstruction instr, String owner, String name, String desc) {
-        if (owner.equals(currentClass)) {
-            String member = naming.namerOf(currentClass).findMethodName(name, desc);
-            if (member == null) {
-                throw new UnsupportedBodyException("invokespecial target not declared: "
-                        + owner + "." + name + desc);
-            }
-            return names.ref(instr.getReceiver()) + "." + member + "(" + renderArguments(instr, desc) + ")";
-        }
-        if (naming.hierarchy().isAppInterface(owner)) {
-            throw new UnsupportedBodyException("interface super-call not supported: "
-                    + owner + "." + name);
-        }
-        requireThisReceiver(instr);
-        Resolved resolved = naming.resolveVirtual(owner, name, desc);
-        if (resolved instanceof Resolved.AppMethod appMethod) {
-            if (appMethod.viaInterface()) {
-                throw new UnsupportedBodyException("super-call resolving to interface default: "
-                        + owner + "." + name);
-            }
-            return "base." + appMethod.csName() + "(" + renderArguments(instr, desc) + ")";
-        }
-        if (resolved instanceof Resolved.ShimMethod shim) {
-            return "base." + shim.target().csMemberName() + "(" + renderArguments(instr, desc) + ")";
-        }
-        throw new UnsupportedBodyException(((Resolved.Unresolved) resolved).reason());
-    }
-
-    private String renderStatic(InvokeInstruction instr, String owner, String name, String desc) {
-        Resolved resolved = naming.resolveStatic(owner, name, desc);
-        if (resolved instanceof Resolved.AppMethod appMethod) {
-            return CsNamer.fqcn(appMethod.declaringInternal()) + "." + appMethod.csName()
-                    + "(" + renderArguments(instr, desc) + ")";
-        }
-        throw new UnsupportedBodyException(((Resolved.Unresolved) resolved).reason());
-    }
-
-    private String renderVirtual(InvokeInstruction instr, String owner, String name, String desc) {
-        Resolved resolved = naming.resolveVirtual(owner, name, desc);
-        if (resolved instanceof Resolved.AppMethod appMethod) {
-            String receiver = appMethod.viaInterface()
-                    ? reconciler.castTo(appMethod.declaringInternal(), names.ref(instr.getReceiver()))
-                    : receiverAdjusted(appMethod.declaringInternal(), instr.getReceiver());
-            return receiver + "." + appMethod.csName() + "(" + renderArguments(instr, desc) + ")";
-        }
-        if (resolved instanceof Resolved.ShimMethod shim) {
-            return receiverAdjusted(shim.ownerInternal(), instr.getReceiver()) + "."
-                    + shim.target().csMemberName() + "(" + renderArguments(instr, desc) + ")";
-        }
-        throw new UnsupportedBodyException(((Resolved.Unresolved) resolved).reason());
-    }
-
-    private String renderInterface(InvokeInstruction instr, String owner, String name, String desc) {
-        if (!naming.hierarchy().isAppInterface(owner)) {
-            if (naming.isAppClass(owner)) {
-                return renderVirtual(instr, owner, name, desc);
-            }
-            throw new UnsupportedBodyException("call target not in input: " + owner + "." + name + desc);
-        }
-        Resolved resolved = naming.resolveVirtual(owner, name, desc);
-        if (resolved instanceof Resolved.AppMethod appMethod) {
-            String castTo = appMethod.viaInterface() ? owner : appMethod.declaringInternal();
-            return reconciler.castTo(castTo, names.ref(instr.getReceiver())) + "."
-                    + appMethod.csName() + "(" + renderArguments(instr, desc) + ")";
-        }
-        if (resolved instanceof Resolved.ShimMethod shim) {
-            return reconciler.castTo("java/lang/Object", names.ref(instr.getReceiver())) + "."
-                    + shim.target().csMemberName() + "(" + renderArguments(instr, desc) + ")";
-        }
-        throw new UnsupportedBodyException(((Resolved.Unresolved) resolved).reason());
-    }
-
-    private void requireThisReceiver(InvokeInstruction instr) {
-        Value receiver = instr.getReceiver();
-        if (!(receiver instanceof SSAValue ssa) || thisSlot == null
-                || !thisSlot.equals(lowered.slotOf().get(ssa))) {
-            throw new UnsupportedBodyException("invokespecial on non-this receiver: "
-                    + instr.getOwner() + "." + instr.getName());
-        }
-    }
-
     private String receiverAdjusted(String declaringInternal, Value receiver) {
-        IRType type = receiver instanceof SSAValue ssa ? ssa.getType() : null;
-        return reconciler.receiver(declaringInternal, type, names.ref(receiver));
-    }
-
-    private String renderArguments(InvokeInstruction instr, String desc) {
-        List<String> paramDescs = TypeMapper.splitParams(desc);
-        List<Value> args = instr.getMethodArguments();
-        if (args.size() != paramDescs.size()) {
-            throw new UnsupportedBodyException("argument count mismatch for " + instr.getName() + desc);
-        }
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < args.size(); i++) {
-            if (i > 0) {
-                sb.append(", ");
-            }
-            requireNoArrayAsObject(paramDescs.get(i), args.get(i));
-            CsType storage = naming.typeMapper().storageType(paramDescs.get(i));
-            sb.append(storageAdjusted(storage, args.get(i)));
-        }
-        return sb.toString();
-    }
-
-    private String rawArguments(InvokeInstruction instr) {
-        StringBuilder sb = new StringBuilder();
-        for (Value arg : instr.getMethodArguments()) {
-            if (!sb.isEmpty()) {
-                sb.append(", ");
-            }
-            sb.append(names.ref(arg));
-        }
-        return sb.toString();
-    }
-
-    private static void requireNoArrayAsObject(String paramDesc, Value arg) {
-        if (paramDesc.startsWith("L") && arg.getType() != null && arg.getType().isArray()) {
-            throw new UnsupportedBodyException(
-                    "array passed as object reference not supported (arrays are native C# arrays)");
-        }
+        return invokes.receiverAdjusted(declaringInternal, receiver);
     }
 
     private String storageAdjusted(CsType storage, Value value) {
-        IRType sourceType = value instanceof SSAValue ssa ? ssa.getType() : null;
-        return reconciler.coerce(storage, sourceType, names.ref(value));
-    }
-
-    private String renderConcat(InvokeInstruction instr) {
-        List<String> paramDescs = TypeMapper.splitParams(instr.getDescriptor());
-        List<Value> args = instr.getMethodArguments();
-        if (args.size() != paramDescs.size()) {
-            throw new UnsupportedBodyException("concat argument count mismatch: " + instr.getDescriptor());
-        }
-        List<ConcatRecipeParser.Part> parts = concatParts(instr, args.size());
-        StringBuilder sb = new StringBuilder("global::java.lang.String.Wrap(global::System.String.Concat(new string[] { ");
-        for (int i = 0; i < parts.size(); i++) {
-            if (i > 0) {
-                sb.append(", ");
-            }
-            ConcatRecipeParser.Part part = parts.get(i);
-            if (part instanceof ConcatRecipeParser.Part.Literal literal) {
-                sb.append(CsStrings.quote(literal.text()));
-            } else if (part instanceof ConcatRecipeParser.Part.Arg arg) {
-                if (arg.index() >= args.size()) {
-                    throw new UnsupportedBodyException("concat recipe references argument " + arg.index()
-                            + " but only " + args.size() + " are supplied");
-                }
-                sb.append(concatConversion(paramDescs.get(arg.index()), args.get(arg.index())));
-            }
-        }
-        sb.append(" }))");
-        return sb.toString();
-    }
-
-    private List<ConcatRecipeParser.Part> concatParts(InvokeInstruction instr, int argCount) {
-        if (instr.getName().equals("makeConcat")) {
-            List<ConcatRecipeParser.Part> parts = new ArrayList<>();
-            for (int i = 0; i < argCount; i++) {
-                parts.add(new ConcatRecipeParser.Part.Arg(i));
-            }
-            return parts;
-        }
-        List<Constant> bootstrapArgs = instr.getBootstrapInfo().getBootstrapArguments();
-        if (bootstrapArgs.isEmpty() || !(bootstrapArgs.get(0) instanceof StringConstant recipe)) {
-            throw new UnsupportedBodyException("concat bootstrap has no recipe string");
-        }
-        List<String> constants = new ArrayList<>();
-        for (int i = 1; i < bootstrapArgs.size(); i++) {
-            if (!(bootstrapArgs.get(i) instanceof StringConstant s)) {
-                throw new UnsupportedBodyException("non-string concat bootstrap constant: "
-                        + bootstrapArgs.get(i).getClass().getSimpleName());
-            }
-            constants.add(s.getValue());
-        }
-        try {
-            return ConcatRecipeParser.parse(recipe.getValue(), constants);
-        } catch (IllegalArgumentException e) {
-            throw new UnsupportedBodyException("unparseable concat recipe: " + e.getMessage());
-        }
-    }
-
-    private String concatConversion(String desc, Value arg) {
-        String jr = "global::java.lang.JRuntime";
-        String expr = names.ref(arg);
-        return switch (desc.charAt(0)) {
-            case 'Z' -> jr + ".StrZ(" + expr + ")";
-            case 'C' -> jr + ".Str((char)(" + expr + "))";
-            case 'B', 'S', 'I' -> jr + ".Str(" + expr + ")";
-            case 'J', 'F', 'D' -> jr + ".Str(" + expr + ")";
-            case 'L' -> {
-                requireNoArrayAsObject(desc, arg);
-                yield jr + ".Str(" + expr + ")";
-            }
-            default -> throw new UnsupportedBodyException("array in string concat not supported");
-        };
+        return invokes.storageAdjusted(storage, value);
     }
 
     @Override

@@ -4,15 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d05fdbd2-bef1-4012-9f61-0cf573243b7b" name="Changes" comment="Add GUI emission golden and opt-in headless modal smoke test">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/ClassEmitter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/ClassEmitter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/LambdaExpander.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/LambdaExpander.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/MethodBodyEmitter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/emit/MethodBodyEmitter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/naming/NamingContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/naming/NamingContext.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/pipeline/Transpiler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/pipeline/Transpiler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/report/BootstrapCoverageReport.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/report/BootstrapCoverageReport.java" afterDir="false" />
-    </list>
+    <list default="true" id="d05fdbd2-bef1-4012-9f61-0cf573243b7b" name="Changes" comment="Extract enum synthesis, class policy, and method planning; funnel shim lookups" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -95,14 +87,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1783017158528</updated>
-    </task>
-    <task id="LOCAL-00024" summary="Expand lambda metafactory call sites into synthetic classes">
-      <option name="closed" value="true" />
-      <created>1783101264201</created>
-      <option name="number" value="00024" />
-      <option name="presentableId" value="LOCAL-00024" />
-      <option name="project" value="LOCAL" />
-      <updated>1783101264201</updated>
     </task>
     <task id="LOCAL-00025" summary="Support method references: static, bound, unbound, ctor, and shim">
       <option name="closed" value="true" />
@@ -488,11 +472,18 @@
       <option name="project" value="LOCAL" />
       <updated>1783256607755</updated>
     </task>
-    <option name="localTasksCounter" value="73" />
+    <task id="LOCAL-00073" summary="Extract enum synthesis, class policy, and method planning; funnel shim lookups">
+      <option name="closed" value="true" />
+      <created>1783257187066</created>
+      <option name="number" value="00073" />
+      <option name="presentableId" value="LOCAL-00073" />
+      <option name="project" value="LOCAL" />
+      <updated>1783257187066</updated>
+    </task>
+    <option name="localTasksCounter" value="74" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Fix MemberNamer to share C# names for genuine overloads" />
     <MESSAGE value="Bootstrap java.util.ArrayList from JDK bytecode" />
     <MESSAGE value="Bootstrap java.util.HashMap + HashSet from JDK bytecode" />
     <MESSAGE value="Shim String.format/UUID/System.nanoTime+exit/printStackTrace" />
@@ -517,6 +508,7 @@
     <MESSAGE value="Route all cast sites through TypeReconciler; consolidate helpers" />
     <MESSAGE value="Derive shim type set; dedupe shim string-unwrap and panel inset math" />
     <MESSAGE value="Add GUI emission golden and opt-in headless modal smoke test" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add GUI emission golden and opt-in headless modal smoke test" />
+    <MESSAGE value="Extract enum synthesis, class policy, and method planning; funnel shim lookups" />
+    <option name="LAST_COMMIT_MESSAGE" value="Extract enum synthesis, class policy, and method planning; funnel shim lookups" />
   </component>
 </project>
