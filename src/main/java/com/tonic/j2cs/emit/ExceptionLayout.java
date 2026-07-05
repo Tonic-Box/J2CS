@@ -29,7 +29,7 @@ public final class ExceptionLayout {
                 stateOf.put(handlerBlock, state++);
             }
         }
-        Map<String, Integer> regionByKey = new LinkedHashMap<>();
+        Map<List<ExceptionHandler>, Integer> regionByHandlers = new LinkedHashMap<>();
         for (IRBlock block : lowered.blockOrder()) {
             if (!lowered.originalBlocks().contains(block)) {
                 continue;
@@ -44,15 +44,11 @@ public final class ExceptionLayout {
                 regionOf.put(block, -1);
                 continue;
             }
-            StringBuilder key = new StringBuilder();
-            for (ExceptionHandler handler : applicable) {
-                key.append(System.identityHashCode(handler)).append(',');
-            }
-            Integer region = regionByKey.get(key.toString());
+            Integer region = regionByHandlers.get(applicable);
             if (region == null) {
                 region = regions.size();
                 regions.add(applicable);
-                regionByKey.put(key.toString(), region);
+                regionByHandlers.put(applicable, region);
             }
             regionOf.put(block, region);
         }
@@ -68,10 +64,6 @@ public final class ExceptionLayout {
 
     public int regionOf(IRBlock block) {
         return regionOf.getOrDefault(block, -1);
-    }
-
-    public boolean isOriginal(IRBlock block, LoweredMethod lowered) {
-        return lowered.originalBlocks().contains(block);
     }
 
     public List<List<ExceptionHandler>> regions() {

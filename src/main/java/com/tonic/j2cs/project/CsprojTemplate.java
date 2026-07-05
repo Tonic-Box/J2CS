@@ -1,9 +1,9 @@
 package com.tonic.j2cs.project;
 
 /**
- * The single App.csproj template. NativeAOT is on by default; the self-contained fallback
- * overrides PublishAot on the publish command line instead of using a different project file.
- * NoWarn suppresses the warning classes that goto-style emitted bodies produce systematically.
+ * The single App.csproj template. The default self-contained publish overrides PublishAot on
+ * the command line rather than using a different project file. NoWarn suppresses the warning
+ * classes that goto-style emitted bodies produce systematically.
  */
 public final class CsprojTemplate {
 
@@ -11,10 +11,6 @@ public final class CsprojTemplate {
     }
 
     private static final String AVALONIA_VERSION = "11.2.1";
-
-    public static String csproj() {
-        return csproj(false);
-    }
 
     public static String csproj(boolean usesGui) {
         return "<Project Sdk=\"Microsoft.NET.Sdk\">\n"

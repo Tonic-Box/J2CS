@@ -14,8 +14,4 @@ public record GeneratedSolution(
         String programCs,
         Set<String> bootstrappedInternal,
         boolean usesGui) {
-
-    public GeneratedSolution(Map<String, String> genFiles, Map<String, String> stubFiles, String programCs) {
-        this(genFiles, stubFiles, programCs, Set.of(), false);
-    }
 }

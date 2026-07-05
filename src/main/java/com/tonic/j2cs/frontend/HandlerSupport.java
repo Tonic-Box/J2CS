@@ -33,9 +33,6 @@ public final class HandlerSupport {
             List<UnionPair> unionPairs,
             Map<SSAValue, IRType> typeOverrides) {
 
-        public static Captures empty() {
-            return new Captures(Set.of(), List.of(), Map.of());
-        }
     }
 
     private HandlerSupport() {

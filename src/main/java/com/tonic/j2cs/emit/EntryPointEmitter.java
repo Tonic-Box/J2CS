@@ -11,10 +11,6 @@ import com.tonic.j2cs.naming.NamingContext;
  */
 public final class EntryPointEmitter {
 
-    public String emit(String entryClassInternalName, NamingContext naming) {
-        return emit(entryClassInternalName, naming, false);
-    }
-
     public String emit(String entryClassInternalName, NamingContext naming, boolean usesGui) {
         String mainName = naming.namerOf(entryClassInternalName)
                 .methodName("main", InputLoader.MAIN_DESCRIPTOR);

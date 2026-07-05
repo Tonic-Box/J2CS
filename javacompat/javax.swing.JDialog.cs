@@ -43,6 +43,7 @@ namespace javax.swing
             }
             else
             {
+                J2csEndModal();
                 AvWindow.Hide();
             }
         }

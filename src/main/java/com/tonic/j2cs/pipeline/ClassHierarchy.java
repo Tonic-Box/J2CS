@@ -20,7 +20,7 @@ import java.util.Set;
  */
 public final class ClassHierarchy {
 
-    private record Info(String superName, List<String> interfaces, boolean isInterface, boolean isAbstract) {
+    private record Info(String superName, List<String> interfaces, boolean isInterface) {
     }
 
     private final Map<String, Info> infos = new LinkedHashMap<>();
@@ -31,8 +31,7 @@ public final class ClassHierarchy {
             infos.put(cf.getClassName(), new Info(
                     cf.getSuperClassName(),
                     List.copyOf(cf.getInterfaceNames()),
-                    Modifiers.isInterface(cf.getAccess()),
-                    Modifiers.isAbstract(cf.getAccess())));
+                    Modifiers.isInterface(cf.getAccess())));
         }
         Set<String> visited = new HashSet<>();
         Set<String> onStack = new HashSet<>();
@@ -70,11 +69,6 @@ public final class ClassHierarchy {
     public boolean isAppInterface(String internalName) {
         Info info = infos.get(internalName);
         return info != null && info.isInterface();
-    }
-
-    public boolean isAbstract(String internalName) {
-        Info info = infos.get(internalName);
-        return info != null && info.isAbstract();
     }
 
     public String superOf(String internalName) {

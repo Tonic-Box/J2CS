@@ -14,8 +14,6 @@ import com.tonic.analysis.ssa.lower.PhiEliminator;
 import com.tonic.analysis.ssa.transform.DeadCodeElimination;
 import com.tonic.j2cs.model.LoweredMethod;
 import com.tonic.j2cs.model.MethodPlan;
-import com.tonic.j2cs.pipeline.ArrayCloneRetypePass;
-import com.tonic.j2cs.pipeline.IrPass;
 import com.tonic.j2cs.types.TypeMapper;
 import com.tonic.parser.ClassFile;
 import com.tonic.parser.MethodEntry;

@@ -16,10 +16,6 @@ public final class ShimPackager {
 
     private static final String RESOURCE_ROOT = "/javacompat/";
 
-    public void copyShim(Path targetDir, java.util.Set<String> bootstrappedInternal) {
-        copyShim(targetDir, bootstrappedInternal, false);
-    }
-
     public void copyShim(Path targetDir, java.util.Set<String> bootstrappedInternal, boolean usesGui) {
         try {
             Files.createDirectories(targetDir);

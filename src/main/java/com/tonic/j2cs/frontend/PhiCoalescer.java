@@ -31,10 +31,6 @@ public final class PhiCoalescer {
     private PhiCoalescer() {
     }
 
-    public static LoweredMethod coalesce(IRMethod ir, TypeMapper typeMapper) {
-        return coalesce(ir, typeMapper, HandlerSupport.Captures.empty());
-    }
-
     public static LoweredMethod coalesce(IRMethod ir, TypeMapper typeMapper,
                                          HandlerSupport.Captures captures) {
         Map<SSAValue, SSAValue> parent = new HashMap<>();

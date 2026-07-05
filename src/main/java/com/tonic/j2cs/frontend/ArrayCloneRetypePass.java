@@ -1,4 +1,4 @@
-package com.tonic.j2cs.pipeline;
+package com.tonic.j2cs.frontend;
 
 import com.tonic.analysis.ssa.cfg.IRBlock;
 import com.tonic.analysis.ssa.cfg.IRMethod;

@@ -63,6 +63,11 @@ public final class Cli {
         }
         String reportTarget = extractOption(args, "--bootstrap-report");
         if (reportTarget != null) {
+            if (reportTarget.isBlank()) {
+                System.err.println("error: --bootstrap-report requires a value");
+                System.err.println(USAGE);
+                return 2;
+            }
             System.out.println(new com.tonic.j2cs.report.BootstrapCoverageReport().analyze(splitList(reportTarget)));
             return 0;
         }

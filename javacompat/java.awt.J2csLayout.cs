@@ -194,20 +194,21 @@ namespace java.awt
 
     internal sealed class J2csCardPanel : J2csPanel
     {
-        private readonly System.Collections.Generic.List<string> names = new System.Collections.Generic.List<string>();
+        private readonly System.Collections.Generic.Dictionary<global::Avalonia.Controls.Control, string> cardNames =
+                new System.Collections.Generic.Dictionary<global::Avalonia.Controls.Control, string>();
         private int current;
 
         internal void AddCard(string name, global::Avalonia.Controls.Control child)
         {
-            names.Add(name ?? "");
+            cardNames[child] = name ?? "";
             UpdateVisibility();
         }
 
         internal void ShowCard(string name)
         {
-            for (int i = 0; i < names.Count; i++)
+            for (int i = 0; i < Children.Count; i++)
             {
-                if (names[i] == name)
+                if (cardNames.TryGetValue(Children[i], out var n) && n == name)
                 {
                     current = i;
                     break;
