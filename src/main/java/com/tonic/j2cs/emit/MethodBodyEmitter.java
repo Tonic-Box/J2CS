@@ -356,7 +356,7 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
         String name = instr.getName();
         String desc = instr.getDescriptor();
         if (name.equals("<init>")) {
-            assign(instr, "((" + CsNamer.fqcn(owner) + ")" + names.ref(instr.getReceiver()) + ")."
+            assign(instr, reconciler.castTo(owner, names.ref(instr.getReceiver())) + "."
                     + MemberNamer.initMethodName(desc) + "(" + renderArguments(instr, desc) + ")");
             return null;
         }
@@ -441,7 +441,7 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
         Resolved resolved = naming.resolveVirtual(owner, name, desc);
         if (resolved instanceof Resolved.AppMethod appMethod) {
             String receiver = appMethod.viaInterface()
-                    ? "((" + CsNamer.fqcn(appMethod.declaringInternal()) + ")" + names.ref(instr.getReceiver()) + ")"
+                    ? reconciler.castTo(appMethod.declaringInternal(), names.ref(instr.getReceiver()))
                     : receiverAdjusted(appMethod.declaringInternal(), instr.getReceiver());
             return receiver + "." + appMethod.csName() + "(" + renderArguments(instr, desc) + ")";
         }
@@ -462,11 +462,11 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
         Resolved resolved = naming.resolveVirtual(owner, name, desc);
         if (resolved instanceof Resolved.AppMethod appMethod) {
             String castTo = appMethod.viaInterface() ? owner : appMethod.declaringInternal();
-            return "((" + CsNamer.fqcn(castTo) + ")" + names.ref(instr.getReceiver()) + ")."
+            return reconciler.castTo(castTo, names.ref(instr.getReceiver())) + "."
                     + appMethod.csName() + "(" + renderArguments(instr, desc) + ")";
         }
         if (resolved instanceof Resolved.ShimMethod shim) {
-            return "((global::java.lang.Object)" + names.ref(instr.getReceiver()) + ")."
+            return reconciler.castTo("java/lang/Object", names.ref(instr.getReceiver())) + "."
                     + shim.target().csMemberName() + "(" + renderArguments(instr, desc) + ")";
         }
         throw new UnsupportedBodyException(((Resolved.Unresolved) resolved).reason());
@@ -482,22 +482,8 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
     }
 
     private String receiverAdjusted(String declaringInternal, Value receiver) {
-        String expr = names.ref(receiver);
-        if (!(receiver instanceof SSAValue ssa) || ssa.getType() == null) {
-            return "((" + CsNamer.fqcn(declaringInternal) + ")" + expr + ")";
-        }
-        String descriptor = ssa.getType().getDescriptor();
-        if (descriptor.startsWith("[")) {
-            throw new UnsupportedBodyException(
-                    "array used as method receiver not supported (arrays are native C# arrays)");
-        }
-        if (!descriptor.startsWith("L")) {
-            throw new UnsupportedBodyException("non-reference receiver: " + descriptor);
-        }
-        String receiverInternal = descriptor.substring(1, descriptor.length() - 1);
-        return naming.hierarchy().staticallyHasMember(receiverInternal, declaringInternal)
-                ? expr
-                : "((" + CsNamer.fqcn(declaringInternal) + ")" + expr + ")";
+        IRType type = receiver instanceof SSAValue ssa ? ssa.getType() : null;
+        return reconciler.receiver(declaringInternal, type, names.ref(receiver));
     }
 
     private String renderArguments(InvokeInstruction instr, String desc) {

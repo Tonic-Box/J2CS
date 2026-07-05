@@ -228,19 +228,14 @@ public final class MemberNamer {
                 String base = baseByJavaName.get(method.getName());
                 String name = group.size() == 1
                         ? base
-                        : base + "__r" + descriptorSuffix(returnDescriptor(method.getDesc()));
+                        : base + "__r" + descriptorSuffix(TypeMapper.returnDescriptor(method.getDesc()));
                 methodNames.put(key(method.getName(), method.getDesc()), name);
             }
         }
     }
 
     private static String unique(String base, Set<String> taken) {
-        String candidate = base;
-        int n = 2;
-        while (taken.contains(candidate)) {
-            candidate = base + "__" + n++;
-        }
-        return candidate;
+        return CsNamer.unique(base, taken);
     }
 
     private static String paramSignature(String methodDescriptor, TypeMapper typeMapper) {
@@ -249,10 +244,6 @@ public final class MemberNamer {
             sb.append(param.csText()).append(',');
         }
         return sb.toString();
-    }
-
-    private static String returnDescriptor(String methodDescriptor) {
-        return methodDescriptor.substring(methodDescriptor.indexOf(')') + 1);
     }
 
     private static String key(String name, String descriptor) {

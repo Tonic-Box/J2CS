@@ -339,7 +339,7 @@ namespace jdefault
             s19 = global::java.lang.System.@out;
             s20 = global::java.lang.String.Intern("7");
             s21 = ((global::jdefault.Fn)s18).apply((global::java.lang.Object)(s20));
-            s22 = (global::java.lang.String)(global::java.lang.Object)(s21);
+            s22 = (global::java.lang.String)(s21);
             s19.println(s22);
             s23 = 1;
             s24 = new int[s23];
@@ -400,10 +400,10 @@ namespace jdefault
             s64 = global::java.lang.System.@out;
             s65 = global::java.lang.String.Intern("a");
             s66 = ((global::jdefault.Fn)s63).apply((global::java.lang.Object)(s65));
-            s67 = (global::jdefault.Fn)(global::java.lang.Object)(s66);
+            s67 = (global::jdefault.Fn)(s66);
             s68 = global::java.lang.String.Intern("b");
             s69 = ((global::jdefault.Fn)s67).apply((global::java.lang.Object)(s68));
-            s70 = (global::java.lang.String)(global::java.lang.Object)(s69);
+            s70 = (global::java.lang.String)(s69);
             s64.println(s70);
             s71 = global::java.lang.System.@out;
             s72 = global::java.lang.String.Intern("done");

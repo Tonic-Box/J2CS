@@ -28,11 +28,27 @@ public final class TypeMapper {
     }
 
     public CsType returnType(String methodDescriptor) {
+        return storageType(returnDescriptor(methodDescriptor));
+    }
+
+    public static String returnDescriptor(String methodDescriptor) {
         int close = methodDescriptor.indexOf(')');
         if (close < 0) {
             throw new J2csException("malformed method descriptor: " + methodDescriptor);
         }
-        return storageType(methodDescriptor.substring(close + 1));
+        return methodDescriptor.substring(close + 1);
+    }
+
+    /** The internal name of a plain reference descriptor (L...;), else null. */
+    public static String unwrapReference(String descriptor) {
+        return descriptor.startsWith("L") && descriptor.endsWith(";")
+                ? descriptor.substring(1, descriptor.length() - 1)
+                : null;
+    }
+
+    public static boolean isPrimitiveDescriptor(String descriptor) {
+        char c = descriptor.charAt(0);
+        return c != 'L' && c != '[';
     }
 
     public List<CsType> paramTypes(String methodDescriptor) {

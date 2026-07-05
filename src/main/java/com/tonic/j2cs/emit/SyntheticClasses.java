@@ -28,11 +28,7 @@ public final class SyntheticClasses {
             return existing;
         }
         String base = "Lambda_" + CsNamer.identifier(enclosingInternalName.replace('/', '_')) + "_" + cpIndex;
-        String candidate = base;
-        int n = 2;
-        while (takenNames.contains(candidate)) {
-            candidate = base + "__" + n++;
-        }
+        String candidate = CsNamer.unique(base, takenNames);
         takenNames.add(candidate);
         claimedNames.put(key, candidate);
         return candidate;

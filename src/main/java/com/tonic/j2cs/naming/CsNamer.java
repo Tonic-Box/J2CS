@@ -11,6 +11,16 @@ public final class CsNamer {
     private CsNamer() {
     }
 
+    /** First of base, base__2, base__3, ... not present in taken. */
+    public static String unique(String base, java.util.Set<String> taken) {
+        String candidate = base;
+        int n = 2;
+        while (taken.contains(candidate)) {
+            candidate = base + "__" + n++;
+        }
+        return candidate;
+    }
+
     public static String identifier(String name) {
         StringBuilder sb = new StringBuilder(name.length());
         for (int i = 0; i < name.length(); i++) {

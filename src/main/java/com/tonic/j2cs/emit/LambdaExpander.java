@@ -29,10 +29,12 @@ public final class LambdaExpander {
 
     private final NamingContext naming;
     private final SyntheticClasses synthetics;
+    private final TypeReconciler reconciler;
 
     public LambdaExpander(NamingContext naming, SyntheticClasses synthetics) {
         this.naming = naming;
         this.synthetics = synthetics;
+        this.reconciler = new TypeReconciler(naming);
     }
 
     public Expansion expand(InvokeInstruction instr, String enclosingInternalName) {
@@ -48,7 +50,7 @@ public final class LambdaExpander {
             throw new UnsupportedBodyException("unexpected lambda bootstrap arguments");
         }
         String indyDesc = instr.getDescriptor();
-        String ifaceInternal = returnReference(indyDesc);
+        String ifaceInternal = TypeMapper.unwrapReference(TypeMapper.returnDescriptor(indyDesc));
         boolean appIface = ifaceInternal != null && naming.hierarchy().isAppInterface(ifaceInternal);
         boolean shimIface = ifaceInternal != null && ShimRegistry.isShimType(ifaceInternal);
         if (!appIface && !shimIface) {
@@ -88,7 +90,7 @@ public final class LambdaExpander {
         TypeMapper types = naming.typeMapper();
         List<String> capturedDescs = TypeMapper.splitParams(indyDesc);
         List<String> samParamDescs = TypeMapper.splitParams(samDesc);
-        String samRetDesc = returnDescriptor(samDesc);
+        String samRetDesc = TypeMapper.returnDescriptor(samDesc);
 
         List<String> effectiveImplParams = new ArrayList<>();
         boolean implIsInstance = impl.getReferenceKind() != MethodHandleConstant.REF_invokeStatic
@@ -108,7 +110,7 @@ public final class LambdaExpander {
         }
         String implRetDesc = impl.getReferenceKind() == MethodHandleConstant.REF_newInvokeSpecial
                 ? "L" + impl.getOwner() + ";"
-                : returnDescriptor(impl.getDescriptor());
+                : TypeMapper.returnDescriptor(impl.getDescriptor());
         if (!samRetDesc.equals("V")) {
             requireNoBoxing(implRetDesc, samRetDesc, impl.getName());
         }
@@ -152,7 +154,6 @@ public final class LambdaExpander {
     private void emitForward(CsWriter w, MethodHandleConstant impl, List<String> effectiveImplParams,
                              List<String> capturedDescs, List<String> samParamDescs,
                              String implRetDesc, String samRetDesc) {
-        TypeMapper types = naming.typeMapper();
         int capturedCount = capturedDescs.size();
         List<String> argExprs = new ArrayList<>();
         for (int i = 0; i < effectiveImplParams.size(); i++) {
@@ -160,8 +161,7 @@ public final class LambdaExpander {
             String sourceDesc = i < capturedCount
                     ? capturedDescs.get(i)
                     : samParamDescs.get(i - capturedCount);
-            argExprs.add(adapt(raw, types.storageType(sourceDesc).csText(),
-                    types.storageType(effectiveImplParams.get(i)).csText()));
+            argExprs.add(reconciler.coerce(effectiveImplParams.get(i), sourceDesc, raw));
         }
 
         int kind = impl.getReferenceKind();
@@ -184,8 +184,7 @@ public final class LambdaExpander {
         if (samRetDesc.equals("V")) {
             w.line(call + ";");
         } else {
-            w.line("return " + adapt(call, types.storageType(implRetDesc).csText(),
-                    types.storageType(samRetDesc).csText()) + ";");
+            w.line("return " + reconciler.coerce(samRetDesc, implRetDesc, call) + ";");
         }
     }
 
@@ -198,9 +197,7 @@ public final class LambdaExpander {
         String ownerFqcn = CsNamer.fqcn(owner);
         w.line(ownerFqcn + " __obj = new " + ownerFqcn + "(global::java.lang.RawNew.I);");
         w.line("__obj." + MemberNamer.initMethodName(impl.getDescriptor()) + "(" + join(argExprs) + ");");
-        String returned = adapt("__obj", naming.typeMapper().storageType(implRetDesc).csText(),
-                naming.typeMapper().storageType(samRetDesc).csText());
-        w.line("return " + returned + ";");
+        w.line("return " + reconciler.coerce(samRetDesc, implRetDesc, "__obj") + ";");
     }
 
     private String staticCall(MethodHandleConstant impl, List<String> argExprs) {
@@ -228,7 +225,7 @@ public final class LambdaExpander {
             throw new UnsupportedBodyException("invokespecial method reference not supported: "
                     + owner + "." + impl.getName());
         }
-        String receiver = "((" + CsNamer.fqcn(owner) + ")" + argExprs.get(0) + ")";
+        String receiver = reconciler.castTo(owner, argExprs.get(0));
         List<String> rest = argExprs.subList(1, argExprs.size());
         return receiver + "." + namer.methodName(impl.getName(), impl.getDescriptor())
                 + "(" + join(rest) + ")";
@@ -243,16 +240,16 @@ public final class LambdaExpander {
                     com.tonic.j2cs.shims.ShimRegistry.resolveMethodWalking(owner, impl.getName(), impl.getDescriptor())
                             .orElseThrow(() -> new UnsupportedBodyException("lambda shim target not implemented: "
                                     + owner + "." + impl.getName()));
-            return "((" + CsNamer.fqcn(walked.declaringInternal()) + ")" + receiver + ")."
+            return reconciler.castTo(walked.declaringInternal(), receiver) + "."
                     + walked.target().csMemberName() + "(" + join(rest) + ")";
         }
         Resolved resolved = naming.resolveVirtual(owner, impl.getName(), impl.getDescriptor());
         if (resolved instanceof Resolved.AppMethod method) {
-            return "((" + CsNamer.fqcn(method.declaringInternal()) + ")" + receiver + ")."
+            return reconciler.castTo(method.declaringInternal(), receiver) + "."
                     + method.csName() + "(" + join(rest) + ")";
         }
         if (resolved instanceof Resolved.ShimMethod shim) {
-            return "((" + CsNamer.fqcn(shim.ownerInternal()) + ")" + receiver + ")."
+            return reconciler.castTo(shim.ownerInternal(), receiver) + "."
                     + shim.target().csMemberName() + "(" + join(rest) + ")";
         }
         throw new UnsupportedBodyException("lambda virtual target not in input: " + owner + "." + impl.getName());
@@ -266,33 +263,10 @@ public final class LambdaExpander {
                         + impl.getOwner() + "." + impl.getName()));
     }
 
-    private static String adapt(String expr, String fromCs, String toCs) {
-        return fromCs.equals(toCs) ? expr : "(" + toCs + ")(" + expr + ")";
-    }
-
     private static void requireNoBoxing(String sourceDesc, String targetDesc, String implName) {
-        boolean sourcePrimitive = isPrimitive(sourceDesc);
-        boolean targetPrimitive = isPrimitive(targetDesc);
-        if (sourcePrimitive != targetPrimitive) {
+        if (TypeMapper.isPrimitiveDescriptor(sourceDesc) != TypeMapper.isPrimitiveDescriptor(targetDesc)) {
             throw new UnsupportedBodyException("boxing adaptation in lambda not supported: " + implName);
         }
-    }
-
-    private static boolean isPrimitive(String descriptor) {
-        char c = descriptor.charAt(0);
-        return c != 'L' && c != '[';
-    }
-
-    private static String returnDescriptor(String methodDescriptor) {
-        return methodDescriptor.substring(methodDescriptor.indexOf(')') + 1);
-    }
-
-    private static String returnReference(String methodDescriptor) {
-        String ret = returnDescriptor(methodDescriptor);
-        if (ret.startsWith("L") && ret.endsWith(";")) {
-            return ret.substring(1, ret.length() - 1);
-        }
-        return null;
     }
 
     private static String join(List<String> parts) {
