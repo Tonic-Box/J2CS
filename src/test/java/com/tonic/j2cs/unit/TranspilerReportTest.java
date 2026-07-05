@@ -5,6 +5,7 @@ import com.tonic.j2cs.harness.JavacHelper;
 import com.tonic.j2cs.harness.TestJars;
 import com.tonic.j2cs.pipeline.TranspileResult;
 import com.tonic.j2cs.pipeline.Transpiler;
+import com.tonic.j2cs.report.TranspileReport;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -12,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TranspilerReportTest {
@@ -32,5 +34,21 @@ class TranspilerReportTest {
         String report = Files.readString(result.reportPath());
         assertTrue(report.contains("entry: com/example/App"));
         assertTrue(report.contains("com/example/App"));
+    }
+
+    @Test
+    void unsupportedSummaryCategorizesAndRanks() {
+        TranspileReport report = new TranspileReport();
+        report.unsupportedMethod("A", "m", "()V", "shim member not implemented: java/util/Map.get");
+        report.unsupportedMethod("B", "n", "()V", "shim member not implemented: java/util/Map.get");
+        report.unsupportedMethod("C", "p", "()V", "shim member not implemented: java/awt/G.draw");
+        report.unsupportedMethod("D", "q", "()V", "monitors not supported");
+
+        List<String> summary = report.unsupportedSummary();
+
+        assertEquals("shim member not implemented (3)", summary.get(0));
+        assertEquals("  java/util/Map.get x2", summary.get(1));
+        assertEquals("  java/awt/G.draw", summary.get(2));
+        assertTrue(summary.contains("monitors not supported (1)"));
     }
 }
