@@ -25,429 +25,226 @@ namespace jdefault
         {
         }
 
+        internal Exceptions2() : this(global::java.lang.RawNew.I)
+        {
+            __init__V();
+        }
+
         internal void __init__V()
         {
-            global::jdefault.Exceptions2 s0 = null;
-            s0 = this;
-            B0: ;
-            ((global::java.lang.Object)s0).__init__V();
+            ((global::java.lang.Object)this).__init__V();
             return;
         }
 
         internal static void main(global::java.lang.String[] p0)
         {
-            global::java.lang.String[] s0 = null;
-            global::jdefault.MyException s1 = null;
-            global::java.lang.String s2 = null;
-            global::jdefault.MyException s3 = null;
-            global::java.io.PrintStream s4 = null;
-            global::java.lang.String s5 = null;
-            global::java.io.PrintStream s6 = null;
-            int s7 = 0;
-            int s8 = 0;
-            global::jdefault.MyException s9 = null;
-            global::java.lang.String s10 = null;
-            global::jdefault.MyException s11 = null;
-            global::java.io.PrintStream s12 = null;
-            global::java.lang.String s13 = null;
-            global::java.lang.String s14 = null;
-            global::java.lang.Throwable s15 = null;
-            global::java.io.PrintStream s16 = null;
-            global::java.lang.String s17 = null;
-            global::java.lang.Exception s18 = null;
-            global::java.io.PrintStream s19 = null;
-            global::java.lang.String s20 = null;
-            global::java.lang.String s21 = null;
-            global::java.io.PrintStream s22 = null;
-            int s23 = 0;
-            global::java.lang.String s24 = null;
-            global::java.io.PrintStream s25 = null;
-            int s26 = 0;
-            global::java.lang.String s27 = null;
-            global::java.io.PrintStream s28 = null;
-            int s29 = 0;
-            global::java.lang.String s30 = null;
-            int s31 = 0;
-            int s32 = 0;
-            int s33 = 0;
-            int s34 = 0;
-            global::jdefault.MyException s35 = null;
-            int s36 = 0;
-            int s37 = 0;
-            global::jdefault.MyException s38 = null;
-            global::java.lang.String s39 = null;
-            int s40 = 0;
-            int s41 = 0;
-            global::jdefault.MyException s42 = null;
-            int s43 = 0;
-            int s44 = 0;
-            global::java.io.PrintStream s45 = null;
-            global::java.io.PrintStream s46 = null;
-            int s47 = 0;
-            int s48 = 0;
-            global::java.io.PrintStream s49 = null;
-            int s50 = 0;
-            int s51 = 0;
-            global::java.io.PrintStream s52 = null;
-            int s53 = 0;
-            int s54 = 0;
-            global::java.io.PrintStream s55 = null;
-            global::java.lang.String s56 = null;
-            global::jdefault.MyException s57 = null;
-            global::jdefault.MyException s58 = null;
-            global::java.io.PrintStream s59 = null;
-            global::java.lang.String s60 = null;
-            global::java.lang.String s61 = null;
-            s0 = p0;
-            int __state = 0;
-            int __region = -1;
-            global::java.lang.Throwable __p = null;
-            while (true)
+            int local1_3 = 0;
+            try
             {
-                try
+                throw global::java.lang.JThrow.of(new global::jdefault.MyException(global::java.lang.String.Intern("boom")));
+            }
+            catch (global::System.Exception __e0)
+            {
+                if (__e0 is global::System.NotSupportedException) throw;
+                global::java.lang.Throwable __ex1 = global::java.lang.JRuntime.Normalize(__e0);
+                if (__ex1 is global::jdefault.MyException)
                 {
-                    switch (__state)
-                    {
-                        case 1: goto B1;
-                        case 2: goto B4;
-                        case 3: goto B6;
-                        case 4: goto B8;
-                        case 5: goto B16;
-                        case 6: goto B21;
-                    }
-                    B0: ;
-                    __region = 0;
-                    s1 = new global::jdefault.MyException(global::java.lang.RawNew.I);
-                    s2 = global::java.lang.String.Intern("boom");
-                    ((global::jdefault.MyException)s1).__init_Ljava_lang_String__V(s2);
-                    throw global::java.lang.JThrow.of(s1);
-                    B1: ;
-                    __region = -1;
-                    s4 = global::java.lang.System.@out;
-                    s5 = ((global::java.lang.Throwable)s3).getMessage();
-                    s4.println(s5);
-                    s6 = global::java.lang.System.@out;
-                    s7 = s3.code__2();
-                    s6.println(s7);
-                    goto B2;
-                    B2: ;
-                    __region = 1;
-                    s8 = 3;
-                    global::jdefault.Exceptions2.level1(s8);
-                    goto B3;
-                    B3: ;
-                    __region = -1;
-                    goto B5;
-                    B5: ;
-                    __region = 2;
-                    s9 = new global::jdefault.MyException(global::java.lang.RawNew.I);
-                    s10 = global::java.lang.String.Intern("inner");
-                    ((global::jdefault.MyException)s9).__init_Ljava_lang_String__V(s10);
-                    throw global::java.lang.JThrow.of(s9);
-                    B4: ;
-                    __region = -1;
-                    s12 = global::java.lang.System.@out;
-                    s13 = ((global::java.lang.Throwable)s11).getMessage();
-                    s14 = global::java.lang.String.Wrap(global::System.String.Concat(new string[] { "propagated: ", global::java.lang.JRuntime.Str(s13) }));
-                    s12.println(s14);
-                    goto B5;
-                    B6: ;
-                    __region = 2;
-                    goto B7;
-                    B7: ;
-                    __region = 3;
-                    s16 = global::java.lang.System.@out;
-                    s17 = global::java.lang.String.Intern("finally ran");
-                    s16.println(s17);
-                    throw global::java.lang.JThrow.of(s15);
-                    B8: ;
-                    __region = -1;
-                    s19 = global::java.lang.System.@out;
-                    s20 = ((global::java.lang.Throwable)s18).getMessage();
-                    s21 = global::java.lang.String.Wrap(global::System.String.Concat(new string[] { "outer caught: ", global::java.lang.JRuntime.Str(s20) }));
-                    s19.println(s21);
-                    s22 = global::java.lang.System.@out;
-                    s23 = 0;
-                    s24 = global::jdefault.Exceptions2.classify(s23);
-                    s22.println(s24);
-                    s25 = global::java.lang.System.@out;
-                    s26 = 1;
-                    s27 = global::jdefault.Exceptions2.classify(s26);
-                    s25.println(s27);
-                    s28 = global::java.lang.System.@out;
-                    s29 = 2;
-                    s30 = global::jdefault.Exceptions2.classify(s29);
-                    s28.println(s30);
-                    s31 = 0;
-                    s32 = 0;
-                    s33 = s31;
-                    s34 = s32;
-                    s35 = null;
-                    goto B9;
-                    B9: ;
-                    __region = -1;
-                    s36 = 5;
-                    if (s34 >= s36) goto B18;
-                    goto B10;
-                    B10: ;
-                    __region = 4;
-                    s37 = 2;
-                    if (s34 != s37) goto B12;
-                    goto B11;
-                    B11: ;
-                    __region = 4;
-                    s38 = new global::jdefault.MyException(global::java.lang.RawNew.I);
-                    s39 = global::java.lang.String.Intern("skip");
-                    ((global::jdefault.MyException)s38).__init_Ljava_lang_String__V(s39);
-                    throw global::java.lang.JThrow.of(s38);
-                    B12: ;
-                    __region = 4;
-                    s40 = 4;
-                    if (s34 != s40) goto B14;
-                    goto B13;
-                    B13: ;
-                    __region = -1;
-                    goto B18;
-                    B14: ;
-                    __region = 5;
-                    s33 = s33 + s34;
-                    goto B15;
-                    B15: ;
-                    __region = -1;
-                    s41 = s33;
-                    s42 = s35;
-                    goto B17;
-                    B17: ;
-                    __region = -1;
-                    s43 = 1;
-                    s44 = s34 + s43;
-                    s33 = s41;
-                    s34 = s44;
-                    s35 = s42;
-                    goto B9;
-                    B18: ;
-                    __region = -1;
-                    s45 = global::java.lang.System.@out;
-                    s45.println(s33);
-                    goto B19;
-                    B19: ;
-                    __region = 6;
-                    global::jdefault.Exceptions2.rethrower();
-                    goto B20;
-                    B20: ;
-                    __region = -1;
-                    goto B22;
-                    B22: ;
-                    __region = -1;
-                    s46 = global::java.lang.System.@out;
-                    s47 = 0;
-                    s48 = global::jdefault.Exceptions2.multiCatch(s47);
-                    s46.println(s48);
-                    s49 = global::java.lang.System.@out;
-                    s50 = 1;
-                    s51 = global::jdefault.Exceptions2.multiCatch(s50);
-                    s49.println(s51);
-                    s52 = global::java.lang.System.@out;
-                    s53 = 2;
-                    s54 = global::jdefault.Exceptions2.multiCatch(s53);
-                    s52.println(s54);
-                    s55 = global::java.lang.System.@out;
-                    s56 = global::java.lang.String.Intern("done");
-                    s55.println(s56);
-                    return;
-                    B16: ;
-                    __region = -1;
-                    s41 = s33;
-                    s42 = s57;
-                    goto B17;
-                    B21: ;
-                    __region = -1;
-                    s59 = global::java.lang.System.@out;
-                    s60 = ((global::java.lang.Throwable)s58).getMessage();
-                    s61 = global::java.lang.String.Wrap(global::System.String.Concat(new string[] { "rethrown: ", global::java.lang.JRuntime.Str(s60) }));
-                    s59.println(s61);
-                    goto B22;
+                    global::jdefault.MyException local1 = (global::jdefault.MyException)__ex1;
+                    global::java.lang.System.@out.println(((global::java.lang.Throwable)local1).getMessage());
+                    global::java.lang.System.@out.println(local1.code__2());
                 }
-                catch (global::System.Exception __e)
+                else
                 {
-                    if (__e is global::System.NotSupportedException) throw;
-                    __p = global::java.lang.JRuntime.Normalize(__e);
-                    switch (__region)
-                    {
-                        case 0:
-                            if (__p is global::jdefault.MyException) { s3 = (global::jdefault.MyException)__p; __state = 1; continue; }
-                            break;
-                        case 1:
-                            if (__p is global::jdefault.MyException) { s11 = (global::jdefault.MyException)__p; __state = 2; continue; }
-                            break;
-                        case 2:
-                            { s15 = __p; __state = 3; continue; }
-                            if (__p is global::java.lang.Exception) { s18 = (global::java.lang.Exception)__p; __state = 4; continue; }
-                            break;
-                        case 3:
-                            if (__p is global::java.lang.Exception) { s18 = (global::java.lang.Exception)__p; __state = 4; continue; }
-                            break;
-                        case 4:
-                            if (__p is global::jdefault.MyException) { s57 = (global::jdefault.MyException)__p; __state = 5; continue; }
-                            break;
-                        case 5:
-                            if (__p is global::jdefault.MyException) { s57 = (global::jdefault.MyException)__p; __state = 5; continue; }
-                            break;
-                        case 6:
-                            if (__p is global::jdefault.MyException) { s58 = (global::jdefault.MyException)__p; __state = 6; continue; }
-                            break;
-                    }
                     throw;
                 }
             }
+            try
+            {
+                global::jdefault.Exceptions2.level1(3);
+            }
+            catch (global::System.Exception __e2)
+            {
+                if (__e2 is global::System.NotSupportedException) throw;
+                global::java.lang.Throwable __ex3 = global::java.lang.JRuntime.Normalize(__e2);
+                if (__ex3 is global::jdefault.MyException)
+                {
+                    global::jdefault.MyException local1_1 = (global::jdefault.MyException)__ex3;
+                    global::java.lang.System.@out.println(global::java.lang.String.Wrap(global::System.String.Concat(new string[] { global::java.lang.JRuntime.Str(global::java.lang.String.Intern("propagated: ")), global::java.lang.JRuntime.Str(((global::java.lang.Throwable)local1_1).getMessage()) })));
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            try
+            {
+                try
+                {
+                    throw global::java.lang.JThrow.of(new global::jdefault.MyException(global::java.lang.String.Intern("inner")));
+                }
+                finally
+                {
+                    global::java.lang.System.@out.println(global::java.lang.String.Intern("finally ran"));
+                }
+            }
+            catch (global::System.Exception __e4)
+            {
+                if (__e4 is global::System.NotSupportedException) throw;
+                global::java.lang.Throwable __ex5 = global::java.lang.JRuntime.Normalize(__e4);
+                if (__ex5 is global::java.lang.Exception)
+                {
+                    global::java.lang.Exception local1_2 = (global::java.lang.Exception)__ex5;
+                    global::java.lang.System.@out.println(global::java.lang.String.Wrap(global::System.String.Concat(new string[] { global::java.lang.JRuntime.Str(global::java.lang.String.Intern("outer caught: ")), global::java.lang.JRuntime.Str(((global::java.lang.Throwable)local1_2).getMessage()) })));
+                    global::java.lang.System.@out.println(global::jdefault.Exceptions2.classify(0));
+                    global::java.lang.System.@out.println(global::jdefault.Exceptions2.classify(1));
+                    global::java.lang.System.@out.println(global::jdefault.Exceptions2.classify(2));
+                    local1_3 = 0;
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            int local2_1 = 0;
+            for (; local2_1 < 5; local2_1 = unchecked(local2_1 + 1))
+            {
+                try
+                {
+                    if (local2_1 == 2)
+                    {
+                        throw global::java.lang.JThrow.of(new global::jdefault.MyException(global::java.lang.String.Intern("skip")));
+                    }
+                    if (local2_1 != 4)
+                    {
+                        local1_3 = unchecked(local1_3 + local2_1);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                catch (global::System.Exception __e6)
+                {
+                    if (__e6 is global::System.NotSupportedException) throw;
+                    global::java.lang.Throwable __ex7 = global::java.lang.JRuntime.Normalize(__e6);
+                    if (__ex7 is global::jdefault.MyException)
+                    {
+                        global::jdefault.MyException local3 = (global::jdefault.MyException)__ex7;
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+            }
+            global::java.lang.System.@out.println(local1_3);
+            try
+            {
+                global::jdefault.Exceptions2.rethrower();
+            }
+            catch (global::System.Exception __e8)
+            {
+                if (__e8 is global::System.NotSupportedException) throw;
+                global::java.lang.Throwable __ex9 = global::java.lang.JRuntime.Normalize(__e8);
+                if (__ex9 is global::jdefault.MyException)
+                {
+                    global::jdefault.MyException local2_2 = (global::jdefault.MyException)__ex9;
+                    global::java.lang.System.@out.println(global::java.lang.String.Wrap(global::System.String.Concat(new string[] { global::java.lang.JRuntime.Str(global::java.lang.String.Intern("rethrown: ")), global::java.lang.JRuntime.Str(((global::java.lang.Throwable)local2_2).getMessage()) })));
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            global::java.lang.System.@out.println(global::jdefault.Exceptions2.multiCatch(0));
+            global::java.lang.System.@out.println(global::jdefault.Exceptions2.multiCatch(1));
+            global::java.lang.System.@out.println(global::jdefault.Exceptions2.multiCatch(2));
+            global::java.lang.System.@out.println(global::java.lang.String.Intern("done"));
+            return;
         }
 
         internal static void level1(int p0)
         {
-            int s0 = 0;
-            s0 = p0;
-            B0: ;
-            global::jdefault.Exceptions2.level2(s0);
+            global::jdefault.Exceptions2.level2(p0);
             return;
         }
 
         internal static void level2(int p0)
         {
-            int s0 = 0;
-            global::jdefault.MyException s1 = null;
-            global::java.lang.String s2 = null;
-            s0 = p0;
-            B0: ;
-            if (s0 <= 0) goto B2;
-            goto B1;
-            B2: ;
+            if (p0 > 0)
+            {
+                throw global::java.lang.JThrow.of(new global::jdefault.MyException(global::java.lang.String.Wrap(global::System.String.Concat(new string[] { global::java.lang.JRuntime.Str(global::java.lang.String.Intern("deep ")), global::java.lang.JRuntime.Str(p0) }))));
+            }
             return;
-            B1: ;
-            s1 = new global::jdefault.MyException(global::java.lang.RawNew.I);
-            s2 = global::java.lang.String.Wrap(global::System.String.Concat(new string[] { "deep ", global::java.lang.JRuntime.Str(s0) }));
-            ((global::jdefault.MyException)s1).__init_Ljava_lang_String__V(s2);
-            throw global::java.lang.JThrow.of(s1);
         }
 
         internal static global::java.lang.String classify(int p0)
         {
-            int s0 = 0;
-            int s1 = 0;
-            global::java.lang.String s2 = null;
-            global::java.lang.IllegalStateException s3 = null;
-            global::java.lang.String s4 = null;
-            global::jdefault.MyException s5 = null;
-            global::java.lang.String s6 = null;
-            global::jdefault.MyException s7 = null;
-            global::java.lang.String s8 = null;
-            global::java.lang.String s9 = null;
-            global::java.lang.RuntimeException s10 = null;
-            global::java.lang.String s11 = null;
-            global::java.lang.String s12 = null;
-            s0 = p0;
-            int __state = 0;
-            int __region = -1;
-            global::java.lang.Throwable __p = null;
-            while (true)
+            try
             {
                 try
                 {
-                    switch (__state)
+                    if (p0 == 0)
                     {
-                        case 1: goto B6;
-                        case 2: goto B7;
+                        throw global::java.lang.JThrow.of(new global::jdefault.MyException(global::java.lang.String.Intern("zero")));
                     }
-                    B0: ;
-                    __region = 0;
-                    if (s0 != 0) goto B2;
-                    goto B1;
-                    B2: ;
-                    __region = 0;
-                    s1 = 1;
-                    if (s0 != s1) goto B4;
-                    goto B3;
-                    B4: ;
-                    __region = 0;
-                    s2 = global::java.lang.String.Intern("none");
-                    goto B5;
-                    B5: ;
-                    __region = -1;
-                    return s2;
-                    B3: ;
-                    __region = 0;
-                    s3 = new global::java.lang.IllegalStateException(global::java.lang.RawNew.I);
-                    s4 = global::java.lang.String.Intern("one");
-                    ((global::java.lang.IllegalStateException)s3).__init_Ljava_lang_String__V(s4);
-                    throw global::java.lang.JThrow.of(s3);
-                    B1: ;
-                    __region = 0;
-                    s5 = new global::jdefault.MyException(global::java.lang.RawNew.I);
-                    s6 = global::java.lang.String.Intern("zero");
-                    ((global::jdefault.MyException)s5).__init_Ljava_lang_String__V(s6);
-                    throw global::java.lang.JThrow.of(s5);
-                    B6: ;
-                    __region = -1;
-                    s8 = ((global::java.lang.Throwable)s7).getMessage();
-                    s9 = global::java.lang.String.Wrap(global::System.String.Concat(new string[] { "my:", global::java.lang.JRuntime.Str(s8) }));
-                    return s9;
-                    B7: ;
-                    __region = -1;
-                    s11 = ((global::java.lang.Throwable)s10).getMessage();
-                    s12 = global::java.lang.String.Wrap(global::System.String.Concat(new string[] { "rt:", global::java.lang.JRuntime.Str(s11) }));
-                    return s12;
+                    if (p0 == 1)
+                    {
+                        global::java.lang.IllegalStateException __t0 = new global::java.lang.IllegalStateException(global::java.lang.RawNew.I);
+                        __t0.__init_Ljava_lang_String__V(global::java.lang.String.Intern("one"));
+                        throw global::java.lang.JThrow.of(__t0);
+                    }
+                    return global::java.lang.String.Intern("none");
                 }
-                catch (global::System.Exception __e)
+                catch (global::System.Exception __e1)
                 {
-                    if (__e is global::System.NotSupportedException) throw;
-                    __p = global::java.lang.JRuntime.Normalize(__e);
-                    switch (__region)
+                    if (__e1 is global::System.NotSupportedException) throw;
+                    global::java.lang.Throwable __ex2 = global::java.lang.JRuntime.Normalize(__e1);
+                    if (__ex2 is global::java.lang.RuntimeException)
                     {
-                        case 0:
-                            if (__p is global::jdefault.MyException) { s7 = (global::jdefault.MyException)__p; __state = 1; continue; }
-                            if (__p is global::java.lang.RuntimeException) { s10 = (global::java.lang.RuntimeException)__p; __state = 2; continue; }
-                            break;
+                        global::java.lang.RuntimeException local1_1 = (global::java.lang.RuntimeException)__ex2;
+                        return global::java.lang.String.Wrap(global::System.String.Concat(new string[] { global::java.lang.JRuntime.Str(global::java.lang.String.Intern("rt:")), global::java.lang.JRuntime.Str(((global::java.lang.Throwable)local1_1).getMessage()) }));
                     }
+                    else
+                    {
+                        throw;
+                    }
+                }
+            }
+            catch (global::System.Exception __e3)
+            {
+                if (__e3 is global::System.NotSupportedException) throw;
+                global::java.lang.Throwable __ex4 = global::java.lang.JRuntime.Normalize(__e3);
+                if (__ex4 is global::jdefault.MyException)
+                {
+                    global::jdefault.MyException local1 = (global::jdefault.MyException)__ex4;
+                    return global::java.lang.String.Wrap(global::System.String.Concat(new string[] { global::java.lang.JRuntime.Str(global::java.lang.String.Intern("my:")), global::java.lang.JRuntime.Str(((global::java.lang.Throwable)local1).getMessage()) }));
+                }
+                else
+                {
                     throw;
                 }
             }
+            throw new global::System.InvalidOperationException("j2cs: fell off method end");
         }
 
         internal static void rethrower()
         {
-            global::jdefault.MyException s0 = null;
-            global::java.lang.String s1 = null;
-            global::jdefault.MyException s2 = null;
-            int __state = 0;
-            int __region = -1;
-            global::java.lang.Throwable __p = null;
-            while (true)
+            try
             {
-                try
+                throw global::java.lang.JThrow.of(new global::jdefault.MyException(global::java.lang.String.Intern("original")));
+            }
+            catch (global::System.Exception __e0)
+            {
+                if (__e0 is global::System.NotSupportedException) throw;
+                global::java.lang.Throwable __ex1 = global::java.lang.JRuntime.Normalize(__e0);
+                if (__ex1 is global::jdefault.MyException)
                 {
-                    switch (__state)
-                    {
-                        case 1: goto B1;
-                    }
-                    B0: ;
-                    __region = 0;
-                    s0 = new global::jdefault.MyException(global::java.lang.RawNew.I);
-                    s1 = global::java.lang.String.Intern("original");
-                    ((global::jdefault.MyException)s0).__init_Ljava_lang_String__V(s1);
-                    throw global::java.lang.JThrow.of(s0);
-                    B1: ;
-                    __region = -1;
-                    throw global::java.lang.JThrow.of(s2);
+                    global::jdefault.MyException local0 = (global::jdefault.MyException)__ex1;
+                    throw global::java.lang.JThrow.of(local0);
                 }
-                catch (global::System.Exception __e)
+                else
                 {
-                    if (__e is global::System.NotSupportedException) throw;
-                    __p = global::java.lang.JRuntime.Normalize(__e);
-                    switch (__region)
-                    {
-                        case 0:
-                            if (__p is global::jdefault.MyException) { s2 = (global::jdefault.MyException)__p; __state = 1; continue; }
-                            break;
-                    }
                     throw;
                 }
             }
@@ -455,74 +252,37 @@ namespace jdefault
 
         internal static int multiCatch(int p0)
         {
-            int s0 = 0;
-            int s1 = 0;
-            int s2 = 0;
-            global::java.lang.NumberFormatException s3 = null;
-            global::java.lang.String s4 = null;
-            global::java.lang.IllegalStateException s5 = null;
-            global::java.lang.String s6 = null;
-            global::java.lang.Throwable s7 = null;
-            int s8 = 0;
-            s0 = p0;
-            int __state = 0;
-            int __region = -1;
-            global::java.lang.Throwable __p = null;
-            while (true)
+            try
             {
-                try
+                if (p0 == 0)
                 {
-                    switch (__state)
-                    {
-                        case 1: goto B6;
-                    }
-                    B0: ;
-                    __region = 0;
-                    if (s0 != 0) goto B2;
-                    goto B1;
-                    B2: ;
-                    __region = 0;
-                    s1 = 1;
-                    if (s0 != s1) goto B4;
-                    goto B3;
-                    B4: ;
-                    __region = 0;
-                    s2 = 100;
-                    goto B5;
-                    B5: ;
-                    __region = -1;
-                    return s2;
-                    B3: ;
-                    __region = 0;
-                    s3 = new global::java.lang.NumberFormatException(global::java.lang.RawNew.I);
-                    s4 = global::java.lang.String.Intern("n");
-                    ((global::java.lang.NumberFormatException)s3).__init_Ljava_lang_String__V(s4);
-                    throw global::java.lang.JThrow.of(s3);
-                    B1: ;
-                    __region = 0;
-                    s5 = new global::java.lang.IllegalStateException(global::java.lang.RawNew.I);
-                    s6 = global::java.lang.String.Intern("s");
-                    ((global::java.lang.IllegalStateException)s5).__init_Ljava_lang_String__V(s6);
-                    throw global::java.lang.JThrow.of(s5);
-                    B6: ;
-                    __region = -1;
-                    s8 = -1;
-                    return s8;
+                    global::java.lang.IllegalStateException __t0 = new global::java.lang.IllegalStateException(global::java.lang.RawNew.I);
+                    __t0.__init_Ljava_lang_String__V(global::java.lang.String.Intern("s"));
+                    throw global::java.lang.JThrow.of(__t0);
                 }
-                catch (global::System.Exception __e)
+                if (p0 == 1)
                 {
-                    if (__e is global::System.NotSupportedException) throw;
-                    __p = global::java.lang.JRuntime.Normalize(__e);
-                    switch (__region)
-                    {
-                        case 0:
-                            if (__p is global::java.lang.IllegalStateException) { s7 = (global::java.lang.IllegalStateException)__p; __state = 1; continue; }
-                            if (__p is global::java.lang.NumberFormatException) { s7 = (global::java.lang.NumberFormatException)__p; __state = 1; continue; }
-                            break;
-                    }
+                    global::java.lang.NumberFormatException __t1 = new global::java.lang.NumberFormatException(global::java.lang.RawNew.I);
+                    __t1.__init_Ljava_lang_String__V(global::java.lang.String.Intern("n"));
+                    throw global::java.lang.JThrow.of(__t1);
+                }
+                return 100;
+            }
+            catch (global::System.Exception __e2)
+            {
+                if (__e2 is global::System.NotSupportedException) throw;
+                global::java.lang.Throwable __ex3 = global::java.lang.JRuntime.Normalize(__e2);
+                if (__ex3 is global::java.lang.IllegalStateException || __ex3 is global::java.lang.NumberFormatException)
+                {
+                    global::java.lang.Throwable local1 = __ex3;
+                    return -1;
+                }
+                else
+                {
                     throw;
                 }
             }
+            throw new global::System.InvalidOperationException("j2cs: fell off method end");
         }
     }
 }
@@ -538,28 +298,21 @@ namespace jdefault
             JavaClassName = "MyException";
         }
 
+        internal MyException(global::java.lang.String p0) : this(global::java.lang.RawNew.I)
+        {
+            __init_Ljava_lang_String__V(p0);
+        }
+
         internal void __init_Ljava_lang_String__V(global::java.lang.String p0)
         {
-            global::jdefault.MyException s0 = null;
-            global::java.lang.String s1 = null;
-            int s2 = 0;
-            s0 = this;
-            s1 = p0;
-            B0: ;
-            ((global::java.lang.Exception)s0).__init_Ljava_lang_String__V(s1);
-            s2 = s1.length();
-            s0.code = s2;
+            ((global::java.lang.Exception)this).__init_Ljava_lang_String__V(p0);
+            this.code = p0.length();
             return;
         }
 
         public virtual int code__2()
         {
-            global::jdefault.MyException s0 = null;
-            int s1 = 0;
-            s0 = this;
-            B0: ;
-            s1 = s0.code;
-            return s1;
+            return this.code;
             throw new global::System.InvalidOperationException("j2cs: fell off method end");
         }
     }

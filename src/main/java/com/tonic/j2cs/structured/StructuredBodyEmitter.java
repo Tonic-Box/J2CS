@@ -113,6 +113,12 @@ final class StructuredBodyEmitter {
         for (Statement s : recovered.body().getStatements()) {
             stmt(s);
         }
+        // Non-void methods need a guaranteed terminator: recovery may leave a path without a
+        // return (or one C# cannot prove returns), so mirror the goto emitter's fall-off guard.
+        // Unreachable-code (CS0162) when the body already returns everywhere is suppressed.
+        if (!"V".equals(returnDesc)) {
+            w.line("throw new global::System.InvalidOperationException(\"j2cs: fell off method end\");");
+        }
         return w.toString();
     }
 

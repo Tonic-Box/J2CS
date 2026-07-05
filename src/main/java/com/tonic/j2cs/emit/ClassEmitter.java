@@ -142,7 +142,11 @@ public final class ClassEmitter {
             w.close();
             return;
         }
-        if (structured != null && plan instanceof MethodPlan.Supported) {
+        // Bootstrapped JDK classes stay on the goto emitter: their bytecode is the hairiest input
+        // and structured recovery can miscompile it silently (dropped returns, non-terminating
+        // loops) where per-method fallback cannot see the error. App code gets structured bodies.
+        if (structured != null && plan instanceof MethodPlan.Supported
+                && !naming.isBootstrapped(classFile.getClassName())) {
             java.util.Optional<String> body = structured.tryEmit(classFile, method, 3);
             if (body.isPresent()) {
                 w.raw(body.get());

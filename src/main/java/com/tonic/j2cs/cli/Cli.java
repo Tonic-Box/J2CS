@@ -36,7 +36,7 @@ public final class Cli {
             "  --no-build                emit the C# solution only; do not invoke dotnet",
             "  --aot                     publish with NativeAOT (minimal native binary) instead of the default",
             "  --self-contained          publish a self-contained single-file exe (the default)",
-            "  --structured              emit structured method bodies (loops/ifs) where recoverable",
+            "  --classic-bodies          emit goto/label method bodies instead of structured control flow",
             "  --run                     run the produced exe after publishing",
             "  --dump-ir                 dump the lifted IR for debugging",
             "  --bootstrap <fqcn>[,...]  generate the named JDK classes from platform bytecode (else shimmed)",
@@ -144,7 +144,7 @@ public final class Cli {
         String mainOverride = null;
         boolean noBuild = false;
         boolean nativeAot = false;
-        boolean structured = false;
+        boolean classicBodies = false;
         boolean run = false;
         boolean dumpIr = false;
         java.util.List<String> bootstrap = java.util.List.of();
@@ -167,8 +167,8 @@ public final class Cli {
                 case "--aot":
                     nativeAot = true;
                     break;
-                case "--structured":
-                    structured = true;
+                case "--classic-bodies":
+                    classicBodies = true;
                     break;
                 case "--self-contained":
                     nativeAot = false;
@@ -196,7 +196,7 @@ public final class Cli {
         if (outDir == null) {
             throw new IllegalArgumentException("no output directory given (-o <outDir>)");
         }
-        return new CliOptions(input, outDir, mainOverride, noBuild, nativeAot, run, dumpIr, structured, bootstrap);
+        return new CliOptions(input, outDir, mainOverride, noBuild, nativeAot, run, dumpIr, classicBodies, bootstrap);
     }
 
     private static String requireValue(String[] args, int index, String option) {

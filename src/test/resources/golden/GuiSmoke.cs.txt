@@ -87,46 +87,27 @@ namespace jdefault
         {
         }
 
+        internal GuiSmoke() : this(global::java.lang.RawNew.I)
+        {
+            __init__V();
+        }
+
         internal void __init__V()
         {
-            global::jdefault.GuiSmoke s0 = null;
-            s0 = this;
-            B0: ;
-            ((global::java.lang.Object)s0).__init__V();
+            ((global::java.lang.Object)this).__init__V();
             return;
         }
 
         internal static void main(global::java.lang.String[] p0)
         {
-            global::java.lang.String[] s0 = null;
-            global::java.io.PrintStream s1 = null;
-            global::java.lang.String s2 = null;
-            global::javax.swing.JFrame s3 = null;
-            global::java.lang.String s4 = null;
-            int s5 = 0;
-            int s6 = 0;
-            int s7 = 0;
-            int s8 = 0;
-            global::java.io.PrintStream s9 = null;
-            global::java.lang.String s10 = null;
-            s0 = p0;
-            B0: ;
-            s1 = global::java.lang.System.@out;
-            s2 = global::java.lang.String.Intern("starting");
-            s1.println(s2);
-            s3 = new global::javax.swing.JFrame(global::java.lang.RawNew.I);
-            s4 = global::java.lang.String.Intern("Smoke Test");
-            ((global::javax.swing.JFrame)s3).__init_Ljava_lang_String__V(s4);
-            s5 = 320;
-            s6 = 240;
-            ((global::java.awt.Window)s3).setSize(s5, s6);
-            s7 = 3;
-            ((global::java.awt.Window)s3).setDefaultCloseOperation(s7);
-            s8 = 1;
-            ((global::java.awt.Window)s3).setVisible(s8);
-            s9 = global::java.lang.System.@out;
-            s10 = global::java.lang.String.Intern("shown");
-            s9.println(s10);
+            global::java.lang.System.@out.println(global::java.lang.String.Intern("starting"));
+            global::javax.swing.JFrame __t0 = new global::javax.swing.JFrame(global::java.lang.RawNew.I);
+            __t0.__init_Ljava_lang_String__V(global::java.lang.String.Intern("Smoke Test"));
+            global::javax.swing.JFrame local1 = __t0;
+            ((global::java.awt.Window)local1).setSize(320, 240);
+            ((global::java.awt.Window)local1).setDefaultCloseOperation(3);
+            ((global::java.awt.Window)local1).setVisible(1);
+            global::java.lang.System.@out.println(global::java.lang.String.Intern("shown"));
             return;
         }
     }
