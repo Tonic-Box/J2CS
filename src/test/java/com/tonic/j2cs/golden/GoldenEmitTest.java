@@ -45,7 +45,16 @@ class GoldenEmitTest {
         assertGolden("Lambdas1");
     }
 
+    @Test
+    void guiSmokeEmissionIsStable() throws Exception {
+        assertGolden("GuiSmoke", true);
+    }
+
     private void assertGolden(String fixtureName) throws Exception {
+        assertGolden(fixtureName, false);
+    }
+
+    private void assertGolden(String fixtureName, boolean includeCsproj) throws Exception {
         Path work = Path.of("build", "golden", fixtureName);
         Fixtures.deleteRecursively(work);
 
@@ -56,7 +65,7 @@ class GoldenEmitTest {
         CliOptions options = CliOptions.noBuild(jar, work.resolve("out"));
         TranspileResult result = new Transpiler().transpile(options);
 
-        String actual = canonicalText(result.appDir());
+        String actual = canonicalText(result.appDir(), includeCsproj);
         if (Boolean.getBoolean("j2cs.regenGolden")) {
             Path regen = Path.of("build", "golden-regen", fixtureName + ".cs.txt");
             Files.createDirectories(regen.getParent());
@@ -68,8 +77,11 @@ class GoldenEmitTest {
                 + " changed; regenerate goldens with -Dj2cs.regenGolden=true if intentional");
     }
 
-    private static String canonicalText(Path appDir) throws IOException {
+    private static String canonicalText(Path appDir, boolean includeCsproj) throws IOException {
         StringBuilder sb = new StringBuilder();
+        if (includeCsproj) {
+            appendFile(sb, "App.csproj", Files.readString(appDir.resolve("App.csproj")));
+        }
         appendFile(sb, "Program.cs", Files.readString(appDir.resolve("Program.cs")));
         Path gen = appDir.resolve("gen");
         try (Stream<Path> files = Files.list(gen)) {

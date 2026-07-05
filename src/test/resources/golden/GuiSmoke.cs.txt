@@ -1,0 +1,133 @@
+// ==== App.csproj ====
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <PublishAot>false</PublishAot>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <AssemblyName>App</AssemblyName>
+    <RootNamespace></RootNamespace>
+    <NoWarn>CS0108;CS0162;CS0164;CS0219;CS0414;CS0649;CS1717</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.2.1" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.2.1" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.2.1" />
+  </ItemGroup>
+</Project>
+// ==== Program.cs ====
+using Avalonia;
+
+internal sealed class J2csApp : global::Avalonia.Application
+{
+    public override void Initialize()
+    {
+        Styles.Add(new global::Avalonia.Themes.Fluent.FluentTheme());
+        RequestedThemeVariant = global::Avalonia.Styling.ThemeVariant.Light;
+        var stTextBlock = new global::Avalonia.Styling.Style(x => global::Avalonia.Styling.Selectors.OfType<global::Avalonia.Controls.TextBlock>(x));
+        stTextBlock.Setters.Add(new global::Avalonia.Styling.Setter(global::Avalonia.Controls.TextBlock.FontSizeProperty, 12.0));
+        Styles.Add(stTextBlock);
+        var stButton = new global::Avalonia.Styling.Style(x => global::Avalonia.Styling.Selectors.OfType<global::Avalonia.Controls.Button>(x));
+        stButton.Setters.Add(new global::Avalonia.Styling.Setter(global::Avalonia.Controls.Primitives.TemplatedControl.FontSizeProperty, 12.0));
+        stButton.Setters.Add(new global::Avalonia.Styling.Setter(global::Avalonia.Controls.Primitives.TemplatedControl.PaddingProperty, new global::Avalonia.Thickness(8.0, 3.0)));
+        stButton.Setters.Add(new global::Avalonia.Styling.Setter(global::Avalonia.Layout.Layoutable.MinHeightProperty, 0.0));
+        Styles.Add(stButton);
+        var stTextBox = new global::Avalonia.Styling.Style(x => global::Avalonia.Styling.Selectors.OfType<global::Avalonia.Controls.TextBox>(x));
+        stTextBox.Setters.Add(new global::Avalonia.Styling.Setter(global::Avalonia.Controls.Primitives.TemplatedControl.FontSizeProperty, 12.0));
+        stTextBox.Setters.Add(new global::Avalonia.Styling.Setter(global::Avalonia.Controls.Primitives.TemplatedControl.PaddingProperty, new global::Avalonia.Thickness(5.0, 2.0)));
+        stTextBox.Setters.Add(new global::Avalonia.Styling.Setter(global::Avalonia.Layout.Layoutable.MinHeightProperty, 0.0));
+        Styles.Add(stTextBox);
+        var stListBoxItem = new global::Avalonia.Styling.Style(x => global::Avalonia.Styling.Selectors.OfType<global::Avalonia.Controls.ListBoxItem>(x));
+        stListBoxItem.Setters.Add(new global::Avalonia.Styling.Setter(global::Avalonia.Controls.Primitives.TemplatedControl.FontSizeProperty, 12.0));
+        stListBoxItem.Setters.Add(new global::Avalonia.Styling.Setter(global::Avalonia.Controls.Primitives.TemplatedControl.PaddingProperty, new global::Avalonia.Thickness(6.0, 1.0)));
+        stListBoxItem.Setters.Add(new global::Avalonia.Styling.Setter(global::Avalonia.Layout.Layoutable.MinHeightProperty, 0.0));
+        Styles.Add(stListBoxItem);
+    }
+    public override void OnFrameworkInitializationCompleted()
+    {
+        if (ApplicationLifetime is global::Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime __desktop)
+        {
+            __desktop.ShutdownMode = global::Avalonia.Controls.ShutdownMode.OnExplicitShutdown;
+        }
+        base.OnFrameworkInitializationCompleted();
+        global::Avalonia.Threading.Dispatcher.UIThread.Post(Program.RunMain);
+    }
+}
+internal static class Program
+{
+    private static string[] __args;
+    internal static void RunMain()
+    {
+        try
+        {
+            global::jdefault.GuiSmoke.main(global::java.lang.JRuntime.Args(__args));
+        }
+        catch (global::java.lang.JThrow __e)
+        {
+            global::System.Console.Error.Write("Exception in thread \"main\" " + __e.payload.toString().Value + "\n");
+        }
+    }
+    internal static int Main(string[] args)
+    {
+        __args = args;
+        global::Avalonia.AppBuilder.Configure<J2csApp>().UsePlatformDetect().StartWithClassicDesktopLifetime(args);
+        return 0;
+    }
+}
+// ==== gen/jdefault.GuiSmoke.cs ====
+namespace jdefault
+{
+    internal class GuiSmoke : global::java.lang.Object
+    {
+
+        public GuiSmoke(global::java.lang.RawNew r) : base(r)
+        {
+        }
+
+        internal void __init__V()
+        {
+            global::jdefault.GuiSmoke s0 = null;
+            s0 = this;
+            B0: ;
+            ((global::java.lang.Object)s0).__init__V();
+            return;
+        }
+
+        internal static void main(global::java.lang.String[] p0)
+        {
+            global::java.lang.String[] s0 = null;
+            global::java.io.PrintStream s1 = null;
+            global::java.lang.String s2 = null;
+            global::javax.swing.JFrame s3 = null;
+            global::java.lang.String s4 = null;
+            int s5 = 0;
+            int s6 = 0;
+            int s7 = 0;
+            int s8 = 0;
+            global::java.io.PrintStream s9 = null;
+            global::java.lang.String s10 = null;
+            s0 = p0;
+            B0: ;
+            s1 = global::java.lang.System.@out;
+            s2 = global::java.lang.String.Intern("starting");
+            s1.println(s2);
+            s3 = new global::javax.swing.JFrame(global::java.lang.RawNew.I);
+            s4 = global::java.lang.String.Intern("Smoke Test");
+            ((global::javax.swing.JFrame)s3).__init_Ljava_lang_String__V(s4);
+            s5 = 320;
+            s6 = 240;
+            ((global::java.awt.Window)s3).setSize(s5, s6);
+            s7 = 3;
+            ((global::java.awt.Window)s3).setDefaultCloseOperation(s7);
+            s8 = 1;
+            ((global::java.awt.Window)s3).setVisible(s8);
+            s9 = global::java.lang.System.@out;
+            s10 = global::java.lang.String.Intern("shown");
+            s9.println(s10);
+            return;
+        }
+    }
+}

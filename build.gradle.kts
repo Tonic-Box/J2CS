@@ -67,5 +67,6 @@ tasks.test {
         showStandardStreams = true
     }
     systemProperty("j2cs.aot", System.getProperty("j2cs.aot", "false"))
+    systemProperty("j2cs.gui", System.getProperty("j2cs.gui", "false"))
     systemProperty("j2cs.regenGolden", System.getProperty("j2cs.regenGolden", "false"))
 }

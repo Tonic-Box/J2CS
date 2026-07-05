@@ -4,20 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d05fdbd2-bef1-4012-9f61-0cf573243b7b" name="Changes" comment="Route all cast sites through TypeReconciler; consolidate helpers">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/javacompat/java.awt.CardLayout.cs" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/java.awt.CardLayout.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/javacompat/java.awt.J2csLayout.cs" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/java.awt.J2csLayout.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/javacompat/java.lang.JRuntime.cs" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/java.lang.JRuntime.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/javacompat/java.util.Base64$Decoder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/java.util.Base64$Decoder.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/javacompat/javax.swing.JButton.cs" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/javax.swing.JButton.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/javacompat/javax.swing.JDialog.cs" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/javax.swing.JDialog.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/javacompat/javax.swing.JFrame.cs" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/javax.swing.JFrame.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/javacompat/javax.swing.JLabel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/javax.swing.JLabel.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/javacompat/javax.swing.JOptionPane.cs" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/javax.swing.JOptionPane.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/javacompat/javax.swing.JTextField.cs" beforeDir="false" afterPath="$PROJECT_DIR$/javacompat/javax.swing.JTextField.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/shims/ShimRegistry.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tonic/j2cs/shims/ShimRegistry.java" afterDir="false" />
-    </list>
+    <list default="true" id="d05fdbd2-bef1-4012-9f61-0cf573243b7b" name="Changes" comment="Derive shim type set; dedupe shim string-unwrap and panel inset math" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -100,14 +87,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1783017158528</updated>
-    </task>
-    <task id="LOCAL-00022" summary="Emit try/catch via a dispatcher state machine">
-      <option name="closed" value="true" />
-      <created>1783097383231</created>
-      <option name="number" value="00022" />
-      <option name="presentableId" value="LOCAL-00022" />
-      <option name="project" value="LOCAL" />
-      <updated>1783097383231</updated>
     </task>
     <task id="LOCAL-00023" summary="Complete exception support: user hierarchies, finally, multi-catch">
       <option name="closed" value="true" />
@@ -493,11 +472,18 @@
       <option name="project" value="LOCAL" />
       <updated>1783255334762</updated>
     </task>
-    <option name="localTasksCounter" value="71" />
+    <task id="LOCAL-00071" summary="Derive shim type set; dedupe shim string-unwrap and panel inset math">
+      <option name="closed" value="true" />
+      <created>1783256104379</created>
+      <option name="number" value="00071" />
+      <option name="presentableId" value="LOCAL-00071" />
+      <option name="project" value="LOCAL" />
+      <updated>1783256104379</updated>
+    </task>
+    <option name="localTasksCounter" value="72" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Auto-pull the bootstrap closure from a root class" />
     <MESSAGE value="Consolidate and harden the bootstrap surface" />
     <MESSAGE value="Fix MemberNamer to share C# names for genuine overloads" />
     <MESSAGE value="Bootstrap java.util.ArrayList from JDK bytecode" />
@@ -522,6 +508,7 @@
     <MESSAGE value="Fix modal hide unblock and report arg validation; sweep dead code" />
     <MESSAGE value="Harden test suite and CLI ergonomics" />
     <MESSAGE value="Route all cast sites through TypeReconciler; consolidate helpers" />
-    <option name="LAST_COMMIT_MESSAGE" value="Route all cast sites through TypeReconciler; consolidate helpers" />
+    <MESSAGE value="Derive shim type set; dedupe shim string-unwrap and panel inset math" />
+    <option name="LAST_COMMIT_MESSAGE" value="Derive shim type set; dedupe shim string-unwrap and panel inset math" />
   </component>
 </project>
