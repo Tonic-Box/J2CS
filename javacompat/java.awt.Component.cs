@@ -45,16 +45,20 @@ namespace java.awt
             {
                 return;
             }
-            // Java preferredSize is a hint, not a hard size; a 0 dimension means "no preference"
-            // (e.g. a BorderLayout child that should fill). Set minimums so the control is at least
-            // its preferred size but can still stretch/grow.
+            // A 0 dimension means "no preference" (e.g. a BorderLayout child that fills). For leaf
+            // widgets (buttons, sliders, bars) preferredSize is effectively the size, so set it
+            // exactly for a Java-like uniform look; for containers/panels it is a hint the layout
+            // may exceed, so set a minimum and let them fill.
+            bool container = AvControl is global::Avalonia.Controls.Panel
+                    || AvControl is global::Avalonia.Controls.Border
+                    || AvControl is global::java.awt.J2csPaintSurface;
             if (d.W > 0)
             {
-                AvControl.MinWidth = d.W;
+                if (container) { AvControl.MinWidth = d.W; } else { AvControl.Width = d.W; }
             }
             if (d.H > 0)
             {
-                AvControl.MinHeight = d.H;
+                if (container) { AvControl.MinHeight = d.H; } else { AvControl.Height = d.H; }
             }
         }
 
@@ -95,8 +99,24 @@ namespace java.awt
             {
                 return;
             }
-            if (AvControl is global::Avalonia.Controls.TextBlock tb) { tb.FontSize = f.Size; }
-            else if (AvControl is global::Avalonia.Controls.Primitives.TemplatedControl tc) { tc.FontSize = f.Size; }
+            var weight = (f.Style & 1) != 0
+                    ? global::Avalonia.Media.FontWeight.Bold
+                    : global::Avalonia.Media.FontWeight.Normal;
+            var style = (f.Style & 2) != 0
+                    ? global::Avalonia.Media.FontStyle.Italic
+                    : global::Avalonia.Media.FontStyle.Normal;
+            if (AvControl is global::Avalonia.Controls.TextBlock tb)
+            {
+                tb.FontSize = f.Size;
+                tb.FontWeight = weight;
+                tb.FontStyle = style;
+            }
+            else if (AvControl is global::Avalonia.Controls.Primitives.TemplatedControl tc)
+            {
+                tc.FontSize = f.Size;
+                tc.FontWeight = weight;
+                tc.FontStyle = style;
+            }
         }
 
         public void setOpaque(int opaque)
