@@ -344,5 +344,240 @@ namespace java.lang
             }
             return sb.ToString();
         }
+
+        private static readonly global::System.Globalization.CultureInfo Inv =
+            global::System.Globalization.CultureInfo.InvariantCulture;
+
+        /// <summary>
+        /// java.util.Formatter-style formatting for the common conversions used by String.format,
+        /// PrintStream.printf and String.format-driven concat: %[index$][flags][width][.prec]conv,
+        /// conversions s S d f e E g G x X o c b B h H n %. Locale-sensitive output uses the
+        /// invariant culture (matches Java's US/root formatting: '.' decimal, ',' grouping).
+        /// </summary>
+        public static string Format(string fmt, global::java.lang.Object[] args)
+        {
+            if (fmt == null)
+            {
+                return "null";
+            }
+            var sb = new global::System.Text.StringBuilder(fmt.Length);
+            int autoArg = 0;
+            int i = 0;
+            while (i < fmt.Length)
+            {
+                char c = fmt[i];
+                if (c != '%')
+                {
+                    sb.Append(c);
+                    i++;
+                    continue;
+                }
+                i++;
+                if (i >= fmt.Length)
+                {
+                    sb.Append('%');
+                    break;
+                }
+                int argIndex = -1;
+                int mark = i;
+                int num = 0;
+                bool hasNum = false;
+                while (i < fmt.Length && fmt[i] >= '0' && fmt[i] <= '9')
+                {
+                    num = num * 10 + (fmt[i] - '0');
+                    hasNum = true;
+                    i++;
+                }
+                if (hasNum && i < fmt.Length && fmt[i] == '$')
+                {
+                    argIndex = num - 1;
+                    i++;
+                }
+                else
+                {
+                    i = mark;
+                }
+                bool left = false, plus = false, space = false, zero = false, group = false, paren = false, alt = false;
+                while (i < fmt.Length)
+                {
+                    char fl = fmt[i];
+                    if (fl == '-') { left = true; }
+                    else if (fl == '+') { plus = true; }
+                    else if (fl == ' ') { space = true; }
+                    else if (fl == '0') { zero = true; }
+                    else if (fl == ',') { group = true; }
+                    else if (fl == '(') { paren = true; }
+                    else if (fl == '#') { alt = true; }
+                    else { break; }
+                    i++;
+                }
+                int width = 0;
+                while (i < fmt.Length && fmt[i] >= '0' && fmt[i] <= '9')
+                {
+                    width = width * 10 + (fmt[i] - '0');
+                    i++;
+                }
+                int prec = -1;
+                if (i < fmt.Length && fmt[i] == '.')
+                {
+                    i++;
+                    prec = 0;
+                    while (i < fmt.Length && fmt[i] >= '0' && fmt[i] <= '9')
+                    {
+                        prec = prec * 10 + (fmt[i] - '0');
+                        i++;
+                    }
+                }
+                if (i >= fmt.Length)
+                {
+                    break;
+                }
+                char conv = fmt[i];
+                i++;
+                if (conv == '%')
+                {
+                    sb.Append('%');
+                    continue;
+                }
+                if (conv == 'n')
+                {
+                    sb.Append('\n');
+                    continue;
+                }
+                global::java.lang.Object arg = null;
+                if (conv != 'n')
+                {
+                    int idx = argIndex >= 0 ? argIndex : autoArg++;
+                    arg = args != null && idx >= 0 && idx < args.Length ? args[idx] : null;
+                }
+                string body = FormatArg(conv, arg, prec, plus, space, zero, group, paren, alt, width, left);
+                Pad(sb, body, width, left, zero && !left && IsNumeric(conv) && arg != null);
+            }
+            return sb.ToString();
+        }
+
+        private static bool IsNumeric(char conv)
+        {
+            char c = char.ToLowerInvariant(conv);
+            return c == 'd' || c == 'f' || c == 'e' || c == 'g' || c == 'x' || c == 'o';
+        }
+
+        private static string FormatArg(char conv, global::java.lang.Object arg, int prec,
+            bool plus, bool space, bool zero, bool group, bool paren, bool alt, int width, bool left)
+        {
+            switch (conv)
+            {
+                case 's':
+                case 'S':
+                {
+                    string s = Str(arg);
+                    if (prec >= 0 && s.Length > prec)
+                    {
+                        s = s.Substring(0, prec);
+                    }
+                    return conv == 'S' ? s.ToUpperInvariant() : s;
+                }
+                case 'b':
+                case 'B':
+                {
+                    string s = arg == null ? "false"
+                        : arg is global::java.lang.Boolean b ? (b.booleanValue() != 0 ? "true" : "false")
+                        : "true";
+                    return conv == 'B' ? s.ToUpperInvariant() : s;
+                }
+                case 'c':
+                {
+                    if (arg is global::java.lang.Number n) { return ((char)n.intValue()).ToString(); }
+                    string s = Str(arg);
+                    return s.Length > 0 ? s.Substring(0, 1) : "";
+                }
+                case 'h':
+                case 'H':
+                {
+                    string s = arg == null ? "null" : arg.hashCode().ToString("x", Inv);
+                    return conv == 'H' ? s.ToUpperInvariant() : s;
+                }
+                case 'd':
+                {
+                    long v = ((global::java.lang.Number)arg).longValue();
+                    string digits = global::System.Math.Abs(v).ToString(group ? "#,0" : "0", Inv);
+                    return Sign(v < 0, plus, space, paren, digits);
+                }
+                case 'x':
+                case 'X':
+                {
+                    long v = ((global::java.lang.Number)arg).longValue();
+                    string s = arg is global::java.lang.Integer
+                        ? ((uint)(int)v).ToString("x", Inv)
+                        : ((ulong)v).ToString("x", Inv);
+                    if (alt) { s = "0x" + s; }
+                    return conv == 'X' ? s.ToUpperInvariant() : s;
+                }
+                case 'o':
+                {
+                    long v = ((global::java.lang.Number)arg).longValue();
+                    long u = arg is global::java.lang.Integer ? (uint)(int)v : v;
+                    return global::System.Convert.ToString(u, 8);
+                }
+                case 'f':
+                {
+                    double v = ((global::java.lang.Number)arg).doubleValue();
+                    int p = prec < 0 ? 6 : prec;
+                    string digits = global::System.Math.Abs(v).ToString((group ? "#,0." : "0.") + new string('0', p), Inv);
+                    return Sign(v < 0, plus, space, paren, digits);
+                }
+                case 'e':
+                case 'E':
+                {
+                    double v = ((global::java.lang.Number)arg).doubleValue();
+                    int p = prec < 0 ? 6 : prec;
+                    string digits = global::System.Math.Abs(v).ToString("0." + new string('0', p) + "e+00", Inv);
+                    string s = Sign(v < 0, plus, space, paren, digits);
+                    return conv == 'E' ? s.ToUpperInvariant() : s;
+                }
+                case 'g':
+                case 'G':
+                {
+                    double v = ((global::java.lang.Number)arg).doubleValue();
+                    int p = prec < 0 ? 6 : (prec == 0 ? 1 : prec);
+                    string s = v.ToString("G" + p, Inv).Replace("E", "e");
+                    return conv == 'G' ? s.ToUpperInvariant() : s;
+                }
+                default:
+                    return "%" + conv;
+            }
+        }
+
+        private static string Sign(bool negative, bool plus, bool space, bool paren, string digits)
+        {
+            if (negative)
+            {
+                return paren ? "(" + digits + ")" : "-" + digits;
+            }
+            return plus ? "+" + digits : space ? " " + digits : digits;
+        }
+
+        private static void Pad(global::System.Text.StringBuilder sb, string body, int width, bool left, bool zeroPad)
+        {
+            if (body.Length >= width)
+            {
+                sb.Append(body);
+                return;
+            }
+            int padLen = width - body.Length;
+            if (left)
+            {
+                sb.Append(body).Append(' ', padLen);
+            }
+            else if (zeroPad)
+            {
+                int insert = body.Length > 0 && (body[0] == '-' || body[0] == '+' || body[0] == ' ') ? 1 : 0;
+                sb.Append(body, 0, insert).Append('0', padLen).Append(body, insert, body.Length - insert);
+            }
+            else
+            {
+                sb.Append(' ', padLen).Append(body);
+            }
+        }
     }
 }

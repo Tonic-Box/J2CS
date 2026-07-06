@@ -75,54 +75,7 @@ namespace java.lang
 
         public static String format(String fmt, global::java.lang.Object[] args)
         {
-            string f = fmt == null ? "null" : fmt.Value;
-            var sb = new global::System.Text.StringBuilder(f.Length);
-            int argi = 0;
-            for (int i = 0; i < f.Length; i++)
-            {
-                char c = f[i];
-                if (c != '%')
-                {
-                    sb.Append(c);
-                    continue;
-                }
-                i++;
-                if (i >= f.Length)
-                {
-                    sb.Append('%');
-                    break;
-                }
-                char spec = f[i];
-                while (spec == '-' || spec == '+' || spec == ' ' || spec == '0' || spec == ','
-                        || spec == '.' || (spec >= '1' && spec <= '9'))
-                {
-                    i++;
-                    if (i >= f.Length)
-                    {
-                        break;
-                    }
-                    spec = f[i];
-                }
-                switch (spec)
-                {
-                    case '%':
-                        sb.Append('%');
-                        break;
-                    case 'n':
-                        sb.Append('\n');
-                        break;
-                    case 's':
-                    case 'd':
-                        sb.Append(args != null && argi < args.Length
-                                ? global::java.lang.JRuntime.Str(args[argi++])
-                                : "null");
-                        break;
-                    default:
-                        sb.Append('%').Append(spec);
-                        break;
-                }
-            }
-            return Wrap(sb.ToString());
+            return Wrap(global::java.lang.JRuntime.Format(fmt == null ? null : fmt.Value, args));
         }
 
         public String substring(int beginIndex)

@@ -110,6 +110,18 @@ namespace java.io
             writer.Flush();
         }
 
+        public PrintStream printf(global::java.lang.String fmt, global::java.lang.Object[] args)
+        {
+            writer.Write(global::java.lang.JRuntime.Format(fmt == null ? null : fmt.Value, args));
+            writer.Flush();
+            return this;
+        }
+
+        public PrintStream format(global::java.lang.String fmt, global::java.lang.Object[] args)
+        {
+            return printf(fmt, args);
+        }
+
         private void Newline()
         {
             writer.Write('\n');
