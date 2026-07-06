@@ -56,5 +56,129 @@ namespace java.awt
             }
             return 1;
         }
+
+        public virtual void setBackground(global::java.awt.Color c)
+        {
+            if (c == null)
+            {
+                return;
+            }
+            if (AvControl is global::Avalonia.Controls.Panel p) { p.Background = c.Brush; }
+            else if (AvControl is global::Avalonia.Controls.Border b) { b.Background = c.Brush; }
+            else if (AvControl is global::Avalonia.Controls.Primitives.TemplatedControl tc) { tc.Background = c.Brush; }
+        }
+
+        public virtual void setForeground(global::java.awt.Color c)
+        {
+            if (c == null)
+            {
+                return;
+            }
+            if (AvControl is global::Avalonia.Controls.TextBlock tb) { tb.Foreground = c.Brush; }
+            else if (AvControl is global::Avalonia.Controls.Primitives.TemplatedControl tc) { tc.Foreground = c.Brush; }
+        }
+
+        public virtual void setFont(global::java.awt.Font f)
+        {
+            if (f == null || AvControl == null)
+            {
+                return;
+            }
+            if (AvControl is global::Avalonia.Controls.TextBlock tb) { tb.FontSize = f.Size; }
+            else if (AvControl is global::Avalonia.Controls.Primitives.TemplatedControl tc) { tc.FontSize = f.Size; }
+        }
+
+        public void setOpaque(int opaque)
+        {
+        }
+
+        public void setDoubleBuffered(int enabled)
+        {
+        }
+
+        public void setFocusable(int focusable)
+        {
+            if (AvControl != null)
+            {
+                AvControl.Focusable = focusable != 0;
+            }
+        }
+
+        public void setToolTipText(global::java.lang.String text)
+        {
+            if (AvControl != null)
+            {
+                global::Avalonia.Controls.ToolTip.SetTip(AvControl, global::java.lang.JRuntime.Cs(text));
+            }
+        }
+
+        public void repaint()
+        {
+            AvControl?.InvalidateVisual();
+        }
+
+        public void revalidate()
+        {
+            AvControl?.InvalidateMeasure();
+        }
+
+
+        private static global::java.awt.@event.MouseEvent MouseEventAt(
+            global::Avalonia.Input.PointerEventArgs e, global::Avalonia.Controls.Control control, int clicks)
+        {
+            var pos = e.GetPosition(control);
+            var me = new global::java.awt.@event.MouseEvent(global::java.lang.RawNew.I);
+            me.X = (int)pos.X;
+            me.Y = (int)pos.Y;
+            me.Button = 1;
+            me.ClickCount = clicks;
+            return me;
+        }
+
+        public void addMouseListener(global::java.awt.@event.MouseListener l)
+        {
+            if (AvControl == null || l == null)
+            {
+                return;
+            }
+            AvControl.PointerPressed += (s, e) => l.mousePressed(MouseEventAt(e, AvControl, 1));
+            AvControl.PointerReleased += (s, e) =>
+            {
+                l.mouseReleased(MouseEventAt(e, AvControl, 1));
+                l.mouseClicked(MouseEventAt(e, AvControl, 1));
+            };
+            AvControl.PointerEntered += (s, e) => l.mouseEntered(MouseEventAt(e, AvControl, 0));
+            AvControl.PointerExited += (s, e) => l.mouseExited(MouseEventAt(e, AvControl, 0));
+        }
+
+        public void addKeyListener(global::java.awt.@event.KeyListener l)
+        {
+            if (AvControl == null || l == null)
+            {
+                return;
+            }
+            AvControl.KeyDown += (s, e) => l.keyPressed(new global::java.awt.@event.KeyEvent(global::java.lang.RawNew.I));
+            AvControl.KeyUp += (s, e) => l.keyReleased(new global::java.awt.@event.KeyEvent(global::java.lang.RawNew.I));
+        }
+
+        public void addMouseMotionListener(global::java.awt.@event.MouseMotionListener l)
+        {
+            if (AvControl == null || l == null)
+            {
+                return;
+            }
+            AvControl.PointerMoved += (s, e) =>
+            {
+                var me = MouseEventAt(e, AvControl, 0);
+                if (e.GetCurrentPoint(AvControl).Properties.IsLeftButtonPressed)
+                {
+                    l.mouseDragged(me);
+                }
+                else
+                {
+                    l.mouseMoved(me);
+                }
+            };
+        }
     }
 }

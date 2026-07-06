@@ -6,6 +6,42 @@ namespace java.awt
         internal int CloseOperation;
         internal Container __contentPane;
         internal global::Avalonia.Threading.DispatcherFrame __modalFrame;
+        internal global::javax.swing.JMenuBar __menuBar;
+
+        public void setTitle(global::java.lang.String title)
+        {
+            if (AvWindow != null)
+            {
+                AvWindow.Title = global::java.lang.JRuntime.Cs(title);
+            }
+        }
+
+        public void setJMenuBar(global::javax.swing.JMenuBar menuBar)
+        {
+            __menuBar = menuBar;
+        }
+
+        public void pack()
+        {
+            if (AvWindow != null)
+            {
+                AvWindow.SizeToContent = global::Avalonia.Controls.SizeToContent.WidthAndHeight;
+            }
+        }
+
+        public void toFront()
+        {
+            AvWindow?.Activate();
+        }
+
+        public void setMinimumSize(global::java.awt.Dimension d)
+        {
+            if (AvWindow != null && d != null)
+            {
+                AvWindow.MinWidth = d.W;
+                AvWindow.MinHeight = d.H;
+            }
+        }
 
         internal void J2csEndModal()
         {
@@ -59,9 +95,23 @@ namespace java.awt
             }
             if (visible != 0)
             {
-                if (__contentPane != null && __contentPane.AvControl != null)
+                global::Avalonia.Controls.Control content =
+                    __contentPane != null ? __contentPane.AvControl : null;
+                if (__menuBar != null && __menuBar.AvControl != null)
                 {
-                    AvWindow.Content = __contentPane.AvControl;
+                    var dock = new global::Avalonia.Controls.DockPanel();
+                    global::Avalonia.Controls.DockPanel.SetDock(__menuBar.AvControl,
+                        global::Avalonia.Controls.Dock.Top);
+                    dock.Children.Add(__menuBar.AvControl);
+                    if (content != null)
+                    {
+                        dock.Children.Add(content);
+                    }
+                    AvWindow.Content = dock;
+                }
+                else if (content != null)
+                {
+                    AvWindow.Content = content;
                 }
                 AvWindow.Show();
             }
@@ -129,6 +179,18 @@ namespace java.awt
         public Container getParent()
         {
             return null;
+        }
+
+        public void addWindowListener(global::java.awt.@event.WindowListener l)
+        {
+            if (AvWindow != null && l != null)
+            {
+                AvWindow.Closed += (sender, e) =>
+                {
+                    l.windowClosing(new global::java.awt.@event.WindowEvent(global::java.lang.RawNew.I));
+                    l.windowClosed(new global::java.awt.@event.WindowEvent(global::java.lang.RawNew.I));
+                };
+            }
         }
     }
 }

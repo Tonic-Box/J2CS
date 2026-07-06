@@ -26,9 +26,24 @@ namespace java.util.concurrent
             return new ScheduledExecutorService(global::java.lang.RawNew.I);
         }
 
+        public static ScheduledExecutorService newScheduledThreadPool(int corePoolSize, ThreadFactory threadFactory)
+        {
+            return new ScheduledExecutorService(global::java.lang.RawNew.I);
+        }
+
         public static ScheduledExecutorService newSingleThreadScheduledExecutor()
         {
             return new ScheduledExecutorService(global::java.lang.RawNew.I);
+        }
+
+        public static ScheduledExecutorService newSingleThreadScheduledExecutor(ThreadFactory threadFactory)
+        {
+            return new ScheduledExecutorService(global::java.lang.RawNew.I);
+        }
+
+        public static ExecutorService newFixedThreadPool(int nThreads, ThreadFactory threadFactory)
+        {
+            return new ExecutorService(global::java.lang.RawNew.I);
         }
     }
 }
