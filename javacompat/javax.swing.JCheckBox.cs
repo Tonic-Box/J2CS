@@ -13,7 +13,13 @@ namespace javax.swing
             if (box == null)
             {
                 box = new global::Avalonia.Controls.CheckBox();
-                AvControl = box;
+                // A BorderLayout region forces the control to stretch, which makes the Fluent
+                // checkbox fill the cell (glyph pinned top-left, label centered). Wrap it so the
+                // stretch lands on the host and the checkbox stays compact at center-left, keeping
+                // glyph and label together.
+                box.HorizontalAlignment = global::Avalonia.Layout.HorizontalAlignment.Left;
+                box.VerticalAlignment = global::Avalonia.Layout.VerticalAlignment.Center;
+                AvControl = new global::Avalonia.Controls.Border { Child = box };
             }
         }
 
