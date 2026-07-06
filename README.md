@@ -1,9 +1,7 @@
 # About
-J2CS is a Java to C# transpiler powered by YABR.
-
+J2CS is a Java to C# transpiler powered by [YABR](https://github.com/Tonic-Box/YABR).
 # Note
 This project is still very much a WIP. It still has its gaps and limitations, and is not yet ready for production use.
-
 # Usage:
 ```
 J2CS - transpiles JVM bytecode (.class/.jar) to C# and builds a native Windows exe.
@@ -32,3 +30,5 @@ options:
 By default the publish produces a self-contained single-file exe (bundled runtime,
 no .NET install required). GUI (Swing/AWT) apps are rendered via Avalonia.
 ```
+# License
+[MIT](.\LICENSE)
