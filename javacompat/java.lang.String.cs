@@ -1,6 +1,6 @@
 namespace java.lang
 {
-    public class String : Object
+    public class String : Object, global::java.lang.CharSequence
     {
         private static readonly global::System.Collections.Concurrent.ConcurrentDictionary<string, String> Pool =
                 new global::System.Collections.Concurrent.ConcurrentDictionary<string, String>();

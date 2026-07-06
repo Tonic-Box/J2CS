@@ -1,0 +1,77 @@
+namespace java.util.stream
+{
+    public sealed class Collectors : global::java.lang.Object
+    {
+        public Collectors(global::java.lang.RawNew r) : base(r)
+        {
+        }
+
+        public static Collector toList()
+        {
+            return Collector.Of(Collector.Kind.List);
+        }
+
+        public static Collector toSet()
+        {
+            return Collector.Of(Collector.Kind.Set);
+        }
+
+        public static Collector joining()
+        {
+            return Collector.Of(Collector.Kind.Joining);
+        }
+
+        private static string Cs(global::java.lang.CharSequence cs)
+        {
+            return cs == null ? "" : cs.toString().Value;
+        }
+
+        public static Collector joining(global::java.lang.CharSequence delimiter)
+        {
+            Collector c = Collector.Of(Collector.Kind.Joining);
+            c.delimiter = Cs(delimiter);
+            return c;
+        }
+
+        public static Collector joining(global::java.lang.CharSequence delimiter,
+            global::java.lang.CharSequence prefix, global::java.lang.CharSequence suffix)
+        {
+            Collector c = Collector.Of(Collector.Kind.Joining);
+            c.delimiter = Cs(delimiter);
+            c.prefix = Cs(prefix);
+            c.suffix = Cs(suffix);
+            return c;
+        }
+
+        public static Collector toMap(global::java.util.function.Function keyMapper,
+            global::java.util.function.Function valueMapper)
+        {
+            Collector c = Collector.Of(Collector.Kind.ToMap);
+            c.keyFn = keyMapper;
+            c.valueFn = valueMapper;
+            return c;
+        }
+
+        public static Collector toMap(global::java.util.function.Function keyMapper,
+            global::java.util.function.Function valueMapper, global::java.util.function.BinaryOperator mergeFunction)
+        {
+            Collector c = Collector.Of(Collector.Kind.ToMap);
+            c.keyFn = keyMapper;
+            c.valueFn = valueMapper;
+            c.mergeFn = mergeFunction;
+            return c;
+        }
+
+        public static Collector groupingBy(global::java.util.function.Function classifier)
+        {
+            Collector c = Collector.Of(Collector.Kind.GroupingBy);
+            c.keyFn = classifier;
+            return c;
+        }
+
+        public static Collector counting()
+        {
+            return Collector.Of(Collector.Kind.Counting);
+        }
+    }
+}

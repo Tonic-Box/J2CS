@@ -52,6 +52,11 @@ namespace java.lang
             return result;
         }
 
+        public static int sum(int a, int b) { return a + b; }
+        public static int max(int a, int b) { return a > b ? a : b; }
+        public static int min(int a, int b) { return a < b ? a : b; }
+        public static int compare(int a, int b) { return a < b ? -1 : (a > b ? 1 : 0); }
+
         public static String toString(int v)
         {
             return String.Wrap(JRuntime.Str(v));

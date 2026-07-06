@@ -160,7 +160,7 @@ public final class LambdaExpander {
             String sourceDesc = i < capturedCount
                     ? capturedDescs.get(i)
                     : samParamDescs.get(i - capturedCount);
-            argExprs.add(reconciler.coerce(effectiveImplParams.get(i), sourceDesc, raw));
+            argExprs.add(adapt(effectiveImplParams.get(i), sourceDesc, raw));
         }
 
         int kind = impl.getReferenceKind();
@@ -183,7 +183,7 @@ public final class LambdaExpander {
         if (samRetDesc.equals("V")) {
             w.line(call + ";");
         } else {
-            w.line("return " + reconciler.coerce(samRetDesc, implRetDesc, call) + ";");
+            w.line("return " + adapt(samRetDesc, implRetDesc, call) + ";");
         }
     }
 
@@ -264,9 +264,54 @@ public final class LambdaExpander {
     }
 
     private static void requireNoBoxing(String sourceDesc, String targetDesc, String implName) {
-        if (TypeMapper.isPrimitiveDescriptor(sourceDesc) != TypeMapper.isPrimitiveDescriptor(targetDesc)) {
-            throw new UnsupportedBodyException("boxing adaptation in lambda not supported: " + implName);
+        // A native C# array is not a shim java.lang.Object, so a SAM that widens an array to a
+        // reference (e.g. IntFunction returning T[] for a T[]::new ref) cannot be adapted.
+        if (sourceDesc.startsWith("[") != targetDesc.startsWith("[")) {
+            throw new UnsupportedBodyException("array/reference adaptation in lambda not supported: " + implName);
         }
+    }
+
+    /**
+     * Coerces a value between the SAM signature and the impl signature, box/unboxing when exactly
+     * one side is primitive (autoboxing at a lambda boundary, e.g. IntBinaryOperator via
+     * Integer::sum, or Function&lt;Integer,..&gt; over an int impl).
+     */
+    private String adapt(String targetDesc, String sourceDesc, String expr) {
+        boolean targetPrim = TypeMapper.isPrimitiveDescriptor(targetDesc);
+        boolean sourcePrim = TypeMapper.isPrimitiveDescriptor(sourceDesc);
+        if (targetPrim == sourcePrim) {
+            return reconciler.coerce(targetDesc, sourceDesc, expr);
+        }
+        return targetPrim ? unbox(targetDesc, expr) : box(sourceDesc, expr);
+    }
+
+    private static String box(String primDesc, String expr) {
+        String type = switch (primDesc) {
+            case "I" -> "Integer";
+            case "J" -> "Long";
+            case "D" -> "Double";
+            case "F" -> "Float";
+            case "S" -> "Short";
+            case "B" -> "Byte";
+            case "C" -> "Character";
+            case "Z" -> "Boolean";
+            default -> throw new UnsupportedBodyException("cannot box " + primDesc);
+        };
+        return "global::java.lang." + type + ".valueOf(" + expr + ")";
+    }
+
+    private static String unbox(String primDesc, String expr) {
+        return switch (primDesc) {
+            case "I" -> "((global::java.lang.Number)" + expr + ").intValue()";
+            case "J" -> "((global::java.lang.Number)" + expr + ").longValue()";
+            case "D" -> "((global::java.lang.Number)" + expr + ").doubleValue()";
+            case "F" -> "((global::java.lang.Number)" + expr + ").floatValue()";
+            case "S" -> "((global::java.lang.Number)" + expr + ").shortValue()";
+            case "B" -> "((global::java.lang.Number)" + expr + ").byteValue()";
+            case "C" -> "((global::java.lang.Character)" + expr + ").charValue()";
+            case "Z" -> "((global::java.lang.Boolean)" + expr + ").booleanValue()";
+            default -> throw new UnsupportedBodyException("cannot unbox " + primDesc);
+        };
     }
 
     private static String join(List<String> parts) {
