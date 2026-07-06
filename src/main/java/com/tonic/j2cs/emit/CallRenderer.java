@@ -5,6 +5,7 @@ import com.tonic.j2cs.naming.MemberNamer;
 import com.tonic.j2cs.naming.NamingContext;
 import com.tonic.j2cs.naming.Resolved;
 import com.tonic.j2cs.naming.ResolvedField;
+import com.tonic.j2cs.shims.ShimRegistry;
 import com.tonic.j2cs.shims.ShimTarget;
 import java.util.Optional;
 
@@ -41,7 +42,14 @@ public final class CallRenderer {
             throw new UnsupportedBodyException(((Resolved.Unresolved) resolved).reason());
         }
         ShimTarget target = shim.target();
-        String ref = target.isStatic() ? CsNamer.fqcn(owner) : adjusted(shim.ownerInternal(), receiver);
+        String ref;
+        if (target.isStatic()) {
+            ref = CsNamer.fqcn(owner);
+        } else if (ShimRegistry.isDefaultInterfaceMethod(shim.ownerInternal(), name, desc)) {
+            ref = reconciler.castTo(shim.ownerInternal(), receiver.expr());
+        } else {
+            ref = adjusted(shim.ownerInternal(), receiver);
+        }
         return ref + "." + target.csMemberName() + "(" + args + ")";
     }
 

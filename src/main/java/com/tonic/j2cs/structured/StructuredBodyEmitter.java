@@ -542,6 +542,12 @@ final class StructuredBodyEmitter {
             w.line(expr(u.getOperand()) + u.getOperator().getSymbol() + ";");
             return;
         }
+        if (e instanceof CastExpr c) {
+            // A discarded value's checkcast is a no-op as a statement, and a bare cast expression
+            // is not a valid C# statement; emit the inner (call/new that carries the side effect).
+            statementExpr(c.getExpression());
+            return;
+        }
         w.line(expr(e) + ";");
     }
 

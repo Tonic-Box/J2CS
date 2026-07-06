@@ -1,9 +1,16 @@
 namespace java.lang
 {
-    public abstract class Number : Object
+    public abstract class Number : Object, Comparable
     {
         public Number(RawNew r) : base(r)
         {
+        }
+
+        public virtual int compareTo(global::java.lang.Object o)
+        {
+            double a = doubleValue();
+            double b = ((Number)o).doubleValue();
+            return a < b ? -1 : (a > b ? 1 : 0);
         }
 
         public abstract int intValue();
