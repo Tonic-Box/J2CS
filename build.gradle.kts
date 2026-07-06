@@ -7,7 +7,8 @@ group = "com.tonic.j2cs"
 version = "0.1.0"
 
 repositories {
-    mavenLocal()
+    //mavenLocal()
+    maven { url = uri("https://www.jitpack.io") }
     mavenCentral()
 }
 
@@ -22,7 +23,8 @@ tasks.withType<JavaCompile>().configureEach {
 }
 
 dependencies {
-    implementation("com.tonic:YABR:1.0.1")
+    //implementation("com.tonic:YABR:1.0.1")
+    implementation("com.github.Tonic-Box:YABR:main-SNAPSHOT")
 
     testImplementation(platform("org.junit:junit-bom:5.10.2"))
     testImplementation("org.junit.jupiter:junit-jupiter")
