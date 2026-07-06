@@ -1,6 +1,6 @@
 namespace java.awt
 {
-    public class Point : global::java.lang.Object
+    public class Point : global::java.awt.geom.Point2D
     {
         public int x;
         public int y;
@@ -26,7 +26,7 @@ namespace java.awt
             }
         }
 
-        public double getX() { return x; }
-        public double getY() { return y; }
+        public override double getX() { return x; }
+        public override double getY() { return y; }
     }
 }

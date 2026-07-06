@@ -14,11 +14,62 @@ namespace javax.swing
             AvControl = bar;
         }
 
+        public void __init_II_V(int min, int max)
+        {
+            bar = new global::Avalonia.Controls.ProgressBar { Minimum = min, Maximum = max };
+            AvControl = bar;
+        }
+
         public void setIndeterminate(int indeterminate)
         {
             if (bar != null)
             {
                 bar.IsIndeterminate = indeterminate != 0;
+            }
+        }
+
+        public void setValue(int value)
+        {
+            if (bar != null)
+            {
+                bar.Value = value;
+            }
+        }
+
+        public int getValue()
+        {
+            return bar == null ? 0 : (int)bar.Value;
+        }
+
+        public void setMinimum(int min)
+        {
+            if (bar != null)
+            {
+                bar.Minimum = min;
+            }
+        }
+
+        public void setMaximum(int max)
+        {
+            if (bar != null)
+            {
+                bar.Maximum = max;
+            }
+        }
+
+        public void setStringPainted(int painted)
+        {
+            if (bar != null)
+            {
+                bar.ShowProgressText = painted != 0;
+            }
+        }
+
+        public void setString(global::java.lang.String s)
+        {
+            if (bar != null)
+            {
+                bar.ProgressTextFormat = global::java.lang.JRuntime.Cs(s);
             }
         }
     }

@@ -2,6 +2,16 @@ namespace java.awt
 {
     public class BorderLayout : global::java.lang.Object, LayoutManager
     {
+        public static readonly global::java.lang.String CENTER = global::java.lang.String.Wrap("Center");
+        public static readonly global::java.lang.String NORTH = global::java.lang.String.Wrap("North");
+        public static readonly global::java.lang.String SOUTH = global::java.lang.String.Wrap("South");
+        public static readonly global::java.lang.String EAST = global::java.lang.String.Wrap("East");
+        public static readonly global::java.lang.String WEST = global::java.lang.String.Wrap("West");
+        public static readonly global::java.lang.String PAGE_START = global::java.lang.String.Wrap("North");
+        public static readonly global::java.lang.String PAGE_END = global::java.lang.String.Wrap("South");
+        public static readonly global::java.lang.String LINE_START = global::java.lang.String.Wrap("West");
+        public static readonly global::java.lang.String LINE_END = global::java.lang.String.Wrap("East");
+
         private int hgap;
         private int vgap;
 

@@ -23,6 +23,12 @@ namespace java.lang
             return v != 0 ? TRUE : FALSE;
         }
 
+        public static int getBoolean(String name)
+        {
+            string v = name == null ? null : global::System.Environment.GetEnvironmentVariable(name.Value);
+            return v != null && v.Equals("true", global::System.StringComparison.OrdinalIgnoreCase) ? 1 : 0;
+        }
+
         public static int parseBoolean(String s)
         {
             return s != null && s.Value.Equals("true", global::System.StringComparison.OrdinalIgnoreCase) ? 1 : 0;

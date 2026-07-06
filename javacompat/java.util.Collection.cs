@@ -27,5 +27,14 @@ namespace java.util
         {
             return stream();
         }
+
+        void forEach(global::java.util.function.Consumer action)
+        {
+            var it = iterator();
+            while (it.hasNext() != 0)
+            {
+                action.accept(it.next());
+            }
+        }
     }
 }

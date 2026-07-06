@@ -6,6 +6,14 @@ namespace java.awt
         internal int Size = 12;
         internal int Style;
 
+        public const int PLAIN = 0;
+        public const int BOLD = 1;
+        public const int ITALIC = 2;
+        public static readonly global::java.lang.String MONOSPACED = global::java.lang.String.Wrap("Monospaced");
+        public static readonly global::java.lang.String SANS_SERIF = global::java.lang.String.Wrap("SansSerif");
+        public static readonly global::java.lang.String SERIF = global::java.lang.String.Wrap("Serif");
+        public static readonly global::java.lang.String DIALOG = global::java.lang.String.Wrap("Dialog");
+
         public Font(global::java.lang.RawNew r) : base(r)
         {
         }

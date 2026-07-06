@@ -63,7 +63,8 @@ namespace java.awt
             {
                 return;
             }
-            if (AvControl is global::Avalonia.Controls.Panel p) { p.Background = c.Brush; }
+            if (AvControl is global::java.awt.J2csPaintSurface ps) { ps.Bg = c.Brush; ps.InvalidateVisual(); }
+            else if (AvControl is global::Avalonia.Controls.Panel p) { p.Background = c.Brush; }
             else if (AvControl is global::Avalonia.Controls.Border b) { b.Background = c.Brush; }
             else if (AvControl is global::Avalonia.Controls.Primitives.TemplatedControl tc) { tc.Background = c.Brush; }
         }
@@ -93,6 +94,27 @@ namespace java.awt
         }
 
         public void setDoubleBuffered(int enabled)
+        {
+        }
+
+        public void registerKeyboardAction(global::java.awt.@event.ActionListener l,
+            global::javax.swing.KeyStroke keyStroke, int condition)
+        {
+        }
+
+        public void putClientProperty(global::java.lang.Object key, global::java.lang.Object value)
+        {
+        }
+
+        public void setBorderPainted(int painted)
+        {
+        }
+
+        public void setFocusPainted(int painted)
+        {
+        }
+
+        public void setContentAreaFilled(int filled)
         {
         }
 
@@ -132,6 +154,11 @@ namespace java.awt
             me.Y = (int)pos.Y;
             me.Button = 1;
             me.ClickCount = clicks;
+            var mods = e.KeyModifiers;
+            me.Shift = (mods & global::Avalonia.Input.KeyModifiers.Shift) != 0;
+            me.Control = (mods & global::Avalonia.Input.KeyModifiers.Control) != 0;
+            me.Alt = (mods & global::Avalonia.Input.KeyModifiers.Alt) != 0;
+            me.Meta = (mods & global::Avalonia.Input.KeyModifiers.Meta) != 0;
             return me;
         }
 

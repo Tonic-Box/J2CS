@@ -8,13 +8,43 @@ namespace javax.swing
         {
         }
 
+        private void Ensure()
+        {
+            if (label == null)
+            {
+                label = new global::Avalonia.Controls.TextBlock();
+                AvControl = label;
+            }
+        }
+
+        public void __init__V()
+        {
+            Ensure();
+        }
+
         public void __init_Ljava_lang_String__V(global::java.lang.String text)
         {
-            label = new global::Avalonia.Controls.TextBlock
+            Ensure();
+            label.Text = global::java.lang.JRuntime.Cs(text);
+        }
+
+        public void __init_Ljava_lang_String_I_V(global::java.lang.String text, int horizontalAlignment)
+        {
+            Ensure();
+            label.Text = global::java.lang.JRuntime.Cs(text);
+            setHorizontalAlignment(horizontalAlignment);
+        }
+
+        public void setHorizontalAlignment(int alignment)
+        {
+            Ensure();
+            label.TextAlignment = alignment switch
             {
-                Text = global::java.lang.JRuntime.Cs(text)
+                0 => global::Avalonia.Media.TextAlignment.Center,
+                4 => global::Avalonia.Media.TextAlignment.Right,
+                11 => global::Avalonia.Media.TextAlignment.Right,
+                _ => global::Avalonia.Media.TextAlignment.Left,
             };
-            AvControl = label;
         }
 
         public void setText(global::java.lang.String text)

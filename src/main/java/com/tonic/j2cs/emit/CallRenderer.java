@@ -99,6 +99,10 @@ public final class CallRenderer {
 
     /** Super-call dispatch on the C# base reference. */
     public String superCall(String owner, String name, String desc, String args) {
+        if (naming.isShimType(owner)
+                && naming.resolveShim(owner, name, desc) instanceof Resolved.ShimMethod shimSuper) {
+            return "base." + shimSuper.target().csMemberName() + "(" + args + ")";
+        }
         Resolved resolved = naming.resolveVirtual(owner, name, desc);
         if (resolved instanceof Resolved.AppMethod appMethod) {
             if (appMethod.viaInterface()) {

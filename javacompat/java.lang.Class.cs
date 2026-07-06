@@ -2,6 +2,9 @@ namespace java.lang
 {
     public class Class : Object
     {
+        private static readonly global::System.Collections.Concurrent.ConcurrentDictionary<string, Class> NameCache =
+            new global::System.Collections.Concurrent.ConcurrentDictionary<string, Class>();
+
         private readonly string name;
         private readonly global::j2cs.reflect.ClassMeta meta;
         private readonly global::System.Type type;
@@ -31,13 +34,13 @@ namespace java.lang
         public static Class Of(string name)
         {
             global::j2cs.reflect.ClassMeta m = global::j2cs.reflect.Registry.ByName(name);
-            return m != null ? m.ClassObject : new Class(name);
+            return m != null ? m.ClassObject : NameCache.GetOrAdd(name, n => new Class(n));
         }
 
         public static Class forType(global::System.Type t)
         {
             global::j2cs.reflect.ClassMeta m = global::j2cs.reflect.Registry.ByType(t);
-            return m != null ? m.ClassObject : new Class(DottedName(t));
+            return m != null ? m.ClassObject : NameCache.GetOrAdd(DottedName(t), n => new Class(n));
         }
 
         private static string DottedName(global::System.Type t)

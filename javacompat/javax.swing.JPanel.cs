@@ -8,12 +8,23 @@ namespace javax.swing
 
         public void __init__V()
         {
-            setLayout(new global::java.awt.FlowLayout(global::java.lang.RawNew.I));
+            var surface = new global::java.awt.J2csPaintSurface();
+            surface.OnRender = ctx =>
+            {
+                var g = new global::java.awt.Graphics2D(global::java.lang.RawNew.I);
+                g.Ctx = ctx;
+                paintComponent(g);
+            };
+            AvControl = surface;
         }
 
         public void __init_Ljava_awt_LayoutManager__V(global::java.awt.LayoutManager lm)
         {
             setLayout(lm);
+        }
+
+        public virtual void paintComponent(global::java.awt.Graphics g)
+        {
         }
     }
 }
