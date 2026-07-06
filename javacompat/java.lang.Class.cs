@@ -119,6 +119,28 @@ namespace java.lang
             return type != null && other != null && other.type != null && type.IsAssignableFrom(other.type) ? 1 : 0;
         }
 
+        public int isAnnotationPresent(Class type)
+        {
+            return meta != null ? global::j2cs.reflect.AnnoQuery.Present(meta.Annotations, type) : 0;
+        }
+
+        public global::java.lang.annotation.Annotation getAnnotation(Class type)
+        {
+            return meta != null ? global::j2cs.reflect.AnnoQuery.Get(meta.Annotations, type) : null;
+        }
+
+        public global::java.lang.annotation.Annotation[] getAnnotationsByType(Class type)
+        {
+            return meta != null
+                ? global::j2cs.reflect.AnnoQuery.ByType(meta.Annotations, type)
+                : global::System.Array.Empty<global::java.lang.annotation.Annotation>();
+        }
+
+        public global::java.lang.annotation.Annotation[] getDeclaredAnnotations()
+        {
+            return meta != null ? meta.Annotations : global::System.Array.Empty<global::java.lang.annotation.Annotation>();
+        }
+
         public global::java.lang.Object cast(global::java.lang.Object o)
         {
             if (o == null || isInstance(o) != 0)

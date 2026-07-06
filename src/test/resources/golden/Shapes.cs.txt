@@ -31,31 +31,31 @@ namespace j2cs.reflect
 
         private static void Register_0()
         {
-            var __m = global::j2cs.reflect.ClassMeta.New("Circle", typeof(global::jdefault.Circle), "java.lang.Object");
-            __m.AddField("count", global::java.lang.Class.Of("int"), 8, __o => global::java.lang.Integer.valueOf(global::jdefault.Circle.count), (__o, __v) => global::jdefault.Circle.count = ((global::java.lang.Number)__v).intValue());
-            __m.AddField("radius", global::java.lang.Class.Of("int"), 0, __o => global::java.lang.Integer.valueOf(((global::jdefault.Circle)__o).radius), (__o, __v) => ((global::jdefault.Circle)__o).radius = ((global::java.lang.Number)__v).intValue());
-            __m.AddMethod("area", global::System.Array.Empty<global::java.lang.Class>(), global::java.lang.Class.Of("int"), 0, (__o, __a) => global::java.lang.Integer.valueOf(((global::jdefault.Circle)__o).area()));
-            __m.AddMethod("toString", global::System.Array.Empty<global::java.lang.Class>(), global::java.lang.Class.Of("java.lang.String"), 1, (__o, __a) => (global::java.lang.Object)(((global::jdefault.Circle)__o).toString()));
+            var __m = global::j2cs.reflect.ClassMeta.New("Circle", typeof(global::jdefault.Circle), "java.lang.Object").WithAnnotations(global::System.Array.Empty<global::java.lang.annotation.Annotation>());
+            __m.AddField("count", global::java.lang.Class.Of("int"), 8, __o => global::java.lang.Integer.valueOf(global::jdefault.Circle.count), (__o, __v) => global::jdefault.Circle.count = ((global::java.lang.Number)__v).intValue(), global::System.Array.Empty<global::java.lang.annotation.Annotation>());
+            __m.AddField("radius", global::java.lang.Class.Of("int"), 0, __o => global::java.lang.Integer.valueOf(((global::jdefault.Circle)__o).radius), (__o, __v) => ((global::jdefault.Circle)__o).radius = ((global::java.lang.Number)__v).intValue(), global::System.Array.Empty<global::java.lang.annotation.Annotation>());
+            __m.AddMethod("area", global::System.Array.Empty<global::java.lang.Class>(), global::java.lang.Class.Of("int"), 0, (__o, __a) => global::java.lang.Integer.valueOf(((global::jdefault.Circle)__o).area()), global::System.Array.Empty<global::java.lang.annotation.Annotation>());
+            __m.AddMethod("toString", global::System.Array.Empty<global::java.lang.Class>(), global::java.lang.Class.Of("java.lang.String"), 1, (__o, __a) => (global::java.lang.Object)(((global::jdefault.Circle)__o).toString()), global::System.Array.Empty<global::java.lang.annotation.Annotation>());
             __m.AddCtor(new global::java.lang.Class[]{ global::java.lang.Class.Of("int") }, 0, __a => { var __o = new global::jdefault.Circle(global::java.lang.RawNew.I); __o.__init_I_V(((global::java.lang.Number)__a[0]).intValue()); return __o; });
             global::j2cs.reflect.Registry.Register(__m);
         }
 
         private static void Register_1()
         {
-            var __m = global::j2cs.reflect.ClassMeta.New("Counter", typeof(global::jdefault.Counter), "java.lang.Object");
-            __m.AddField("value", global::java.lang.Class.Of("int"), 8, __o => global::java.lang.Integer.valueOf(global::jdefault.Counter.value), (__o, __v) => global::jdefault.Counter.value = ((global::java.lang.Number)__v).intValue());
-            __m.AddMethod("next", global::System.Array.Empty<global::java.lang.Class>(), global::java.lang.Class.Of("int"), 8, (__o, __a) => global::java.lang.Integer.valueOf(global::jdefault.Counter.next()));
+            var __m = global::j2cs.reflect.ClassMeta.New("Counter", typeof(global::jdefault.Counter), "java.lang.Object").WithAnnotations(global::System.Array.Empty<global::java.lang.annotation.Annotation>());
+            __m.AddField("value", global::java.lang.Class.Of("int"), 8, __o => global::java.lang.Integer.valueOf(global::jdefault.Counter.value), (__o, __v) => global::jdefault.Counter.value = ((global::java.lang.Number)__v).intValue(), global::System.Array.Empty<global::java.lang.annotation.Annotation>());
+            __m.AddMethod("next", global::System.Array.Empty<global::java.lang.Class>(), global::java.lang.Class.Of("int"), 8, (__o, __a) => global::java.lang.Integer.valueOf(global::jdefault.Counter.next()), global::System.Array.Empty<global::java.lang.annotation.Annotation>());
             __m.AddCtor(global::System.Array.Empty<global::java.lang.Class>(), 0, __a => { var __o = new global::jdefault.Counter(global::java.lang.RawNew.I); __o.__init__V(); return __o; });
             global::j2cs.reflect.Registry.Register(__m);
         }
 
         private static void Register_2()
         {
-            var __m = global::j2cs.reflect.ClassMeta.New("Rect", typeof(global::jdefault.Rect), "java.lang.Object");
-            __m.AddField("w", global::java.lang.Class.Of("int"), 0, __o => global::java.lang.Integer.valueOf(((global::jdefault.Rect)__o).w), (__o, __v) => ((global::jdefault.Rect)__o).w = ((global::java.lang.Number)__v).intValue());
-            __m.AddField("h", global::java.lang.Class.Of("int"), 0, __o => global::java.lang.Integer.valueOf(((global::jdefault.Rect)__o).h), (__o, __v) => ((global::jdefault.Rect)__o).h = ((global::java.lang.Number)__v).intValue());
-            __m.AddMethod("area", global::System.Array.Empty<global::java.lang.Class>(), global::java.lang.Class.Of("int"), 0, (__o, __a) => global::java.lang.Integer.valueOf(((global::jdefault.Rect)__o).area()));
-            __m.AddMethod("describe", global::System.Array.Empty<global::java.lang.Class>(), global::java.lang.Class.Of("java.lang.String"), 0, (__o, __a) => (global::java.lang.Object)(((global::jdefault.Rect)__o).describe()));
+            var __m = global::j2cs.reflect.ClassMeta.New("Rect", typeof(global::jdefault.Rect), "java.lang.Object").WithAnnotations(global::System.Array.Empty<global::java.lang.annotation.Annotation>());
+            __m.AddField("w", global::java.lang.Class.Of("int"), 0, __o => global::java.lang.Integer.valueOf(((global::jdefault.Rect)__o).w), (__o, __v) => ((global::jdefault.Rect)__o).w = ((global::java.lang.Number)__v).intValue(), global::System.Array.Empty<global::java.lang.annotation.Annotation>());
+            __m.AddField("h", global::java.lang.Class.Of("int"), 0, __o => global::java.lang.Integer.valueOf(((global::jdefault.Rect)__o).h), (__o, __v) => ((global::jdefault.Rect)__o).h = ((global::java.lang.Number)__v).intValue(), global::System.Array.Empty<global::java.lang.annotation.Annotation>());
+            __m.AddMethod("area", global::System.Array.Empty<global::java.lang.Class>(), global::java.lang.Class.Of("int"), 0, (__o, __a) => global::java.lang.Integer.valueOf(((global::jdefault.Rect)__o).area()), global::System.Array.Empty<global::java.lang.annotation.Annotation>());
+            __m.AddMethod("describe", global::System.Array.Empty<global::java.lang.Class>(), global::java.lang.Class.Of("java.lang.String"), 0, (__o, __a) => (global::java.lang.Object)(((global::jdefault.Rect)__o).describe()), global::System.Array.Empty<global::java.lang.annotation.Annotation>());
             __m.AddCtor(new global::java.lang.Class[]{ global::java.lang.Class.Of("int"), global::java.lang.Class.Of("int") }, 0, __a => { var __o = new global::jdefault.Rect(global::java.lang.RawNew.I); __o.__init_II_V(((global::java.lang.Number)__a[0]).intValue(), ((global::java.lang.Number)__a[1]).intValue()); return __o; });
             __m.AddCtor(new global::java.lang.Class[]{ global::java.lang.Class.Of("int") }, 0, __a => { var __o = new global::jdefault.Rect(global::java.lang.RawNew.I); __o.__init_I_V(((global::java.lang.Number)__a[0]).intValue()); return __o; });
             global::j2cs.reflect.Registry.Register(__m);
@@ -63,8 +63,8 @@ namespace j2cs.reflect
 
         private static void Register_3()
         {
-            var __m = global::j2cs.reflect.ClassMeta.New("Shapes", typeof(global::jdefault.Shapes), "java.lang.Object");
-            __m.AddMethod("main", new global::java.lang.Class[]{ global::java.lang.Class.Of("[Ljava.lang.String;") }, global::java.lang.Class.Of("void"), 9, (__o, __a) => throw new global::System.NotSupportedException("j2cs: reflective access to array-signature member not supported"));
+            var __m = global::j2cs.reflect.ClassMeta.New("Shapes", typeof(global::jdefault.Shapes), "java.lang.Object").WithAnnotations(global::System.Array.Empty<global::java.lang.annotation.Annotation>());
+            __m.AddMethod("main", new global::java.lang.Class[]{ global::java.lang.Class.Of("[Ljava.lang.String;") }, global::java.lang.Class.Of("void"), 9, (__o, __a) => throw new global::System.NotSupportedException("j2cs: reflective access to array-signature member not supported"), global::System.Array.Empty<global::java.lang.annotation.Annotation>());
             __m.AddCtor(global::System.Array.Empty<global::java.lang.Class>(), 1, __a => { var __o = new global::jdefault.Shapes(global::java.lang.RawNew.I); __o.__init__V(); return __o; });
             global::j2cs.reflect.Registry.Register(__m);
         }

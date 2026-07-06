@@ -2,6 +2,7 @@ package com.tonic.j2cs.pipeline;
 
 import com.tonic.j2cs.bootstrap.BootstrapPolicy;
 import com.tonic.j2cs.cli.CliOptions;
+import com.tonic.j2cs.emit.AnnotationEmitter;
 import com.tonic.j2cs.emit.ClassEmitter;
 import com.tonic.j2cs.emit.CsWriter;
 import com.tonic.j2cs.emit.EntryPointEmitter;
@@ -84,7 +85,17 @@ public final class Transpiler {
             }
         }
         genFiles.putAll(synthetics.files());
-        genFiles.put("j2cs.reflect.__Bootstrap", reflectionBootstrap(reflectClasses, naming));
+        Map<String, ClassFile> byInternal = new LinkedHashMap<>();
+        for (ClassFile cf : allClasses) {
+            byInternal.put(cf.getClassName(), cf);
+        }
+        AnnotationEmitter annoEmitter = new AnnotationEmitter(naming, byInternal);
+        genFiles.put("j2cs.reflect.__Bootstrap", reflectionBootstrap(reflectClasses, naming, annoEmitter));
+        if (annoEmitter.hasImpls()) {
+            CsWriter aw = new CsWriter();
+            annoEmitter.emitImpls(aw);
+            genFiles.put("j2cs.anno.__Impls", aw.toString());
+        }
         Map<String, String> stubFiles = emitStubs(referenced, naming, interfacePositionStubs, report);
         addStandingDivergences(report);
         boolean usesGui = referenced.stream()
@@ -174,8 +185,9 @@ public final class Transpiler {
      * members are internal/public, so cross-class thunks in the same assembly reach them; typeof and
      * the delegate bodies never run the target clinit until reflection actually invokes them.
      */
-    private static String reflectionBootstrap(List<ClassFile> reflectClasses, NamingContext naming) {
-        ReflectionMetadataEmitter emitter = new ReflectionMetadataEmitter(naming);
+    private static String reflectionBootstrap(List<ClassFile> reflectClasses, NamingContext naming,
+                                              AnnotationEmitter annoEmitter) {
+        ReflectionMetadataEmitter emitter = new ReflectionMetadataEmitter(naming, annoEmitter);
         CsWriter w = new CsWriter();
         w.open("namespace j2cs.reflect");
         w.open("internal static class __Bootstrap");

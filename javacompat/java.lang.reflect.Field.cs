@@ -8,10 +8,12 @@ namespace java.lang.reflect
         private readonly int modifiers;
         private readonly global::System.Func<global::java.lang.Object, global::java.lang.Object> getter;
         private readonly global::System.Action<global::java.lang.Object, global::java.lang.Object> setter;
+        private readonly global::java.lang.annotation.Annotation[] annotations;
 
         private Field(global::java.lang.Class declaringClass, string name, global::java.lang.Class type, int modifiers,
             global::System.Func<global::java.lang.Object, global::java.lang.Object> getter,
-            global::System.Action<global::java.lang.Object, global::java.lang.Object> setter)
+            global::System.Action<global::java.lang.Object, global::java.lang.Object> setter,
+            global::java.lang.annotation.Annotation[] annotations)
             : base(global::java.lang.RawNew.I)
         {
             this.declaringClass = declaringClass;
@@ -20,13 +22,35 @@ namespace java.lang.reflect
             this.modifiers = modifiers;
             this.getter = getter;
             this.setter = setter;
+            this.annotations = annotations;
         }
 
         public static Field __Make(global::java.lang.Class declaringClass, string name, global::java.lang.Class type,
             int modifiers, global::System.Func<global::java.lang.Object, global::java.lang.Object> getter,
-            global::System.Action<global::java.lang.Object, global::java.lang.Object> setter)
+            global::System.Action<global::java.lang.Object, global::java.lang.Object> setter,
+            global::java.lang.annotation.Annotation[] annotations)
         {
-            return new Field(declaringClass, name, type, modifiers, getter, setter);
+            return new Field(declaringClass, name, type, modifiers, getter, setter, annotations);
+        }
+
+        public int isAnnotationPresent(global::java.lang.Class type)
+        {
+            return global::j2cs.reflect.AnnoQuery.Present(annotations, type);
+        }
+
+        public global::java.lang.annotation.Annotation getAnnotation(global::java.lang.Class type)
+        {
+            return global::j2cs.reflect.AnnoQuery.Get(annotations, type);
+        }
+
+        public global::java.lang.annotation.Annotation[] getAnnotationsByType(global::java.lang.Class type)
+        {
+            return global::j2cs.reflect.AnnoQuery.ByType(annotations, type);
+        }
+
+        public global::java.lang.annotation.Annotation[] getDeclaredAnnotations()
+        {
+            return annotations;
         }
 
         public string NameString => name;

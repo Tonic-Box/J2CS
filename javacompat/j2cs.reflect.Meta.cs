@@ -5,6 +5,43 @@ namespace j2cs.reflect
     using Method = global::java.lang.reflect.Method;
     using Field = global::java.lang.reflect.Field;
     using Ctor = global::java.lang.reflect.Constructor;
+    using Annotation = global::java.lang.annotation.Annotation;
+
+    /// <summary>Shared annotation lookup by annotation-type name, used by Class/Method/Field.</summary>
+    public static class AnnoQuery
+    {
+        public static Annotation Get(Annotation[] anns, JClass type)
+        {
+            string want = type.getName().Value;
+            foreach (Annotation a in anns)
+            {
+                if (a.annotationType().getName().Value == want)
+                {
+                    return a;
+                }
+            }
+            return null;
+        }
+
+        public static int Present(Annotation[] anns, JClass type)
+        {
+            return Get(anns, type) != null ? 1 : 0;
+        }
+
+        public static Annotation[] ByType(Annotation[] anns, JClass type)
+        {
+            string want = type.getName().Value;
+            var list = new global::System.Collections.Generic.List<Annotation>();
+            foreach (Annotation a in anns)
+            {
+                if (a.annotationType().getName().Value == want)
+                {
+                    list.Add(a);
+                }
+            }
+            return list.ToArray();
+        }
+    }
 
     /// <summary>
     /// Runtime reflection registry. Generated per-class __RegisterReflection() methods build a
@@ -47,6 +84,7 @@ namespace j2cs.reflect
         public readonly string Name;
         public readonly global::System.Type Type;
         public readonly string SuperName;
+        private Annotation[] annotations = global::System.Array.Empty<Annotation>();
         private readonly JClass classObject;
         private readonly global::System.Collections.Generic.List<Field> fields =
             new global::System.Collections.Generic.List<Field>();
@@ -69,19 +107,26 @@ namespace j2cs.reflect
         }
 
         public JClass ClassObject => classObject;
+        public Annotation[] Annotations => annotations;
+
+        public ClassMeta WithAnnotations(Annotation[] anns)
+        {
+            annotations = anns;
+            return this;
+        }
 
         public ClassMeta AddField(string name, JClass type, int modifiers,
             global::System.Func<JObject, JObject> getter,
-            global::System.Action<JObject, JObject> setter)
+            global::System.Action<JObject, JObject> setter, Annotation[] anns)
         {
-            fields.Add(Field.__Make(classObject, name, type, modifiers, getter, setter));
+            fields.Add(Field.__Make(classObject, name, type, modifiers, getter, setter, anns));
             return this;
         }
 
         public ClassMeta AddMethod(string name, JClass[] paramTypes, JClass returnType, int modifiers,
-            global::System.Func<JObject, JObject[], JObject> invoker)
+            global::System.Func<JObject, JObject[], JObject> invoker, Annotation[] anns)
         {
-            methods.Add(Method.__Make(classObject, name, paramTypes, returnType, modifiers, invoker));
+            methods.Add(Method.__Make(classObject, name, paramTypes, returnType, modifiers, invoker, anns));
             return this;
         }
 

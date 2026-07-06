@@ -1,15 +1,30 @@
+import java.lang.annotation.*;
 import java.lang.reflect.*;
 import java.util.*;
 
 public class Reflection {
+    enum Level { LOW, HIGH }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({ElementType.TYPE, ElementType.METHOD, ElementType.FIELD})
+    @interface Info {
+        String value();
+        int order() default 0;
+        boolean active() default true;
+        double weight() default 1.5;
+        Level level() default Level.LOW;
+        String[] tags() default {};
+    }
+
     static class Base {
         int baseValue = 7;
     }
 
+    @Info(value = "point-class", order = 3, level = Level.HIGH, tags = {"a", "b"})
     static class Point extends Base {
+        @Info("x-field")
         private int x;
         private int y;
-        public boolean flag;
 
         public Point() {
             this.x = 0;
@@ -21,6 +36,7 @@ public class Reflection {
             this.y = y;
         }
 
+        @Info(value = "sum-method", order = 1, active = false, weight = 2.25)
         public int sum() {
             return x + y;
         }
@@ -28,78 +44,39 @@ public class Reflection {
         public int scale(int factor) {
             return (x + y) * factor;
         }
-
-        public String describe(String prefix) {
-            return prefix + ":" + x + "," + y;
-        }
     }
 
     public static void main(String[] args) throws Exception {
         Class<?> c = Point.class;
-        System.out.println(c.getName());
-        System.out.println(c.getSimpleName());
-        System.out.println(c.getSuperclass().getSimpleName());
 
-        Point p = new Point(3, 4);
-        System.out.println(c.isInstance(p));
-        System.out.println(c.isAssignableFrom(Point.class));
-        System.out.println(Base.class.isAssignableFrom(Point.class));
-        System.out.println(Point.class.isAssignableFrom(Base.class));
-
-        Object cast = c.cast(p);
-        System.out.println(cast instanceof Point);
-
-        Field[] fields = c.getDeclaredFields();
-        List<String> fieldDescs = new ArrayList<>();
-        for (Field f : fields) {
-            fieldDescs.add(f.getName() + ":" + f.getType().getName() + ":" + Modifier.toString(f.getModifiers()));
-        }
-        Collections.sort(fieldDescs);
-        for (String s : fieldDescs) {
-            System.out.println(s);
-        }
+        Info ci = c.getAnnotation(Info.class);
+        System.out.println(c.isAnnotationPresent(Info.class));
+        System.out.println(ci.value() + "/" + ci.order() + "/" + ci.level() + "/" + ci.active() + "/" + ci.weight());
+        System.out.println(Arrays.toString(ci.tags()));
+        System.out.println(Base.class.isAnnotationPresent(Info.class));
 
         Field fx = c.getDeclaredField("x");
-        fx.setAccessible(true);
-        System.out.println(fx.getInt(p));
-        fx.setInt(p, 10);
-        System.out.println(p.sum());
+        System.out.println(fx.isAnnotationPresent(Info.class));
+        System.out.println(fx.getAnnotation(Info.class).value());
+        Field fy = c.getDeclaredField("y");
+        System.out.println(fy.isAnnotationPresent(Info.class));
 
-        Field ff = c.getDeclaredField("flag");
-        ff.setBoolean(p, true);
-        System.out.println(p.flag);
-
-        Method[] methods = c.getDeclaredMethods();
-        List<String> methodDescs = new ArrayList<>();
-        for (Method m : methods) {
-            methodDescs.add(m.getName() + "/" + m.getParameterCount() + "/" + m.getReturnType().getName());
-        }
-        Collections.sort(methodDescs);
-        for (String s : methodDescs) {
-            System.out.println(s);
-        }
-
+        Method sum = c.getDeclaredMethod("sum");
+        Info mi = sum.getAnnotation(Info.class);
+        System.out.println(mi.value() + "/" + mi.order() + "/" + mi.active() + "/" + mi.weight());
+        System.out.println(mi.tags().length);
         Method scale = c.getDeclaredMethod("scale", int.class);
-        System.out.println(scale.invoke(p, 5));
+        System.out.println(scale.isAnnotationPresent(Info.class));
 
-        Method describe = c.getDeclaredMethod("describe", String.class);
-        System.out.println(describe.invoke(p, "pt"));
-
-        Constructor<?>[] ctors = c.getDeclaredConstructors();
-        List<Integer> counts = new ArrayList<>();
-        for (Constructor<?> ct : ctors) {
-            counts.add(ct.getParameterCount());
-        }
-        Collections.sort(counts);
-        System.out.println(counts);
-
-        for (Constructor<?> ct : ctors) {
-            if (ct.getParameterCount() == 2) {
-                Point p2 = (Point) ct.newInstance(8, 9);
-                System.out.println(p2.sum());
+        int annotatedMethods = 0;
+        for (Method m : c.getDeclaredMethods()) {
+            if (m.isAnnotationPresent(Info.class)) {
+                annotatedMethods++;
             }
         }
+        System.out.println(annotatedMethods);
 
-        System.out.println(Modifier.isPublic(c.getDeclaredMethod("sum").getModifiers()));
+        Point p = new Point(3, 4);
+        System.out.println(sum.invoke(p));
     }
 }

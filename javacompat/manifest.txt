@@ -63,6 +63,7 @@ java.lang.System.cs
 java.lang.Thread.cs
 java.lang.Throwable.cs
 java.lang.Void.cs
+java.lang.annotation.Annotation.cs
 java.lang.reflect.Constructor.cs
 java.lang.reflect.Field.cs
 java.lang.reflect.Method.cs

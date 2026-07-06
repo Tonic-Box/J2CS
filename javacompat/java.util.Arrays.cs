@@ -6,6 +6,25 @@ namespace java.util
         {
         }
 
+        public static global::java.lang.String toString(global::java.lang.Object[] array)
+        {
+            if (array == null)
+            {
+                return global::java.lang.String.Wrap("null");
+            }
+            var sb = new global::System.Text.StringBuilder("[");
+            for (int i = 0; i < array.Length; i++)
+            {
+                if (i > 0)
+                {
+                    sb.Append(", ");
+                }
+                sb.Append(global::java.lang.JRuntime.Str(array[i]));
+            }
+            sb.Append(']');
+            return global::java.lang.String.Wrap(sb.ToString());
+        }
+
         public static global::java.util.stream.Stream stream(global::java.lang.Object[] array)
         {
             var list = new global::System.Collections.Generic.List<global::java.lang.Object>(

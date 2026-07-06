@@ -5,6 +5,7 @@ import com.tonic.j2cs.naming.MemberNamer;
 import com.tonic.j2cs.naming.NamingContext;
 import com.tonic.j2cs.types.TypeMapper;
 import com.tonic.parser.ClassFile;
+import com.tonic.parser.ConstPool;
 import com.tonic.parser.FieldEntry;
 import com.tonic.parser.MethodEntry;
 import java.util.ArrayList;
@@ -25,9 +26,11 @@ public final class ReflectionMetadataEmitter {
                     + "\"j2cs: reflective access to array-signature member not supported\")";
 
     private final NamingContext naming;
+    private final AnnotationEmitter annotations;
 
-    public ReflectionMetadataEmitter(NamingContext naming) {
+    public ReflectionMetadataEmitter(NamingContext naming, AnnotationEmitter annotations) {
         this.naming = naming;
+        this.annotations = annotations;
     }
 
     /** App, non-bootstrapped, non-interface classes carry generated reflection metadata. */
@@ -40,17 +43,19 @@ public final class ReflectionMetadataEmitter {
         String fqcn = CsNamer.fqcn(internalName);
         String superName = classFile.getSuperClassName();
         String superArg = superName == null ? "null" : CsStrings.quote(superName.replace('/', '.'));
+        ConstPool pool = classFile.getConstPool();
 
         w.open("private static void " + methodName + "()");
         w.line("var __m = global::j2cs.reflect.ClassMeta.New("
-                + CsStrings.quote(internalName.replace('/', '.')) + ", typeof(" + fqcn + "), " + superArg + ");");
+                + CsStrings.quote(internalName.replace('/', '.')) + ", typeof(" + fqcn + "), " + superArg
+                + ").WithAnnotations(" + annotations.arrayExpr(classFile.getClassAttributes(), pool) + ");");
 
         for (FieldEntry field : classFile.getFields()) {
             String csName = namer.findFieldName(field.getName(), field.getDesc());
             if (csName == null) {
                 continue;
             }
-            emitField(w, types, fqcn, field, csName);
+            emitField(w, types, fqcn, field, csName, annotations.arrayExpr(field.getAttributes(), pool));
         }
         for (MethodEntry method : classFile.getMethods()) {
             String name = method.getName();
@@ -64,7 +69,7 @@ public final class ReflectionMetadataEmitter {
             if (csName == null) {
                 continue;
             }
-            emitMethod(w, types, fqcn, method, csName);
+            emitMethod(w, types, fqcn, method, csName, annotations.arrayExpr(method.getAttributes(), pool));
         }
         boolean isAbstract = com.tonic.util.Modifiers.isAbstract(classFile.getAccess());
         for (MethodEntry ctor : classFile.getConstructors()) {
@@ -74,7 +79,7 @@ public final class ReflectionMetadataEmitter {
         w.close();
     }
 
-    private void emitField(CsWriter w, TypeMapper types, String fqcn, FieldEntry field, String csName) {
+    private void emitField(CsWriter w, TypeMapper types, String fqcn, FieldEntry field, String csName, String annoExpr) {
         String desc = field.getDesc();
         boolean isStatic = com.tonic.util.Modifiers.isStatic(field.getAccess());
         String ref = (isStatic ? fqcn : "((" + fqcn + ")__o)") + "." + csName;
@@ -91,10 +96,10 @@ public final class ReflectionMetadataEmitter {
             setter = "(__o, __v) => " + ref + " = (" + types.storageType(desc).csText() + ")__v";
         }
         w.line("__m.AddField(" + CsStrings.quote(field.getName()) + ", " + classOf(desc) + ", "
-                + field.getAccess() + ", " + getter + ", " + setter + ");");
+                + field.getAccess() + ", " + getter + ", " + setter + ", " + annoExpr + ");");
     }
 
-    private void emitMethod(CsWriter w, TypeMapper types, String fqcn, MethodEntry method, String csName) {
+    private void emitMethod(CsWriter w, TypeMapper types, String fqcn, MethodEntry method, String csName, String annoExpr) {
         String desc = method.getDesc();
         List<String> params = TypeMapper.splitParams(desc);
         String ret = TypeMapper.returnDescriptor(desc);
@@ -115,7 +120,7 @@ public final class ReflectionMetadataEmitter {
             }
         }
         w.line("__m.AddMethod(" + CsStrings.quote(method.getName()) + ", " + classArray(params) + ", "
-                + classOf(ret) + ", " + method.getAccess() + ", " + invoker + ");");
+                + classOf(ret) + ", " + method.getAccess() + ", " + invoker + ", " + annoExpr + ");");
     }
 
     private void emitConstructor(CsWriter w, TypeMapper types, String fqcn, MethodEntry ctor, boolean isAbstract) {

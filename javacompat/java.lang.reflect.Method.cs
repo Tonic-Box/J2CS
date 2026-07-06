@@ -8,10 +8,12 @@ namespace java.lang.reflect
         private readonly global::java.lang.Class returnType;
         private readonly int modifiers;
         private readonly global::System.Func<global::java.lang.Object, global::java.lang.Object[], global::java.lang.Object> invoker;
+        private readonly global::java.lang.annotation.Annotation[] annotations;
 
         private Method(global::java.lang.Class declaringClass, string name, global::java.lang.Class[] paramTypes,
             global::java.lang.Class returnType, int modifiers,
-            global::System.Func<global::java.lang.Object, global::java.lang.Object[], global::java.lang.Object> invoker)
+            global::System.Func<global::java.lang.Object, global::java.lang.Object[], global::java.lang.Object> invoker,
+            global::java.lang.annotation.Annotation[] annotations)
             : base(global::java.lang.RawNew.I)
         {
             this.declaringClass = declaringClass;
@@ -20,13 +22,35 @@ namespace java.lang.reflect
             this.returnType = returnType;
             this.modifiers = modifiers;
             this.invoker = invoker;
+            this.annotations = annotations;
         }
 
         public static Method __Make(global::java.lang.Class declaringClass, string name,
             global::java.lang.Class[] paramTypes, global::java.lang.Class returnType, int modifiers,
-            global::System.Func<global::java.lang.Object, global::java.lang.Object[], global::java.lang.Object> invoker)
+            global::System.Func<global::java.lang.Object, global::java.lang.Object[], global::java.lang.Object> invoker,
+            global::java.lang.annotation.Annotation[] annotations)
         {
-            return new Method(declaringClass, name, paramTypes, returnType, modifiers, invoker);
+            return new Method(declaringClass, name, paramTypes, returnType, modifiers, invoker, annotations);
+        }
+
+        public int isAnnotationPresent(global::java.lang.Class type)
+        {
+            return global::j2cs.reflect.AnnoQuery.Present(annotations, type);
+        }
+
+        public global::java.lang.annotation.Annotation getAnnotation(global::java.lang.Class type)
+        {
+            return global::j2cs.reflect.AnnoQuery.Get(annotations, type);
+        }
+
+        public global::java.lang.annotation.Annotation[] getAnnotationsByType(global::java.lang.Class type)
+        {
+            return global::j2cs.reflect.AnnoQuery.ByType(annotations, type);
+        }
+
+        public global::java.lang.annotation.Annotation[] getDeclaredAnnotations()
+        {
+            return annotations;
         }
 
         public string NameString => name;
