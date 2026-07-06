@@ -1,5 +1,5 @@
 # About
-J2CS is a Jave to C# transpiler powered by YABR.
+J2CS is a Java to C# transpiler powered by YABR.
 
 # Note
 This project is still very much a WIP. It still has its gaps and limitations, and is not yet ready for production use.
