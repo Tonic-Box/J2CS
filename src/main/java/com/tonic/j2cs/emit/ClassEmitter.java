@@ -205,11 +205,15 @@ public final class ClassEmitter {
     }
 
     private static String interfacePrefix(MethodEntry method) {
-        if (Modifiers.isStatic(method.getAccess())) {
-            return "static ";
+        int access = method.getAccess();
+        // Private interface members (e.g. a default method's lambda impl) must be internal, not
+        // private: the synthetic lambda class calls them through the interface reference and C#
+        // forbids that on a private member. Matches the class path (MethodModifiers.prefixFor).
+        if (Modifiers.isPrivate(access)) {
+            return Modifiers.isStatic(access) ? "internal static " : "internal ";
         }
-        if (Modifiers.isPrivate(method.getAccess())) {
-            return "private ";
+        if (Modifiers.isStatic(access)) {
+            return "static ";
         }
         return "";
     }
