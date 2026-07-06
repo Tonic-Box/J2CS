@@ -32,6 +32,7 @@ public final class NamingContext {
     private final Map<String, MemberNamer> namers = new HashMap<>();
     private final Map<String, ClassFile> appClassFiles = new HashMap<>();
     private final Map<String, Set<String>> uniqueCtorDescs = new HashMap<>();
+    private final Map<String, Map<String, Integer>> enumOrdinals = new HashMap<>();
     private final Map<String, String> classUnsupportedReasons = new LinkedHashMap<>();
     private Set<String> bootstrapped = Set.of();
     private Set<String> suppressedMethodKeys = Set.of();
@@ -185,6 +186,32 @@ public final class NamingContext {
             }
         });
         return unique;
+    }
+
+    /**
+     * Ordinal of an app enum's constant: its index among the enum's own-typed static fields in
+     * declaration order — the same order values() is synthesized from. -1 when the class is not
+     * an app enum or the constant is unknown.
+     */
+    public int enumConstantOrdinal(String enumInternal, String constantName) {
+        Map<String, Integer> ordinals = enumOrdinals.computeIfAbsent(enumInternal, this::computeEnumOrdinals);
+        return ordinals.getOrDefault(constantName, -1);
+    }
+
+    private Map<String, Integer> computeEnumOrdinals(String enumInternal) {
+        ClassFile cf = appClassFiles.get(enumInternal);
+        if (cf == null || !"java/lang/Enum".equals(cf.getSuperClassName())) {
+            return Map.of();
+        }
+        String constantDesc = "L" + enumInternal + ";";
+        Map<String, Integer> ordinals = new LinkedHashMap<>();
+        int ordinal = 0;
+        for (com.tonic.parser.FieldEntry field : cf.getFields()) {
+            if (Modifiers.isStatic(field.getAccess()) && constantDesc.equals(field.getDesc())) {
+                ordinals.put(field.getName(), ordinal++);
+            }
+        }
+        return ordinals;
     }
 
     /**

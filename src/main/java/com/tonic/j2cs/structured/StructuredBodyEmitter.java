@@ -411,8 +411,20 @@ final class StructuredBodyEmitter {
     }
 
     private void emitSwitch(SwitchStmt sw) {
-        String selector = expr(sw.getSelector());
-        List<SwitchCase> cases = sw.getCases();
+        boolean enumLabels = sw.getCases().stream().anyMatch(SwitchCase::hasExpressionLabels);
+        String selector;
+        List<SwitchCase> cases;
+        Map<Integer, String> labelNames;
+        if (enumLabels) {
+            LoweredEnumSwitch lowered = lowerEnumSwitch(sw);
+            selector = lowered.selector();
+            cases = lowered.cases();
+            labelNames = lowered.labelNames();
+        } else {
+            selector = expr(sw.getSelector());
+            cases = sw.getCases();
+            labelNames = Map.of();
+        }
         pushScope();
         w.open("switch (" + selector + ")");
         for (int i = 0; i < cases.size(); i++) {
@@ -424,7 +436,8 @@ final class StructuredBodyEmitter {
                 w.line("default:");
             } else {
                 for (int label : c.labels()) {
-                    w.line("case " + label + ":");
+                    String name = labelNames.get(label);
+                    w.line("case " + label + ":" + (name == null ? "" : " // " + name));
                 }
             }
             w.indent();
@@ -436,6 +449,53 @@ final class StructuredBodyEmitter {
         }
         w.close();
         popScope();
+    }
+
+    private record LoweredEnumSwitch(String selector, List<SwitchCase> cases,
+                                     Map<Integer, String> labelNames) {
+    }
+
+    /**
+     * An enum switch (expression labels naming the constants) lowers to an int switch on
+     * ordinal(): C# case labels must be compile-time constants, and the ordinal call also keeps
+     * Java's NullPointerException on a null selector. Ordinals come from the enum's constant
+     * field order — the same source values() is synthesized from.
+     */
+    private LoweredEnumSwitch lowerEnumSwitch(SwitchStmt sw) {
+        List<SwitchCase> lowered = new ArrayList<>();
+        Map<Integer, String> labelNames = new HashMap<>();
+        String enumInternal = null;
+        for (SwitchCase c : sw.getCases()) {
+            if (c.isDefault()) {
+                lowered.add(c);
+                continue;
+            }
+            List<Integer> ordinals = new ArrayList<>();
+            for (Expression label : c.expressionLabels()) {
+                if (!(label instanceof FieldAccessExpr field) || !field.isStatic()) {
+                    throw new UnsupportedBodyException("structured: non-enum switch label");
+                }
+                if (enumInternal == null) {
+                    enumInternal = field.getOwnerClass();
+                } else if (!enumInternal.equals(field.getOwnerClass())) {
+                    throw new UnsupportedBodyException("structured: mixed switch label owners");
+                }
+                int ordinal = naming.enumConstantOrdinal(field.getOwnerClass(), field.getFieldName());
+                if (ordinal < 0) {
+                    throw new UnsupportedBodyException("structured: switch label is not an app enum constant: "
+                            + field.getOwnerClass() + "." + field.getFieldName());
+                }
+                ordinals.add(ordinal);
+                labelNames.put(ordinal, field.getFieldName());
+            }
+            if (ordinals.isEmpty()) {
+                throw new UnsupportedBodyException("structured: switch case without labels");
+            }
+            lowered.add(SwitchCase.of(ordinals, c.statements()).withFallsThrough(c.fallsThrough()));
+        }
+        String selector = calls.shimCall("java/lang/Enum", "ordinal", "()I",
+                receiverOf(sw.getSelector()), "");
+        return new LoweredEnumSwitch(selector, lowered, labelNames);
     }
 
     private void emitCaseTerminator(List<SwitchCase> cases, int i, SwitchCase c) {
