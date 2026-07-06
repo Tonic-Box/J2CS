@@ -2,6 +2,8 @@ namespace java.lang
 {
     public sealed class Double : Number
     {
+        public static readonly global::java.lang.Class TYPE = global::java.lang.Class.Of("double");
+
         private readonly double value;
 
         public Double(RawNew r) : base(r)

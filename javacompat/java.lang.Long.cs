@@ -2,6 +2,8 @@ namespace java.lang
 {
     public sealed class Long : Number
     {
+        public static readonly global::java.lang.Class TYPE = global::java.lang.Class.Of("long");
+
         private static readonly Long[] Cache = BuildCache();
 
         private readonly long value;

@@ -1,3 +1,4 @@
+j2cs.reflect.Meta.cs
 java.awt.BorderLayout.cs
 java.awt.CardLayout.cs
 java.awt.Color.cs
@@ -61,6 +62,11 @@ java.lang.StringBuilder.cs
 java.lang.System.cs
 java.lang.Thread.cs
 java.lang.Throwable.cs
+java.lang.Void.cs
+java.lang.reflect.Constructor.cs
+java.lang.reflect.Field.cs
+java.lang.reflect.Method.cs
+java.lang.reflect.Modifier.cs
 java.nio.charset.Charset.cs
 java.nio.charset.StandardCharsets.cs
 java.security.MessageDigest.cs
@@ -76,6 +82,7 @@ java.util.Base64$Decoder.cs
 java.util.Base64$Encoder.cs
 java.util.Base64.cs
 java.util.Collection.cs
+java.util.Collections.cs
 java.util.Comparator.cs
 java.util.HashMap.cs
 java.util.HashSet.cs

@@ -2,6 +2,8 @@ namespace java.lang
 {
     public sealed class Integer : Number
     {
+        public static readonly global::java.lang.Class TYPE = global::java.lang.Class.Of("int");
+
         private static readonly Integer[] Cache = BuildCache();
 
         private readonly int value;

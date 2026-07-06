@@ -2,6 +2,8 @@ namespace java.lang
 {
     public sealed class Short : Number
     {
+        public static readonly global::java.lang.Class TYPE = global::java.lang.Class.Of("short");
+
         private static readonly Short[] Cache = BuildCache();
 
         private readonly short value;

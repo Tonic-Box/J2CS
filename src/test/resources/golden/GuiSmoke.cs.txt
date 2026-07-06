@@ -63,6 +63,7 @@ internal static class Program
     {
         try
         {
+            global::j2cs.reflect.__Bootstrap.InitAll();
             global::jdefault.GuiSmoke.main(global::java.lang.JRuntime.Args(__args));
         }
         catch (global::java.lang.JThrow __e)
@@ -75,6 +76,25 @@ internal static class Program
         __args = args;
         global::Avalonia.AppBuilder.Configure<J2csApp>().UsePlatformDetect().StartWithClassicDesktopLifetime(args);
         return 0;
+    }
+}
+// ==== gen/j2cs.reflect.__Bootstrap.cs ====
+namespace j2cs.reflect
+{
+    internal static class __Bootstrap
+    {
+        internal static void InitAll()
+        {
+            Register_0();
+        }
+
+        private static void Register_0()
+        {
+            var __m = global::j2cs.reflect.ClassMeta.New("GuiSmoke", typeof(global::jdefault.GuiSmoke), "java.lang.Object");
+            __m.AddMethod("main", new global::java.lang.Class[]{ global::java.lang.Class.Of("[Ljava.lang.String;") }, global::java.lang.Class.Of("void"), 9, (__o, __a) => throw new global::System.NotSupportedException("j2cs: reflective access to array-signature member not supported"));
+            __m.AddCtor(global::System.Array.Empty<global::java.lang.Class>(), 1, __a => { var __o = new global::jdefault.GuiSmoke(global::java.lang.RawNew.I); __o.__init__V(); return __o; });
+            global::j2cs.reflect.Registry.Register(__m);
+        }
     }
 }
 // ==== gen/jdefault.GuiSmoke.cs ====

@@ -5,6 +5,7 @@ namespace java.lang
         protected string JavaClassName = "java.lang.Throwable";
         internal global::System.Exception __origin;
         private String message;
+        private Throwable cause;
 
         public Throwable(RawNew r) : base(r)
         {
@@ -19,9 +20,26 @@ namespace java.lang
             message = p0;
         }
 
+        public void __init_Ljava_lang_Throwable__V(Throwable p0)
+        {
+            cause = p0;
+            message = p0 == null ? null : p0.toString();
+        }
+
+        public void __init_Ljava_lang_String_Ljava_lang_Throwable__V(String p0, Throwable p1)
+        {
+            message = p0;
+            cause = p1;
+        }
+
         public virtual String getMessage()
         {
             return message;
+        }
+
+        public virtual Throwable getCause()
+        {
+            return cause;
         }
 
         public override String toString()

@@ -3,9 +3,12 @@ package com.tonic.j2cs.pipeline;
 import com.tonic.j2cs.bootstrap.BootstrapPolicy;
 import com.tonic.j2cs.cli.CliOptions;
 import com.tonic.j2cs.emit.ClassEmitter;
+import com.tonic.j2cs.emit.CsWriter;
 import com.tonic.j2cs.emit.EntryPointEmitter;
+import com.tonic.j2cs.emit.ReflectionMetadataEmitter;
 import com.tonic.j2cs.emit.SyntheticClasses;
 import com.tonic.j2cs.emit.StubEmitter;
+import com.tonic.util.Modifiers;
 import com.tonic.j2cs.frontend.BootstrapLoader;
 import com.tonic.j2cs.frontend.InputLoader;
 import com.tonic.j2cs.frontend.IrLifter;
@@ -69,13 +72,19 @@ public final class Transpiler {
         ClassEmitter classEmitter = new ClassEmitter(naming, report, interfacePositionStubs, synthetics, structured);
         Map<String, String> genFiles = new LinkedHashMap<>();
         Set<String> referenced = new TreeSet<>();
+        List<ClassFile> reflectClasses = new ArrayList<>();
         for (ClassFile cf : allClasses) {
             report.classDiscovered(cf.getClassName());
             Map<MethodEntry, MethodPlan> plans = planMethods(cf, planner);
             ClosureScanner.collectReferencedTypes(cf, plans, referenced);
             genFiles.put(dottedName(cf.getClassName()), classEmitter.emit(cf, plans));
+            if (ReflectionMetadataEmitter.hasMetadata(naming, cf.getClassName(),
+                    Modifiers.isInterface(cf.getAccess()))) {
+                reflectClasses.add(cf);
+            }
         }
         genFiles.putAll(synthetics.files());
+        genFiles.put("j2cs.reflect.__Bootstrap", reflectionBootstrap(reflectClasses, naming));
         Map<String, String> stubFiles = emitStubs(referenced, naming, interfacePositionStubs, report);
         addStandingDivergences(report);
         boolean usesGui = referenced.stream()
@@ -156,6 +165,33 @@ public final class Transpiler {
         report.divergence("shimmed TreeMap/LinkedHashMap use HashMap ordering, not sorted/insertion order; iteration order differs");
         report.divergence("java time/date, UUID, and SecureRandom values are runtime-dependent and do not match a specific JVM run");
         report.divergence("Swing/AWT is rendered via Avalonia; widget structure and behavior are preserved but visual styling and pixel layout differ from the JVM");
+    }
+
+    /**
+     * The reflection registrars live here, not on the app classes: a static method on a class
+     * triggers that class's clinit, so calling them from the app class would force every clinit to
+     * run eagerly at startup (breaking classes whose clinit uses unshimmed types). All emitted
+     * members are internal/public, so cross-class thunks in the same assembly reach them; typeof and
+     * the delegate bodies never run the target clinit until reflection actually invokes them.
+     */
+    private static String reflectionBootstrap(List<ClassFile> reflectClasses, NamingContext naming) {
+        ReflectionMetadataEmitter emitter = new ReflectionMetadataEmitter(naming);
+        CsWriter w = new CsWriter();
+        w.open("namespace j2cs.reflect");
+        w.open("internal static class __Bootstrap");
+        w.open("internal static void InitAll()");
+        for (int i = 0; i < reflectClasses.size(); i++) {
+            w.line("Register_" + i + "();");
+        }
+        w.close();
+        for (int i = 0; i < reflectClasses.size(); i++) {
+            ClassFile cf = reflectClasses.get(i);
+            w.line();
+            emitter.emit(w, "Register_" + i, cf, naming.namerOf(cf.getClassName()), naming.typeMapper());
+        }
+        w.close();
+        w.close();
+        return w.toString();
     }
 
     private static Map<MethodEntry, MethodPlan> planMethods(ClassFile cf, MethodPlanner planner) {

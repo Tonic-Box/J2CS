@@ -38,6 +38,7 @@ class DifferentialTest {
                 fixture("StringsTest"),
                 fixture("Printf"),
                 fixture("Streams"),
+                fixture("Reflection"),
                 fixture("FizzBuzz"),
                 fixture("Inherit"),
                 fixture("Interfaces"),

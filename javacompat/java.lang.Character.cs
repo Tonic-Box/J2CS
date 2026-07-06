@@ -2,6 +2,8 @@ namespace java.lang
 {
     public sealed class Character : Object
     {
+        public static readonly global::java.lang.Class TYPE = global::java.lang.Class.Of("char");
+
         private static readonly Character[] Cache = BuildCache();
 
         private readonly char value;

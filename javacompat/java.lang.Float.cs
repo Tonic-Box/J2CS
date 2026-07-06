@@ -2,6 +2,8 @@ namespace java.lang
 {
     public sealed class Float : Number
     {
+        public static readonly global::java.lang.Class TYPE = global::java.lang.Class.Of("float");
+
         private readonly float value;
 
         public Float(RawNew r) : base(r)

@@ -2,6 +2,8 @@ namespace java.lang
 {
     public sealed class Boolean : Object
     {
+        public static readonly global::java.lang.Class TYPE = global::java.lang.Class.Of("boolean");
+
         public static readonly Boolean TRUE = new Boolean(1);
         public static readonly Boolean FALSE = new Boolean(0);
 

@@ -2,6 +2,8 @@ namespace java.lang
 {
     public sealed class Byte : Number
     {
+        public static readonly global::java.lang.Class TYPE = global::java.lang.Class.Of("byte");
+
         private static readonly Byte[] Cache = BuildCache();
 
         private readonly sbyte value;

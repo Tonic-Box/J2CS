@@ -5,6 +5,7 @@ internal static class Program
     {
         try
         {
+            global::j2cs.reflect.__Bootstrap.InitAll();
             global::jdefault.Exceptions2.main(global::java.lang.JRuntime.Args(args));
             return 0;
         }
@@ -12,6 +13,40 @@ internal static class Program
         {
             global::System.Console.Error.Write("Exception in thread \"main\" " + __e.payload.toString().Value + "\n");
             return 1;
+        }
+    }
+}
+// ==== gen/j2cs.reflect.__Bootstrap.cs ====
+namespace j2cs.reflect
+{
+    internal static class __Bootstrap
+    {
+        internal static void InitAll()
+        {
+            Register_0();
+            Register_1();
+        }
+
+        private static void Register_0()
+        {
+            var __m = global::j2cs.reflect.ClassMeta.New("Exceptions2", typeof(global::jdefault.Exceptions2), "java.lang.Object");
+            __m.AddMethod("main", new global::java.lang.Class[]{ global::java.lang.Class.Of("[Ljava.lang.String;") }, global::java.lang.Class.Of("void"), 9, (__o, __a) => throw new global::System.NotSupportedException("j2cs: reflective access to array-signature member not supported"));
+            __m.AddMethod("level1", new global::java.lang.Class[]{ global::java.lang.Class.Of("int") }, global::java.lang.Class.Of("void"), 8, (__o, __a) => { global::jdefault.Exceptions2.level1(((global::java.lang.Number)__a[0]).intValue()); return null; });
+            __m.AddMethod("level2", new global::java.lang.Class[]{ global::java.lang.Class.Of("int") }, global::java.lang.Class.Of("void"), 8, (__o, __a) => { global::jdefault.Exceptions2.level2(((global::java.lang.Number)__a[0]).intValue()); return null; });
+            __m.AddMethod("classify", new global::java.lang.Class[]{ global::java.lang.Class.Of("int") }, global::java.lang.Class.Of("java.lang.String"), 8, (__o, __a) => (global::java.lang.Object)(global::jdefault.Exceptions2.classify(((global::java.lang.Number)__a[0]).intValue())));
+            __m.AddMethod("rethrower", global::System.Array.Empty<global::java.lang.Class>(), global::java.lang.Class.Of("void"), 8, (__o, __a) => { global::jdefault.Exceptions2.rethrower(); return null; });
+            __m.AddMethod("multiCatch", new global::java.lang.Class[]{ global::java.lang.Class.Of("int") }, global::java.lang.Class.Of("int"), 8, (__o, __a) => global::java.lang.Integer.valueOf(global::jdefault.Exceptions2.multiCatch(((global::java.lang.Number)__a[0]).intValue())));
+            __m.AddCtor(global::System.Array.Empty<global::java.lang.Class>(), 1, __a => { var __o = new global::jdefault.Exceptions2(global::java.lang.RawNew.I); __o.__init__V(); return __o; });
+            global::j2cs.reflect.Registry.Register(__m);
+        }
+
+        private static void Register_1()
+        {
+            var __m = global::j2cs.reflect.ClassMeta.New("MyException", typeof(global::jdefault.MyException), "java.lang.Exception");
+            __m.AddField("code", global::java.lang.Class.Of("int"), 18, __o => global::java.lang.Integer.valueOf(((global::jdefault.MyException)__o).code), (__o, __v) => ((global::jdefault.MyException)__o).code = ((global::java.lang.Number)__v).intValue());
+            __m.AddMethod("code", global::System.Array.Empty<global::java.lang.Class>(), global::java.lang.Class.Of("int"), 0, (__o, __a) => global::java.lang.Integer.valueOf(((global::jdefault.MyException)__o).code__2()));
+            __m.AddCtor(new global::java.lang.Class[]{ global::java.lang.Class.Of("java.lang.String") }, 0, __a => { var __o = new global::jdefault.MyException(global::java.lang.RawNew.I); __o.__init_Ljava_lang_String__V((global::java.lang.String)__a[0]); return __o; });
+            global::j2cs.reflect.Registry.Register(__m);
         }
     }
 }

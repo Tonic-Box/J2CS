@@ -5,6 +5,7 @@ internal static class Program
     {
         try
         {
+            global::j2cs.reflect.__Bootstrap.InitAll();
             global::jdefault.FizzBuzz.main(global::java.lang.JRuntime.Args(args));
             return 0;
         }
@@ -12,6 +13,26 @@ internal static class Program
         {
             global::System.Console.Error.Write("Exception in thread \"main\" " + __e.payload.toString().Value + "\n");
             return 1;
+        }
+    }
+}
+// ==== gen/j2cs.reflect.__Bootstrap.cs ====
+namespace j2cs.reflect
+{
+    internal static class __Bootstrap
+    {
+        internal static void InitAll()
+        {
+            Register_0();
+        }
+
+        private static void Register_0()
+        {
+            var __m = global::j2cs.reflect.ClassMeta.New("FizzBuzz", typeof(global::jdefault.FizzBuzz), "java.lang.Object");
+            __m.AddMethod("main", new global::java.lang.Class[]{ global::java.lang.Class.Of("[Ljava.lang.String;") }, global::java.lang.Class.Of("void"), 9, (__o, __a) => throw new global::System.NotSupportedException("j2cs: reflective access to array-signature member not supported"));
+            __m.AddMethod("label", new global::java.lang.Class[]{ global::java.lang.Class.Of("int") }, global::java.lang.Class.Of("java.lang.String"), 8, (__o, __a) => (global::java.lang.Object)(global::jdefault.FizzBuzz.label(((global::java.lang.Number)__a[0]).intValue())));
+            __m.AddCtor(global::System.Array.Empty<global::java.lang.Class>(), 1, __a => { var __o = new global::jdefault.FizzBuzz(global::java.lang.RawNew.I); __o.__init__V(); return __o; });
+            global::j2cs.reflect.Registry.Register(__m);
         }
     }
 }
