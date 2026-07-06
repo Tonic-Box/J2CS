@@ -27,24 +27,6 @@ internal sealed class J2csApp : global::Avalonia.Application
     {
         Styles.Add(new global::Avalonia.Themes.Fluent.FluentTheme());
         RequestedThemeVariant = global::Avalonia.Styling.ThemeVariant.Light;
-        var stTextBlock = new global::Avalonia.Styling.Style(x => global::Avalonia.Styling.Selectors.OfType<global::Avalonia.Controls.TextBlock>(x));
-        stTextBlock.Setters.Add(new global::Avalonia.Styling.Setter(global::Avalonia.Controls.TextBlock.FontSizeProperty, 12.0));
-        Styles.Add(stTextBlock);
-        var stButton = new global::Avalonia.Styling.Style(x => global::Avalonia.Styling.Selectors.OfType<global::Avalonia.Controls.Button>(x));
-        stButton.Setters.Add(new global::Avalonia.Styling.Setter(global::Avalonia.Controls.Primitives.TemplatedControl.FontSizeProperty, 12.0));
-        stButton.Setters.Add(new global::Avalonia.Styling.Setter(global::Avalonia.Controls.Primitives.TemplatedControl.PaddingProperty, new global::Avalonia.Thickness(8.0, 3.0)));
-        stButton.Setters.Add(new global::Avalonia.Styling.Setter(global::Avalonia.Layout.Layoutable.MinHeightProperty, 0.0));
-        Styles.Add(stButton);
-        var stTextBox = new global::Avalonia.Styling.Style(x => global::Avalonia.Styling.Selectors.OfType<global::Avalonia.Controls.TextBox>(x));
-        stTextBox.Setters.Add(new global::Avalonia.Styling.Setter(global::Avalonia.Controls.Primitives.TemplatedControl.FontSizeProperty, 12.0));
-        stTextBox.Setters.Add(new global::Avalonia.Styling.Setter(global::Avalonia.Controls.Primitives.TemplatedControl.PaddingProperty, new global::Avalonia.Thickness(5.0, 2.0)));
-        stTextBox.Setters.Add(new global::Avalonia.Styling.Setter(global::Avalonia.Layout.Layoutable.MinHeightProperty, 0.0));
-        Styles.Add(stTextBox);
-        var stListBoxItem = new global::Avalonia.Styling.Style(x => global::Avalonia.Styling.Selectors.OfType<global::Avalonia.Controls.ListBoxItem>(x));
-        stListBoxItem.Setters.Add(new global::Avalonia.Styling.Setter(global::Avalonia.Controls.Primitives.TemplatedControl.FontSizeProperty, 12.0));
-        stListBoxItem.Setters.Add(new global::Avalonia.Styling.Setter(global::Avalonia.Controls.Primitives.TemplatedControl.PaddingProperty, new global::Avalonia.Thickness(6.0, 1.0)));
-        stListBoxItem.Setters.Add(new global::Avalonia.Styling.Setter(global::Avalonia.Layout.Layoutable.MinHeightProperty, 0.0));
-        Styles.Add(stListBoxItem);
     }
     public override void OnFrameworkInitializationCompleted()
     {

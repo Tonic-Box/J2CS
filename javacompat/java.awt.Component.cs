@@ -41,10 +41,20 @@ namespace java.awt
 
         public void setPreferredSize(global::java.awt.Dimension d)
         {
-            if (AvControl != null && d != null)
+            if (AvControl == null || d == null)
             {
-                AvControl.Width = d.W;
-                AvControl.Height = d.H;
+                return;
+            }
+            // Java preferredSize is a hint, not a hard size; a 0 dimension means "no preference"
+            // (e.g. a BorderLayout child that should fill). Set minimums so the control is at least
+            // its preferred size but can still stretch/grow.
+            if (d.W > 0)
+            {
+                AvControl.MinWidth = d.W;
+            }
+            if (d.H > 0)
+            {
+                AvControl.MinHeight = d.H;
             }
         }
 

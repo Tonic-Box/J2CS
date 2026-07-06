@@ -2,8 +2,13 @@ namespace java.awt
 {
     public class Container : Component
     {
+        internal static readonly global::Avalonia.Media.IBrush DefaultPanelBg =
+            new global::Avalonia.Media.SolidColorBrush(global::Avalonia.Media.Color.FromRgb(0xF0, 0xF0, 0xF0));
+
         internal global::Avalonia.Controls.Panel AvPanel;
         private LayoutManager layout;
+        private global::javax.swing.border.Border border;
+        private global::Avalonia.Media.IBrush bgBrush = DefaultPanelBg;
 
         public Container(global::java.lang.RawNew r) : base(r)
         {
@@ -13,9 +18,21 @@ namespace java.awt
         {
             if (AvPanel == null)
             {
-                AvPanel = new global::Avalonia.Controls.StackPanel();
-                AvControl = AvPanel;
+                AvPanel = new global::java.awt.J2csFlowPanel();
+                AvPanel.Background = bgBrush;
+                RebuildControl();
             }
+        }
+
+        private void RebuildControl()
+        {
+            if (AvPanel == null)
+            {
+                return;
+            }
+            AvControl = border != null && border.BKind != global::javax.swing.border.Border.Kind.Empty
+                    ? global::java.awt.J2csBorders.Wrap(AvPanel, border, bgBrush)
+                    : AvPanel;
         }
 
         public virtual void setLayout(LayoutManager lm)
@@ -24,7 +41,26 @@ namespace java.awt
             AvPanel = lm != null
                     ? lm.J2csCreatePanel()
                     : new global::Avalonia.Controls.Canvas();
-            AvControl = AvPanel;
+            AvPanel.Background = bgBrush;
+            RebuildControl();
+        }
+
+        public override void setBackground(global::java.awt.Color c)
+        {
+            if (c == null)
+            {
+                return;
+            }
+            bgBrush = c.Brush;
+            if (AvPanel != null)
+            {
+                AvPanel.Background = c.Brush;
+            }
+            else if (AvControl is global::java.awt.J2csPaintSurface ps)
+            {
+                ps.Bg = c.Brush;
+                ps.InvalidateVisual();
+            }
         }
 
         public virtual global::java.awt.Component add(global::java.awt.Component comp)
@@ -47,20 +83,21 @@ namespace java.awt
         public void setBorder(global::javax.swing.border.Border border)
         {
             EnsurePanel();
-            if (border == null)
+            this.border = border;
+            if (border != null && border.BKind == global::javax.swing.border.Border.Kind.Empty)
             {
-                return;
+                var insets = new global::Avalonia.Thickness(border.Left, border.Top, border.Right, border.Bottom);
+                if (AvPanel is global::java.awt.J2csPanel padded)
+                {
+                    padded.J2csInsets = insets;
+                    padded.InvalidateMeasure();
+                }
+                else
+                {
+                    AvPanel.Margin = insets;
+                }
             }
-            var insets = new global::Avalonia.Thickness(border.Left, border.Top, border.Right, border.Bottom);
-            if (AvPanel is global::java.awt.J2csPanel padded)
-            {
-                padded.J2csInsets = insets;
-                padded.InvalidateMeasure();
-            }
-            else
-            {
-                AvPanel.Margin = insets;
-            }
+            RebuildControl();
         }
 
         public virtual void add(global::java.awt.Component comp, global::java.lang.Object constraint)

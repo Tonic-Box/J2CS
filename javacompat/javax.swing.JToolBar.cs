@@ -8,7 +8,12 @@ namespace javax.swing
 
         private void Ensure(global::Avalonia.Layout.Orientation orientation)
         {
-            AvPanel = new global::Avalonia.Controls.StackPanel { Orientation = orientation };
+            AvPanel = new global::Avalonia.Controls.StackPanel
+            {
+                Orientation = orientation,
+                Background = global::java.awt.Container.DefaultPanelBg,
+                Spacing = 2
+            };
             AvControl = AvPanel;
         }
 

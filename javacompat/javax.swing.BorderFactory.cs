@@ -9,6 +9,7 @@ namespace javax.swing
         public static global::javax.swing.border.Border createEmptyBorder(int top, int left, int bottom, int right)
         {
             var border = new global::javax.swing.border.Border(global::java.lang.RawNew.I);
+            border.BKind = global::javax.swing.border.Border.Kind.Empty;
             border.Top = top;
             border.Left = left;
             border.Bottom = bottom;
@@ -19,6 +20,7 @@ namespace javax.swing
         public static global::javax.swing.border.TitledBorder createTitledBorder(global::java.lang.String title)
         {
             var b = new global::javax.swing.border.TitledBorder(global::java.lang.RawNew.I);
+            b.BKind = global::javax.swing.border.Border.Kind.Titled;
             b.Title = title;
             return b;
         }
@@ -31,33 +33,47 @@ namespace javax.swing
 
         public static global::javax.swing.border.Border createLineBorder(global::java.awt.Color color, int thickness)
         {
-            return new global::javax.swing.border.Border(global::java.lang.RawNew.I);
+            var b = new global::javax.swing.border.Border(global::java.lang.RawNew.I);
+            b.BKind = global::javax.swing.border.Border.Kind.Line;
+            b.LineColor = color;
+            b.Top = b.Left = b.Bottom = b.Right = thickness;
+            return b;
         }
 
         public static global::javax.swing.border.Border createLineBorder(global::java.awt.Color color)
         {
-            return new global::javax.swing.border.Border(global::java.lang.RawNew.I);
+            return createLineBorder(color, 1);
         }
 
         public static global::javax.swing.border.Border createEtchedBorder()
         {
-            return new global::javax.swing.border.Border(global::java.lang.RawNew.I);
+            var b = new global::javax.swing.border.Border(global::java.lang.RawNew.I);
+            b.BKind = global::javax.swing.border.Border.Kind.Etched;
+            return b;
         }
 
         public static global::javax.swing.border.Border createLoweredBevelBorder()
         {
-            return new global::javax.swing.border.Border(global::java.lang.RawNew.I);
+            var b = new global::javax.swing.border.Border(global::java.lang.RawNew.I);
+            b.BKind = global::javax.swing.border.Border.Kind.LoweredBevel;
+            return b;
         }
 
         public static global::javax.swing.border.Border createRaisedBevelBorder()
         {
-            return new global::javax.swing.border.Border(global::java.lang.RawNew.I);
+            var b = new global::javax.swing.border.Border(global::java.lang.RawNew.I);
+            b.BKind = global::javax.swing.border.Border.Kind.RaisedBevel;
+            return b;
         }
 
         public static global::javax.swing.border.Border createCompoundBorder(
             global::javax.swing.border.Border outside, global::javax.swing.border.Border inside)
         {
-            return new global::javax.swing.border.Border(global::java.lang.RawNew.I);
+            var b = new global::javax.swing.border.Border(global::java.lang.RawNew.I);
+            b.BKind = global::javax.swing.border.Border.Kind.Compound;
+            b.Outer = outside;
+            b.Inner = inside;
+            return b;
         }
     }
 }

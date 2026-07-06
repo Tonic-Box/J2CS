@@ -8,6 +8,13 @@ namespace java.awt
     /// </summary>
     internal abstract class J2csPanel : global::Avalonia.Controls.Panel
     {
+        /// <summary>Tag placed on a border wrapper around a J2csPanel so BoxLayout still stretches
+        /// it to fill the cross axis (a bordered Swing container fills like a bare one).</summary>
+        internal static readonly object StretchTag = new object();
+
+        /// <summary>Tag on a Box glue filler, which absorbs leftover along-axis space.</summary>
+        internal static readonly object GlueTag = new object();
+
         internal global::Avalonia.Thickness J2csInsets;
 
         protected double InnerWidth(global::Avalonia.Size size)
@@ -574,28 +581,53 @@ namespace java.awt
             return AddInsets(w, h);
         }
 
+        private static bool Fillable(global::Avalonia.Controls.Control child)
+        {
+            return child is J2csPanel || ReferenceEquals(child.Tag, J2csPanel.StretchTag)
+                    || ReferenceEquals(child.Tag, J2csPanel.GlueTag);
+        }
+
         protected override global::Avalonia.Size ArrangeOverride(global::Avalonia.Size finalSize)
         {
             double innerW = InnerWidth(finalSize);
             double innerH = InnerHeight(finalSize);
+            // Distribute leftover along-axis space across fill-eligible children (Swing BoxLayout
+            // grows components with slack up to their max size; glue/panels are effectively
+            // unbounded), so the content fills the container instead of hugging preferred sizes.
+            double alongAvail = Axis == 1 ? innerH : innerW;
+            double sumAlong = 0;
+            int fillCount = 0;
+            foreach (var child in Children)
+            {
+                var d = child.DesiredSize;
+                sumAlong += Axis == 1 ? d.Height : d.Width;
+                if (Fillable(child))
+                {
+                    fillCount++;
+                }
+            }
+            double extra = alongAvail - sumAlong;
+            double perFill = extra > 0 && fillCount > 0 ? extra / fillCount : 0;
             double pos = Axis == 1 ? J2csInsets.Top : J2csInsets.Left;
             foreach (var child in Children)
             {
                 var d = child.DesiredSize;
-                bool stretch = child is J2csPanel;
+                bool fill = Fillable(child);
                 if (Axis == 1)
                 {
-                    double cw = stretch ? innerW : System.Math.Min(d.Width, innerW);
-                    double x = J2csInsets.Left + (stretch ? 0 : (innerW - cw) / 2);
-                    child.Arrange(new global::Avalonia.Rect(x, pos, cw, d.Height));
-                    pos += d.Height;
+                    double h = d.Height + (fill ? perFill : 0);
+                    double cw = fill ? innerW : System.Math.Min(d.Width, innerW);
+                    double x = J2csInsets.Left + (fill ? 0 : (innerW - cw) / 2);
+                    child.Arrange(new global::Avalonia.Rect(x, pos, cw, h));
+                    pos += h;
                 }
                 else
                 {
-                    double ch = stretch ? innerH : System.Math.Min(d.Height, innerH);
-                    double y = J2csInsets.Top + (stretch ? 0 : (innerH - ch) / 2);
-                    child.Arrange(new global::Avalonia.Rect(pos, y, d.Width, ch));
-                    pos += d.Width;
+                    double w = d.Width + (fill ? perFill : 0);
+                    double ch = fill ? innerH : System.Math.Min(d.Height, innerH);
+                    double y = J2csInsets.Top + (fill ? 0 : (innerH - ch) / 2);
+                    child.Arrange(new global::Avalonia.Rect(pos, y, w, ch));
+                    pos += w;
                 }
             }
             return finalSize;

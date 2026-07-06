@@ -7,6 +7,7 @@ namespace javax.swing
         public JMenuBar(global::java.lang.RawNew r) : base(r)
         {
             AvMenu = new global::Avalonia.Controls.Menu();
+            AvMenu.Background = global::java.awt.Container.DefaultPanelBg;
             AvControl = AvMenu;
         }
 

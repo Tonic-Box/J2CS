@@ -49,7 +49,7 @@ namespace javax.swing
         private static global::java.awt.Component Glue()
         {
             var c = new global::java.awt.Component(global::java.lang.RawNew.I);
-            c.AvControl = new global::Avalonia.Controls.Border();
+            c.AvControl = new global::Avalonia.Controls.Border { Tag = global::java.awt.J2csPanel.GlueTag };
             return c;
         }
     }
