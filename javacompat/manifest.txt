@@ -95,7 +95,11 @@ java.nio.charset.Charset.cs
 java.nio.charset.StandardCharsets.cs
 java.security.MessageDigest.cs
 java.security.SecureRandom.cs
+java.time.DayOfWeek.cs
+java.time.Duration.cs
+java.time.LocalDate.cs
 java.time.LocalDateTime.cs
+java.time.chrono.ChronoLocalDate.cs
 java.time.chrono.ChronoLocalDateTime.cs
 java.time.format.DateTimeFormatter.cs
 java.time.temporal.ChronoUnit.cs
