@@ -108,6 +108,7 @@ internal static class VisDriver
         if (c is Border b) { return b.Background; }
         if (c is Avalonia.Controls.Primitives.TemplatedControl t) { return t.Background; }
         if (c is TextBlock tb) { return tb.Background; }
+        if (c is global::java.awt.J2csEdgeBorder eb) { return eb.FillBrush; }
         return null;
     }
 
