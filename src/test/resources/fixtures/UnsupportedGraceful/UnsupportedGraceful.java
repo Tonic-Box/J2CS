@@ -21,8 +21,8 @@ public class UnsupportedGraceful {
         }
     }
 
-    static int useSortedSet() {
-        return new java.util.TreeSet<String>().size();
+    static int useStack() {
+        return new java.util.Stack<String>().size();
     }
 
     static native int nativeThing();

@@ -100,6 +100,7 @@ java.time.chrono.ChronoLocalDateTime.cs
 java.time.format.DateTimeFormatter.cs
 java.time.temporal.ChronoUnit.cs
 java.time.temporal.Temporal.cs
+java.util.ArrayDeque.cs
 java.util.ArrayList.cs
 java.util.Arrays.cs
 java.util.Base64$Decoder.cs
@@ -108,6 +109,7 @@ java.util.Base64.cs
 java.util.Collection.cs
 java.util.Collections.cs
 java.util.Comparator.cs
+java.util.Deque.cs
 java.util.HashMap.cs
 java.util.HashSet.cs
 java.util.Iterable.cs
@@ -122,9 +124,12 @@ java.util.Objects.cs
 java.util.Optional.cs
 java.util.OptionalDouble.cs
 java.util.OptionalInt.cs
+java.util.PriorityQueue.cs
+java.util.Queue.cs
 java.util.Random.cs
 java.util.Set.cs
 java.util.TreeMap.cs
+java.util.TreeSet.cs
 java.util.UUID.cs
 java.util.concurrent.Callable.cs
 java.util.concurrent.CompletableFuture.cs

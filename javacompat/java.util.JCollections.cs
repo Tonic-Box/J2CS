@@ -38,6 +38,22 @@ namespace java.util
             return o == null ? 0 : o.hashCode();
         }
 
+        public static int NaturalCompare(global::java.lang.Object a, global::java.lang.Object b)
+        {
+            if (a is global::java.lang.Comparable ca)
+            {
+                return ca.compareTo(b);
+            }
+            if (a is global::java.lang.Number na && b is global::java.lang.Number nb)
+            {
+                double x = na.doubleValue();
+                double y = nb.doubleValue();
+                return x < y ? -1 : (x > y ? 1 : 0);
+            }
+            return global::System.String.CompareOrdinal(
+                    global::java.lang.JRuntime.Str(a), global::java.lang.JRuntime.Str(b));
+        }
+
         public static string Render(global::System.Collections.Generic.List<global::java.lang.Object> items)
         {
             var sb = new global::System.Text.StringBuilder();
