@@ -122,6 +122,7 @@ java.util.Objects.cs
 java.util.Optional.cs
 java.util.OptionalDouble.cs
 java.util.OptionalInt.cs
+java.util.Random.cs
 java.util.Set.cs
 java.util.TreeMap.cs
 java.util.UUID.cs
