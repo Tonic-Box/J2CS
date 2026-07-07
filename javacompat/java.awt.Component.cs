@@ -180,6 +180,11 @@ namespace java.awt
         {
         }
 
+        public void firePropertyChange(global::java.lang.String propertyName,
+            global::java.lang.Object oldValue, global::java.lang.Object newValue)
+        {
+        }
+
         public void setBorderPainted(int painted)
         {
         }

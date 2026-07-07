@@ -54,6 +54,12 @@ namespace java.lang
             return String.Wrap(name);
         }
 
+        public Package getPackage()
+        {
+            int i = name.LastIndexOf('.');
+            return new Package(i < 0 ? "" : name.Substring(0, i));
+        }
+
         public int desiredAssertionStatus()
         {
             return 0;

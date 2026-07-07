@@ -74,6 +74,7 @@ java.lang.NullPointerException.cs
 java.lang.Number.cs
 java.lang.NumberFormatException.cs
 java.lang.Object.cs
+java.lang.Package.cs
 java.lang.RawNew.cs
 java.lang.Runnable.cs
 java.lang.Runtime.cs
@@ -191,6 +192,7 @@ javax.swing.JCheckBox.cs
 javax.swing.JCheckBoxMenuItem.cs
 javax.swing.JComboBox.cs
 javax.swing.JDialog.cs
+javax.swing.JFileChooser.cs
 javax.swing.JFrame.cs
 javax.swing.JLabel.cs
 javax.swing.JList.cs
