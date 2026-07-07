@@ -828,6 +828,13 @@ final class StructuredBodyEmitter {
             raw = ConstRenderer.render(constDef.getConstant());
         } else if (value instanceof SSAValue ssa && paramNames.containsKey(ssa)) {
             raw = paramNames.get(ssa);
+        } else if (value instanceof SSAValue fieldSsa
+                && fieldSsa.getDefinition() instanceof com.tonic.analysis.ssa.ir.FieldAccessInstruction fa
+                && fa.isStatic()) {
+            // Bound method-ref receiver that is a static field (e.g. System.out::println): render the
+            // field access directly rather than expecting a scoped recovered local.
+            raw = calls.fieldRef(fa.getOwner(), fa.getName(), fa.getDescriptor(), true,
+                    new CallRenderer.Receiver("", null));
         } else if (value instanceof SSAValue ssa) {
             String recoveredName = recovered.recoverer().getRecoveryContext().getVariableName(ssa);
             if (recoveredName == null) {

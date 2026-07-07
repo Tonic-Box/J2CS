@@ -64,6 +64,7 @@ class DifferentialTest {
                 fixture("Exceptions3"),
                 fixture("Lambdas1"),
                 fixture("Lambdas2"),
+                fixture("BoundMethodRef"),
                 fixture("Boxing1"),
                 fixture("Boxing2"),
                 fixture("BoxingGenerics"),
