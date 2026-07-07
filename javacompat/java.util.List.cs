@@ -33,5 +33,10 @@ namespace java.util
             }
             return removed;
         }
+
+        void sort(global::java.util.Comparator c)
+        {
+            global::java.util.Collections.sort(this, c);
+        }
     }
 }

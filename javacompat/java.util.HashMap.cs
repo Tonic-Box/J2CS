@@ -265,6 +265,12 @@ namespace java.util
             return count == 0 ? 1 : 0;
         }
 
+        public void clear()
+        {
+            table = null;
+            count = 0;
+        }
+
         public Set keySet()
         {
             var keys = new global::System.Collections.Generic.List<global::java.lang.Object>();
