@@ -82,6 +82,26 @@ namespace java.awt
             }
         }
 
+        public int getWidth()
+        {
+            return AvControl == null ? 0 : (int)AvControl.Bounds.Width;
+        }
+
+        public int getHeight()
+        {
+            return AvControl == null ? 0 : (int)AvControl.Bounds.Height;
+        }
+
+        public int getX()
+        {
+            return AvControl == null ? 0 : (int)AvControl.Bounds.X;
+        }
+
+        public int getY()
+        {
+            return AvControl == null ? 0 : (int)AvControl.Bounds.Y;
+        }
+
         public int requestFocusInWindow()
         {
             if (AvControl != null)
@@ -232,14 +252,28 @@ namespace java.awt
             AvControl.PointerExited += (s, e) => l.mouseExited(MouseEventAt(e, AvControl, 0));
         }
 
+        private static global::java.awt.@event.KeyEvent KeyEventFrom(
+            global::Avalonia.Input.KeyEventArgs e, int id)
+        {
+            var ke = new global::java.awt.@event.KeyEvent(global::java.lang.RawNew.I);
+            ke.Id = id;
+            var mods = e.KeyModifiers;
+            ke.Shift = (mods & global::Avalonia.Input.KeyModifiers.Shift) != 0;
+            ke.Control = (mods & global::Avalonia.Input.KeyModifiers.Control) != 0;
+            ke.Alt = (mods & global::Avalonia.Input.KeyModifiers.Alt) != 0;
+            ke.Meta = (mods & global::Avalonia.Input.KeyModifiers.Meta) != 0;
+            ke.KeyCode = (int)e.Key;
+            return ke;
+        }
+
         public void addKeyListener(global::java.awt.@event.KeyListener l)
         {
             if (AvControl == null || l == null)
             {
                 return;
             }
-            AvControl.KeyDown += (s, e) => l.keyPressed(new global::java.awt.@event.KeyEvent(global::java.lang.RawNew.I));
-            AvControl.KeyUp += (s, e) => l.keyReleased(new global::java.awt.@event.KeyEvent(global::java.lang.RawNew.I));
+            AvControl.KeyDown += (s, e) => l.keyPressed(KeyEventFrom(e, global::java.awt.@event.KeyEvent.KEY_PRESSED));
+            AvControl.KeyUp += (s, e) => l.keyReleased(KeyEventFrom(e, global::java.awt.@event.KeyEvent.KEY_RELEASED));
         }
 
         public void addMouseMotionListener(global::java.awt.@event.MouseMotionListener l)

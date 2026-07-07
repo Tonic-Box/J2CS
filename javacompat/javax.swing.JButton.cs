@@ -23,7 +23,11 @@ namespace javax.swing
             if (button != null && l != null)
             {
                 button.Click += (sender, e) =>
-                        l.actionPerformed(new global::java.awt.@event.ActionEvent(global::java.lang.RawNew.I));
+                {
+                    var ae = new global::java.awt.@event.ActionEvent(global::java.lang.RawNew.I);
+                    ae.Source = this;
+                    l.actionPerformed(ae);
+                };
             }
         }
     }

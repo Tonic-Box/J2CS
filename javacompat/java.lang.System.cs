@@ -8,8 +8,37 @@ namespace java.lang
         public static readonly global::java.io.PrintStream err =
                 new global::java.io.PrintStream(global::System.Console.Error);
 
+        private static readonly global::System.Collections.Concurrent.ConcurrentDictionary<string, string> Props =
+                new global::System.Collections.Concurrent.ConcurrentDictionary<string, string>();
+
         private System() : base(RawNew.I)
         {
+        }
+
+        public static String getProperty(String key)
+        {
+            if (key != null && Props.TryGetValue(key.Value, out var v))
+            {
+                return String.Wrap(v);
+            }
+            return null;
+        }
+
+        public static String getProperty(String key, String def)
+        {
+            var v = getProperty(key);
+            return v != null ? v : def;
+        }
+
+        public static String setProperty(String key, String value)
+        {
+            if (key == null)
+            {
+                return null;
+            }
+            string old = Props.TryGetValue(key.Value, out var prev) ? prev : null;
+            Props[key.Value] = value == null ? "" : value.Value;
+            return old == null ? null : String.Wrap(old);
         }
 
         public static long nanoTime()
