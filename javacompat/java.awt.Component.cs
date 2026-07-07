@@ -14,15 +14,22 @@ namespace java.awt
 
         public void setName(global::java.lang.String name)
         {
-            if (AvControl != null)
+            if (AvControl != null && name != null)
             {
-                AvControl.Name = global::java.lang.JRuntime.Cs(name);
+                // Prefix so the visual-fidelity harness can tell app-tagged controls apart from
+                // Fluent template parts (which also carry Names).
+                AvControl.Name = "j2cs_" + global::java.lang.JRuntime.Cs(name);
             }
         }
 
         public global::java.lang.String getName()
         {
-            return AvControl == null ? null : global::java.lang.String.Wrap(AvControl.Name);
+            if (AvControl == null || AvControl.Name == null)
+            {
+                return null;
+            }
+            var n = AvControl.Name;
+            return global::java.lang.String.Wrap(n.StartsWith("j2cs_") ? n.Substring(5) : n);
         }
 
         public void setEnabled(int enabled)

@@ -89,10 +89,10 @@ internal static class VisDriver
 
     private static void Dump(Visual root, StringBuilder sb)
     {
-        if (root is Control c && !string.IsNullOrEmpty(c.Name) && !c.Name.StartsWith("PART_"))
+        if (root is Control c && c.Name != null && c.Name.StartsWith("j2cs_"))
         {
             var p = c.TranslatePoint(new Point(0, 0), win) ?? new Point(0, 0);
-            sb.Append(c.Name).Append('|')
+            sb.Append(c.Name.Substring(5)).Append('|')
               .Append(c.GetType().Name).Append('|')
               .Append(R(p.X)).Append('|').Append(R(p.Y)).Append('|')
               .Append(R(c.Bounds.Width)).Append('|').Append(R(c.Bounds.Height)).Append('|')
