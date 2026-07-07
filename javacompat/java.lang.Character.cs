@@ -43,6 +43,81 @@ namespace java.lang
             return String.Wrap(v.ToString());
         }
 
+        public static int isDigit(char c)
+        {
+            return global::System.Char.IsDigit(c) ? 1 : 0;
+        }
+
+        public static int isLetter(char c)
+        {
+            return global::System.Char.IsLetter(c) ? 1 : 0;
+        }
+
+        public static int isLetterOrDigit(char c)
+        {
+            return global::System.Char.IsLetterOrDigit(c) ? 1 : 0;
+        }
+
+        public static int isWhitespace(char c)
+        {
+            return global::System.Char.IsWhiteSpace(c) ? 1 : 0;
+        }
+
+        public static int isUpperCase(char c)
+        {
+            return global::System.Char.IsUpper(c) ? 1 : 0;
+        }
+
+        public static int isLowerCase(char c)
+        {
+            return global::System.Char.IsLower(c) ? 1 : 0;
+        }
+
+        public static char toUpperCase(char c)
+        {
+            return global::System.Char.ToUpperInvariant(c);
+        }
+
+        public static char toLowerCase(char c)
+        {
+            return global::System.Char.ToLowerInvariant(c);
+        }
+
+        public static int getNumericValue(char c)
+        {
+            if (c >= '0' && c <= '9')
+            {
+                return c - '0';
+            }
+            if (c >= 'A' && c <= 'Z')
+            {
+                return c - 'A' + 10;
+            }
+            if (c >= 'a' && c <= 'z')
+            {
+                return c - 'a' + 10;
+            }
+            return -1;
+        }
+
+        public static int digit(char c, int radix)
+        {
+            int d = -1;
+            if (c >= '0' && c <= '9')
+            {
+                d = c - '0';
+            }
+            else if (c >= 'A' && c <= 'Z')
+            {
+                d = c - 'A' + 10;
+            }
+            else if (c >= 'a' && c <= 'z')
+            {
+                d = c - 'a' + 10;
+            }
+            return d >= 0 && d < radix ? d : -1;
+        }
+
         public char charValue()
         {
             return value;
