@@ -60,7 +60,7 @@ public final class VisualRef {
 
     private static void walk(Component c, Component root, PrintWriter out) {
         String name = c.getName();
-        if (name != null && !name.startsWith("null")) {
+        if (name != null && !name.startsWith("null") && !name.contains(".")) {
             Point p = SwingUtilities.convertPoint(c, 0, 0, root);
             Color bg = c.getBackground();
             Color fg = c.getForeground();

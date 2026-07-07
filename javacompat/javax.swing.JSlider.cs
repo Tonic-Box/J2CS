@@ -12,7 +12,13 @@ namespace javax.swing
         {
             if (slider == null)
             {
-                slider = new global::Avalonia.Controls.Slider { Minimum = 0, Maximum = 100 };
+                slider = new global::Avalonia.Controls.Slider
+                {
+                    Minimum = 0,
+                    Maximum = 100,
+                    Background = global::java.awt.J2csTheme.MetalGray,
+                    Foreground = global::java.awt.J2csTheme.MetalAccent
+                };
                 AvControl = slider;
             }
         }

@@ -10,7 +10,12 @@ namespace javax.swing
 
         public void __init_I_V(int columns)
         {
-            field = new global::Avalonia.Controls.TextBox { MinWidth = columns * 8 };
+            field = new global::Avalonia.Controls.TextBox
+            {
+                MinWidth = columns * 8,
+                Foreground = global::java.awt.J2csTheme.MetalText,
+                Background = global::java.awt.J2csTheme.White
+            };
             AvControl = field;
         }
 

@@ -12,7 +12,12 @@ namespace javax.swing
         {
             if (spinner == null)
             {
-                spinner = new global::Avalonia.Controls.NumericUpDown { Increment = 1 };
+                spinner = new global::Avalonia.Controls.NumericUpDown
+                {
+                    Increment = 1,
+                    Foreground = global::java.awt.J2csTheme.MetalText,
+                    Background = global::java.awt.J2csTheme.MetalGray
+                };
                 AvControl = spinner;
             }
         }

@@ -10,13 +10,27 @@ namespace javax.swing
 
         public void __init__V()
         {
-            bar = new global::Avalonia.Controls.ProgressBar();
+            bar = new global::Avalonia.Controls.ProgressBar
+            {
+                Background = global::java.awt.J2csTheme.MetalGray,
+                Foreground = global::java.awt.J2csTheme.MetalAccent,
+                MinWidth = 0,
+                MinHeight = 0
+            };
             AvControl = bar;
         }
 
         public void __init_II_V(int min, int max)
         {
-            bar = new global::Avalonia.Controls.ProgressBar { Minimum = min, Maximum = max };
+            bar = new global::Avalonia.Controls.ProgressBar
+            {
+                Minimum = min,
+                Maximum = max,
+                Background = global::java.awt.J2csTheme.MetalGray,
+                Foreground = global::java.awt.J2csTheme.MetalAccent,
+                MinWidth = 0,
+                MinHeight = 0
+            };
             AvControl = bar;
         }
 

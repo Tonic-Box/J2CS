@@ -19,7 +19,12 @@ namespace javax.swing
                 // glyph and label together.
                 box.HorizontalAlignment = global::Avalonia.Layout.HorizontalAlignment.Left;
                 box.VerticalAlignment = global::Avalonia.Layout.VerticalAlignment.Center;
-                AvControl = new global::Avalonia.Controls.Border { Child = box };
+                box.Foreground = global::java.awt.J2csTheme.MetalText;
+                AvControl = new global::Avalonia.Controls.Border
+                {
+                    Background = global::java.awt.J2csTheme.MetalGray,
+                    Child = box
+                };
             }
         }
 

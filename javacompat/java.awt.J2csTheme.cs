@@ -13,6 +13,10 @@ namespace java.awt
             new global::Avalonia.Media.SolidColorBrush(global::Avalonia.Media.Color.FromRgb(0x33, 0x33, 0x33));
         internal static readonly global::Avalonia.Media.IBrush MetalBorder =
             new global::Avalonia.Media.SolidColorBrush(global::Avalonia.Media.Color.FromRgb(0x8E, 0x8E, 0x8E));
+        internal static readonly global::Avalonia.Media.IBrush MetalAccent =
+            new global::Avalonia.Media.SolidColorBrush(global::Avalonia.Media.Color.FromRgb(0xA3, 0xB8, 0xCC));
+        internal static readonly global::Avalonia.Media.IBrush White =
+            global::Avalonia.Media.Brushes.White;
         internal static readonly global::Avalonia.Media.FontFamily UiFont =
             new global::Avalonia.Media.FontFamily("Segoe UI");
         internal const double UiFontSize = 12.0;
