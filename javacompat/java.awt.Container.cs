@@ -3,7 +3,7 @@ namespace java.awt
     public class Container : Component
     {
         internal static readonly global::Avalonia.Media.IBrush DefaultPanelBg =
-            new global::Avalonia.Media.SolidColorBrush(global::Avalonia.Media.Color.FromRgb(0xF0, 0xF0, 0xF0));
+            new global::Avalonia.Media.SolidColorBrush(global::Avalonia.Media.Color.FromRgb(0xEE, 0xEE, 0xEE));
 
         internal global::Avalonia.Controls.Panel AvPanel;
         private LayoutManager layout;

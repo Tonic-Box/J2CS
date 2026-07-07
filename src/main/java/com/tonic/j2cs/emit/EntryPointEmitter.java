@@ -43,8 +43,7 @@ public final class EntryPointEmitter {
         w.line("");
         w.open("internal sealed class J2csApp : global::Avalonia.Application");
         w.open("public override void Initialize()");
-        w.line("Styles.Add(new global::Avalonia.Themes.Fluent.FluentTheme());");
-        w.line("RequestedThemeVariant = global::Avalonia.Styling.ThemeVariant.Light;");
+        w.line("global::java.awt.J2csTheme.Apply(this);");
         w.close();
         return w
                 .open("public override void OnFrameworkInitializationCompleted()")

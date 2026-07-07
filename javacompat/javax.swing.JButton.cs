@@ -12,7 +12,8 @@ namespace javax.swing
         {
             button = new global::Avalonia.Controls.Button
             {
-                Content = global::java.lang.JRuntime.Cs(text)
+                Content = global::java.lang.JRuntime.Cs(text),
+                Foreground = global::java.awt.J2csTheme.MetalText
             };
             AvControl = button;
         }

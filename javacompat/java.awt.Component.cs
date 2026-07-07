@@ -94,6 +94,7 @@ namespace java.awt
             else if (AvControl is global::Avalonia.Controls.Panel p) { p.Background = c.Brush; }
             else if (AvControl is global::Avalonia.Controls.Border b) { b.Background = c.Brush; }
             else if (AvControl is global::Avalonia.Controls.Primitives.TemplatedControl tc) { tc.Background = c.Brush; }
+            else if (AvControl is global::Avalonia.Controls.TextBlock tb) { tb.Background = c.Brush; }
         }
 
         public virtual void setForeground(global::java.awt.Color c)
@@ -118,17 +119,20 @@ namespace java.awt
             var style = (f.Style & 2) != 0
                     ? global::Avalonia.Media.FontStyle.Italic
                     : global::Avalonia.Media.FontStyle.Normal;
+            var family = f.CsFamily();
             if (AvControl is global::Avalonia.Controls.TextBlock tb)
             {
                 tb.FontSize = f.Size;
                 tb.FontWeight = weight;
                 tb.FontStyle = style;
+                tb.FontFamily = family;
             }
             else if (AvControl is global::Avalonia.Controls.Primitives.TemplatedControl tc)
             {
                 tc.FontSize = f.Size;
                 tc.FontWeight = weight;
                 tc.FontStyle = style;
+                tc.FontFamily = family;
             }
         }
 

@@ -67,7 +67,7 @@ namespace javax.swing
         {
             if (label != null && font != null)
             {
-                label.FontFamily = new global::Avalonia.Media.FontFamily(font.Family);
+                label.FontFamily = font.CsFamily();
                 label.FontSize = font.Size;
                 label.FontWeight = (font.Style & 1) != 0
                         ? global::Avalonia.Media.FontWeight.Bold

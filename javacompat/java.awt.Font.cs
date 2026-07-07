@@ -24,5 +24,23 @@ namespace java.awt
             Style = style;
             Size = size;
         }
+
+        /// <summary>Resolve Java logical font names to concrete families available on the host.</summary>
+        internal global::Avalonia.Media.FontFamily CsFamily()
+        {
+            switch (Family)
+            {
+                case "Monospaced":
+                    return new global::Avalonia.Media.FontFamily("Consolas");
+                case "Serif":
+                    return new global::Avalonia.Media.FontFamily("Times New Roman");
+                case "SansSerif":
+                case "Dialog":
+                case "DialogInput":
+                    return new global::Avalonia.Media.FontFamily("Segoe UI");
+                default:
+                    return new global::Avalonia.Media.FontFamily(Family);
+            }
+        }
     }
 }

@@ -35,6 +35,10 @@ namespace java.awt
             }
             // Keep it fill-eligible for BoxLayout, like the bare panel it wraps.
             wrapped.Tag = global::java.awt.J2csPanel.StretchTag;
+            // Paint the panel background across the bordered area (Metal fills the whole region),
+            // so the outer wrapper also carries the panel color.
+            if (wrapped is global::Avalonia.Controls.Panel wp) { wp.Background = panelBg; }
+            else if (wrapped is global::Avalonia.Controls.Border wb) { wb.Background = panelBg; }
             return wrapped;
         }
 

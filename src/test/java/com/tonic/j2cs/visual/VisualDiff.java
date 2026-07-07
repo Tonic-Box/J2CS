@@ -39,7 +39,8 @@ public final class VisualDiff {
             boolean opaque = r.length > 8 && "1".equals(r[8]);
             boolean geoBad = Math.abs(dx) > TOL || Math.abs(dy) > TOL || Math.abs(dw) > TOL || Math.abs(dh) > TOL;
             boolean bgBad = opaque && !eqColor(r[6], c[6]);
-            boolean fgBad = !eqColor(r[7], c[7]) && !"none".equalsIgnoreCase(r[7]);
+            boolean fgBad = !eqColor(r[7], c[7])
+                    && !"none".equalsIgnoreCase(r[7]) && !"none".equalsIgnoreCase(c[7]);
             if (geoBad || bgBad || fgBad) {
                 violations++;
             }

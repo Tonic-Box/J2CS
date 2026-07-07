@@ -107,6 +107,7 @@ internal static class VisDriver
         if (c is Panel p) { return p.Background; }
         if (c is Border b) { return b.Background; }
         if (c is Avalonia.Controls.Primitives.TemplatedControl t) { return t.Background; }
+        if (c is TextBlock tb) { return tb.Background; }
         return null;
     }
 
