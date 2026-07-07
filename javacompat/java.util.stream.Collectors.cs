@@ -73,5 +73,42 @@ namespace java.util.stream
         {
             return Collector.Of(Collector.Kind.Counting);
         }
+
+        public static Collector groupingBy(global::java.util.function.Function classifier, Collector downstream)
+        {
+            Collector c = Collector.Of(Collector.Kind.GroupingBy);
+            c.keyFn = classifier;
+            c.downstream = downstream;
+            return c;
+        }
+
+        public static Collector summingInt(global::java.util.function.ToIntFunction mapper)
+        {
+            Collector c = Collector.Of(Collector.Kind.SummingInt);
+            c.intFn = mapper;
+            return c;
+        }
+
+        public static Collector averagingInt(global::java.util.function.ToIntFunction mapper)
+        {
+            Collector c = Collector.Of(Collector.Kind.AveragingInt);
+            c.intFn = mapper;
+            return c;
+        }
+
+        public static Collector partitioningBy(global::java.util.function.Predicate predicate)
+        {
+            Collector c = Collector.Of(Collector.Kind.Partitioning);
+            c.predicate = predicate;
+            return c;
+        }
+
+        public static Collector mapping(global::java.util.function.Function mapper, Collector downstream)
+        {
+            Collector c = Collector.Of(Collector.Kind.Mapping);
+            c.keyFn = mapper;
+            c.downstream = downstream;
+            return c;
+        }
     }
 }

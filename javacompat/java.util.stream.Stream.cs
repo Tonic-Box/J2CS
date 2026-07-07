@@ -203,6 +203,11 @@ namespace java.util.stream
 
         public global::java.lang.Object collect(Collector collector)
         {
+            return CollectInto(items, collector);
+        }
+
+        internal static global::java.lang.Object CollectInto(CList items, Collector collector)
+        {
             switch (collector.kind)
             {
                 case Collector.Kind.List:
@@ -263,13 +268,67 @@ namespace java.util.stream
                         }
                         bucket.add(e);
                     }
+                    if (collector.downstream != null) { ApplyDownstream(map, collector.downstream); }
                     return map;
                 }
                 case Collector.Kind.Counting:
                     return global::java.lang.Long.valueOf(items.Count);
+                case Collector.Kind.SummingInt:
+                {
+                    int sum = 0;
+                    foreach (var e in items) { sum += collector.intFn.applyAsInt(e); }
+                    return global::java.lang.Integer.valueOf(sum);
+                }
+                case Collector.Kind.AveragingInt:
+                {
+                    long sum = 0;
+                    foreach (var e in items) { sum += collector.intFn.applyAsInt(e); }
+                    return global::java.lang.Double.valueOf(items.Count == 0 ? 0.0 : (double)sum / items.Count);
+                }
+                case Collector.Kind.Partitioning:
+                {
+                    var map = new global::java.util.HashMap(global::java.lang.RawNew.I);
+                    map.__init__V();
+                    var f = new global::java.util.ArrayList(global::java.lang.RawNew.I);
+                    f.__init__V();
+                    var t = new global::java.util.ArrayList(global::java.lang.RawNew.I);
+                    t.__init__V();
+                    foreach (var e in items)
+                    {
+                        if (collector.predicate.test(e) != 0) { t.add(e); } else { f.add(e); }
+                    }
+                    map.put(global::java.lang.Boolean.valueOf(0), f);
+                    map.put(global::java.lang.Boolean.valueOf(1), t);
+                    if (collector.downstream != null) { ApplyDownstream(map, collector.downstream); }
+                    return map;
+                }
+                case Collector.Kind.Mapping:
+                {
+                    var mapped = new CList(items.Count);
+                    foreach (var e in items) { mapped.Add(collector.keyFn.apply(e)); }
+                    return CollectInto(mapped, collector.downstream);
+                }
                 default:
                     throw new global::System.NotSupportedException("j2cs: unsupported collector");
             }
+        }
+
+        private static void ApplyDownstream(global::java.util.HashMap map, Collector downstream)
+        {
+            var it = map.entrySet().iterator();
+            var keys = new CList();
+            var results = new CList();
+            while (it.hasNext() != 0)
+            {
+                var en = (global::java.util.Map_S_Entry)it.next();
+                var bucket = (global::java.util.List)en.getValue();
+                int n = bucket.size();
+                var cl = new CList(n);
+                for (int i = 0; i < n; i++) { cl.Add(bucket.get(i)); }
+                keys.Add(en.getKey());
+                results.Add(CollectInto(cl, downstream));
+            }
+            for (int i = 0; i < keys.Count; i++) { map.put(keys[i], results[i]); }
         }
 
         public static Stream of(global::java.lang.Object[] values)

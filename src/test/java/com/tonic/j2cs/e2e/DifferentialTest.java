@@ -42,6 +42,7 @@ class DifferentialTest {
                 fixture("MapComparator"),
                 fixture("ArraysCollections"),
                 fixture("StreamOps"),
+                fixture("CollectorsOps"),
                 fixture("Printf"),
                 fixture("Streams"),
                 fixture("Reflection"),

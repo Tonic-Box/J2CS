@@ -7,7 +7,7 @@ namespace java.util.stream
     /// </summary>
     public sealed class Collector : global::java.lang.Object
     {
-        public enum Kind { List, Set, Joining, ToMap, GroupingBy, Counting }
+        public enum Kind { List, Set, Joining, ToMap, GroupingBy, Counting, SummingInt, AveragingInt, Partitioning, Mapping }
 
         public Kind kind;
         public string delimiter = "";
@@ -16,6 +16,8 @@ namespace java.util.stream
         public global::java.util.function.Function keyFn;
         public global::java.util.function.Function valueFn;
         public global::java.util.function.BinaryOperator mergeFn;
+        public global::java.util.function.ToIntFunction intFn;
+        public global::java.util.function.Predicate predicate;
         public Collector downstream;
 
         public Collector(global::java.lang.RawNew r) : base(r)
