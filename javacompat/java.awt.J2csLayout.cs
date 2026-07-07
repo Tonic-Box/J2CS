@@ -589,11 +589,16 @@ namespace java.awt
         // Along-axis growth: glue and content panels (BorderLayout/BoxLayout/GridBag, incl. their
         // bordered wrappers) share leftover space like Swing; a FlowLayout panel (e.g. a button row)
         // hugs its content row and stays at preferred size, so trailing button bars sit at the edge.
-        private static bool AlongFill(global::Avalonia.Controls.Control child)
+        // Along-axis surplus weight per child. Content panels and bordered wrappers each take one
+        // share (like Swing distributing to unbounded-max components); a FlowLayout button row stays
+        // compact (weight 0) so it sits at the far edge; glue takes a double share so it absorbs the
+        // slack a stretched button row would otherwise get, matching Metal's editor heights.
+        private static int FillWeight(global::Avalonia.Controls.Control child)
         {
-            return ReferenceEquals(child.Tag, J2csPanel.GlueTag)
-                    || ReferenceEquals(child.Tag, J2csPanel.StretchTag)
-                    || (child is J2csPanel && !(child is J2csFlowPanel));
+            if (ReferenceEquals(child.Tag, J2csPanel.GlueTag)) { return 2; }
+            if (child is J2csFlowPanel) { return 0; }
+            if (ReferenceEquals(child.Tag, J2csPanel.StretchTag) || child is J2csPanel) { return 1; }
+            return 0;
         }
 
         protected override global::Avalonia.Size ArrangeOverride(global::Avalonia.Size finalSize)
@@ -602,27 +607,24 @@ namespace java.awt
             double innerH = InnerHeight(finalSize);
             double alongAvail = Axis == 1 ? innerH : innerW;
             double sumAlong = 0;
-            int fillCount = 0;
+            int weightSum = 0;
             foreach (var child in Children)
             {
                 var d = child.DesiredSize;
                 sumAlong += Axis == 1 ? d.Height : d.Width;
-                if (AlongFill(child))
-                {
-                    fillCount++;
-                }
+                weightSum += FillWeight(child);
             }
             double extra = alongAvail - sumAlong;
-            double perFill = extra > 0 && fillCount > 0 ? extra / fillCount : 0;
+            double perUnit = extra > 0 && weightSum > 0 ? extra / weightSum : 0;
             double pos = Axis == 1 ? J2csInsets.Top : J2csInsets.Left;
             foreach (var child in Children)
             {
                 var d = child.DesiredSize;
-                bool grow = AlongFill(child);
+                double give = FillWeight(child) * perUnit;
                 bool cross = CrossStretch(child);
                 if (Axis == 1)
                 {
-                    double h = d.Height + (grow ? perFill : 0);
+                    double h = d.Height + give;
                     double cw = cross ? innerW : System.Math.Min(d.Width, innerW);
                     double x = J2csInsets.Left + (cross ? 0 : (innerW - cw) / 2);
                     child.Arrange(new global::Avalonia.Rect(x, pos, cw, h));
@@ -630,7 +632,7 @@ namespace java.awt
                 }
                 else
                 {
-                    double w = d.Width + (grow ? perFill : 0);
+                    double w = d.Width + give;
                     double ch = cross ? innerH : System.Math.Min(d.Height, innerH);
                     double y = J2csInsets.Top + (cross ? 0 : (innerH - ch) / 2);
                     child.Arrange(new global::Avalonia.Rect(pos, y, w, ch));

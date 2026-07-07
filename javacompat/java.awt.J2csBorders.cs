@@ -80,7 +80,7 @@ namespace java.awt
                 BorderThickness = new global::Avalonia.Thickness(1),
                 CornerRadius = new global::Avalonia.CornerRadius(0),
                 Margin = new global::Avalonia.Thickness(0, 7, 0, 0),
-                Padding = new global::Avalonia.Thickness(6, 8, 6, 6),
+                Padding = new global::Avalonia.Thickness(4, 9, 4, 4),
                 Background = panelBg,
                 Child = inner
             };
