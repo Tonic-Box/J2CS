@@ -12,6 +12,19 @@ namespace java.awt
         {
         }
 
+        public void setName(global::java.lang.String name)
+        {
+            if (AvControl != null)
+            {
+                AvControl.Name = global::java.lang.JRuntime.Cs(name);
+            }
+        }
+
+        public global::java.lang.String getName()
+        {
+            return AvControl == null ? null : global::java.lang.String.Wrap(AvControl.Name);
+        }
+
         public void setEnabled(int enabled)
         {
             if (AvControl != null)

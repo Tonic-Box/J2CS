@@ -941,6 +941,8 @@ public final class ShimRegistry {
             Map.entry("java/util/TreeSet.pollLast()Ljava/lang/Object;", instance("pollLast")),
             Map.entry("java/util/TreeSet.floor(Ljava/lang/Object;)Ljava/lang/Object;", instance("floor")),
             Map.entry("java/util/TreeSet.ceiling(Ljava/lang/Object;)Ljava/lang/Object;", instance("ceiling")),
+            Map.entry("java/awt/Component.setName(Ljava/lang/String;)V", instance("setName")),
+            Map.entry("java/awt/Component.getName()Ljava/lang/String;", instance("getName")),
             Map.entry("java/util/Collection.add(Ljava/lang/Object;)Z", instance("add")),
             Map.entry("java/util/Collection.size()I", instance("size")),
             Map.entry("java/util/Collection.isEmpty()Z", instance("isEmpty")),
