@@ -37,6 +37,7 @@ class DifferentialTest {
                 fixture("ArraysTest"),
                 fixture("MultiArray"),
                 fixture("StringsTest"),
+                fixture("StringOps"),
                 fixture("Printf"),
                 fixture("Streams"),
                 fixture("Reflection"),

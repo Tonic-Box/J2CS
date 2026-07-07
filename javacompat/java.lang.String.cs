@@ -37,6 +37,56 @@ namespace java.lang
             return o == null ? Wrap("null") : o.toString();
         }
 
+        public static String valueOf(int v)
+        {
+            return Wrap(global::java.lang.JRuntime.Str(v));
+        }
+
+        public static String valueOf(long v)
+        {
+            return Wrap(global::java.lang.JRuntime.Str(v));
+        }
+
+        public static String valueOf(char v)
+        {
+            return Wrap(v.ToString());
+        }
+
+        public static String valueOf(double v)
+        {
+            return Wrap(global::java.lang.JRuntime.Str(v));
+        }
+
+        public static String valueOf(float v)
+        {
+            return Wrap(global::java.lang.JRuntime.Str(v));
+        }
+
+        public static String valueOf(char[] v)
+        {
+            return v == null ? Wrap("null") : Wrap(new string(v));
+        }
+
+        public static String valueOfBoolean(int v)
+        {
+            return Wrap(v != 0 ? "true" : "false");
+        }
+
+        public static String join(global::java.lang.CharSequence delimiter, global::java.lang.CharSequence[] elements)
+        {
+            var sep = Cs(delimiter);
+            var sb = new global::System.Text.StringBuilder();
+            for (int i = 0; i < elements.Length; i++)
+            {
+                if (i > 0)
+                {
+                    sb.Append(sep);
+                }
+                sb.Append(Cs(elements[i]));
+            }
+            return Wrap(sb.ToString());
+        }
+
         public int length()
         {
             return Value.Length;
@@ -107,6 +157,159 @@ namespace java.lang
         {
             return other != null && global::System.String.Equals(Value, other.Value,
                     global::System.StringComparison.OrdinalIgnoreCase) ? 1 : 0;
+        }
+
+        public int endsWith(String suffix)
+        {
+            return Value.EndsWith(suffix.Value, global::System.StringComparison.Ordinal) ? 1 : 0;
+        }
+
+        public int contains(global::java.lang.CharSequence s)
+        {
+            return Value.Contains(Cs(s), global::System.StringComparison.Ordinal) ? 1 : 0;
+        }
+
+        public char[] toCharArray()
+        {
+            return Value.ToCharArray();
+        }
+
+        public String toLowerCase()
+        {
+            return Wrap(Value.ToLowerInvariant());
+        }
+
+        public String toUpperCase()
+        {
+            return Wrap(Value.ToUpperInvariant());
+        }
+
+        public String concat(String other)
+        {
+            return Wrap(Value + other.Value);
+        }
+
+        public String strip()
+        {
+            return Wrap(Value.Trim());
+        }
+
+        public String repeat(int count)
+        {
+            if (count < 0)
+            {
+                var ex = new global::java.lang.IllegalArgumentException(RawNew.I);
+                ex.__init_Ljava_lang_String__V(Wrap("count is negative: " + count));
+                throw global::java.lang.JThrow.of(ex);
+            }
+            return Wrap(count == 0 ? "" : string.Concat(global::System.Linq.Enumerable.Repeat(Value, count)));
+        }
+
+        public String replace(char oldChar, char newChar)
+        {
+            return Wrap(Value.Replace(oldChar, newChar));
+        }
+
+        public String replace(global::java.lang.CharSequence target, global::java.lang.CharSequence replacement)
+        {
+            return Wrap(Value.Replace(Cs(target), Cs(replacement)));
+        }
+
+        public String replaceAll(String regex, String replacement)
+        {
+            return Wrap(global::System.Text.RegularExpressions.Regex.Replace(Value, regex.Value, replacement.Value));
+        }
+
+        public String replaceFirst(String regex, String replacement)
+        {
+            var re = new global::System.Text.RegularExpressions.Regex(regex.Value);
+            return Wrap(re.Replace(Value, replacement.Value, 1));
+        }
+
+        public int matches(String regex)
+        {
+            return global::System.Text.RegularExpressions.Regex.IsMatch(Value, "\\A(?:" + regex.Value + ")\\z") ? 1 : 0;
+        }
+
+        public int lastIndexOf(int ch)
+        {
+            return Value.LastIndexOf((char)ch);
+        }
+
+        public int lastIndexOf(String str)
+        {
+            return Value.Length == 0 ? (str.Value.Length == 0 ? 0 : -1)
+                    : Value.LastIndexOf(str.Value, global::System.StringComparison.Ordinal);
+        }
+
+        public int indexOf(int ch, int fromIndex)
+        {
+            if (fromIndex < 0) fromIndex = 0;
+            if (fromIndex >= Value.Length) return -1;
+            return Value.IndexOf((char)ch, fromIndex);
+        }
+
+        public int indexOf(String str, int fromIndex)
+        {
+            if (fromIndex < 0) fromIndex = 0;
+            if (fromIndex > Value.Length) return str.Value.Length == 0 ? Value.Length : -1;
+            return Value.IndexOf(str.Value, fromIndex, global::System.StringComparison.Ordinal);
+        }
+
+        public int compareTo(String other)
+        {
+            int len1 = Value.Length;
+            int len2 = other.Value.Length;
+            int lim = len1 < len2 ? len1 : len2;
+            for (int k = 0; k < lim; k++)
+            {
+                char c1 = Value[k];
+                char c2 = other.Value[k];
+                if (c1 != c2)
+                {
+                    return c1 - c2;
+                }
+            }
+            return len1 - len2;
+        }
+
+        public int compareToIgnoreCase(String other)
+        {
+            return Wrap(Value.ToLowerInvariant()).compareTo(Wrap(other.Value.ToLowerInvariant()));
+        }
+
+        public String[] split(String regex)
+        {
+            return split(regex, 0);
+        }
+
+        public String[] split(String regex, int limit)
+        {
+            var re = new global::System.Text.RegularExpressions.Regex(regex.Value);
+            if (limit == 0 && !re.IsMatch(Value))
+            {
+                return new String[] { Wrap(Value) };
+            }
+            string[] parts = limit > 0 ? re.Split(Value, limit) : re.Split(Value);
+            int n = parts.Length;
+            if (limit == 0)
+            {
+                while (n > 0 && parts[n - 1].Length == 0)
+                {
+                    n--;
+                }
+            }
+            var result = new String[n];
+            for (int i = 0; i < n; i++)
+            {
+                result[i] = Wrap(parts[i]);
+            }
+            return result;
+        }
+
+        private static string Cs(global::java.lang.CharSequence cs)
+        {
+            return cs == null ? "null" : cs.toString().Value;
         }
 
         public override int equals(global::java.lang.Object o)
