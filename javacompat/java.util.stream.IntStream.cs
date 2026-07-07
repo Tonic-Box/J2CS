@@ -69,6 +69,98 @@ namespace java.util.stream
             foreach (var v in items) { action.accept(v); }
         }
 
+        public IntStream filter(global::java.util.function.IntPredicate predicate)
+        {
+            var outp = new global::System.Collections.Generic.List<int>();
+            foreach (var v in items) { if (predicate.test(v) != 0) { outp.Add(v); } }
+            return new IntStream(outp);
+        }
+
+        public IntStream map(global::java.util.function.IntUnaryOperator mapper)
+        {
+            var outp = new global::System.Collections.Generic.List<int>(items.Count);
+            foreach (var v in items) { outp.Add(mapper.applyAsInt(v)); }
+            return new IntStream(outp);
+        }
+
+        public int reduce(int identity, global::java.util.function.IntBinaryOperator op)
+        {
+            int acc = identity;
+            foreach (var v in items) { acc = op.applyAsInt(acc, v); }
+            return acc;
+        }
+
+        public IntStream sorted()
+        {
+            var outp = new global::System.Collections.Generic.List<int>(items);
+            outp.Sort();
+            return new IntStream(outp);
+        }
+
+        public IntStream distinct()
+        {
+            var seen = new global::System.Collections.Generic.HashSet<int>();
+            var outp = new global::System.Collections.Generic.List<int>();
+            foreach (var v in items) { if (seen.Add(v)) { outp.Add(v); } }
+            return new IntStream(outp);
+        }
+
+        public IntStream limit(long maxSize)
+        {
+            var outp = new global::System.Collections.Generic.List<int>();
+            for (int i = 0; i < items.Count && i < maxSize; i++) { outp.Add(items[i]); }
+            return new IntStream(outp);
+        }
+
+        public IntStream skip(long n)
+        {
+            var outp = new global::System.Collections.Generic.List<int>();
+            for (int i = (int)n; i >= 0 && i < items.Count; i++) { outp.Add(items[i]); }
+            return new IntStream(outp);
+        }
+
+        public int anyMatch(global::java.util.function.IntPredicate predicate)
+        {
+            foreach (var v in items) { if (predicate.test(v) != 0) { return 1; } }
+            return 0;
+        }
+
+        public int allMatch(global::java.util.function.IntPredicate predicate)
+        {
+            foreach (var v in items) { if (predicate.test(v) == 0) { return 0; } }
+            return 1;
+        }
+
+        public int noneMatch(global::java.util.function.IntPredicate predicate)
+        {
+            foreach (var v in items) { if (predicate.test(v) != 0) { return 0; } }
+            return 1;
+        }
+
+        public global::java.util.OptionalInt min()
+        {
+            if (items.Count == 0) { return global::java.util.OptionalInt.Empty(); }
+            int m = items[0];
+            foreach (var v in items) { if (v < m) { m = v; } }
+            return global::java.util.OptionalInt.Of(m);
+        }
+
+        public global::java.util.OptionalInt max()
+        {
+            if (items.Count == 0) { return global::java.util.OptionalInt.Empty(); }
+            int m = items[0];
+            foreach (var v in items) { if (v > m) { m = v; } }
+            return global::java.util.OptionalInt.Of(m);
+        }
+
+        public global::java.util.OptionalDouble average()
+        {
+            if (items.Count == 0) { return global::java.util.OptionalDouble.Empty(); }
+            long s = 0;
+            foreach (var v in items) { s += v; }
+            return global::java.util.OptionalDouble.Of((double)s / items.Count);
+        }
+
         public int sum()
         {
             int s = 0;

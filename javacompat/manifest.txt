@@ -120,6 +120,8 @@ java.util.Map$Entry.cs
 java.util.Map.cs
 java.util.Objects.cs
 java.util.Optional.cs
+java.util.OptionalDouble.cs
+java.util.OptionalInt.cs
 java.util.Set.cs
 java.util.TreeMap.cs
 java.util.UUID.cs
@@ -148,9 +150,12 @@ java.util.function.Consumer.cs
 java.util.function.DoubleConsumer.cs
 java.util.function.DoublePredicate.cs
 java.util.function.Function.cs
+java.util.function.IntBinaryOperator.cs
 java.util.function.IntConsumer.cs
 java.util.function.IntFunction.cs
+java.util.function.IntPredicate.cs
 java.util.function.IntToDoubleFunction.cs
+java.util.function.IntUnaryOperator.cs
 java.util.function.Predicate.cs
 java.util.function.Supplier.cs
 java.util.function.ToDoubleFunction.cs
