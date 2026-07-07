@@ -18,21 +18,31 @@ namespace java.lang
             return global::System.Environment.ProcessorCount;
         }
 
-        public long maxMemory()
-        {
-            long max = global::System.GC.GetGCMemoryInfo().TotalAvailableMemoryBytes;
-            return max > 0 ? max : 256L * 1024 * 1024;
-        }
-
         public long totalMemory()
         {
-            return global::System.GC.GetTotalMemory(false);
+            // Java: heap currently committed. Map to the committed managed heap, but never below the
+            // live set (GetTotalMemory) so used = total - free stays non-negative.
+            long committed = global::System.GC.GetGCMemoryInfo().TotalCommittedBytes;
+            long used = global::System.GC.GetTotalMemory(false);
+            return committed > used ? committed : used;
         }
 
         public long freeMemory()
         {
-            long free = maxMemory() - totalMemory();
+            // Java: unused portion of the committed heap = totalMemory - used.
+            long free = totalMemory() - global::System.GC.GetTotalMemory(false);
             return free > 0 ? free : 0;
+        }
+
+        public long maxMemory()
+        {
+            long max = global::System.GC.GetGCMemoryInfo().TotalAvailableMemoryBytes;
+            long total = totalMemory();
+            if (max < total)
+            {
+                max = total;
+            }
+            return max > 0 ? max : 256L * 1024 * 1024;
         }
 
         public void gc()

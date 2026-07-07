@@ -47,6 +47,7 @@ class DifferentialTest {
                 fixture("RegexTest"),
                 fixture("CollectionsExtra"),
                 fixture("TimeTest"),
+                fixture("RuntimeMem"),
                 fixture("Printf"),
                 fixture("Streams"),
                 fixture("Reflection"),
