@@ -127,10 +127,18 @@ final class StructuredBodyEmitter {
         List<SSAValue> params = recovered.ir().getParameters();
         boolean isStatic = recovered.ir().isStatic();
         for (int i = 0; i < params.size(); i++) {
+            SSAValue param = params.get(i);
             String pname = isStatic ? "p" + i : (i == 0 ? "this" : "p" + (i - 1));
-            paramNames.put(params.get(i), pname);
+            paramNames.put(param, pname);
             usedNames.add(pname);
             declareInScope(pname);
+            // Map the parameter's recovered name straight to its slot. A body reference to a captured
+            // parameter (common in lambda synthetic methods) can carry a mismatched or null SSA value,
+            // so the SSA-identity walk below would miss it and the name would resolve out of scope.
+            String rec = recovered.recoverer().getRecoveryContext().getVariableName(param);
+            if (rec != null && !"this".equals(rec)) {
+                names.putIfAbsent(rec, pname);
+            }
         }
         recovered.body().walk(node -> {
             if (node instanceof VarRefExpr ref && ref.getSsaValue() != null) {
