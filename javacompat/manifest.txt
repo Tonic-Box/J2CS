@@ -162,6 +162,8 @@ java.util.function.Supplier.cs
 java.util.function.ToDoubleFunction.cs
 java.util.function.ToIntFunction.cs
 java.util.function.ToLongFunction.cs
+java.util.regex.Matcher.cs
+java.util.regex.Pattern.cs
 java.util.stream.Collector.cs
 java.util.stream.Collectors.cs
 java.util.stream.DoubleStream.cs
