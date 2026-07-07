@@ -3,6 +3,10 @@ namespace java.lang
     public sealed class Integer : Number
     {
         public static readonly global::java.lang.Class TYPE = global::java.lang.Class.Of("int");
+        public const int MAX_VALUE = int.MaxValue;
+        public const int MIN_VALUE = int.MinValue;
+        public const int SIZE = 32;
+        public const int BYTES = 4;
 
         private static readonly Integer[] Cache = BuildCache();
 

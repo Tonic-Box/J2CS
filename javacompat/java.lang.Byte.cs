@@ -3,6 +3,8 @@ namespace java.lang
     public sealed class Byte : Number
     {
         public static readonly global::java.lang.Class TYPE = global::java.lang.Class.Of("byte");
+        public const sbyte MAX_VALUE = sbyte.MaxValue;
+        public const sbyte MIN_VALUE = sbyte.MinValue;
 
         private static readonly Byte[] Cache = BuildCache();
 

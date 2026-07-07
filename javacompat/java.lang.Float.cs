@@ -3,6 +3,8 @@ namespace java.lang
     public sealed class Float : Number
     {
         public static readonly global::java.lang.Class TYPE = global::java.lang.Class.Of("float");
+        public const float MAX_VALUE = float.MaxValue;
+        public const float MIN_VALUE = float.Epsilon;
 
         private readonly float value;
 

@@ -3,6 +3,8 @@ namespace java.lang
     public sealed class Short : Number
     {
         public static readonly global::java.lang.Class TYPE = global::java.lang.Class.Of("short");
+        public const short MAX_VALUE = short.MaxValue;
+        public const short MIN_VALUE = short.MinValue;
 
         private static readonly Short[] Cache = BuildCache();
 

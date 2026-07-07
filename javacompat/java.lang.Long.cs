@@ -3,6 +3,10 @@ namespace java.lang
     public sealed class Long : Number
     {
         public static readonly global::java.lang.Class TYPE = global::java.lang.Class.Of("long");
+        public const long MAX_VALUE = long.MaxValue;
+        public const long MIN_VALUE = long.MinValue;
+        public const int SIZE = 64;
+        public const int BYTES = 8;
 
         private static readonly Long[] Cache = BuildCache();
 

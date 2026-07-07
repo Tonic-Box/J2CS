@@ -3,6 +3,8 @@ namespace java.lang
     public sealed class Character : Object
     {
         public static readonly global::java.lang.Class TYPE = global::java.lang.Class.Of("char");
+        public const char MAX_VALUE = char.MaxValue;
+        public const char MIN_VALUE = char.MinValue;
 
         private static readonly Character[] Cache = BuildCache();
 

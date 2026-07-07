@@ -3,6 +3,11 @@ namespace java.lang
     public sealed class Double : Number
     {
         public static readonly global::java.lang.Class TYPE = global::java.lang.Class.Of("double");
+        public const double MAX_VALUE = double.MaxValue;
+        public const double MIN_VALUE = double.Epsilon;
+        public const double POSITIVE_INFINITY = double.PositiveInfinity;
+        public const double NEGATIVE_INFINITY = double.NegativeInfinity;
+        public const double NaN = double.NaN;
 
         private readonly double value;
 

@@ -25,6 +25,7 @@ class DifferentialTest {
         return Stream.of(
                 fixture("HelloWorld"),
                 fixture("Arith"),
+                fixture("NumericConstants"),
                 fixture("ControlFlow"),
                 fixture("NestedLoops"),
                 fixture("Monitors"),
