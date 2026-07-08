@@ -1151,6 +1151,10 @@ public final class ShimRegistry {
         put(m, "java/util/stream/Collectors.filtering(Ljava/util/function/Predicate;Ljava/util/stream/Collector;)Ljava/util/stream/Collector;", statics("filtering"));
         put(m, "java/util/stream/Collectors.flatMapping(Ljava/util/function/Function;Ljava/util/stream/Collector;)Ljava/util/stream/Collector;", statics("flatMapping"));
         put(m, "java/util/stream/Collectors.teeing(Ljava/util/stream/Collector;Ljava/util/stream/Collector;Ljava/util/function/BiFunction;)Ljava/util/stream/Collector;", statics("teeing"));
+        put(m, "java/util/stream/Collectors.toConcurrentMap(Ljava/util/function/Function;Ljava/util/function/Function;)Ljava/util/stream/Collector;", statics("toConcurrentMap"));
+        put(m, "java/util/stream/Collectors.toConcurrentMap(Ljava/util/function/Function;Ljava/util/function/Function;Ljava/util/function/BinaryOperator;)Ljava/util/stream/Collector;", statics("toConcurrentMap"));
+        put(m, "java/util/stream/Collectors.groupingByConcurrent(Ljava/util/function/Function;)Ljava/util/stream/Collector;", statics("groupingByConcurrent"));
+        put(m, "java/util/stream/Collectors.groupingByConcurrent(Ljava/util/function/Function;Ljava/util/stream/Collector;)Ljava/util/stream/Collector;", statics("groupingByConcurrent"));
         put(m, "java/util/IntSummaryStatistics.getCount()J", instance("getCount"));
         put(m, "java/util/IntSummaryStatistics.getSum()J", instance("getSum"));
         put(m, "java/util/IntSummaryStatistics.getMin()I", instance("getMin"));

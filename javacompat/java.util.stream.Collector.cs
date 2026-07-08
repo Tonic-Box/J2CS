@@ -36,6 +36,7 @@ namespace java.util.stream
         public bool hasIdentity;
         public Collector downstream2;
         public global::java.util.function.BiFunction merger;
+        public bool concurrent;
 
         public Collector(global::java.lang.RawNew r) : base(r)
         {

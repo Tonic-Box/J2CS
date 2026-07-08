@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.IntSummaryStatistics;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class CollectorsGaps {
@@ -38,5 +39,14 @@ public class CollectorsGaps {
                 Collectors.summingInt(Integer::intValue), Collectors.counting(),
                 (s, c) -> s + "/" + c));
         System.out.println(tee);
+
+        Map<Integer, String> cm = words.stream().collect(
+                Collectors.toConcurrentMap(String::length, w -> w, (x, y) -> x + "|" + y));
+        System.out.println(cm.size());
+        System.out.println(cm.get(5) + " " + cm.get(6));
+        Map<Integer, List<String>> gc = words.stream().collect(
+                Collectors.groupingByConcurrent(String::length));
+        System.out.println(gc.size());
+        System.out.println(gc.get(6));
     }
 }

@@ -206,6 +206,15 @@ namespace java.util.stream
             return CollectInto(items, collector);
         }
 
+        private static global::java.util.HashMap NewMap(Collector collector)
+        {
+            global::java.util.HashMap map = collector.concurrent
+                    ? new global::java.util.concurrent.ConcurrentHashMap(global::java.lang.RawNew.I)
+                    : new global::java.util.HashMap(global::java.lang.RawNew.I);
+            map.__init__V();
+            return map;
+        }
+
         internal static global::java.lang.Object CollectInto(CList items, Collector collector)
         {
             switch (collector.kind)
@@ -237,8 +246,7 @@ namespace java.util.stream
                 }
                 case Collector.Kind.ToMap:
                 {
-                    var map = new global::java.util.HashMap(global::java.lang.RawNew.I);
-                    map.__init__V();
+                    var map = NewMap(collector);
                     foreach (var e in items)
                     {
                         var key = collector.keyFn.apply(e);
@@ -254,8 +262,7 @@ namespace java.util.stream
                 }
                 case Collector.Kind.GroupingBy:
                 {
-                    var map = new global::java.util.HashMap(global::java.lang.RawNew.I);
-                    map.__init__V();
+                    var map = NewMap(collector);
                     foreach (var e in items)
                     {
                         var key = collector.keyFn.apply(e);

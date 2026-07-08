@@ -264,5 +264,38 @@ namespace java.util.stream
             c.merger = merger;
             return c;
         }
+
+        // Concurrent variants collect into a ConcurrentHashMap; otherwise identical to their
+        // non-concurrent counterparts (the flag flips the map type in Stream.collect).
+        public static Collector toConcurrentMap(global::java.util.function.Function keyMapper,
+                global::java.util.function.Function valueMapper)
+        {
+            Collector c = toMap(keyMapper, valueMapper);
+            c.concurrent = true;
+            return c;
+        }
+
+        public static Collector toConcurrentMap(global::java.util.function.Function keyMapper,
+                global::java.util.function.Function valueMapper, global::java.util.function.BinaryOperator mergeFunction)
+        {
+            Collector c = toMap(keyMapper, valueMapper, mergeFunction);
+            c.concurrent = true;
+            return c;
+        }
+
+        public static Collector groupingByConcurrent(global::java.util.function.Function classifier)
+        {
+            Collector c = groupingBy(classifier);
+            c.concurrent = true;
+            return c;
+        }
+
+        public static Collector groupingByConcurrent(global::java.util.function.Function classifier,
+                Collector downstream)
+        {
+            Collector c = groupingBy(classifier, downstream);
+            c.concurrent = true;
+            return c;
+        }
     }
 }
