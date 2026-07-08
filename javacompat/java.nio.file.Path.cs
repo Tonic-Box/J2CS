@@ -115,6 +115,22 @@ namespace java.nio.file
             return IsAbsolute() ? 1 : 0;
         }
 
+        public global::java.io.File toFile()
+        {
+            return new global::java.io.File(value);
+        }
+
+        public global::java.util.Iterator iterator()
+        {
+            var list = new global::java.util.ArrayList(global::java.lang.RawNew.I);
+            list.__init__V();
+            foreach (var part in value.Split(Separators, global::System.StringSplitOptions.RemoveEmptyEntries))
+            {
+                list.add(new Path(part));
+            }
+            return list.iterator();
+        }
+
         public override int equals(global::java.lang.Object o)
         {
             return o is Path p && p.value == value ? 1 : 0;

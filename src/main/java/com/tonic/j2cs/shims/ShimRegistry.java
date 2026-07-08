@@ -224,7 +224,40 @@ public final class ShimRegistry {
         put(m, "java/nio/file/OpenOption", "java/lang/Object");
         put(m, "java/nio/file/LinkOption", "java/lang/Object");
         put(m, "java/nio/file/attribute/FileAttribute", "java/lang/Object");
+        put(m, "java/nio/file/CopyOption", "java/lang/Object");
+        put(m, "java/nio/file/FileVisitOption", "java/lang/Object");
+        put(m, "java/nio/file/StandardCopyOption", "java/lang/Object");
+        put(m, "java/nio/file/StandardOpenOption", "java/lang/Object");
         put(m, "java/nio/ByteBuffer", "java/lang/Object");
+        put(m, "java/io/File", "java/lang/Object");
+        put(m, "java/nio/ByteOrder", "java/lang/Object");
+        put(m, "java/nio/IntBuffer", "java/lang/Object");
+        put(m, "java/nio/LongBuffer", "java/lang/Object");
+        put(m, "java/nio/DoubleBuffer", "java/lang/Object");
+        put(m, "java/nio/CharBuffer", "java/lang/Object");
+        put(m, "java/io/InputStream", "java/lang/Object");
+        put(m, "java/io/OutputStream", "java/lang/Object");
+        put(m, "java/io/Reader", "java/lang/Object");
+        put(m, "java/io/Writer", "java/lang/Object");
+        put(m, "java/io/ByteArrayInputStream", "java/io/InputStream");
+        put(m, "java/io/FileInputStream", "java/io/InputStream");
+        put(m, "java/io/ByteArrayOutputStream", "java/io/OutputStream");
+        put(m, "java/io/FileOutputStream", "java/io/OutputStream");
+        put(m, "java/io/StringReader", "java/io/Reader");
+        put(m, "java/io/InputStreamReader", "java/io/Reader");
+        put(m, "java/io/FileReader", "java/io/Reader");
+        put(m, "java/io/BufferedReader", "java/io/Reader");
+        put(m, "java/io/StringWriter", "java/io/Writer");
+        put(m, "java/io/OutputStreamWriter", "java/io/Writer");
+        put(m, "java/io/FileWriter", "java/io/Writer");
+        put(m, "java/io/BufferedWriter", "java/io/Writer");
+        put(m, "java/io/PrintWriter", "java/io/Writer");
+        put(m, "java/nio/ShortBuffer", "java/lang/Object");
+        put(m, "java/nio/FloatBuffer", "java/lang/Object");
+        put(m, "java/nio/file/FileSystem", "java/lang/Object");
+        put(m, "java/nio/file/FileSystems", "java/lang/Object");
+        put(m, "java/nio/file/attribute/BasicFileAttributes", "java/lang/Object");
+        put(m, "java/util/function/BiPredicate", "java/lang/Object");
     }
 
     private static void addLangSupers3(Map<String, String> m) {
@@ -473,6 +506,16 @@ public final class ShimRegistry {
         addIoMethods0(m);
         addNioMethods0(m);
         addNioMethods1(m);
+        addNioMethods2(m);
+        addNioMethods3(m);
+        addNioMethods4(m);
+        addNioMethods5(m);
+        addNioMethods6(m);
+        addNioMethods7(m);
+        addIoStreams0(m);
+        addIoStreams1(m);
+        addNioMethods8(m);
+        addNioMethods9(m);
         addLangMethods1(m);
         addLangMethods2(m);
         addLangMethods3(m);
@@ -592,6 +635,11 @@ public final class ShimRegistry {
         put(m, "java/nio/file/Files.size(Ljava/nio/file/Path;)J", statics("size"));
         put(m, "java/nio/file/Files.lines(Ljava/nio/file/Path;)Ljava/util/stream/Stream;", statics("lines"));
         put(m, "java/nio/file/Files.list(Ljava/nio/file/Path;)Ljava/util/stream/Stream;", statics("list"));
+        put(m, "java/nio/file/Files.copy(Ljava/nio/file/Path;Ljava/nio/file/Path;[Ljava/nio/file/CopyOption;)Ljava/nio/file/Path;", statics("copy"));
+        put(m, "java/nio/file/Files.move(Ljava/nio/file/Path;Ljava/nio/file/Path;[Ljava/nio/file/CopyOption;)Ljava/nio/file/Path;", statics("move"));
+        put(m, "java/nio/file/Files.isSameFile(Ljava/nio/file/Path;Ljava/nio/file/Path;)Z", statics("isSameFile"));
+        put(m, "java/nio/file/Files.walk(Ljava/nio/file/Path;[Ljava/nio/file/FileVisitOption;)Ljava/util/stream/Stream;", statics("walk"));
+        put(m, "java/nio/file/Files.walk(Ljava/nio/file/Path;I[Ljava/nio/file/FileVisitOption;)Ljava/util/stream/Stream;", statics("walk"));
     }
 
     private static void addNioMethods1(Map<String, ShimTarget> m) {
@@ -621,6 +669,158 @@ public final class ShimRegistry {
         put(m, "java/nio/ByteBuffer.putLong(J)Ljava/nio/ByteBuffer;", instance("putLong"));
         put(m, "java/nio/ByteBuffer.array()[B", instance("array"));
     }
+
+    private static void addNioMethods2(Map<String, ShimTarget> m) {
+        put(m, "java/io/File.getName()Ljava/lang/String;", instance("getName"));
+        put(m, "java/io/File.getParent()Ljava/lang/String;", instance("getParent"));
+        put(m, "java/io/File.getParentFile()Ljava/io/File;", instance("getParentFile"));
+        put(m, "java/io/File.getPath()Ljava/lang/String;", instance("getPath"));
+        put(m, "java/io/File.getAbsolutePath()Ljava/lang/String;", instance("getAbsolutePath"));
+        put(m, "java/io/File.getAbsoluteFile()Ljava/io/File;", instance("getAbsoluteFile"));
+        put(m, "java/io/File.getCanonicalPath()Ljava/lang/String;", instance("getCanonicalPath"));
+        put(m, "java/io/File.exists()Z", instance("exists"));
+        put(m, "java/io/File.isDirectory()Z", instance("isDirectory"));
+        put(m, "java/io/File.isFile()Z", instance("isFile"));
+        put(m, "java/io/File.isAbsolute()Z", instance("isAbsolute"));
+        put(m, "java/io/File.mkdir()Z", instance("mkdir"));
+        put(m, "java/io/File.mkdirs()Z", instance("mkdirs"));
+        put(m, "java/io/File.createNewFile()Z", instance("createNewFile"));
+        put(m, "java/io/File.delete()Z", instance("delete"));
+        put(m, "java/io/File.renameTo(Ljava/io/File;)Z", instance("renameTo"));
+        put(m, "java/io/File.length()J", instance("length"));
+        put(m, "java/io/File.canRead()Z", instance("canRead"));
+        put(m, "java/io/File.canWrite()Z", instance("canWrite"));
+        put(m, "java/io/File.list()[Ljava/lang/String;", instance("list"));
+        put(m, "java/io/File.listFiles()[Ljava/io/File;", instance("listFiles"));
+        put(m, "java/io/File.toPath()Ljava/nio/file/Path;", instance("toPath"));
+        put(m, "java/nio/file/Path.toFile()Ljava/io/File;", instance("toFile"));
+        put(m, "java/nio/file/Path.iterator()Ljava/util/Iterator;", instance("iterator"));
+    }
+
+    private static void addNioMethods3(Map<String, ShimTarget> m) {
+        put(m, "java/nio/ByteOrder.nativeOrder()Ljava/nio/ByteOrder;", statics("nativeOrder"));
+        put(m, "java/nio/ByteBuffer.order()Ljava/nio/ByteOrder;", instance("order"));
+        put(m, "java/nio/ByteBuffer.order(Ljava/nio/ByteOrder;)Ljava/nio/ByteBuffer;", instance("order"));
+        put(m, "java/nio/ByteBuffer.duplicate()Ljava/nio/ByteBuffer;", instance("duplicate"));
+        put(m, "java/nio/ByteBuffer.compact()Ljava/nio/ByteBuffer;", instance("compact"));
+        put(m, "java/nio/ByteBuffer.getShort()S", instance("getShort"));
+        put(m, "java/nio/ByteBuffer.getShort(I)S", instance("getShort"));
+        put(m, "java/nio/ByteBuffer.putShort(S)Ljava/nio/ByteBuffer;", instance("putShort"));
+        put(m, "java/nio/ByteBuffer.putShort(IS)Ljava/nio/ByteBuffer;", instance("putShort"));
+        put(m, "java/nio/ByteBuffer.getChar()C", instance("getChar"));
+        put(m, "java/nio/ByteBuffer.getChar(I)C", instance("getChar"));
+        put(m, "java/nio/ByteBuffer.putChar(C)Ljava/nio/ByteBuffer;", instance("putChar"));
+        put(m, "java/nio/ByteBuffer.putChar(IC)Ljava/nio/ByteBuffer;", instance("putChar"));
+        put(m, "java/nio/ByteBuffer.getInt(I)I", instance("getInt"));
+        put(m, "java/nio/ByteBuffer.putInt(II)Ljava/nio/ByteBuffer;", instance("putInt"));
+        put(m, "java/nio/ByteBuffer.getLong(I)J", instance("getLong"));
+        put(m, "java/nio/ByteBuffer.putLong(IJ)Ljava/nio/ByteBuffer;", instance("putLong"));
+        put(m, "java/nio/ByteBuffer.getFloat()F", instance("getFloat"));
+        put(m, "java/nio/ByteBuffer.getFloat(I)F", instance("getFloat"));
+        put(m, "java/nio/ByteBuffer.putFloat(F)Ljava/nio/ByteBuffer;", instance("putFloat"));
+        put(m, "java/nio/ByteBuffer.putFloat(IF)Ljava/nio/ByteBuffer;", instance("putFloat"));
+        put(m, "java/nio/ByteBuffer.getDouble()D", instance("getDouble"));
+        put(m, "java/nio/ByteBuffer.getDouble(I)D", instance("getDouble"));
+        put(m, "java/nio/ByteBuffer.putDouble(D)Ljava/nio/ByteBuffer;", instance("putDouble"));
+        put(m, "java/nio/ByteBuffer.putDouble(ID)Ljava/nio/ByteBuffer;", instance("putDouble"));
+    }
+
+    private static void addNioMethods4(Map<String, ShimTarget> m) {
+        put(m, "java/nio/IntBuffer.allocate(I)Ljava/nio/IntBuffer;", statics("allocate"));
+        put(m, "java/nio/IntBuffer.wrap([I)Ljava/nio/IntBuffer;", statics("wrap"));
+        put(m, "java/nio/IntBuffer.capacity()I", instance("capacity"));
+        put(m, "java/nio/IntBuffer.position()I", instance("position"));
+        put(m, "java/nio/IntBuffer.limit()I", instance("limit"));
+        put(m, "java/nio/IntBuffer.remaining()I", instance("remaining"));
+        put(m, "java/nio/IntBuffer.hasRemaining()Z", instance("hasRemaining"));
+        put(m, "java/nio/IntBuffer.position(I)Ljava/nio/IntBuffer;", instance("position"));
+        put(m, "java/nio/IntBuffer.limit(I)Ljava/nio/IntBuffer;", instance("limit"));
+        put(m, "java/nio/IntBuffer.mark()Ljava/nio/IntBuffer;", instance("mark"));
+        put(m, "java/nio/IntBuffer.reset()Ljava/nio/IntBuffer;", instance("reset"));
+        put(m, "java/nio/IntBuffer.flip()Ljava/nio/IntBuffer;", instance("flip"));
+        put(m, "java/nio/IntBuffer.clear()Ljava/nio/IntBuffer;", instance("clear"));
+        put(m, "java/nio/IntBuffer.rewind()Ljava/nio/IntBuffer;", instance("rewind"));
+        put(m, "java/nio/IntBuffer.get()I", instance("get"));
+        put(m, "java/nio/IntBuffer.get(I)I", instance("get"));
+        put(m, "java/nio/IntBuffer.put(I)Ljava/nio/IntBuffer;", instance("put"));
+        put(m, "java/nio/IntBuffer.put(II)Ljava/nio/IntBuffer;", instance("put"));
+        put(m, "java/nio/IntBuffer.get([I)Ljava/nio/IntBuffer;", instance("get"));
+        put(m, "java/nio/IntBuffer.put([I)Ljava/nio/IntBuffer;", instance("put"));
+        put(m, "java/nio/IntBuffer.array()[I", instance("array"));
+    }
+
+    private static void addNioMethods5(Map<String, ShimTarget> m) {
+        put(m, "java/nio/LongBuffer.allocate(I)Ljava/nio/LongBuffer;", statics("allocate"));
+        put(m, "java/nio/LongBuffer.wrap([J)Ljava/nio/LongBuffer;", statics("wrap"));
+        put(m, "java/nio/LongBuffer.capacity()I", instance("capacity"));
+        put(m, "java/nio/LongBuffer.position()I", instance("position"));
+        put(m, "java/nio/LongBuffer.limit()I", instance("limit"));
+        put(m, "java/nio/LongBuffer.remaining()I", instance("remaining"));
+        put(m, "java/nio/LongBuffer.hasRemaining()Z", instance("hasRemaining"));
+        put(m, "java/nio/LongBuffer.position(I)Ljava/nio/LongBuffer;", instance("position"));
+        put(m, "java/nio/LongBuffer.limit(I)Ljava/nio/LongBuffer;", instance("limit"));
+        put(m, "java/nio/LongBuffer.mark()Ljava/nio/LongBuffer;", instance("mark"));
+        put(m, "java/nio/LongBuffer.reset()Ljava/nio/LongBuffer;", instance("reset"));
+        put(m, "java/nio/LongBuffer.flip()Ljava/nio/LongBuffer;", instance("flip"));
+        put(m, "java/nio/LongBuffer.clear()Ljava/nio/LongBuffer;", instance("clear"));
+        put(m, "java/nio/LongBuffer.rewind()Ljava/nio/LongBuffer;", instance("rewind"));
+        put(m, "java/nio/LongBuffer.get()J", instance("get"));
+        put(m, "java/nio/LongBuffer.get(I)J", instance("get"));
+        put(m, "java/nio/LongBuffer.put(J)Ljava/nio/LongBuffer;", instance("put"));
+        put(m, "java/nio/LongBuffer.put(IJ)Ljava/nio/LongBuffer;", instance("put"));
+        put(m, "java/nio/LongBuffer.get([J)Ljava/nio/LongBuffer;", instance("get"));
+        put(m, "java/nio/LongBuffer.put([J)Ljava/nio/LongBuffer;", instance("put"));
+        put(m, "java/nio/LongBuffer.array()[J", instance("array"));
+    }
+
+    private static void addNioMethods6(Map<String, ShimTarget> m) {
+        put(m, "java/nio/DoubleBuffer.allocate(I)Ljava/nio/DoubleBuffer;", statics("allocate"));
+        put(m, "java/nio/DoubleBuffer.wrap([D)Ljava/nio/DoubleBuffer;", statics("wrap"));
+        put(m, "java/nio/DoubleBuffer.capacity()I", instance("capacity"));
+        put(m, "java/nio/DoubleBuffer.position()I", instance("position"));
+        put(m, "java/nio/DoubleBuffer.limit()I", instance("limit"));
+        put(m, "java/nio/DoubleBuffer.remaining()I", instance("remaining"));
+        put(m, "java/nio/DoubleBuffer.hasRemaining()Z", instance("hasRemaining"));
+        put(m, "java/nio/DoubleBuffer.position(I)Ljava/nio/DoubleBuffer;", instance("position"));
+        put(m, "java/nio/DoubleBuffer.limit(I)Ljava/nio/DoubleBuffer;", instance("limit"));
+        put(m, "java/nio/DoubleBuffer.mark()Ljava/nio/DoubleBuffer;", instance("mark"));
+        put(m, "java/nio/DoubleBuffer.reset()Ljava/nio/DoubleBuffer;", instance("reset"));
+        put(m, "java/nio/DoubleBuffer.flip()Ljava/nio/DoubleBuffer;", instance("flip"));
+        put(m, "java/nio/DoubleBuffer.clear()Ljava/nio/DoubleBuffer;", instance("clear"));
+        put(m, "java/nio/DoubleBuffer.rewind()Ljava/nio/DoubleBuffer;", instance("rewind"));
+        put(m, "java/nio/DoubleBuffer.get()D", instance("get"));
+        put(m, "java/nio/DoubleBuffer.get(I)D", instance("get"));
+        put(m, "java/nio/DoubleBuffer.put(D)Ljava/nio/DoubleBuffer;", instance("put"));
+        put(m, "java/nio/DoubleBuffer.put(ID)Ljava/nio/DoubleBuffer;", instance("put"));
+        put(m, "java/nio/DoubleBuffer.get([D)Ljava/nio/DoubleBuffer;", instance("get"));
+        put(m, "java/nio/DoubleBuffer.put([D)Ljava/nio/DoubleBuffer;", instance("put"));
+        put(m, "java/nio/DoubleBuffer.array()[D", instance("array"));
+    }
+
+    private static void addNioMethods7(Map<String, ShimTarget> m) {
+        put(m, "java/nio/CharBuffer.allocate(I)Ljava/nio/CharBuffer;", statics("allocate"));
+        put(m, "java/nio/CharBuffer.wrap([C)Ljava/nio/CharBuffer;", statics("wrap"));
+        put(m, "java/nio/CharBuffer.capacity()I", instance("capacity"));
+        put(m, "java/nio/CharBuffer.position()I", instance("position"));
+        put(m, "java/nio/CharBuffer.limit()I", instance("limit"));
+        put(m, "java/nio/CharBuffer.remaining()I", instance("remaining"));
+        put(m, "java/nio/CharBuffer.hasRemaining()Z", instance("hasRemaining"));
+        put(m, "java/nio/CharBuffer.position(I)Ljava/nio/CharBuffer;", instance("position"));
+        put(m, "java/nio/CharBuffer.limit(I)Ljava/nio/CharBuffer;", instance("limit"));
+        put(m, "java/nio/CharBuffer.mark()Ljava/nio/CharBuffer;", instance("mark"));
+        put(m, "java/nio/CharBuffer.reset()Ljava/nio/CharBuffer;", instance("reset"));
+        put(m, "java/nio/CharBuffer.flip()Ljava/nio/CharBuffer;", instance("flip"));
+        put(m, "java/nio/CharBuffer.clear()Ljava/nio/CharBuffer;", instance("clear"));
+        put(m, "java/nio/CharBuffer.rewind()Ljava/nio/CharBuffer;", instance("rewind"));
+        put(m, "java/nio/CharBuffer.get()C", instance("get"));
+        put(m, "java/nio/CharBuffer.get(I)C", instance("get"));
+        put(m, "java/nio/CharBuffer.put(C)Ljava/nio/CharBuffer;", instance("put"));
+        put(m, "java/nio/CharBuffer.put(IC)Ljava/nio/CharBuffer;", instance("put"));
+        put(m, "java/nio/CharBuffer.get([C)Ljava/nio/CharBuffer;", instance("get"));
+        put(m, "java/nio/CharBuffer.put([C)Ljava/nio/CharBuffer;", instance("put"));
+        put(m, "java/nio/CharBuffer.array()[C", instance("array"));
+    }
+
 
     private static void addLangMethods1(Map<String, ShimTarget> m) {
         put(m, "java/lang/StringBuilder.append(I)Ljava/lang/StringBuilder;", instance("append"));
@@ -1774,6 +1974,132 @@ public final class ShimRegistry {
 
         private static final Map<String, ShimTarget> FIELDS = buildFields();
 
+    private static void addIoStreams0(Map<String, ShimTarget> m) {
+        put(m, "java/io/InputStream.read()I", instance("read"));
+        put(m, "java/io/InputStream.read([B)I", instance("read"));
+        put(m, "java/io/InputStream.read([BII)I", instance("read"));
+        put(m, "java/io/InputStream.available()I", instance("available"));
+        put(m, "java/io/InputStream.skip(J)J", instance("skip"));
+        put(m, "java/io/InputStream.readAllBytes()[B", instance("readAllBytes"));
+        put(m, "java/io/InputStream.close()V", instance("close"));
+        put(m, "java/io/OutputStream.write(I)V", instance("write"));
+        put(m, "java/io/OutputStream.write([B)V", instance("write"));
+        put(m, "java/io/OutputStream.write([BII)V", instance("write"));
+        put(m, "java/io/OutputStream.flush()V", instance("flush"));
+        put(m, "java/io/OutputStream.close()V", instance("close"));
+        put(m, "java/io/Reader.read()I", instance("read"));
+        put(m, "java/io/Reader.read([C)I", instance("read"));
+        put(m, "java/io/Reader.read([CII)I", instance("read"));
+        put(m, "java/io/Reader.close()V", instance("close"));
+        put(m, "java/io/Writer.write(I)V", instance("write"));
+        put(m, "java/io/Writer.write([C)V", instance("write"));
+        put(m, "java/io/Writer.write([CII)V", instance("write"));
+        put(m, "java/io/Writer.write(Ljava/lang/String;)V", instance("write"));
+        put(m, "java/io/Writer.append(Ljava/lang/CharSequence;)Ljava/io/Writer;", instance("append"));
+        put(m, "java/io/Writer.append(C)Ljava/io/Writer;", instance("append"));
+        put(m, "java/io/Writer.flush()V", instance("flush"));
+        put(m, "java/io/Writer.close()V", instance("close"));
+        put(m, "java/io/ByteArrayOutputStream.toByteArray()[B", instance("toByteArray"));
+        put(m, "java/io/ByteArrayOutputStream.size()I", instance("size"));
+        put(m, "java/io/ByteArrayOutputStream.reset()V", instance("reset"));
+        put(m, "java/io/ByteArrayOutputStream.writeTo(Ljava/io/OutputStream;)V", instance("writeTo"));
+        put(m, "java/io/BufferedReader.readLine()Ljava/lang/String;", instance("readLine"));
+        put(m, "java/io/BufferedReader.lines()Ljava/util/stream/Stream;", instance("lines"));
+        put(m, "java/io/BufferedWriter.newLine()V", instance("newLine"));
+    }
+
+    private static void addIoStreams1(Map<String, ShimTarget> m) {
+        put(m, "java/io/PrintWriter.print(Ljava/lang/String;)V", instance("print"));
+        put(m, "java/io/PrintWriter.print(Ljava/lang/Object;)V", instance("print"));
+        put(m, "java/io/PrintWriter.print(I)V", instance("print"));
+        put(m, "java/io/PrintWriter.print(J)V", instance("print"));
+        put(m, "java/io/PrintWriter.print(C)V", instance("print"));
+        put(m, "java/io/PrintWriter.print(D)V", instance("print"));
+        put(m, "java/io/PrintWriter.print(Z)V", instance("print_Z"));
+        put(m, "java/io/PrintWriter.println()V", instance("println"));
+        put(m, "java/io/PrintWriter.println(Ljava/lang/String;)V", instance("println"));
+        put(m, "java/io/PrintWriter.println(Ljava/lang/Object;)V", instance("println"));
+        put(m, "java/io/PrintWriter.println(I)V", instance("println"));
+        put(m, "java/io/PrintWriter.println(J)V", instance("println"));
+        put(m, "java/io/PrintWriter.println(C)V", instance("println"));
+        put(m, "java/io/PrintWriter.println(D)V", instance("println"));
+        put(m, "java/io/PrintWriter.println(Z)V", instance("println_Z"));
+        put(m, "java/io/PrintWriter.printf(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintWriter;", instance("printf"));
+        put(m, "java/io/PrintWriter.format(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintWriter;", instance("format"));
+    }
+
+    private static void addNioMethods8(Map<String, ShimTarget> m) {
+        put(m, "java/nio/ShortBuffer.allocate(I)Ljava/nio/ShortBuffer;", statics("allocate"));
+        put(m, "java/nio/ShortBuffer.wrap([S)Ljava/nio/ShortBuffer;", statics("wrap"));
+        put(m, "java/nio/ShortBuffer.capacity()I", instance("capacity"));
+        put(m, "java/nio/ShortBuffer.position()I", instance("position"));
+        put(m, "java/nio/ShortBuffer.limit()I", instance("limit"));
+        put(m, "java/nio/ShortBuffer.remaining()I", instance("remaining"));
+        put(m, "java/nio/ShortBuffer.hasRemaining()Z", instance("hasRemaining"));
+        put(m, "java/nio/ShortBuffer.position(I)Ljava/nio/ShortBuffer;", instance("position"));
+        put(m, "java/nio/ShortBuffer.limit(I)Ljava/nio/ShortBuffer;", instance("limit"));
+        put(m, "java/nio/ShortBuffer.mark()Ljava/nio/ShortBuffer;", instance("mark"));
+        put(m, "java/nio/ShortBuffer.reset()Ljava/nio/ShortBuffer;", instance("reset"));
+        put(m, "java/nio/ShortBuffer.flip()Ljava/nio/ShortBuffer;", instance("flip"));
+        put(m, "java/nio/ShortBuffer.clear()Ljava/nio/ShortBuffer;", instance("clear"));
+        put(m, "java/nio/ShortBuffer.rewind()Ljava/nio/ShortBuffer;", instance("rewind"));
+        put(m, "java/nio/ShortBuffer.get()S", instance("get"));
+        put(m, "java/nio/ShortBuffer.get(I)S", instance("get"));
+        put(m, "java/nio/ShortBuffer.put(S)Ljava/nio/ShortBuffer;", instance("put"));
+        put(m, "java/nio/ShortBuffer.put(IS)Ljava/nio/ShortBuffer;", instance("put"));
+        put(m, "java/nio/ShortBuffer.get([S)Ljava/nio/ShortBuffer;", instance("get"));
+        put(m, "java/nio/ShortBuffer.put([S)Ljava/nio/ShortBuffer;", instance("put"));
+        put(m, "java/nio/ShortBuffer.array()[S", instance("array"));
+        put(m, "java/nio/FloatBuffer.allocate(I)Ljava/nio/FloatBuffer;", statics("allocate"));
+        put(m, "java/nio/FloatBuffer.wrap([F)Ljava/nio/FloatBuffer;", statics("wrap"));
+        put(m, "java/nio/FloatBuffer.capacity()I", instance("capacity"));
+        put(m, "java/nio/FloatBuffer.position()I", instance("position"));
+        put(m, "java/nio/FloatBuffer.limit()I", instance("limit"));
+        put(m, "java/nio/FloatBuffer.remaining()I", instance("remaining"));
+        put(m, "java/nio/FloatBuffer.hasRemaining()Z", instance("hasRemaining"));
+        put(m, "java/nio/FloatBuffer.position(I)Ljava/nio/FloatBuffer;", instance("position"));
+        put(m, "java/nio/FloatBuffer.limit(I)Ljava/nio/FloatBuffer;", instance("limit"));
+        put(m, "java/nio/FloatBuffer.mark()Ljava/nio/FloatBuffer;", instance("mark"));
+        put(m, "java/nio/FloatBuffer.reset()Ljava/nio/FloatBuffer;", instance("reset"));
+        put(m, "java/nio/FloatBuffer.flip()Ljava/nio/FloatBuffer;", instance("flip"));
+        put(m, "java/nio/FloatBuffer.clear()Ljava/nio/FloatBuffer;", instance("clear"));
+        put(m, "java/nio/FloatBuffer.rewind()Ljava/nio/FloatBuffer;", instance("rewind"));
+        put(m, "java/nio/FloatBuffer.get()F", instance("get"));
+        put(m, "java/nio/FloatBuffer.get(I)F", instance("get"));
+        put(m, "java/nio/FloatBuffer.put(F)Ljava/nio/FloatBuffer;", instance("put"));
+        put(m, "java/nio/FloatBuffer.put(IF)Ljava/nio/FloatBuffer;", instance("put"));
+        put(m, "java/nio/FloatBuffer.get([F)Ljava/nio/FloatBuffer;", instance("get"));
+        put(m, "java/nio/FloatBuffer.put([F)Ljava/nio/FloatBuffer;", instance("put"));
+        put(m, "java/nio/FloatBuffer.array()[F", instance("array"));
+        put(m, "java/nio/ByteBuffer.asIntBuffer()Ljava/nio/IntBuffer;", instance("asIntBuffer"));
+        put(m, "java/nio/ByteBuffer.asLongBuffer()Ljava/nio/LongBuffer;", instance("asLongBuffer"));
+        put(m, "java/nio/ByteBuffer.asShortBuffer()Ljava/nio/ShortBuffer;", instance("asShortBuffer"));
+        put(m, "java/nio/ByteBuffer.asCharBuffer()Ljava/nio/CharBuffer;", instance("asCharBuffer"));
+        put(m, "java/nio/ByteBuffer.asFloatBuffer()Ljava/nio/FloatBuffer;", instance("asFloatBuffer"));
+        put(m, "java/nio/ByteBuffer.asDoubleBuffer()Ljava/nio/DoubleBuffer;", instance("asDoubleBuffer"));
+        put(m, "java/nio/ByteBuffer.slice()Ljava/nio/ByteBuffer;", instance("slice"));
+    }
+
+    private static void addNioMethods9(Map<String, ShimTarget> m) {
+        put(m, "java/nio/file/Files.newBufferedReader(Ljava/nio/file/Path;)Ljava/io/BufferedReader;", statics("newBufferedReader"));
+        put(m, "java/nio/file/Files.newBufferedReader(Ljava/nio/file/Path;Ljava/nio/charset/Charset;)Ljava/io/BufferedReader;", statics("newBufferedReader"));
+        put(m, "java/nio/file/Files.newBufferedWriter(Ljava/nio/file/Path;[Ljava/nio/file/OpenOption;)Ljava/io/BufferedWriter;", statics("newBufferedWriter"));
+        put(m, "java/nio/file/Files.newBufferedWriter(Ljava/nio/file/Path;Ljava/nio/charset/Charset;[Ljava/nio/file/OpenOption;)Ljava/io/BufferedWriter;", statics("newBufferedWriter"));
+        put(m, "java/nio/file/Files.newInputStream(Ljava/nio/file/Path;[Ljava/nio/file/OpenOption;)Ljava/io/InputStream;", statics("newInputStream"));
+        put(m, "java/nio/file/Files.newOutputStream(Ljava/nio/file/Path;[Ljava/nio/file/OpenOption;)Ljava/io/OutputStream;", statics("newOutputStream"));
+        put(m, "java/nio/file/Files.find(Ljava/nio/file/Path;ILjava/util/function/BiPredicate;[Ljava/nio/file/FileVisitOption;)Ljava/util/stream/Stream;", statics("find"));
+        put(m, "java/nio/file/Files.readAttributes(Ljava/nio/file/Path;Ljava/lang/Class;[Ljava/nio/file/LinkOption;)Ljava/nio/file/attribute/BasicFileAttributes;", statics("readAttributes"));
+        put(m, "java/nio/file/FileSystem.getSeparator()Ljava/lang/String;", instance("getSeparator"));
+        put(m, "java/nio/file/FileSystem.getPath(Ljava/lang/String;[Ljava/lang/String;)Ljava/nio/file/Path;", instance("getPath"));
+        put(m, "java/nio/file/FileSystems.getDefault()Ljava/nio/file/FileSystem;", statics("getDefault"));
+        put(m, "java/util/function/BiPredicate.test(Ljava/lang/Object;Ljava/lang/Object;)Z", instance("test"));
+        put(m, "java/nio/file/attribute/BasicFileAttributes.isRegularFile()Z", instance("isRegularFile"));
+        put(m, "java/nio/file/attribute/BasicFileAttributes.isDirectory()Z", instance("isDirectory"));
+        put(m, "java/nio/file/attribute/BasicFileAttributes.isSymbolicLink()Z", instance("isSymbolicLink"));
+        put(m, "java/nio/file/attribute/BasicFileAttributes.isOther()Z", instance("isOther"));
+        put(m, "java/nio/file/attribute/BasicFileAttributes.size()J", instance("size"));
+    }
+
     private static Map<String, ShimTarget> buildFields() {
         Map<String, ShimTarget> m = new java.util.HashMap<>(256);
         addLangFields0(m);
@@ -1816,6 +2142,21 @@ public final class ShimRegistry {
 
     private static void addNioFields0(Map<String, ShimTarget> m) {
         put(m, "java/nio/charset/StandardCharsets.UTF_8 Ljava/nio/charset/Charset;", statics("UTF_8"));
+        put(m, "java/nio/file/StandardCopyOption.REPLACE_EXISTING Ljava/nio/file/StandardCopyOption;", statics("REPLACE_EXISTING"));
+        put(m, "java/nio/file/StandardCopyOption.ATOMIC_MOVE Ljava/nio/file/StandardCopyOption;", statics("ATOMIC_MOVE"));
+        put(m, "java/nio/file/StandardCopyOption.COPY_ATTRIBUTES Ljava/nio/file/StandardCopyOption;", statics("COPY_ATTRIBUTES"));
+        put(m, "java/nio/file/StandardOpenOption.READ Ljava/nio/file/StandardOpenOption;", statics("READ"));
+        put(m, "java/nio/file/StandardOpenOption.WRITE Ljava/nio/file/StandardOpenOption;", statics("WRITE"));
+        put(m, "java/nio/file/StandardOpenOption.APPEND Ljava/nio/file/StandardOpenOption;", statics("APPEND"));
+        put(m, "java/nio/file/StandardOpenOption.CREATE Ljava/nio/file/StandardOpenOption;", statics("CREATE"));
+        put(m, "java/nio/file/StandardOpenOption.CREATE_NEW Ljava/nio/file/StandardOpenOption;", statics("CREATE_NEW"));
+        put(m, "java/nio/file/StandardOpenOption.TRUNCATE_EXISTING Ljava/nio/file/StandardOpenOption;", statics("TRUNCATE_EXISTING"));
+        put(m, "java/nio/file/StandardOpenOption.DELETE_ON_CLOSE Ljava/nio/file/StandardOpenOption;", statics("DELETE_ON_CLOSE"));
+        put(m, "java/nio/file/LinkOption.NOFOLLOW_LINKS Ljava/nio/file/LinkOption;", statics("NOFOLLOW_LINKS"));
+        put(m, "java/io/File.separator Ljava/lang/String;", statics("separator"));
+        put(m, "java/io/File.separatorChar C", statics("separatorChar"));
+        put(m, "java/nio/ByteOrder.BIG_ENDIAN Ljava/nio/ByteOrder;", statics("BIG_ENDIAN"));
+        put(m, "java/nio/ByteOrder.LITTLE_ENDIAN Ljava/nio/ByteOrder;", statics("LITTLE_ENDIAN"));
     }
 
     private static void addLangFields1(Map<String, ShimTarget> m) {
