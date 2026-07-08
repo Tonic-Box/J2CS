@@ -69,24 +69,20 @@ namespace jdefault
                         if ((global::java.lang.JRuntime.Irem(local1, 5)) != 0)
                         {
                             global::java.lang.System.@out.println(local1);
-                            continue;
                         }
                         else
                         {
                             global::java.lang.System.@out.println(global::java.lang.String.Intern("Buzz"));
-                            continue;
                         }
                     }
                     else
                     {
                         global::java.lang.System.@out.println(global::java.lang.String.Intern("Fizz"));
-                        continue;
                     }
                 }
                 else
                 {
                     global::java.lang.System.@out.println(global::java.lang.String.Intern("FizzBuzz"));
-                    continue;
                 }
             }
             int local1_1 = 1;
