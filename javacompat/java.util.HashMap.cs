@@ -22,6 +22,12 @@ namespace java.util
         private int count;
         private int threshold;
 
+        // Insertion order of keys. Base HashMap iterates the table in bucket order (matching the JVM)
+        // and ignores this; ordered subclasses (LinkedHashMap insertion-order, TreeMap sorted-order)
+        // override ForEachEntry to use it. Tracking keys (not Nodes) stays valid across Resize.
+        protected readonly global::System.Collections.Generic.List<global::java.lang.Object> keyOrder =
+                new global::System.Collections.Generic.List<global::java.lang.Object>();
+
         public HashMap(global::java.lang.RawNew r) : base(r)
         {
         }
@@ -168,6 +174,7 @@ namespace java.util
             if (p == null)
             {
                 table[i] = new Node(hash, key, value, null);
+                keyOrder.Add(key);
             }
             else
             {
@@ -182,6 +189,7 @@ namespace java.util
                     if (p.next == null)
                     {
                         p.next = new Node(hash, key, value, null);
+                        keyOrder.Add(key);
                         break;
                     }
                     p = p.next;
@@ -247,6 +255,7 @@ namespace java.util
                         prev.next = e.next;
                     }
                     count--;
+                    keyOrder.Remove(e.key);
                     return e.value;
                 }
                 prev = e;
@@ -269,31 +278,55 @@ namespace java.util
         {
             table = null;
             count = 0;
+            keyOrder.Clear();
         }
 
         public Set keySet()
         {
             var keys = new global::System.Collections.Generic.List<global::java.lang.Object>();
-            ForEachNode(n => keys.Add(n.key));
+            ForEachEntry((k, v) => keys.Add(k));
             return new ShimListView(keys);
         }
 
         public Collection values()
         {
             var vals = new global::System.Collections.Generic.List<global::java.lang.Object>();
-            ForEachNode(n => vals.Add(n.value));
+            ForEachEntry((k, v) => vals.Add(v));
             return new ShimListView(vals);
         }
 
         public Set entrySet()
         {
             var entries = new global::System.Collections.Generic.List<global::java.lang.Object>();
-            ForEachNode(n => entries.Add(new ShimMapEntry(n.key, n.value)));
+            ForEachEntry((k, v) => entries.Add(new ShimMapEntry(k, v)));
             return new ShimListView(entries);
         }
 
-        private void ForEachNode(global::System.Action<Node> action)
+        // Iteration order: LinkedHashMap by insertion, TreeMap by natural key order, plain HashMap by
+        // table (bucket) order to match the JVM. Dispatching on the runtime type here keeps
+        // LinkedHashMap/TreeMap as empty subclasses, so they also compile against a bootstrapped
+        // HashMap (which lacks these shim-only members) instead of overriding a missing method.
+        private void ForEachEntry(
+                global::System.Action<global::java.lang.Object, global::java.lang.Object> action)
         {
+            if (this is global::java.util.TreeMap)
+            {
+                var sorted = new global::System.Collections.Generic.List<global::java.lang.Object>(keyOrder);
+                sorted.Sort((a, b) => global::java.util.JCollections.NaturalCompare(a, b));
+                foreach (global::java.lang.Object k in sorted)
+                {
+                    action(k, get(k));
+                }
+                return;
+            }
+            if (this is global::java.util.LinkedHashMap)
+            {
+                foreach (global::java.lang.Object k in keyOrder)
+                {
+                    action(k, get(k));
+                }
+                return;
+            }
             if (table == null)
             {
                 return;
@@ -303,7 +336,7 @@ namespace java.util
                 Node e = table[j];
                 while (e != null)
                 {
-                    action(e);
+                    action(e.key, e.value);
                     e = e.next;
                 }
             }
@@ -314,15 +347,15 @@ namespace java.util
             var sb = new global::System.Text.StringBuilder();
             sb.Append('{');
             bool first = true;
-            ForEachNode(n =>
+            ForEachEntry((k, v) =>
             {
                 if (!first)
                 {
                     sb.Append(", ");
                 }
                 first = false;
-                sb.Append(global::java.lang.JRuntime.Str(n.key)).Append('=')
-                        .Append(global::java.lang.JRuntime.Str(n.value));
+                sb.Append(global::java.lang.JRuntime.Str(k)).Append('=')
+                        .Append(global::java.lang.JRuntime.Str(v));
             });
             sb.Append('}');
             return global::java.lang.String.Wrap(sb.ToString());

@@ -1128,6 +1128,17 @@ public final class ShimRegistry {
         put(m, "java/util/stream/Collectors.averagingInt(Ljava/util/function/ToIntFunction;)Ljava/util/stream/Collector;", statics("averagingInt"));
         put(m, "java/util/stream/Collectors.partitioningBy(Ljava/util/function/Predicate;)Ljava/util/stream/Collector;", statics("partitioningBy"));
         put(m, "java/util/stream/Collectors.mapping(Ljava/util/function/Function;Ljava/util/stream/Collector;)Ljava/util/stream/Collector;", statics("mapping"));
+        put(m, "java/util/stream/Collectors.minBy(Ljava/util/Comparator;)Ljava/util/stream/Collector;", statics("minBy"));
+        put(m, "java/util/stream/Collectors.maxBy(Ljava/util/Comparator;)Ljava/util/stream/Collector;", statics("maxBy"));
+        put(m, "java/util/stream/Collectors.reducing(Ljava/lang/Object;Ljava/util/function/BinaryOperator;)Ljava/util/stream/Collector;", statics("reducing"));
+        put(m, "java/util/stream/Collectors.reducing(Ljava/util/function/BinaryOperator;)Ljava/util/stream/Collector;", statics("reducing"));
+        put(m, "java/util/stream/Collectors.reducing(Ljava/lang/Object;Ljava/util/function/Function;Ljava/util/function/BinaryOperator;)Ljava/util/stream/Collector;", statics("reducing"));
+        put(m, "java/util/stream/Collectors.summingLong(Ljava/util/function/ToLongFunction;)Ljava/util/stream/Collector;", statics("summingLong"));
+        put(m, "java/util/stream/Collectors.summingDouble(Ljava/util/function/ToDoubleFunction;)Ljava/util/stream/Collector;", statics("summingDouble"));
+        put(m, "java/util/stream/Collectors.averagingLong(Ljava/util/function/ToLongFunction;)Ljava/util/stream/Collector;", statics("averagingLong"));
+        put(m, "java/util/stream/Collectors.averagingDouble(Ljava/util/function/ToDoubleFunction;)Ljava/util/stream/Collector;", statics("averagingDouble"));
+        put(m, "java/util/stream/Collectors.collectingAndThen(Ljava/util/stream/Collector;Ljava/util/function/Function;)Ljava/util/stream/Collector;", statics("collectingAndThen"));
+        put(m, "java/util/stream/Collectors.toCollection(Ljava/util/function/Supplier;)Ljava/util/stream/Collector;", statics("toCollection"));
         put(m, "java/util/stream/Stream.map(Ljava/util/function/Function;)Ljava/util/stream/Stream;", instance("map"));
         put(m, "java/util/stream/Stream.filter(Ljava/util/function/Predicate;)Ljava/util/stream/Stream;", instance("filter"));
         put(m, "java/util/stream/Stream.peek(Ljava/util/function/Consumer;)Ljava/util/stream/Stream;", instance("peek"));

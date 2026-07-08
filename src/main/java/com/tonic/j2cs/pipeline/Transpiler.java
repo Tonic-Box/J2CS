@@ -173,7 +173,7 @@ public final class Transpiler {
         report.divergence("HashMap does not treeify large buckets; iteration order matches the JVM for the un-treeified case");
         report.divergence("Map keySet/values/entrySet return snapshots, not live views backed by the map");
         report.divergence("collection index and key exceptions carry no message text");
-        report.divergence("shimmed TreeMap/LinkedHashMap use HashMap ordering, not sorted/insertion order; iteration order differs");
+        report.divergence("TreeMap iterates in natural key order and LinkedHashMap in insertion order, but a TreeMap constructed with a custom Comparator still uses natural ordering");
         report.divergence("java time/date, UUID, and SecureRandom values are runtime-dependent and do not match a specific JVM run");
         report.divergence("Swing/AWT is rendered via Avalonia; widget structure and behavior are preserved but visual styling and pixel layout differ from the JVM");
     }

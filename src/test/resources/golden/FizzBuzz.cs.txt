@@ -29,7 +29,7 @@ namespace j2cs.reflect
         private static void Register_0()
         {
             var __m = global::j2cs.reflect.ClassMeta.New("FizzBuzz", typeof(global::jdefault.FizzBuzz), "java.lang.Object").WithAnnotations(global::System.Array.Empty<global::java.lang.annotation.Annotation>());
-            __m.AddMethod("main", new global::java.lang.Class[]{ global::java.lang.Class.Of("[Ljava.lang.String;") }, global::java.lang.Class.Of("void"), 9, (__o, __a) => throw new global::System.NotSupportedException("j2cs: reflective access to array-signature member not supported"), global::System.Array.Empty<global::java.lang.annotation.Annotation>());
+            __m.AddMethod("main", new global::java.lang.Class[]{ global::java.lang.Class.Of("[Ljava.lang.String;") }, global::java.lang.Class.Of("void"), 9, (__o, __a) => { global::jdefault.FizzBuzz.main((global::java.lang.String[])global::java.lang.JRuntime.Unbox(__a[0])); return null; }, global::System.Array.Empty<global::java.lang.annotation.Annotation>());
             __m.AddMethod("label", new global::java.lang.Class[]{ global::java.lang.Class.Of("int") }, global::java.lang.Class.Of("java.lang.String"), 8, (__o, __a) => (global::java.lang.Object)(global::jdefault.FizzBuzz.label(((global::java.lang.Number)__a[0]).intValue())), global::System.Array.Empty<global::java.lang.annotation.Annotation>());
             __m.AddCtor(global::System.Array.Empty<global::java.lang.Class>(), 1, __a => { var __o = new global::jdefault.FizzBuzz(global::java.lang.RawNew.I); __o.__init__V(); return __o; });
             global::j2cs.reflect.Registry.Register(__m);

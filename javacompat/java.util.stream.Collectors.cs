@@ -110,5 +110,91 @@ namespace java.util.stream
             c.downstream = downstream;
             return c;
         }
+
+        public static Collector minBy(global::java.util.Comparator comparator)
+        {
+            Collector c = Collector.Of(Collector.Kind.MinBy);
+            c.comparator = comparator;
+            return c;
+        }
+
+        public static Collector maxBy(global::java.util.Comparator comparator)
+        {
+            Collector c = Collector.Of(Collector.Kind.MaxBy);
+            c.comparator = comparator;
+            return c;
+        }
+
+        public static Collector reducing(global::java.lang.Object identity,
+                global::java.util.function.BinaryOperator op)
+        {
+            Collector c = Collector.Of(Collector.Kind.Reducing);
+            c.identity = identity;
+            c.hasIdentity = true;
+            c.reduceOp = op;
+            return c;
+        }
+
+        public static Collector reducing(global::java.util.function.BinaryOperator op)
+        {
+            Collector c = Collector.Of(Collector.Kind.Reducing);
+            c.reduceOp = op;
+            return c;
+        }
+
+        public static Collector reducing(global::java.lang.Object identity,
+                global::java.util.function.Function mapper, global::java.util.function.BinaryOperator op)
+        {
+            Collector c = Collector.Of(Collector.Kind.Reducing);
+            c.identity = identity;
+            c.hasIdentity = true;
+            c.reduceMapper = mapper;
+            c.reduceOp = op;
+            return c;
+        }
+
+        public static Collector summingLong(global::java.util.function.ToLongFunction mapper)
+        {
+            Collector c = Collector.Of(Collector.Kind.SummingLong);
+            c.longFn = mapper;
+            return c;
+        }
+
+        public static Collector summingDouble(global::java.util.function.ToDoubleFunction mapper)
+        {
+            Collector c = Collector.Of(Collector.Kind.SummingDouble);
+            c.doubleFn = mapper;
+            return c;
+        }
+
+        public static Collector averagingLong(global::java.util.function.ToLongFunction mapper)
+        {
+            Collector c = Collector.Of(Collector.Kind.AveragingLong);
+            c.longFn = mapper;
+            return c;
+        }
+
+        public static Collector averagingDouble(global::java.util.function.ToDoubleFunction mapper)
+        {
+            Collector c = Collector.Of(Collector.Kind.AveragingDouble);
+            c.doubleFn = mapper;
+            return c;
+        }
+
+        public static Collector collectingAndThen(Collector downstream,
+                global::java.util.function.Function finisher)
+        {
+            Collector c = Collector.Of(Collector.Kind.CollectingAndThen);
+            c.downstream = downstream;
+            c.finisher = finisher;
+            return c;
+        }
+
+        public static Collector toCollection(global::java.util.function.Supplier supplier)
+        {
+            Collector c = Collector.Of(Collector.Kind.ToCollection);
+            c.supplier = supplier;
+            return c;
+        }
     }
 }

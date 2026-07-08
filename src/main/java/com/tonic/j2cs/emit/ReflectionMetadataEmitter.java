@@ -15,15 +15,10 @@ import java.util.List;
  * Emits a class's {@code internal static void __RegisterReflection()} — the generated reflection
  * metadata for one transpiled class. Each field/method/constructor is registered with its original
  * Java name/descriptor, raw JVM modifiers, and an AOT-safe invoke/get/set thunk that calls the real
- * emitted member (box/unboxing at the java.lang.Object boundary). Members whose signature involves
- * an array cannot marshal through java.lang.Object, so their thunk throws while the structural
- * metadata (name/type/modifiers) stays complete.
+ * emitted member (box/unboxing at the java.lang.Object boundary; array-typed members marshal through
+ * JRuntime.Box/Unbox, the same array-as-Object bridge the emitter uses everywhere).
  */
 public final class ReflectionMetadataEmitter {
-
-    private static final String ARRAY_THUNK_BODY =
-            "throw new global::System.NotSupportedException("
-                    + "\"j2cs: reflective access to array-signature member not supported\")";
 
     private final NamingContext naming;
     private final AnnotationEmitter annotations;
@@ -86,8 +81,9 @@ public final class ReflectionMetadataEmitter {
         String getter;
         String setter;
         if (isArray(desc)) {
-            getter = "__o => " + ARRAY_THUNK_BODY;
-            setter = "(__o, __v) => " + ARRAY_THUNK_BODY;
+            getter = "__o => global::java.lang.JRuntime.Box(" + ref + ", " + CsStrings.quote(desc) + ")";
+            setter = "(__o, __v) => " + ref + " = (" + types.storageType(desc).csText()
+                    + ")global::java.lang.JRuntime.Unbox(__v)";
         } else if (TypeMapper.isPrimitiveDescriptor(desc)) {
             getter = "__o => " + Boxing.box(desc, ref);
             setter = "(__o, __v) => " + ref + " = " + Boxing.unbox(desc, "__v");
@@ -107,17 +103,15 @@ public final class ReflectionMetadataEmitter {
         String receiver = isStatic ? fqcn : "((" + fqcn + ")__o)";
 
         String invoker;
-        if (isArray(ret) || anyArray(params)) {
-            invoker = "(__o, __a) => " + ARRAY_THUNK_BODY;
+        String call = receiver + "." + csName + "(" + String.join(", ", marshalArgs(types, params)) + ")";
+        if (ret.equals("V")) {
+            invoker = "(__o, __a) => { " + call + "; return null; }";
+        } else if (TypeMapper.isPrimitiveDescriptor(ret)) {
+            invoker = "(__o, __a) => " + Boxing.box(ret, call);
+        } else if (isArray(ret)) {
+            invoker = "(__o, __a) => global::java.lang.JRuntime.Box(" + call + ", " + CsStrings.quote(ret) + ")";
         } else {
-            String call = receiver + "." + csName + "(" + String.join(", ", marshalArgs(types, params)) + ")";
-            if (ret.equals("V")) {
-                invoker = "(__o, __a) => { " + call + "; return null; }";
-            } else if (TypeMapper.isPrimitiveDescriptor(ret)) {
-                invoker = "(__o, __a) => " + Boxing.box(ret, call);
-            } else {
-                invoker = "(__o, __a) => (global::java.lang.Object)(" + call + ")";
-            }
+            invoker = "(__o, __a) => (global::java.lang.Object)(" + call + ")";
         }
         w.line("__m.AddMethod(" + CsStrings.quote(method.getName()) + ", " + classArray(params) + ", "
                 + classOf(ret) + ", " + method.getAccess() + ", " + invoker + ", " + annoExpr + ");");
@@ -130,8 +124,6 @@ public final class ReflectionMetadataEmitter {
         if (isAbstract) {
             factory = "__a => throw new global::System.NotSupportedException("
                     + "\"j2cs: cannot instantiate abstract class\")";
-        } else if (anyArray(params)) {
-            factory = "__a => " + ARRAY_THUNK_BODY;
         } else {
             factory = "__a => { var __o = new " + fqcn + "(global::java.lang.RawNew.I); __o."
                     + MemberNamer.initMethodName(desc) + "(" + String.join(", ", marshalArgs(types, params))
@@ -145,9 +137,14 @@ public final class ReflectionMetadataEmitter {
         for (int i = 0; i < params.size(); i++) {
             String d = params.get(i);
             String slot = "__a[" + i + "]";
-            out.add(TypeMapper.isPrimitiveDescriptor(d)
-                    ? Boxing.unbox(d, slot)
-                    : "(" + types.storageType(d).csText() + ")" + slot);
+            String cs = types.storageType(d).csText();
+            if (TypeMapper.isPrimitiveDescriptor(d)) {
+                out.add(Boxing.unbox(d, slot));
+            } else if (isArray(d)) {
+                out.add("(" + cs + ")global::java.lang.JRuntime.Unbox(" + slot + ")");
+            } else {
+                out.add("(" + cs + ")" + slot);
+            }
         }
         return out;
     }
@@ -190,14 +187,5 @@ public final class ReflectionMetadataEmitter {
 
     private static boolean isArray(String descriptor) {
         return descriptor.startsWith("[");
-    }
-
-    private static boolean anyArray(List<String> params) {
-        for (String d : params) {
-            if (isArray(d)) {
-                return true;
-            }
-        }
-        return false;
     }
 }

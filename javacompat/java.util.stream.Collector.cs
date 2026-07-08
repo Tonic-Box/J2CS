@@ -7,7 +7,12 @@ namespace java.util.stream
     /// </summary>
     public sealed class Collector : global::java.lang.Object
     {
-        public enum Kind { List, Set, Joining, ToMap, GroupingBy, Counting, SummingInt, AveragingInt, Partitioning, Mapping }
+        public enum Kind
+        {
+            List, Set, Joining, ToMap, GroupingBy, Counting, SummingInt, AveragingInt, Partitioning, Mapping,
+            MinBy, MaxBy, Reducing, SummingLong, SummingDouble, AveragingLong, AveragingDouble,
+            CollectingAndThen, ToCollection
+        }
 
         public Kind kind;
         public string delimiter = "";
@@ -19,6 +24,15 @@ namespace java.util.stream
         public global::java.util.function.ToIntFunction intFn;
         public global::java.util.function.Predicate predicate;
         public Collector downstream;
+        public global::java.util.Comparator comparator;
+        public global::java.util.function.ToLongFunction longFn;
+        public global::java.util.function.ToDoubleFunction doubleFn;
+        public global::java.util.function.Supplier supplier;
+        public global::java.util.function.Function finisher;
+        public global::java.util.function.BinaryOperator reduceOp;
+        public global::java.util.function.Function reduceMapper;
+        public global::java.lang.Object identity;
+        public bool hasIdentity;
 
         public Collector(global::java.lang.RawNew r) : base(r)
         {

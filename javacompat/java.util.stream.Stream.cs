@@ -308,6 +308,72 @@ namespace java.util.stream
                     foreach (var e in items) { mapped.Add(collector.keyFn.apply(e)); }
                     return CollectInto(mapped, collector.downstream);
                 }
+                case Collector.Kind.MinBy:
+                case Collector.Kind.MaxBy:
+                {
+                    global::java.lang.Object best = null;
+                    bool has = false;
+                    bool wantMin = collector.kind == Collector.Kind.MinBy;
+                    foreach (var e in items)
+                    {
+                        int cmp = has ? collector.comparator.compare(e, best) : 0;
+                        if (!has || (wantMin ? cmp < 0 : cmp > 0)) { best = e; has = true; }
+                    }
+                    return has ? global::java.util.Optional.ofNullable(best) : global::java.util.Optional.empty();
+                }
+                case Collector.Kind.Reducing:
+                {
+                    if (collector.hasIdentity)
+                    {
+                        global::java.lang.Object acc = collector.identity;
+                        foreach (var e in items)
+                        {
+                            var v = collector.reduceMapper != null ? collector.reduceMapper.apply(e) : e;
+                            acc = collector.reduceOp.apply(acc, v);
+                        }
+                        return acc;
+                    }
+                    global::java.lang.Object racc = null;
+                    bool rhas = false;
+                    foreach (var e in items)
+                    {
+                        racc = rhas ? collector.reduceOp.apply(racc, e) : e;
+                        rhas = true;
+                    }
+                    return rhas ? global::java.util.Optional.ofNullable(racc) : global::java.util.Optional.empty();
+                }
+                case Collector.Kind.SummingLong:
+                {
+                    long sum = 0;
+                    foreach (var e in items) { sum += collector.longFn.applyAsLong(e); }
+                    return global::java.lang.Long.valueOf(sum);
+                }
+                case Collector.Kind.SummingDouble:
+                {
+                    double sum = 0;
+                    foreach (var e in items) { sum += collector.doubleFn.applyAsDouble(e); }
+                    return global::java.lang.Double.valueOf(sum);
+                }
+                case Collector.Kind.AveragingLong:
+                {
+                    long sum = 0;
+                    foreach (var e in items) { sum += collector.longFn.applyAsLong(e); }
+                    return global::java.lang.Double.valueOf(items.Count == 0 ? 0.0 : (double)sum / items.Count);
+                }
+                case Collector.Kind.AveragingDouble:
+                {
+                    double sum = 0;
+                    foreach (var e in items) { sum += collector.doubleFn.applyAsDouble(e); }
+                    return global::java.lang.Double.valueOf(items.Count == 0 ? 0.0 : sum / items.Count);
+                }
+                case Collector.Kind.CollectingAndThen:
+                    return collector.finisher.apply(CollectInto(items, collector.downstream));
+                case Collector.Kind.ToCollection:
+                {
+                    var coll = collector.supplier.get();
+                    foreach (var e in items) { ((global::java.util.Collection)coll).add(e); }
+                    return coll;
+                }
                 default:
                     throw new global::System.NotSupportedException("j2cs: unsupported collector");
             }
