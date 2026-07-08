@@ -62,6 +62,7 @@ java.lang.IndexOutOfBoundsException.cs
 java.lang.InstantiationException.cs
 java.lang.Integer.cs
 java.lang.InterruptedException.cs
+java.lang.J2csArray.cs
 java.lang.JForeignError.cs
 java.lang.JRuntime.cs
 java.lang.JThrow.cs

@@ -103,16 +103,9 @@ public final class LambdaExpander {
         if (capturedCount + samParamDescs.size() != effectiveImplParams.size()) {
             throw new UnsupportedBodyException("lambda arity mismatch for " + impl.getName());
         }
-        for (int i = 0; i < effectiveImplParams.size(); i++) {
-            String source = i < capturedCount ? capturedDescs.get(i) : samParamDescs.get(i - capturedCount);
-            requireNoBoxing(source, effectiveImplParams.get(i), impl.getName());
-        }
         String implRetDesc = impl.getReferenceKind() == MethodHandleConstant.REF_newInvokeSpecial
                 ? "L" + impl.getOwner() + ";"
                 : TypeMapper.returnDescriptor(impl.getDescriptor());
-        if (!samRetDesc.equals("V")) {
-            requireNoBoxing(implRetDesc, samRetDesc, impl.getName());
-        }
 
         CsWriter w = new CsWriter();
         w.open("namespace j2cs.synthetic");
@@ -261,14 +254,6 @@ public final class LambdaExpander {
                 .map(ShimTarget::csMemberName)
                 .orElseThrow(() -> new UnsupportedBodyException("lambda shim target not implemented: "
                         + impl.getOwner() + "." + impl.getName()));
-    }
-
-    private static void requireNoBoxing(String sourceDesc, String targetDesc, String implName) {
-        // A native C# array is not a shim java.lang.Object, so a SAM that widens an array to a
-        // reference (e.g. IntFunction returning T[] for a T[]::new ref) cannot be adapted.
-        if (sourceDesc.startsWith("[") != targetDesc.startsWith("[")) {
-            throw new UnsupportedBodyException("array/reference adaptation in lambda not supported: " + implName);
-        }
     }
 
     /**

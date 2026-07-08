@@ -816,10 +816,6 @@ final class StructuredBodyEmitter {
 
     private String capturedArg(String paramDesc, com.tonic.analysis.ssa.value.Value value) {
         String sourceDesc = value.getType() == null ? null : value.getType().getDescriptor();
-        if (paramDesc.startsWith("L") && sourceDesc != null && sourceDesc.startsWith("[")) {
-            throw new UnsupportedBodyException(
-                    "array passed as object reference not supported (arrays are native C# arrays)");
-        }
         String raw;
         if (value instanceof com.tonic.analysis.ssa.value.Constant constant) {
             raw = ConstRenderer.render(constant);
@@ -1015,10 +1011,24 @@ final class StructuredBodyEmitter {
         if (TypeMapper.isPrimitiveDescriptor(targetDesc)) {
             return primitiveCast(targetDesc, sourceDesc, operand);
         }
+        // (T[]) arr.clone() already renders the clone cast to the array type, but the recovered
+        // clone expression is typed Object; skip the redundant Object->array bridge (no unbox).
+        if (targetDesc.startsWith("[") && isArrayClone(c.getExpression())) {
+            return operand;
+        }
         CsType target = naming.typeMapper().computeType(targetDesc);
         return reconciler.cast(target,
                 sourceDesc == null ? null : com.tonic.analysis.ssa.type.IRType.fromDescriptor(sourceDesc),
                 operand);
+    }
+
+    private boolean isArrayClone(Expression e) {
+        if (!(e instanceof MethodCallExpr mc) || !"clone".equals(mc.getMethodName())
+                || mc.getReceiver() == null) {
+            return false;
+        }
+        String rd = descOf(mc.getReceiver().getType());
+        return rd != null && rd.startsWith("[");
     }
 
     private String primitiveCast(String targetDesc, String sourceDesc, String operand) {
@@ -1084,10 +1094,6 @@ final class StructuredBodyEmitter {
                 return primitiveCast(targetDesc, sourceDesc, raw);
             }
             return raw;
-        }
-        if (targetDesc.startsWith("L") && sourceDesc.startsWith("[")) {
-            throw new UnsupportedBodyException(
-                    "array passed as object reference not supported (arrays are native C# arrays)");
         }
         return reconciler.coerce(targetDesc, sourceDesc, raw);
     }

@@ -58,24 +58,8 @@ public final class TypeReconciler {
         return "((" + CsNamer.fqcn(internalName) + ")" + expr + ")";
     }
 
-    /** Upcast a receiver to the member's declaring type unless its static type already exposes it. */
-    public String receiver(String declaringInternal, IRType receiverType, String expr) {
-        if (receiverType == null) {
-            return castTo(declaringInternal, expr);
-        }
-        String descriptor = receiverType.getDescriptor();
-        if (descriptor.startsWith("[")) {
-            throw new UnsupportedBodyException(
-                    "array used as method receiver not supported (arrays are native C# arrays)");
-        }
-        String receiverInternal = TypeMapper.unwrapReference(descriptor);
-        if (receiverInternal == null) {
-            throw new UnsupportedBodyException("non-reference receiver: " + descriptor);
-        }
-        return receiver(declaringInternal, receiverInternal, expr);
-    }
-
-    /** Same, from a known internal name; null means statically unknown and always casts. */
+    /** Upcast a receiver to the member's declaring type unless its static type already exposes it;
+     *  null internal name means statically unknown and always casts. */
     public String receiver(String declaringInternal, String receiverInternal, String expr) {
         if (receiverInternal == null) {
             return castTo(declaringInternal, expr);
@@ -95,6 +79,23 @@ public final class TypeReconciler {
     }
 
     private static String bridgedCast(CsType target, CsType source, String expr) {
+        // Java arrays are Objects but native C# arrays are not the java.lang.Object shim class, so
+        // cross the Object boundary by boxing (array -> Object) / unboxing (Object -> array). Only a
+        // scalar java.lang.Object source holds a boxed array; array->array downcasts and unknown
+        // sources keep the plain via-object cast so existing native-array conversions are unchanged.
+        boolean objectSource = source != null && source.csText().equals("global::java.lang.Object");
+        if (target.isArray()) {
+            if (objectSource) {
+                return "((" + target.csText() + ")global::java.lang.JRuntime.Unbox(" + expr + "))";
+            }
+            return "((" + target.csText() + ")(object)(" + expr + "))";
+        }
+        if (source != null && source.isArray()) {
+            String boxed = "global::java.lang.JRuntime.Box(" + expr + ", \"" + source.descriptor() + "\")";
+            return target.csText().equals("global::java.lang.Object")
+                    ? boxed
+                    : "((" + target.csText() + ")" + boxed + ")";
+        }
         return "(" + target.csText() + ")" + bridge(target, source) + "(" + expr + ")";
     }
 

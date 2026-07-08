@@ -155,7 +155,6 @@ final class InvokeRenderer {
             if (i > 0) {
                 sb.append(", ");
             }
-            requireNoArrayAsObject(paramDescs.get(i), args.get(i));
             CsType storage = naming.typeMapper().storageType(paramDescs.get(i));
             sb.append(storageAdjusted(storage, args.get(i)));
         }
@@ -173,12 +172,6 @@ final class InvokeRenderer {
         return sb.toString();
     }
 
-    static void requireNoArrayAsObject(String paramDesc, Value arg) {
-        if (paramDesc.startsWith("L") && arg.getType() != null && arg.getType().isArray()) {
-            throw new UnsupportedBodyException(
-                    "array passed as object reference not supported (arrays are native C# arrays)");
-        }
-    }
 
     String storageAdjusted(CsType storage, Value value) {
         IRType sourceType = value instanceof SSAValue ssa ? ssa.getType() : null;

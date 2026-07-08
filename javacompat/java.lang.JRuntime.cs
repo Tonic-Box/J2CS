@@ -59,6 +59,35 @@ namespace java.lang
             return t;
         }
 
+        private static readonly global::System.Runtime.CompilerServices.ConditionalWeakTable<global::System.Array, global::java.lang.Object> ArrayBoxes =
+                new global::System.Runtime.CompilerServices.ConditionalWeakTable<global::System.Array, global::java.lang.Object>();
+
+        /// <summary>Box a native array as a java.lang.Object (stable per underlying array, so ==
+        /// and collection identity match Java). desc is the JVM array descriptor.</summary>
+        public static global::java.lang.Object Box(global::System.Array array, string desc)
+        {
+            if (array == null)
+            {
+                return null;
+            }
+            return ArrayBoxes.GetValue(array, a => new global::java.lang.J2csArray(a, desc));
+        }
+
+        /// <summary>Recover the native array from a boxed java.lang.Object; the caller casts the
+        /// result to the concrete array type. Throws ClassCastException for a non-array Object.</summary>
+        public static global::System.Array Unbox(global::java.lang.Object o)
+        {
+            if (o == null)
+            {
+                return null;
+            }
+            if (o is global::java.lang.J2csArray b)
+            {
+                return b.Value;
+            }
+            throw global::java.lang.JThrow.of(new global::java.lang.ClassCastException(global::java.lang.RawNew.I));
+        }
+
         public static JThrow NumberFormat(string message)
         {
             var nfe = new NumberFormatException(RawNew.I);

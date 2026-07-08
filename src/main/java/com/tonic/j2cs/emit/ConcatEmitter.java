@@ -75,8 +75,10 @@ public final class ConcatEmitter {
     }
 
     private String conversion(String desc, Value arg) {
-        if (desc.charAt(0) == 'L') {
-            InvokeRenderer.requireNoArrayAsObject(desc, arg);
+        if (desc.charAt(0) == '[') {
+            // Java concatenates an array via its Object.toString ("[I@hash"); box then stringify.
+            return "global::java.lang.JRuntime.Str(global::java.lang.JRuntime.Box("
+                    + names.ref(arg) + ", \"" + desc + "\"))";
         }
         return stringConversion(desc, names.ref(arg));
     }
