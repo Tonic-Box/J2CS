@@ -118,14 +118,17 @@ java.util.Collection.cs
 java.util.Collections.cs
 java.util.Comparator.cs
 java.util.Deque.cs
+java.util.DoubleSummaryStatistics.cs
 java.util.HashMap.cs
 java.util.HashSet.cs
+java.util.IntSummaryStatistics.cs
 java.util.Iterable.cs
 java.util.Iterator.cs
 java.util.JCollections.cs
 java.util.LinkedHashMap.cs
 java.util.LinkedList.cs
 java.util.List.cs
+java.util.LongSummaryStatistics.cs
 java.util.Map$Entry.cs
 java.util.Map.cs
 java.util.Objects.cs

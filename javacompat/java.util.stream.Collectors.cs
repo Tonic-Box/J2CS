@@ -196,5 +196,73 @@ namespace java.util.stream
             c.supplier = supplier;
             return c;
         }
+
+        public static Collector summarizingInt(global::java.util.function.ToIntFunction mapper)
+        {
+            Collector c = Collector.Of(Collector.Kind.SummarizingInt);
+            c.intFn = mapper;
+            return c;
+        }
+
+        public static Collector summarizingLong(global::java.util.function.ToLongFunction mapper)
+        {
+            Collector c = Collector.Of(Collector.Kind.SummarizingLong);
+            c.longFn = mapper;
+            return c;
+        }
+
+        public static Collector summarizingDouble(global::java.util.function.ToDoubleFunction mapper)
+        {
+            Collector c = Collector.Of(Collector.Kind.SummarizingDouble);
+            c.doubleFn = mapper;
+            return c;
+        }
+
+        // The shim List/Set/Map are not enforced immutable, so these behave like their mutable
+        // counterparts (a documented divergence); the collected contents match.
+        public static Collector toUnmodifiableList()
+        {
+            return Collector.Of(Collector.Kind.List);
+        }
+
+        public static Collector toUnmodifiableSet()
+        {
+            return Collector.Of(Collector.Kind.Set);
+        }
+
+        public static Collector toUnmodifiableMap(global::java.util.function.Function keyMapper,
+                global::java.util.function.Function valueMapper)
+        {
+            Collector c = Collector.Of(Collector.Kind.ToMap);
+            c.keyFn = keyMapper;
+            c.valueFn = valueMapper;
+            return c;
+        }
+
+        public static Collector filtering(global::java.util.function.Predicate predicate, Collector downstream)
+        {
+            Collector c = Collector.Of(Collector.Kind.Filtering);
+            c.predicate = predicate;
+            c.downstream = downstream;
+            return c;
+        }
+
+        public static Collector flatMapping(global::java.util.function.Function mapper, Collector downstream)
+        {
+            Collector c = Collector.Of(Collector.Kind.FlatMapping);
+            c.keyFn = mapper;
+            c.downstream = downstream;
+            return c;
+        }
+
+        public static Collector teeing(Collector downstream1, Collector downstream2,
+                global::java.util.function.BiFunction merger)
+        {
+            Collector c = Collector.Of(Collector.Kind.Teeing);
+            c.downstream = downstream1;
+            c.downstream2 = downstream2;
+            c.merger = merger;
+            return c;
+        }
     }
 }

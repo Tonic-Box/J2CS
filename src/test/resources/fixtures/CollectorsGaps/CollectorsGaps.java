@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,5 +21,25 @@ public class CollectorsGaps {
         System.out.println(sz);
         ArrayList<Integer> ac = nums.stream().collect(Collectors.toCollection(ArrayList::new));
         System.out.println(ac);
+
+        IntSummaryStatistics stats = nums.stream().collect(Collectors.summarizingInt(Integer::intValue));
+        System.out.println(stats);
+        System.out.println(stats.getMax() + " " + stats.getMin() + " " + stats.getSum() + " " + stats.getCount());
+        System.out.println(nums.stream().collect(Collectors.summarizingLong(n -> (long) n)));
+        System.out.println(nums.stream().collect(Collectors.summarizingDouble(n -> (double) n)));
+
+        System.out.println(nums.stream().collect(Collectors.toUnmodifiableList()).size());
+        System.out.println(nums.stream().collect(Collectors.filtering(n -> n % 2 == 0, Collectors.toList())));
+
+        List<List<Integer>> nested = new ArrayList<>();
+        nested.add(Arrays.asList(1, 2));
+        nested.add(Arrays.asList(3, 4));
+        nested.add(Arrays.asList(5));
+        System.out.println(nested.stream().collect(Collectors.flatMapping(l -> l.stream(), Collectors.toList())));
+
+        String tee = nums.stream().collect(Collectors.teeing(
+                Collectors.summingInt(Integer::intValue), Collectors.counting(),
+                (s, c) -> s + "/" + c));
+        System.out.println(tee);
     }
 }

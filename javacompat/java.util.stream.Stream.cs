@@ -374,6 +374,46 @@ namespace java.util.stream
                     foreach (var e in items) { ((global::java.util.Collection)coll).add(e); }
                     return coll;
                 }
+                case Collector.Kind.SummarizingInt:
+                {
+                    var stats = new global::java.util.IntSummaryStatistics(global::java.lang.RawNew.I);
+                    foreach (var e in items) { stats.Accept(collector.intFn.applyAsInt(e)); }
+                    return stats;
+                }
+                case Collector.Kind.SummarizingLong:
+                {
+                    var stats = new global::java.util.LongSummaryStatistics(global::java.lang.RawNew.I);
+                    foreach (var e in items) { stats.Accept(collector.longFn.applyAsLong(e)); }
+                    return stats;
+                }
+                case Collector.Kind.SummarizingDouble:
+                {
+                    var stats = new global::java.util.DoubleSummaryStatistics(global::java.lang.RawNew.I);
+                    foreach (var e in items) { stats.Accept(collector.doubleFn.applyAsDouble(e)); }
+                    return stats;
+                }
+                case Collector.Kind.Filtering:
+                {
+                    var filtered = new CList(items.Count);
+                    foreach (var e in items) { if (collector.predicate.test(e) != 0) { filtered.Add(e); } }
+                    return CollectInto(filtered, collector.downstream);
+                }
+                case Collector.Kind.FlatMapping:
+                {
+                    var flat = new CList(items.Count);
+                    foreach (var e in items)
+                    {
+                        var sub = collector.keyFn.apply(e) as global::java.util.stream.Stream;
+                        if (sub != null) { foreach (var x in sub.Items) { flat.Add(x); } }
+                    }
+                    return CollectInto(flat, collector.downstream);
+                }
+                case Collector.Kind.Teeing:
+                {
+                    var r1 = CollectInto(items, collector.downstream);
+                    var r2 = CollectInto(items, collector.downstream2);
+                    return collector.merger.apply(r1, r2);
+                }
                 default:
                     throw new global::System.NotSupportedException("j2cs: unsupported collector");
             }

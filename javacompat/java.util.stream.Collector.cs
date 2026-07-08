@@ -11,7 +11,8 @@ namespace java.util.stream
         {
             List, Set, Joining, ToMap, GroupingBy, Counting, SummingInt, AveragingInt, Partitioning, Mapping,
             MinBy, MaxBy, Reducing, SummingLong, SummingDouble, AveragingLong, AveragingDouble,
-            CollectingAndThen, ToCollection
+            CollectingAndThen, ToCollection,
+            SummarizingInt, SummarizingLong, SummarizingDouble, Filtering, FlatMapping, Teeing
         }
 
         public Kind kind;
@@ -33,6 +34,8 @@ namespace java.util.stream
         public global::java.util.function.Function reduceMapper;
         public global::java.lang.Object identity;
         public bool hasIdentity;
+        public Collector downstream2;
+        public global::java.util.function.BiFunction merger;
 
         public Collector(global::java.lang.RawNew r) : base(r)
         {

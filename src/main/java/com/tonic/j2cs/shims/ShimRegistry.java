@@ -226,6 +226,9 @@ public final class ShimRegistry {
         put(m, "java/util/LinkedList", "java/util/ArrayList");
         put(m, "java/util/LinkedHashMap", "java/util/HashMap");
         put(m, "java/util/TreeMap", "java/util/HashMap");
+        put(m, "java/util/IntSummaryStatistics", "java/lang/Object");
+        put(m, "java/util/LongSummaryStatistics", "java/lang/Object");
+        put(m, "java/util/DoubleSummaryStatistics", "java/lang/Object");
     }
 
     private static void addLangSupers4(Map<String, String> m) {
@@ -1139,6 +1142,30 @@ public final class ShimRegistry {
         put(m, "java/util/stream/Collectors.averagingDouble(Ljava/util/function/ToDoubleFunction;)Ljava/util/stream/Collector;", statics("averagingDouble"));
         put(m, "java/util/stream/Collectors.collectingAndThen(Ljava/util/stream/Collector;Ljava/util/function/Function;)Ljava/util/stream/Collector;", statics("collectingAndThen"));
         put(m, "java/util/stream/Collectors.toCollection(Ljava/util/function/Supplier;)Ljava/util/stream/Collector;", statics("toCollection"));
+        put(m, "java/util/stream/Collectors.summarizingInt(Ljava/util/function/ToIntFunction;)Ljava/util/stream/Collector;", statics("summarizingInt"));
+        put(m, "java/util/stream/Collectors.summarizingLong(Ljava/util/function/ToLongFunction;)Ljava/util/stream/Collector;", statics("summarizingLong"));
+        put(m, "java/util/stream/Collectors.summarizingDouble(Ljava/util/function/ToDoubleFunction;)Ljava/util/stream/Collector;", statics("summarizingDouble"));
+        put(m, "java/util/stream/Collectors.toUnmodifiableList()Ljava/util/stream/Collector;", statics("toUnmodifiableList"));
+        put(m, "java/util/stream/Collectors.toUnmodifiableSet()Ljava/util/stream/Collector;", statics("toUnmodifiableSet"));
+        put(m, "java/util/stream/Collectors.toUnmodifiableMap(Ljava/util/function/Function;Ljava/util/function/Function;)Ljava/util/stream/Collector;", statics("toUnmodifiableMap"));
+        put(m, "java/util/stream/Collectors.filtering(Ljava/util/function/Predicate;Ljava/util/stream/Collector;)Ljava/util/stream/Collector;", statics("filtering"));
+        put(m, "java/util/stream/Collectors.flatMapping(Ljava/util/function/Function;Ljava/util/stream/Collector;)Ljava/util/stream/Collector;", statics("flatMapping"));
+        put(m, "java/util/stream/Collectors.teeing(Ljava/util/stream/Collector;Ljava/util/stream/Collector;Ljava/util/function/BiFunction;)Ljava/util/stream/Collector;", statics("teeing"));
+        put(m, "java/util/IntSummaryStatistics.getCount()J", instance("getCount"));
+        put(m, "java/util/IntSummaryStatistics.getSum()J", instance("getSum"));
+        put(m, "java/util/IntSummaryStatistics.getMin()I", instance("getMin"));
+        put(m, "java/util/IntSummaryStatistics.getMax()I", instance("getMax"));
+        put(m, "java/util/IntSummaryStatistics.getAverage()D", instance("getAverage"));
+        put(m, "java/util/LongSummaryStatistics.getCount()J", instance("getCount"));
+        put(m, "java/util/LongSummaryStatistics.getSum()J", instance("getSum"));
+        put(m, "java/util/LongSummaryStatistics.getMin()J", instance("getMin"));
+        put(m, "java/util/LongSummaryStatistics.getMax()J", instance("getMax"));
+        put(m, "java/util/LongSummaryStatistics.getAverage()D", instance("getAverage"));
+        put(m, "java/util/DoubleSummaryStatistics.getCount()J", instance("getCount"));
+        put(m, "java/util/DoubleSummaryStatistics.getSum()D", instance("getSum"));
+        put(m, "java/util/DoubleSummaryStatistics.getMin()D", instance("getMin"));
+        put(m, "java/util/DoubleSummaryStatistics.getMax()D", instance("getMax"));
+        put(m, "java/util/DoubleSummaryStatistics.getAverage()D", instance("getAverage"));
         put(m, "java/util/stream/Stream.map(Ljava/util/function/Function;)Ljava/util/stream/Stream;", instance("map"));
         put(m, "java/util/stream/Stream.filter(Ljava/util/function/Predicate;)Ljava/util/stream/Stream;", instance("filter"));
         put(m, "java/util/stream/Stream.peek(Ljava/util/function/Consumer;)Ljava/util/stream/Stream;", instance("peek"));
