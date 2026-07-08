@@ -5,7 +5,6 @@ import com.tonic.j2cs.naming.CsNamer;
 import com.tonic.j2cs.naming.NamingContext;
 import com.tonic.j2cs.types.Coercions;
 import com.tonic.j2cs.types.CsType;
-import com.tonic.j2cs.types.TypeMapper;
 
 /**
  * Single owner of C# cast/bridge decisions. Given a source value's JVM type and a target C# type
@@ -87,6 +86,11 @@ public final class TypeReconciler {
         if (target.isArray()) {
             if (objectSource) {
                 return "((" + target.csText() + ")global::java.lang.JRuntime.Unbox(" + expr + "))";
+            }
+            // An interface-element array (e.g. List[]) is not C#-covariant to the shim Object class
+            // array, so a plain cast throws; widen through a helper that copies only when needed.
+            if (target.csText().equals("global::java.lang.Object[]")) {
+                return "global::java.lang.JRuntime.ToObjectArray(" + expr + ")";
             }
             return "((" + target.csText() + ")(object)(" + expr + "))";
         }

@@ -31,10 +31,7 @@ public class CollectorsGaps {
         System.out.println(nums.stream().collect(Collectors.toUnmodifiableList()).size());
         System.out.println(nums.stream().collect(Collectors.filtering(n -> n % 2 == 0, Collectors.toList())));
 
-        List<List<Integer>> nested = new ArrayList<>();
-        nested.add(Arrays.asList(1, 2));
-        nested.add(Arrays.asList(3, 4));
-        nested.add(Arrays.asList(5));
+        List<List<Integer>> nested = Arrays.asList(Arrays.asList(1, 2), Arrays.asList(3, 4), Arrays.asList(5));
         System.out.println(nested.stream().collect(Collectors.flatMapping(l -> l.stream(), Collectors.toList())));
 
         String tee = nums.stream().collect(Collectors.teeing(

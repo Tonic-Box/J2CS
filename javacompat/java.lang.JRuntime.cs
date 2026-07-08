@@ -73,6 +73,28 @@ namespace java.lang
             return ArrayBoxes.GetValue(array, a => new global::java.lang.J2csArray(a, desc));
         }
 
+        /// <summary>Widen any array to a java.lang.Object[] (the java Object[] varargs boundary). A
+        /// class-element array is already covariant to Object[] and passes through aliased; an
+        /// interface-element array (e.g. List[]) is not C#-covariant to the shim Object class array,
+        /// so it is copied element-wise.</summary>
+        public static global::java.lang.Object[] ToObjectArray(global::System.Array src)
+        {
+            if (src == null)
+            {
+                return null;
+            }
+            if (src is global::java.lang.Object[] direct)
+            {
+                return direct;
+            }
+            var r = new global::java.lang.Object[src.Length];
+            for (int i = 0; i < src.Length; i++)
+            {
+                r[i] = (global::java.lang.Object)src.GetValue(i);
+            }
+            return r;
+        }
+
         /// <summary>Recover the native array from a boxed java.lang.Object; the caller casts the
         /// result to the concrete array type. Throws ClassCastException for a non-array Object.</summary>
         public static global::System.Array Unbox(global::java.lang.Object o)
