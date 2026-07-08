@@ -177,5 +177,52 @@ namespace java.util.stream
         {
             return items.ToArray();
         }
+
+        public IntStream peek(global::java.util.function.IntConsumer action)
+        {
+            foreach (var v in items) { action.accept(v); }
+            return this;
+        }
+
+        public LongStream mapToLong(global::java.util.function.IntToLongFunction mapper)
+        {
+            var outp = new global::System.Collections.Generic.List<long>(items.Count);
+            foreach (var v in items) { outp.Add(mapper.applyAsLong(v)); }
+            return new LongStream(outp);
+        }
+
+        public LongStream asLongStream()
+        {
+            var outp = new global::System.Collections.Generic.List<long>(items.Count);
+            foreach (var v in items) { outp.Add(v); }
+            return new LongStream(outp);
+        }
+
+        public DoubleStream asDoubleStream()
+        {
+            var outp = new global::System.Collections.Generic.List<double>(items.Count);
+            foreach (var v in items) { outp.Add(v); }
+            return new DoubleStream(outp);
+        }
+
+        public global::java.util.OptionalInt reduce(global::java.util.function.IntBinaryOperator op)
+        {
+            if (items.Count == 0) { return global::java.util.OptionalInt.Empty(); }
+            int acc = items[0];
+            for (int i = 1; i < items.Count; i++) { acc = op.applyAsInt(acc, items[i]); }
+            return global::java.util.OptionalInt.Of(acc);
+        }
+
+        public global::java.util.OptionalInt findFirst()
+        {
+            return items.Count == 0 ? global::java.util.OptionalInt.Empty() : global::java.util.OptionalInt.Of(items[0]);
+        }
+
+        public global::java.util.IntSummaryStatistics summaryStatistics()
+        {
+            var stats = new global::java.util.IntSummaryStatistics(global::java.lang.RawNew.I);
+            foreach (var v in items) { stats.Accept(v); }
+            return stats;
+        }
     }
 }

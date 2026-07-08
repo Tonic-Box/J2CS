@@ -72,6 +72,7 @@ class DifferentialTest {
                 fixture("MapOrdering"),
                 fixture("CollectorsGaps"),
                 fixture("VarargsInterface"),
+                fixture("PrimitiveStreams"),
                 fixture("Boxing1"),
                 fixture("Boxing2"),
                 fixture("BoxingGenerics"),

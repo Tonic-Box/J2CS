@@ -45,6 +45,10 @@ namespace java.lang
             return new Long(v);
         }
 
+        public static long sum(long a, long b) { return a + b; }
+        public static long max(long a, long b) { return a > b ? a : b; }
+        public static long min(long a, long b) { return a < b ? a : b; }
+
         public static long parseLong(String s)
         {
             if (s == null)

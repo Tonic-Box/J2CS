@@ -149,6 +149,20 @@ public final class ShimRegistry {
     private static void addUtilSupers3(Map<String, String> m) {
         put(m, "java/util/OptionalInt", "java/lang/Object");
         put(m, "java/util/OptionalDouble", "java/lang/Object");
+        put(m, "java/util/OptionalLong", "java/lang/Object");
+        put(m, "java/util/function/LongConsumer", "java/lang/Object");
+        put(m, "java/util/function/LongPredicate", "java/lang/Object");
+        put(m, "java/util/function/LongUnaryOperator", "java/lang/Object");
+        put(m, "java/util/function/LongBinaryOperator", "java/lang/Object");
+        put(m, "java/util/function/LongFunction", "java/lang/Object");
+        put(m, "java/util/function/LongToIntFunction", "java/lang/Object");
+        put(m, "java/util/function/LongToDoubleFunction", "java/lang/Object");
+        put(m, "java/util/function/DoubleUnaryOperator", "java/lang/Object");
+        put(m, "java/util/function/DoubleBinaryOperator", "java/lang/Object");
+        put(m, "java/util/function/DoubleFunction", "java/lang/Object");
+        put(m, "java/util/function/DoubleToIntFunction", "java/lang/Object");
+        put(m, "java/util/function/DoubleToLongFunction", "java/lang/Object");
+        put(m, "java/util/function/IntToLongFunction", "java/lang/Object");
         put(m, "java/util/Random", "java/lang/Object");
     }
 
@@ -637,6 +651,12 @@ public final class ShimRegistry {
         put(m, "java/lang/Integer.sum(II)I", statics("sum"));
         put(m, "java/lang/Integer.max(II)I", statics("max"));
         put(m, "java/lang/Integer.min(II)I", statics("min"));
+        put(m, "java/lang/Long.sum(JJ)J", statics("sum"));
+        put(m, "java/lang/Long.max(JJ)J", statics("max"));
+        put(m, "java/lang/Long.min(JJ)J", statics("min"));
+        put(m, "java/lang/Double.sum(DD)D", statics("sum"));
+        put(m, "java/lang/Double.max(DD)D", statics("max"));
+        put(m, "java/lang/Double.min(DD)D", statics("min"));
         put(m, "java/lang/Integer.compare(II)I", statics("compare"));
         put(m, "java/lang/Long.valueOf(J)Ljava/lang/Long;", statics("valueOf"));
         put(m, "java/lang/Long.parseLong(Ljava/lang/String;)J", statics("parseLong"));
@@ -985,6 +1005,19 @@ public final class ShimRegistry {
         put(m, "java/util/function/IntPredicate.test(I)Z", instance("test"));
         put(m, "java/util/function/IntUnaryOperator.applyAsInt(I)I", instance("applyAsInt"));
         put(m, "java/util/function/IntBinaryOperator.applyAsInt(II)I", instance("applyAsInt"));
+        put(m, "java/util/function/LongConsumer.accept(J)V", instance("accept"));
+        put(m, "java/util/function/LongPredicate.test(J)Z", instance("test"));
+        put(m, "java/util/function/LongUnaryOperator.applyAsLong(J)J", instance("applyAsLong"));
+        put(m, "java/util/function/LongBinaryOperator.applyAsLong(JJ)J", instance("applyAsLong"));
+        put(m, "java/util/function/LongFunction.apply(J)Ljava/lang/Object;", instance("apply"));
+        put(m, "java/util/function/LongToIntFunction.applyAsInt(J)I", instance("applyAsInt"));
+        put(m, "java/util/function/LongToDoubleFunction.applyAsDouble(J)D", instance("applyAsDouble"));
+        put(m, "java/util/function/DoubleUnaryOperator.applyAsDouble(D)D", instance("applyAsDouble"));
+        put(m, "java/util/function/DoubleBinaryOperator.applyAsDouble(DD)D", instance("applyAsDouble"));
+        put(m, "java/util/function/DoubleFunction.apply(D)Ljava/lang/Object;", instance("apply"));
+        put(m, "java/util/function/DoubleToIntFunction.applyAsInt(D)I", instance("applyAsInt"));
+        put(m, "java/util/function/DoubleToLongFunction.applyAsLong(D)J", instance("applyAsLong"));
+        put(m, "java/util/function/IntToLongFunction.applyAsLong(I)J", instance("applyAsLong"));
     }
 
     private static void addRegexMethods0(Map<String, ShimTarget> m) {
@@ -1028,6 +1061,10 @@ public final class ShimRegistry {
         put(m, "java/util/OptionalDouble.isPresent()Z", instance("isPresent"));
         put(m, "java/util/OptionalDouble.isEmpty()Z", instance("isEmpty"));
         put(m, "java/util/OptionalDouble.orElse(D)D", instance("orElse"));
+        put(m, "java/util/OptionalLong.getAsLong()J", instance("getAsLong"));
+        put(m, "java/util/OptionalLong.isPresent()Z", instance("isPresent"));
+        put(m, "java/util/OptionalLong.isEmpty()Z", instance("isEmpty"));
+        put(m, "java/util/OptionalLong.orElse(J)J", instance("orElse"));
         put(m, "java/util/Collections.sort(Ljava/util/List;)V", statics("sort"));
         put(m, "java/util/Collections.sort(Ljava/util/List;Ljava/util/Comparator;)V", statics("sort"));
         put(m, "java/util/Collections.reverse(Ljava/util/List;)V", statics("reverse"));
@@ -1223,12 +1260,72 @@ public final class ShimRegistry {
         put(m, "java/util/stream/IntStream.sum()I", instance("sum"));
         put(m, "java/util/stream/IntStream.count()J", instance("count"));
         put(m, "java/util/stream/IntStream.toArray()[I", instance("toArray"));
+        put(m, "java/util/stream/IntStream.peek(Ljava/util/function/IntConsumer;)Ljava/util/stream/IntStream;", instance("peek"));
+        put(m, "java/util/stream/IntStream.mapToLong(Ljava/util/function/IntToLongFunction;)Ljava/util/stream/LongStream;", instance("mapToLong"));
+        put(m, "java/util/stream/IntStream.asLongStream()Ljava/util/stream/LongStream;", instance("asLongStream"));
+        put(m, "java/util/stream/IntStream.asDoubleStream()Ljava/util/stream/DoubleStream;", instance("asDoubleStream"));
+        put(m, "java/util/stream/IntStream.reduce(Ljava/util/function/IntBinaryOperator;)Ljava/util/OptionalInt;", instance("reduce"));
+        put(m, "java/util/stream/IntStream.findFirst()Ljava/util/OptionalInt;", instance("findFirst"));
+        put(m, "java/util/stream/IntStream.summaryStatistics()Ljava/util/IntSummaryStatistics;", instance("summaryStatistics"));
+        put(m, "java/util/stream/LongStream.range(JJ)Ljava/util/stream/LongStream;", statics("range"));
+        put(m, "java/util/stream/LongStream.rangeClosed(JJ)Ljava/util/stream/LongStream;", statics("rangeClosed"));
+        put(m, "java/util/stream/LongStream.of([J)Ljava/util/stream/LongStream;", statics("of"));
+        put(m, "java/util/stream/LongStream.parallel()Ljava/util/stream/LongStream;", instance("parallel"));
+        put(m, "java/util/stream/LongStream.sequential()Ljava/util/stream/LongStream;", instance("sequential"));
+        put(m, "java/util/stream/LongStream.boxed()Ljava/util/stream/Stream;", instance("boxed"));
+        put(m, "java/util/stream/LongStream.mapToObj(Ljava/util/function/LongFunction;)Ljava/util/stream/Stream;", instance("mapToObj"));
+        put(m, "java/util/stream/LongStream.mapToInt(Ljava/util/function/LongToIntFunction;)Ljava/util/stream/IntStream;", instance("mapToInt"));
+        put(m, "java/util/stream/LongStream.mapToDouble(Ljava/util/function/LongToDoubleFunction;)Ljava/util/stream/DoubleStream;", instance("mapToDouble"));
+        put(m, "java/util/stream/LongStream.asDoubleStream()Ljava/util/stream/DoubleStream;", instance("asDoubleStream"));
+        put(m, "java/util/stream/LongStream.forEach(Ljava/util/function/LongConsumer;)V", instance("forEach"));
+        put(m, "java/util/stream/LongStream.peek(Ljava/util/function/LongConsumer;)Ljava/util/stream/LongStream;", instance("peek"));
+        put(m, "java/util/stream/LongStream.filter(Ljava/util/function/LongPredicate;)Ljava/util/stream/LongStream;", instance("filter"));
+        put(m, "java/util/stream/LongStream.map(Ljava/util/function/LongUnaryOperator;)Ljava/util/stream/LongStream;", instance("map"));
+        put(m, "java/util/stream/LongStream.reduce(JLjava/util/function/LongBinaryOperator;)J", instance("reduce"));
+        put(m, "java/util/stream/LongStream.reduce(Ljava/util/function/LongBinaryOperator;)Ljava/util/OptionalLong;", instance("reduce"));
+        put(m, "java/util/stream/LongStream.sorted()Ljava/util/stream/LongStream;", instance("sorted"));
+        put(m, "java/util/stream/LongStream.distinct()Ljava/util/stream/LongStream;", instance("distinct"));
+        put(m, "java/util/stream/LongStream.limit(J)Ljava/util/stream/LongStream;", instance("limit"));
+        put(m, "java/util/stream/LongStream.skip(J)Ljava/util/stream/LongStream;", instance("skip"));
+        put(m, "java/util/stream/LongStream.anyMatch(Ljava/util/function/LongPredicate;)Z", instance("anyMatch"));
+        put(m, "java/util/stream/LongStream.allMatch(Ljava/util/function/LongPredicate;)Z", instance("allMatch"));
+        put(m, "java/util/stream/LongStream.noneMatch(Ljava/util/function/LongPredicate;)Z", instance("noneMatch"));
+        put(m, "java/util/stream/LongStream.min()Ljava/util/OptionalLong;", instance("min"));
+        put(m, "java/util/stream/LongStream.max()Ljava/util/OptionalLong;", instance("max"));
+        put(m, "java/util/stream/LongStream.average()Ljava/util/OptionalDouble;", instance("average"));
+        put(m, "java/util/stream/LongStream.findFirst()Ljava/util/OptionalLong;", instance("findFirst"));
+        put(m, "java/util/stream/LongStream.summaryStatistics()Ljava/util/LongSummaryStatistics;", instance("summaryStatistics"));
         put(m, "java/util/stream/LongStream.sum()J", instance("sum"));
         put(m, "java/util/stream/LongStream.count()J", instance("count"));
-        put(m, "java/util/stream/DoubleStream.filter(Ljava/util/function/DoublePredicate;)Ljava/util/stream/DoubleStream;", instance("filter"));
+        put(m, "java/util/stream/LongStream.toArray()[J", instance("toArray"));
+        put(m, "java/util/stream/DoubleStream.of([D)Ljava/util/stream/DoubleStream;", statics("of"));
+        put(m, "java/util/stream/DoubleStream.parallel()Ljava/util/stream/DoubleStream;", instance("parallel"));
+        put(m, "java/util/stream/DoubleStream.sequential()Ljava/util/stream/DoubleStream;", instance("sequential"));
+        put(m, "java/util/stream/DoubleStream.boxed()Ljava/util/stream/Stream;", instance("boxed"));
+        put(m, "java/util/stream/DoubleStream.mapToObj(Ljava/util/function/DoubleFunction;)Ljava/util/stream/Stream;", instance("mapToObj"));
+        put(m, "java/util/stream/DoubleStream.mapToInt(Ljava/util/function/DoubleToIntFunction;)Ljava/util/stream/IntStream;", instance("mapToInt"));
+        put(m, "java/util/stream/DoubleStream.mapToLong(Ljava/util/function/DoubleToLongFunction;)Ljava/util/stream/LongStream;", instance("mapToLong"));
         put(m, "java/util/stream/DoubleStream.forEach(Ljava/util/function/DoubleConsumer;)V", instance("forEach"));
+        put(m, "java/util/stream/DoubleStream.peek(Ljava/util/function/DoubleConsumer;)Ljava/util/stream/DoubleStream;", instance("peek"));
+        put(m, "java/util/stream/DoubleStream.filter(Ljava/util/function/DoublePredicate;)Ljava/util/stream/DoubleStream;", instance("filter"));
+        put(m, "java/util/stream/DoubleStream.map(Ljava/util/function/DoubleUnaryOperator;)Ljava/util/stream/DoubleStream;", instance("map"));
+        put(m, "java/util/stream/DoubleStream.reduce(DLjava/util/function/DoubleBinaryOperator;)D", instance("reduce"));
+        put(m, "java/util/stream/DoubleStream.reduce(Ljava/util/function/DoubleBinaryOperator;)Ljava/util/OptionalDouble;", instance("reduce"));
+        put(m, "java/util/stream/DoubleStream.sorted()Ljava/util/stream/DoubleStream;", instance("sorted"));
+        put(m, "java/util/stream/DoubleStream.distinct()Ljava/util/stream/DoubleStream;", instance("distinct"));
+        put(m, "java/util/stream/DoubleStream.limit(J)Ljava/util/stream/DoubleStream;", instance("limit"));
+        put(m, "java/util/stream/DoubleStream.skip(J)Ljava/util/stream/DoubleStream;", instance("skip"));
+        put(m, "java/util/stream/DoubleStream.anyMatch(Ljava/util/function/DoublePredicate;)Z", instance("anyMatch"));
+        put(m, "java/util/stream/DoubleStream.allMatch(Ljava/util/function/DoublePredicate;)Z", instance("allMatch"));
+        put(m, "java/util/stream/DoubleStream.noneMatch(Ljava/util/function/DoublePredicate;)Z", instance("noneMatch"));
+        put(m, "java/util/stream/DoubleStream.min()Ljava/util/OptionalDouble;", instance("min"));
+        put(m, "java/util/stream/DoubleStream.max()Ljava/util/OptionalDouble;", instance("max"));
+        put(m, "java/util/stream/DoubleStream.average()Ljava/util/OptionalDouble;", instance("average"));
+        put(m, "java/util/stream/DoubleStream.findFirst()Ljava/util/OptionalDouble;", instance("findFirst"));
+        put(m, "java/util/stream/DoubleStream.summaryStatistics()Ljava/util/DoubleSummaryStatistics;", instance("summaryStatistics"));
         put(m, "java/util/stream/DoubleStream.sum()D", instance("sum"));
         put(m, "java/util/stream/DoubleStream.count()J", instance("count"));
+        put(m, "java/util/stream/DoubleStream.toArray()[D", instance("toArray"));
     }
 
     private static void addUtilMethods5(Map<String, ShimTarget> m) {

@@ -25,6 +25,10 @@ namespace java.lang
             return new Double(v);
         }
 
+        public static double sum(double a, double b) { return a + b; }
+        public static double max(double a, double b) { return a > b ? a : b; }
+        public static double min(double a, double b) { return a < b ? a : b; }
+
         public static double parseDouble(String s)
         {
             if (s == null)
