@@ -73,6 +73,7 @@ class DifferentialTest {
                 fixture("CollectorsGaps"),
                 fixture("VarargsInterface"),
                 fixture("PrimitiveStreams"),
+                fixture("NioFiles"),
                 fixture("Boxing1"),
                 fixture("Boxing2"),
                 fixture("BoxingGenerics"),

@@ -95,8 +95,15 @@ java.lang.reflect.Field.cs
 java.lang.reflect.InvocationTargetException.cs
 java.lang.reflect.Method.cs
 java.lang.reflect.Modifier.cs
+java.nio.ByteBuffer.cs
 java.nio.charset.Charset.cs
 java.nio.charset.StandardCharsets.cs
+java.nio.file.Files.cs
+java.nio.file.LinkOption.cs
+java.nio.file.OpenOption.cs
+java.nio.file.Path.cs
+java.nio.file.Paths.cs
+java.nio.file.attribute.FileAttribute.cs
 java.security.MessageDigest.cs
 java.security.SecureRandom.cs
 java.time.DayOfWeek.cs

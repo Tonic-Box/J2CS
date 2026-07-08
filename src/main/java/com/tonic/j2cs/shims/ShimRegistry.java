@@ -218,6 +218,13 @@ public final class ShimRegistry {
     private static void addNioSupers0(Map<String, String> m) {
         put(m, "java/nio/charset/Charset", "java/lang/Object");
         put(m, "java/nio/charset/StandardCharsets", "java/lang/Object");
+        put(m, "java/nio/file/Path", "java/lang/Object");
+        put(m, "java/nio/file/Paths", "java/lang/Object");
+        put(m, "java/nio/file/Files", "java/lang/Object");
+        put(m, "java/nio/file/OpenOption", "java/lang/Object");
+        put(m, "java/nio/file/LinkOption", "java/lang/Object");
+        put(m, "java/nio/file/attribute/FileAttribute", "java/lang/Object");
+        put(m, "java/nio/ByteBuffer", "java/lang/Object");
     }
 
     private static void addLangSupers3(Map<String, String> m) {
@@ -464,6 +471,8 @@ public final class ShimRegistry {
         Map<String, ShimTarget> m = new java.util.HashMap<>(2048);
         addLangMethods0(m);
         addIoMethods0(m);
+        addNioMethods0(m);
+        addNioMethods1(m);
         addLangMethods1(m);
         addLangMethods2(m);
         addLangMethods3(m);
@@ -548,6 +557,69 @@ public final class ShimRegistry {
         put(m, "java/io/PrintStream.print(Ljava/lang/Object;)V", instance("print"));
         put(m, "java/io/PrintStream.printf(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintStream;", instance("printf"));
         put(m, "java/io/PrintStream.format(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintStream;", instance("format"));
+    }
+
+    private static void addNioMethods0(Map<String, ShimTarget> m) {
+        put(m, "java/nio/file/Paths.get(Ljava/lang/String;[Ljava/lang/String;)Ljava/nio/file/Path;", statics("get"));
+        put(m, "java/nio/file/Path.getFileName()Ljava/nio/file/Path;", instance("getFileName"));
+        put(m, "java/nio/file/Path.getParent()Ljava/nio/file/Path;", instance("getParent"));
+        put(m, "java/nio/file/Path.getNameCount()I", instance("getNameCount"));
+        put(m, "java/nio/file/Path.getName(I)Ljava/nio/file/Path;", instance("getName"));
+        put(m, "java/nio/file/Path.resolve(Ljava/nio/file/Path;)Ljava/nio/file/Path;", instance("resolve"));
+        put(m, "java/nio/file/Path.resolve(Ljava/lang/String;)Ljava/nio/file/Path;", instance("resolve"));
+        put(m, "java/nio/file/Path.resolveSibling(Ljava/lang/String;)Ljava/nio/file/Path;", instance("resolveSibling"));
+        put(m, "java/nio/file/Path.toAbsolutePath()Ljava/nio/file/Path;", instance("toAbsolutePath"));
+        put(m, "java/nio/file/Path.normalize()Ljava/nio/file/Path;", instance("normalize"));
+        put(m, "java/nio/file/Path.startsWith(Ljava/nio/file/Path;)Z", instance("startsWith"));
+        put(m, "java/nio/file/Path.endsWith(Ljava/nio/file/Path;)Z", instance("endsWith"));
+        put(m, "java/nio/file/Path.isAbsolute()Z", instance("isAbsolute"));
+        put(m, "java/nio/file/Files.readString(Ljava/nio/file/Path;)Ljava/lang/String;", statics("readString"));
+        put(m, "java/nio/file/Files.readString(Ljava/nio/file/Path;Ljava/nio/charset/Charset;)Ljava/lang/String;", statics("readString"));
+        put(m, "java/nio/file/Files.writeString(Ljava/nio/file/Path;Ljava/lang/CharSequence;[Ljava/nio/file/OpenOption;)Ljava/nio/file/Path;", statics("writeString"));
+        put(m, "java/nio/file/Files.writeString(Ljava/nio/file/Path;Ljava/lang/CharSequence;Ljava/nio/charset/Charset;[Ljava/nio/file/OpenOption;)Ljava/nio/file/Path;", statics("writeString"));
+        put(m, "java/nio/file/Files.readAllBytes(Ljava/nio/file/Path;)[B", statics("readAllBytes"));
+        put(m, "java/nio/file/Files.write(Ljava/nio/file/Path;[B[Ljava/nio/file/OpenOption;)Ljava/nio/file/Path;", statics("write"));
+        put(m, "java/nio/file/Files.readAllLines(Ljava/nio/file/Path;)Ljava/util/List;", statics("readAllLines"));
+        put(m, "java/nio/file/Files.exists(Ljava/nio/file/Path;[Ljava/nio/file/LinkOption;)Z", statics("exists"));
+        put(m, "java/nio/file/Files.notExists(Ljava/nio/file/Path;[Ljava/nio/file/LinkOption;)Z", statics("notExists"));
+        put(m, "java/nio/file/Files.isDirectory(Ljava/nio/file/Path;[Ljava/nio/file/LinkOption;)Z", statics("isDirectory"));
+        put(m, "java/nio/file/Files.isRegularFile(Ljava/nio/file/Path;[Ljava/nio/file/LinkOption;)Z", statics("isRegularFile"));
+        put(m, "java/nio/file/Files.createDirectories(Ljava/nio/file/Path;[Ljava/nio/file/attribute/FileAttribute;)Ljava/nio/file/Path;", statics("createDirectories"));
+        put(m, "java/nio/file/Files.createDirectory(Ljava/nio/file/Path;[Ljava/nio/file/attribute/FileAttribute;)Ljava/nio/file/Path;", statics("createDirectory"));
+        put(m, "java/nio/file/Files.createFile(Ljava/nio/file/Path;[Ljava/nio/file/attribute/FileAttribute;)Ljava/nio/file/Path;", statics("createFile"));
+        put(m, "java/nio/file/Files.delete(Ljava/nio/file/Path;)V", statics("delete"));
+        put(m, "java/nio/file/Files.deleteIfExists(Ljava/nio/file/Path;)Z", statics("deleteIfExists"));
+        put(m, "java/nio/file/Files.size(Ljava/nio/file/Path;)J", statics("size"));
+        put(m, "java/nio/file/Files.lines(Ljava/nio/file/Path;)Ljava/util/stream/Stream;", statics("lines"));
+        put(m, "java/nio/file/Files.list(Ljava/nio/file/Path;)Ljava/util/stream/Stream;", statics("list"));
+    }
+
+    private static void addNioMethods1(Map<String, ShimTarget> m) {
+        put(m, "java/nio/ByteBuffer.allocate(I)Ljava/nio/ByteBuffer;", statics("allocate"));
+        put(m, "java/nio/ByteBuffer.wrap([B)Ljava/nio/ByteBuffer;", statics("wrap"));
+        put(m, "java/nio/ByteBuffer.capacity()I", instance("capacity"));
+        put(m, "java/nio/ByteBuffer.position()I", instance("position"));
+        put(m, "java/nio/ByteBuffer.limit()I", instance("limit"));
+        put(m, "java/nio/ByteBuffer.remaining()I", instance("remaining"));
+        put(m, "java/nio/ByteBuffer.hasRemaining()Z", instance("hasRemaining"));
+        put(m, "java/nio/ByteBuffer.position(I)Ljava/nio/ByteBuffer;", instance("position"));
+        put(m, "java/nio/ByteBuffer.limit(I)Ljava/nio/ByteBuffer;", instance("limit"));
+        put(m, "java/nio/ByteBuffer.mark()Ljava/nio/ByteBuffer;", instance("mark"));
+        put(m, "java/nio/ByteBuffer.reset()Ljava/nio/ByteBuffer;", instance("reset"));
+        put(m, "java/nio/ByteBuffer.flip()Ljava/nio/ByteBuffer;", instance("flip"));
+        put(m, "java/nio/ByteBuffer.clear()Ljava/nio/ByteBuffer;", instance("clear"));
+        put(m, "java/nio/ByteBuffer.rewind()Ljava/nio/ByteBuffer;", instance("rewind"));
+        put(m, "java/nio/ByteBuffer.get()B", instance("get"));
+        put(m, "java/nio/ByteBuffer.get(I)B", instance("get"));
+        put(m, "java/nio/ByteBuffer.put(B)Ljava/nio/ByteBuffer;", instance("put"));
+        put(m, "java/nio/ByteBuffer.put(IB)Ljava/nio/ByteBuffer;", instance("put"));
+        put(m, "java/nio/ByteBuffer.get([B)Ljava/nio/ByteBuffer;", instance("get"));
+        put(m, "java/nio/ByteBuffer.put([B)Ljava/nio/ByteBuffer;", instance("put"));
+        put(m, "java/nio/ByteBuffer.getInt()I", instance("getInt"));
+        put(m, "java/nio/ByteBuffer.putInt(I)Ljava/nio/ByteBuffer;", instance("putInt"));
+        put(m, "java/nio/ByteBuffer.getLong()J", instance("getLong"));
+        put(m, "java/nio/ByteBuffer.putLong(J)Ljava/nio/ByteBuffer;", instance("putLong"));
+        put(m, "java/nio/ByteBuffer.array()[B", instance("array"));
     }
 
     private static void addLangMethods1(Map<String, ShimTarget> m) {
