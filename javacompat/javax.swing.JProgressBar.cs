@@ -10,28 +10,34 @@ namespace javax.swing
 
         public void __init__V()
         {
-            bar = new global::Avalonia.Controls.ProgressBar
-            {
-                Background = global::java.awt.J2csTheme.MetalGray,
-                Foreground = global::java.awt.J2csTheme.MetalAccent,
-                MinWidth = 0,
-                MinHeight = 0
-            };
+            bar = Configure(new global::Avalonia.Controls.ProgressBar());
             AvControl = bar;
         }
 
         public void __init_II_V(int min, int max)
         {
-            bar = new global::Avalonia.Controls.ProgressBar
+            bar = Configure(new global::Avalonia.Controls.ProgressBar
             {
                 Minimum = min,
-                Maximum = max,
-                Background = global::java.awt.J2csTheme.MetalGray,
-                Foreground = global::java.awt.J2csTheme.MetalAccent,
-                MinWidth = 0,
-                MinHeight = 0
-            };
+                Maximum = max
+            });
             AvControl = bar;
+        }
+
+        // Java's Metal JProgressBar is a bordered rectangle with a solid fill. The Fluent ProgressBar
+        // has no border, so its gray track vanishes on the gray status panel; the visibility comes from
+        // the border and fill, so add a Metal border, square corners, and the accent fill explicitly
+        // while keeping the Metal-gray track to match the Java look.
+        private static global::Avalonia.Controls.ProgressBar Configure(global::Avalonia.Controls.ProgressBar b)
+        {
+            b.Background = global::java.awt.J2csTheme.MetalGray;
+            b.Foreground = global::java.awt.J2csTheme.MetalAccent;
+            b.BorderBrush = global::java.awt.J2csTheme.MetalBorder;
+            b.BorderThickness = new global::Avalonia.Thickness(1);
+            b.CornerRadius = new global::Avalonia.CornerRadius(0);
+            b.MinWidth = 0;
+            b.MinHeight = 0;
+            return b;
         }
 
         public void setIndeterminate(int indeterminate)

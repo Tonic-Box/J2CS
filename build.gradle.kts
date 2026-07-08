@@ -22,6 +22,10 @@ tasks.withType<JavaCompile>().configureEach {
     options.encoding = "UTF-8"
 }
 
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor(0, "seconds")
+}
+
 dependencies {
     //implementation("com.tonic:YABR:1.0.1")
     implementation("com.github.Tonic-Box:YABR:main-SNAPSHOT")
