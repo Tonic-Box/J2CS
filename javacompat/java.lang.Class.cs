@@ -88,6 +88,33 @@ namespace java.lang
             return componentDesc != null ? 1 : 0;
         }
 
+        internal global::System.Type ClrType()
+        {
+            return type;
+        }
+
+        // JVM descriptor of this class: "I"/"Z"/… for primitives, "[…" for arrays, "L…;" otherwise.
+        internal string Descriptor()
+        {
+            if (componentDesc != null)
+            {
+                return name.Replace('.', '/');
+            }
+            switch (name)
+            {
+                case "int": return "I";
+                case "long": return "J";
+                case "double": return "D";
+                case "float": return "F";
+                case "boolean": return "Z";
+                case "byte": return "B";
+                case "char": return "C";
+                case "short": return "S";
+                case "void": return "V";
+                default: return "L" + name.Replace('.', '/') + ";";
+            }
+        }
+
         public Class getComponentType()
         {
             return componentDesc == null ? null : ForDescriptor(componentDesc);

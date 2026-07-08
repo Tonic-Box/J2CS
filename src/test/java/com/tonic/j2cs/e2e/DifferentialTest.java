@@ -68,6 +68,7 @@ class DifferentialTest {
                 fixture("ArrayBox"),
                 fixture("LambdaArrayAdapt"),
                 fixture("ArrayClassInfo"),
+                fixture("ReflectArray"),
                 fixture("Boxing1"),
                 fixture("Boxing2"),
                 fixture("BoxingGenerics"),
