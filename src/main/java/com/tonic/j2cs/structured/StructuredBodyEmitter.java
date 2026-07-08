@@ -556,6 +556,17 @@ final class StructuredBodyEmitter {
             statementExpr(c.getExpression());
             return;
         }
+        if (e instanceof NewExpr) {
+            // A two-phase (RawNew) constructor hoists its allocation + init and yields a bare temp;
+            // that temp alone is a discarded no-op and not a valid C# statement (e.g. a dead
+            // `x = new StringBuffer(...)` whose store was eliminated). A one-phase `new X(args)` is a
+            // valid object-creation statement.
+            String rendered = expr(e);
+            if (rendered.startsWith("new ")) {
+                w.line(rendered + ";");
+            }
+            return;
+        }
         w.line(expr(e) + ";");
     }
 

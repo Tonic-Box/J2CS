@@ -13,6 +13,12 @@ namespace java.lang
         {
         }
 
+        public void __init_Ljava_lang_String__V(String s)
+        {
+            sb.Clear();
+            sb.Append(s == null ? "null" : s.Value);
+        }
+
         public StringBuffer append(String s)
         {
             sb.Append(s == null ? "null" : s.Value);

@@ -17,6 +17,11 @@ namespace java.lang
             Value = value == null ? "" : new string(value);
         }
 
+        public void __init_Ljava_lang_String__V(String original)
+        {
+            Value = original == null ? "" : original.Value;
+        }
+
         private String(string value) : base(RawNew.I)
         {
             Value = value;

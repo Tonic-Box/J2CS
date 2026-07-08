@@ -8,10 +8,15 @@ namespace java.lang
 
         private static readonly Character[] Cache = BuildCache();
 
-        private readonly char value;
+        private char value;
 
         public Character(RawNew r) : base(r)
         {
+        }
+
+        public void __init_C_V(char v)
+        {
+            value = v;
         }
 
         private Character(char v) : base(RawNew.I)

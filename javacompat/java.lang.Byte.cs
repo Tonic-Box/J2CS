@@ -8,10 +8,15 @@ namespace java.lang
 
         private static readonly Byte[] Cache = BuildCache();
 
-        private readonly sbyte value;
+        private sbyte value;
 
         public Byte(RawNew r) : base(r)
         {
+        }
+
+        public void __init_B_V(sbyte v)
+        {
+            value = v;
         }
 
         private Byte(sbyte v) : base(RawNew.I)

@@ -8,10 +8,15 @@ namespace java.lang
 
         private static readonly Short[] Cache = BuildCache();
 
-        private readonly short value;
+        private short value;
 
         public Short(RawNew r) : base(r)
         {
+        }
+
+        public void __init_S_V(short v)
+        {
+            value = v;
         }
 
         private Short(short v) : base(RawNew.I)

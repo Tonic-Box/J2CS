@@ -10,10 +10,15 @@ namespace java.lang
 
         private static readonly Integer[] Cache = BuildCache();
 
-        private readonly int value;
+        private int value;
 
         public Integer(RawNew r) : base(r)
         {
+        }
+
+        public void __init_I_V(int v)
+        {
+            value = v;
         }
 
         private Integer(int v) : base(RawNew.I)

@@ -10,10 +10,15 @@ namespace java.lang
 
         private static readonly Long[] Cache = BuildCache();
 
-        private readonly long value;
+        private long value;
 
         public Long(RawNew r) : base(r)
         {
+        }
+
+        public void __init_J_V(long v)
+        {
+            value = v;
         }
 
         private Long(long v) : base(RawNew.I)
