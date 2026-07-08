@@ -29,7 +29,7 @@ namespace java.lang
             return ReferenceEquals(this, o) ? 1 : 0;
         }
 
-        public global::java.lang.Class getClass()
+        public virtual global::java.lang.Class getClass()
         {
             return global::java.lang.Class.forType(GetType());
         }

@@ -22,5 +22,10 @@ namespace java.lang
             return global::java.lang.String.Wrap(Desc + "@"
                     + global::System.Convert.ToString(hashCode(), 16));
         }
+
+        public override global::java.lang.Class getClass()
+        {
+            return global::java.lang.Class.forArray(Desc);
+        }
     }
 }

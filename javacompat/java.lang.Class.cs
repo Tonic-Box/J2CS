@@ -5,9 +5,13 @@ namespace java.lang
         private static readonly global::System.Collections.Concurrent.ConcurrentDictionary<string, Class> NameCache =
             new global::System.Collections.Concurrent.ConcurrentDictionary<string, Class>();
 
+        private static readonly global::System.Collections.Concurrent.ConcurrentDictionary<string, Class> ArrayCache =
+            new global::System.Collections.Concurrent.ConcurrentDictionary<string, Class>();
+
         private readonly string name;
         private readonly global::j2cs.reflect.ClassMeta meta;
         private readonly global::System.Type type;
+        private readonly string componentDesc;
 
         public Class(RawNew r) : base(r)
         {
@@ -49,6 +53,46 @@ namespace java.lang
             return full == null ? t.Name : full.Replace('+', '.');
         }
 
+        // desc is a JVM array descriptor with slashes, e.g. "[I", "[Ljava/lang/Object;", "[[I".
+        private Class(string arrayDesc, bool array) : base(RawNew.I)
+        {
+            this.componentDesc = arrayDesc.Substring(1);
+            this.name = arrayDesc.Replace('/', '.');
+        }
+
+        public static Class forArray(string desc)
+        {
+            return ArrayCache.GetOrAdd(desc, d => new Class(d, true));
+        }
+
+        private static Class ForDescriptor(string desc)
+        {
+            switch (desc[0])
+            {
+                case '[': return forArray(desc);
+                case 'L': return Of(desc.Substring(1, desc.Length - 2).Replace('/', '.'));
+                case 'I': return Of("int");
+                case 'J': return Of("long");
+                case 'D': return Of("double");
+                case 'F': return Of("float");
+                case 'Z': return Of("boolean");
+                case 'B': return Of("byte");
+                case 'C': return Of("char");
+                case 'S': return Of("short");
+                default: return Of(desc.Replace('/', '.'));
+            }
+        }
+
+        public int isArray()
+        {
+            return componentDesc != null ? 1 : 0;
+        }
+
+        public Class getComponentType()
+        {
+            return componentDesc == null ? null : ForDescriptor(componentDesc);
+        }
+
         public String getName()
         {
             return String.Wrap(name);
@@ -67,6 +111,10 @@ namespace java.lang
 
         public String getSimpleName()
         {
+            if (componentDesc != null)
+            {
+                return String.Wrap(getComponentType().getSimpleName().Value + "[]");
+            }
             int cut = 0;
             for (int i = 0; i < name.Length; i++)
             {

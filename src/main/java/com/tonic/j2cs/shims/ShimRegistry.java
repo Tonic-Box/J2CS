@@ -643,6 +643,8 @@ public final class ShimRegistry {
             Map.entry("java/lang/String.valueOf(Ljava/lang/Object;)Ljava/lang/String;", statics("valueOf")),
             Map.entry("java/lang/Class.getName()Ljava/lang/String;", instance("getName")),
             Map.entry("java/lang/Class.getSimpleName()Ljava/lang/String;", instance("getSimpleName")),
+            Map.entry("java/lang/Class.isArray()Z", instance("isArray")),
+            Map.entry("java/lang/Class.getComponentType()Ljava/lang/Class;", instance("getComponentType")),
             Map.entry("java/lang/Class.getSuperclass()Ljava/lang/Class;", instance("getSuperclass")),
             Map.entry("java/lang/Class.getDeclaredFields()[Ljava/lang/reflect/Field;", instance("getDeclaredFields")),
             Map.entry("java/lang/Class.getDeclaredMethods()[Ljava/lang/reflect/Method;", instance("getDeclaredMethods")),

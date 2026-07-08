@@ -1102,6 +1102,14 @@ final class StructuredBodyEmitter {
         if (receiver == null) {
             return new CallRenderer.Receiver("this", currentClass);
         }
+        // A method invoked on an array receiver is always a java.lang.Object method (clone and
+        // length are handled elsewhere), so box the native array to reach the shim Object.
+        String desc = descOf(receiver.getType());
+        if (desc != null && desc.startsWith("[")) {
+            return new CallRenderer.Receiver(
+                    "global::java.lang.JRuntime.Box(" + atom(receiver) + ", \"" + desc + "\")",
+                    "java/lang/Object");
+        }
         return new CallRenderer.Receiver(atom(receiver), internalOf(receiver.getType()));
     }
 

@@ -134,8 +134,11 @@ final class InvokeRenderer {
         }
         String descriptor = type.getDescriptor();
         if (descriptor.startsWith("[")) {
-            throw new UnsupportedBodyException(
-                    "array used as method receiver not supported (arrays are native C# arrays)");
+            // A method on an array receiver is a java.lang.Object method (clone/length handled
+            // elsewhere); box the native array to reach the shim Object.
+            return new CallRenderer.Receiver(
+                    "global::java.lang.JRuntime.Box(" + expr + ", \"" + descriptor + "\")",
+                    "java/lang/Object");
         }
         String internal = TypeMapper.unwrapReference(descriptor);
         if (internal == null) {
