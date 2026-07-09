@@ -25,18 +25,32 @@ public final class StructuredEmission implements com.tonic.j2cs.emit.BodyOverrid
     @Override
     public Optional<String> tryEmit(ClassFile classFile, MethodEntry method, int indentDepth) {
         String where = classFile.getClassName() + "." + method.getName() + method.getDesc();
+        Optional<StructuredRecovery.Recovered> recovered;
         try {
-            Optional<StructuredRecovery.Recovered> recovered = recovery.recover(classFile, method);
-            if (recovered.isEmpty()) {
-                report.classicBody(where + ": recovery degraded");
-                return Optional.empty();
-            }
-            String body = emitter.emit(classFile, method, recovered.get(), indentDepth);
-            report.structuredBody();
-            return Optional.of(body);
+            recovered = recovery.recover(classFile, method);
         } catch (RuntimeException e) {
             report.classicBody(where + ": " + e.getMessage());
             return Optional.empty();
+        }
+        if (recovered.isEmpty()) {
+            report.classicBody(where + ": recovery degraded");
+            return Optional.empty();
+        }
+        try {
+            String body = emitter.emit(classFile, method, recovered.get(), indentDepth, true);
+            report.structuredBody();
+            return Optional.of(body);
+        } catch (RuntimeException foldFailure) {
+            // A folded for-init can put a counter that is actually live past its loop out of scope.
+            // Retry without folding (identical to the pre-fold emission) before degrading to classic.
+            try {
+                String body = emitter.emit(classFile, method, recovered.get(), indentDepth, false);
+                report.structuredBody();
+                return Optional.of(body);
+            } catch (RuntimeException e) {
+                report.classicBody(where + ": " + e.getMessage());
+                return Optional.empty();
+            }
         }
     }
 }

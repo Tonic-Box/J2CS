@@ -89,6 +89,7 @@ final class StructuredBodyEmitter {
     private java.util.Deque<Set<String>> scopes;
     private int hoistCounter;
     private boolean allowHoist;
+    private boolean foldForInit;
 
     StructuredBodyEmitter(NamingContext naming, SyntheticClasses synthetics) {
         this.naming = naming;
@@ -97,9 +98,11 @@ final class StructuredBodyEmitter {
         this.lambdaExpander = new LambdaExpander(naming, synthetics);
     }
 
-    String emit(ClassFile classFile, MethodEntry method, StructuredRecovery.Recovered recovered, int indentDepth) {
+    String emit(ClassFile classFile, MethodEntry method, StructuredRecovery.Recovered recovered,
+                int indentDepth, boolean foldForInit) {
         this.w = new CsWriter(indentDepth);
         this.recovered = recovered;
+        this.foldForInit = foldForInit;
         this.currentClass = classFile.getClassName();
         this.returnDesc = TypeMapper.returnDescriptor(method.getDesc());
         this.names = new HashMap<>();
@@ -368,19 +371,87 @@ final class StructuredBodyEmitter {
     }
 
     private void emitFor(ForStmt f) {
+        // Scope the for-init to the whole for statement (as C# does), so a loop-local counter's
+        // declaration lands in the loop rather than leaking into the enclosing block. This keeps
+        // disjoint same-slot counters (which the recovery already split) independent per loop.
+        // Skipped when folding is off (the retry path after a fold made a counter that is actually
+        // live past its loop go out of scope), preserving the original before-loop emission.
+        if (foldForInit) {
+            pushScope();
+            List<String> initClauses = new ArrayList<>();
+            if (renderForInits(f.getInit(), initClauses)) {
+                emitForLoop(f, String.join(", ", initClauses));
+                popScope();
+                return;
+            }
+            popScope();
+        }
         for (Statement init : f.getInit()) {
             stmt(init);
         }
+        emitForLoop(f, "");
+    }
+
+    private void emitForLoop(ForStmt f, String initClause) {
         String cond = f.getCondition() == null ? "" : noHoist(() -> condition(f.getCondition()));
         List<String> updates = new ArrayList<>();
         for (Expression u : f.getUpdate()) {
             updates.add(noHoist(() -> updateExpr(u)));
         }
         emitLoop(f.getLabel(), () -> {
-            w.open("for (; " + cond + "; " + String.join(", ", updates) + ")");
+            w.open("for (" + initClause + "; " + cond + "; " + String.join(", ", updates) + ")");
             scoped(f.getBody());
             w.close();
         });
+    }
+
+    /**
+     * Renders the for-loop init statements as C# for-init clauses (populating {@code out}),
+     * declaring any variable into the current for-scope. Returns false — emitting nothing — when the
+     * inits are not safely inlinable (a non-declaration/expression statement, an init whose value
+     * would need hoisting, or a multi-init shape C# forbids), so the caller falls back to emitting
+     * them before the loop.
+     */
+    private boolean renderForInits(List<Statement> inits, List<String> out) {
+        boolean multi = inits.size() > 1;
+        for (Statement init : inits) {
+            // C# allows a single declaration or a list of statement-expressions in a for-init, but
+            // not a mix; keep multi-init inlining to expression statements only.
+            if (multi && !(init instanceof ExprStmt)) {
+                return false;
+            }
+            String clause;
+            try {
+                clause = renderForInit(init);
+            } catch (UnsupportedBodyException e) {
+                return false;
+            }
+            if (clause == null) {
+                return false;
+            }
+            out.add(clause);
+        }
+        return true;
+    }
+
+    private String renderForInit(Statement init) {
+        if (init instanceof VarDeclStmt v) {
+            String targetDesc = descOf(v.getType());
+            CsType type = naming.typeMapper().storageType(targetDesc);
+            String value = noHoist(() -> v.getInitializer() != null
+                    ? coerced(targetDesc, v.getInitializer())
+                    : type.defaultLiteral());
+            String name = localName(v.getName());
+            if (inScope(name)) {
+                return name + " = " + value;
+            }
+            declareInScope(name);
+            return type.csText() + " " + name + " = " + value;
+        }
+        if (init instanceof ExprStmt e) {
+            return noHoist(() -> updateExpr(e.getExpression()));
+        }
+        return null;
     }
 
     private String updateExpr(Expression e) {
@@ -981,8 +1052,9 @@ final class StructuredBodyEmitter {
     private String concat(BinaryExpr b) {
         List<String> parts = new ArrayList<>();
         flattenConcat(b, parts);
-        return "global::java.lang.String.Wrap(global::System.String.Concat(new string[] { "
-                + String.join(", ", parts) + " }))";
+        // Every part is a C# string (a quoted literal or a JRuntime.Str/StrZ call), so a '+' chain
+        // is string concatenation and reads more naturally than String.Concat(new string[] {...}).
+        return "global::java.lang.String.Wrap(" + String.join(" + ", parts) + ")";
     }
 
     private void flattenConcat(Expression e, List<String> parts) {
@@ -990,6 +1062,12 @@ final class StructuredBodyEmitter {
                 && "Ljava/lang/String;".equals(descOf(b.getType()))) {
             flattenConcat(b.getLeft(), parts);
             flattenConcat(b.getRight(), parts);
+            return;
+        }
+        if (e instanceof LiteralExpr lit && lit.getValue() instanceof String s) {
+            // A string-literal operand: emit the bare C# string instead of round-tripping through
+            // java.lang.String (JRuntime.Str(String.Intern("x")) is just "x" as a C# string).
+            parts.add(com.tonic.j2cs.emit.CsStrings.quote(s));
             return;
         }
         String desc = descOf(e.getType());

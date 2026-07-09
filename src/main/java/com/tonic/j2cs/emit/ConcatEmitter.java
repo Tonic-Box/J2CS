@@ -27,24 +27,23 @@ public final class ConcatEmitter {
             throw new UnsupportedBodyException("concat argument count mismatch: " + instr.getDescriptor());
         }
         List<ConcatRecipeParser.Part> parts = parts(instr, args.size());
-        StringBuilder sb = new StringBuilder("global::java.lang.String.Wrap(global::System.String.Concat(new string[] { ");
-        for (int i = 0; i < parts.size(); i++) {
-            if (i > 0) {
-                sb.append(", ");
-            }
-            ConcatRecipeParser.Part part = parts.get(i);
+        List<String> rendered = new ArrayList<>();
+        for (ConcatRecipeParser.Part part : parts) {
             if (part instanceof ConcatRecipeParser.Part.Literal literal) {
-                sb.append(CsStrings.quote(literal.text()));
+                rendered.add(CsStrings.quote(literal.text()));
             } else if (part instanceof ConcatRecipeParser.Part.Arg arg) {
                 if (arg.index() >= args.size()) {
                     throw new UnsupportedBodyException("concat recipe references argument " + arg.index()
                             + " but only " + args.size() + " are supplied");
                 }
-                sb.append(conversion(paramDescs.get(arg.index()), args.get(arg.index())));
+                rendered.add(conversion(paramDescs.get(arg.index()), args.get(arg.index())));
             }
         }
-        sb.append(" }))");
-        return sb.toString();
+        if (rendered.isEmpty()) {
+            rendered.add(CsStrings.quote(""));
+        }
+        // Each part is a C# string, so a '+' chain is string concatenation.
+        return "global::java.lang.String.Wrap(" + String.join(" + ", rendered) + ")";
     }
 
     private List<ConcatRecipeParser.Part> parts(InvokeInstruction instr, int argCount) {

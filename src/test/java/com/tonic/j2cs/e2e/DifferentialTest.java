@@ -106,6 +106,7 @@ class DifferentialTest {
                 fixture("CollectionGaps"),
                 fixture("MiscGaps"),
                 fixture("ShadowName"),
+                fixture("ForLoops"),
                 fixture("Bootstrap", "java.lang.Boolean"),
                 fixture("WrapperBootstrap",
                         "java.lang.Integer", "java.lang.Long", "java.lang.Short", "java.lang.Byte"),
