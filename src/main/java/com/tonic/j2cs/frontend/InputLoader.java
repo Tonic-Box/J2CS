@@ -11,7 +11,9 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
@@ -36,13 +38,28 @@ public final class InputLoader {
         } else {
             throw new J2csException("unsupported input type (expected .class or .jar): " + input);
         }
-        List<ClassFile> appClasses = List.copyOf(pool.getClasses());
+        List<ClassFile> appClasses = dedupByInternalName(pool.getClasses());
         if (appClasses.isEmpty()) {
             throw new J2csException("no classes found in input: " + input);
         }
         rejectPlatformPackages(appClasses);
         String entry = resolveEntry(appClasses, mainOverride, manifestMain, input);
         return new LoadedInput(pool, appClasses, entry);
+    }
+
+    /**
+     * A multi-release jar carries the same class under both its base path and
+     * {@code META-INF/versions/N/...}; the pool loads every entry, yielding several ClassFiles that
+     * share one internal name. Naming builds a single member namer per name while emission iterates
+     * every ClassFile, so a divergent duplicate reaches emission with unregistered members (and two
+     * C# types with the same name would not compile anyway). Keep the first ClassFile per name.
+     */
+    private static List<ClassFile> dedupByInternalName(List<ClassFile> classes) {
+        Map<String, ClassFile> byName = new LinkedHashMap<>();
+        for (ClassFile cf : classes) {
+            byName.putIfAbsent(cf.getClassName(), cf);
+        }
+        return List.copyOf(byName.values());
     }
 
     private String loadJar(ClassPool pool, Path input) {

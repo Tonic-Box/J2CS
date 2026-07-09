@@ -29,6 +29,7 @@ public final class ReportWriter {
         section(sb, "unsupported methods (" + report.getUnsupportedMethods().size() + ")", report.getUnsupportedMethods());
         section(sb, "unsupported by reason (" + report.getUnsupportedMethods().size() + ")", report.unsupportedSummary());
         section(sb, "stubbed types (" + report.getStubbedTypes().size() + ")", report.getStubbedTypes());
+        section(sb, "failed classes (" + report.getFailedClasses().size() + ")", report.getFailedClasses());
         section(sb, "known divergences (" + report.getDivergences().size() + ")", report.getDivergences());
         Path reportPath = outDir.resolve("j2cs-report.txt");
         try {

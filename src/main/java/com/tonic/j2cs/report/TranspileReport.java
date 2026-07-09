@@ -21,6 +21,7 @@ public final class TranspileReport {
     private int classicBodies;
     private final List<String> classicFallbackReasons = new ArrayList<>();
     private final List<String> stubbedTypes = new ArrayList<>();
+    private final List<String> failedClasses = new ArrayList<>();
     private final List<String> divergences = new ArrayList<>();
 
     public void setInput(String input) {
@@ -74,6 +75,15 @@ public final class TranspileReport {
 
     public void stubbedType(String internalName) {
         stubbedTypes.add(internalName);
+    }
+
+    /** An input class whose emission threw; replaced by a placeholder so the run still completes. */
+    public void classFailed(String internalName, String reason) {
+        failedClasses.add(internalName + ": " + reason);
+    }
+
+    public List<String> getFailedClasses() {
+        return Collections.unmodifiableList(failedClasses);
     }
 
     public void divergence(String text) {

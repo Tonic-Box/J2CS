@@ -75,14 +75,26 @@ public final class Transpiler {
         Map<String, String> genFiles = new LinkedHashMap<>();
         Set<String> referenced = new TreeSet<>();
         List<ClassFile> reflectClasses = new ArrayList<>();
+        StubEmitter classStub = new StubEmitter();
         for (ClassFile cf : allClasses) {
             report.classDiscovered(cf.getClassName());
-            Map<MethodEntry, MethodPlan> plans = planMethods(cf, planner);
-            ClosureScanner.collectReferencedTypes(cf, plans, referenced);
-            genFiles.put(dottedName(cf.getClassName()), classEmitter.emit(cf, plans));
-            if (ReflectionMetadataEmitter.hasMetadata(naming, cf.getClassName(),
-                    Modifiers.isInterface(cf.getAccess()))) {
-                reflectClasses.add(cf);
+            try {
+                Map<MethodEntry, MethodPlan> plans = planMethods(cf, planner);
+                ClosureScanner.collectReferencedTypes(cf, plans, referenced);
+                genFiles.put(dottedName(cf.getClassName()), classEmitter.emit(cf, plans));
+                if (ReflectionMetadataEmitter.hasMetadata(naming, cf.getClassName(),
+                        Modifiers.isInterface(cf.getAccess()))) {
+                    reflectClasses.add(cf);
+                }
+            } catch (RuntimeException e) {
+                // One malformed class must never abort the whole run: record it and emit a bare
+                // placeholder so the type still resolves, mirroring the per-method stub net.
+                report.classFailed(cf.getClassName(),
+                        e.getClass().getSimpleName() + ": " + e.getMessage());
+                genFiles.put(dottedName(cf.getClassName()),
+                        Modifiers.isInterface(cf.getAccess())
+                                ? classStub.emitInterface(cf.getClassName())
+                                : classStub.emit(cf.getClassName()));
             }
         }
         genFiles.putAll(synthetics.files());
