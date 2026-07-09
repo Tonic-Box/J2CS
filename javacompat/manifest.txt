@@ -115,6 +115,9 @@ java.lang.reflect.Field.cs
 java.lang.reflect.InvocationTargetException.cs
 java.lang.reflect.Method.cs
 java.lang.reflect.Modifier.cs
+java.math.BigDecimal.cs
+java.math.BigInteger.cs
+java.math.RoundingMode.cs
 java.nio.ByteBuffer.cs
 java.nio.ByteOrder.cs
 java.nio.CharBuffer.cs
@@ -140,6 +143,7 @@ java.nio.file.attribute.BasicFileAttributes.cs
 java.nio.file.attribute.FileAttribute.cs
 java.security.MessageDigest.cs
 java.security.SecureRandom.cs
+java.text.DecimalFormat.cs
 java.time.DayOfWeek.cs
 java.time.Duration.cs
 java.time.LocalDate.cs
@@ -180,7 +184,9 @@ java.util.OptionalLong.cs
 java.util.PriorityQueue.cs
 java.util.Queue.cs
 java.util.Random.cs
+java.util.Scanner.cs
 java.util.Set.cs
+java.util.StringTokenizer.cs
 java.util.TreeMap.cs
 java.util.TreeSet.cs
 java.util.UUID.cs
@@ -234,6 +240,7 @@ java.util.function.Supplier.cs
 java.util.function.ToDoubleFunction.cs
 java.util.function.ToIntFunction.cs
 java.util.function.ToLongFunction.cs
+java.util.function.UnaryOperator.cs
 java.util.regex.Matcher.cs
 java.util.regex.Pattern.cs
 java.util.stream.Collector.cs

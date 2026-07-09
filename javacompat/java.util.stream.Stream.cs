@@ -9,6 +9,7 @@ namespace java.util.stream
     public sealed class Stream : global::java.lang.Object
     {
         private readonly CList items;
+        private readonly global::System.Func<global::java.lang.Object> gen;
 
         public Stream(global::java.lang.RawNew r) : base(r)
         {
@@ -18,6 +19,39 @@ namespace java.util.stream
         internal Stream(CList backing) : base(global::java.lang.RawNew.I)
         {
             this.items = backing;
+        }
+
+        internal Stream(global::System.Func<global::java.lang.Object> generator) : base(global::java.lang.RawNew.I)
+        {
+            this.gen = generator;
+        }
+
+        public static Stream iterate(global::java.lang.Object seed, global::java.util.function.UnaryOperator f)
+        {
+            var cur = new global::java.lang.Object[] { seed };
+            var started = new bool[] { false };
+            return new Stream(() =>
+            {
+                if (!started[0])
+                {
+                    started[0] = true;
+                    return cur[0];
+                }
+                cur[0] = f.apply(cur[0]);
+                return cur[0];
+            });
+        }
+
+        public static Stream generate(global::java.util.function.Supplier s)
+        {
+            return new Stream(() => s.get());
+        }
+
+        public static Stream concat(Stream a, Stream b)
+        {
+            var outp = new CList(a.items);
+            outp.AddRange(b.items);
+            return new Stream(outp);
         }
 
         public static Stream Wrap(CList backing)
@@ -61,8 +95,50 @@ namespace java.util.stream
         public Stream limit(long maxSize)
         {
             var outp = new CList();
+            if (gen != null)
+            {
+                for (long i = 0; i < maxSize; i++) { outp.Add(gen()); }
+                return new Stream(outp);
+            }
             for (int i = 0; i < items.Count && i < maxSize; i++) { outp.Add(items[i]); }
             return new Stream(outp);
+        }
+
+        public Stream takeWhile(global::java.util.function.Predicate predicate)
+        {
+            var outp = new CList();
+            foreach (var e in items)
+            {
+                if (predicate.test(e) == 0) { break; }
+                outp.Add(e);
+            }
+            return new Stream(outp);
+        }
+
+        public Stream dropWhile(global::java.util.function.Predicate predicate)
+        {
+            var outp = new CList();
+            bool dropping = true;
+            foreach (var e in items)
+            {
+                if (dropping && predicate.test(e) != 0) { continue; }
+                dropping = false;
+                outp.Add(e);
+            }
+            return new Stream(outp);
+        }
+
+        public global::java.util.List toList()
+        {
+            var l = new global::java.util.ArrayList(global::java.lang.RawNew.I);
+            l.__init__V();
+            foreach (var e in items) { l.add(e); }
+            return l;
+        }
+
+        public global::java.util.Optional findAny()
+        {
+            return items.Count > 0 ? global::java.util.Optional.ofNullable(items[0]) : global::java.util.Optional.empty();
         }
 
         public Stream skip(long n)

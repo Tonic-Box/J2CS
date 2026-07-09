@@ -77,6 +77,7 @@ class DifferentialTest {
                 fixture("NioExtras"),
                 fixture("IoDemo"),
                 fixture("TryResources"),
+                fixture("Tier1"),
                 fixture("Boxing1"),
                 fixture("Boxing2"),
                 fixture("BoxingGenerics"),

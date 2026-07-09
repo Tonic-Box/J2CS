@@ -111,6 +111,13 @@ public final class ShimRegistry {
         put(m, "java/lang/Comparable", "java/lang/Object");
         put(m, "java/lang/AutoCloseable", "java/lang/Object");
         put(m, "java/io/Closeable", "java/lang/AutoCloseable");
+        put(m, "java/util/function/UnaryOperator", "java/util/function/Function");
+        put(m, "java/math/BigInteger", "java/lang/Object");
+        put(m, "java/math/BigDecimal", "java/lang/Object");
+        put(m, "java/math/RoundingMode", "java/lang/Object");
+        put(m, "java/util/Scanner", "java/lang/Object");
+        put(m, "java/util/StringTokenizer", "java/lang/Object");
+        put(m, "java/text/DecimalFormat", "java/lang/Object");
     }
 
     private static void addUtilSupers2(Map<String, String> m) {
@@ -518,6 +525,8 @@ public final class ShimRegistry {
         addIoStreams1(m);
         addNioMethods8(m);
         addNioMethods9(m);
+        addTier1Methods0(m);
+        addTier1Methods1(m);
         addLangMethods1(m);
         addLangMethods2(m);
         addLangMethods3(m);
@@ -2105,6 +2114,77 @@ public final class ShimRegistry {
         put(m, "java/nio/file/attribute/BasicFileAttributes.size()J", instance("size"));
     }
 
+    private static void addTier1Methods0(Map<String, ShimTarget> m) {
+        put(m, "java/util/function/UnaryOperator.apply(Ljava/lang/Object;)Ljava/lang/Object;", instance("apply"));
+        put(m, "java/util/stream/Stream.of([Ljava/lang/Object;)Ljava/util/stream/Stream;", statics("of"));
+        put(m, "java/util/stream/Stream.iterate(Ljava/lang/Object;Ljava/util/function/UnaryOperator;)Ljava/util/stream/Stream;", statics("iterate"));
+        put(m, "java/util/stream/Stream.generate(Ljava/util/function/Supplier;)Ljava/util/stream/Stream;", statics("generate"));
+        put(m, "java/util/stream/Stream.concat(Ljava/util/stream/Stream;Ljava/util/stream/Stream;)Ljava/util/stream/Stream;", statics("concat"));
+        put(m, "java/util/stream/Stream.takeWhile(Ljava/util/function/Predicate;)Ljava/util/stream/Stream;", instance("takeWhile"));
+        put(m, "java/util/stream/Stream.dropWhile(Ljava/util/function/Predicate;)Ljava/util/stream/Stream;", instance("dropWhile"));
+        put(m, "java/util/stream/Stream.toList()Ljava/util/List;", instance("toList"));
+        put(m, "java/util/stream/Stream.findAny()Ljava/util/Optional;", instance("findAny"));
+        put(m, "java/math/BigInteger.valueOf(J)Ljava/math/BigInteger;", statics("valueOf"));
+        put(m, "java/math/BigInteger.add(Ljava/math/BigInteger;)Ljava/math/BigInteger;", instance("add"));
+        put(m, "java/math/BigInteger.subtract(Ljava/math/BigInteger;)Ljava/math/BigInteger;", instance("subtract"));
+        put(m, "java/math/BigInteger.multiply(Ljava/math/BigInteger;)Ljava/math/BigInteger;", instance("multiply"));
+        put(m, "java/math/BigInteger.divide(Ljava/math/BigInteger;)Ljava/math/BigInteger;", instance("divide"));
+        put(m, "java/math/BigInteger.remainder(Ljava/math/BigInteger;)Ljava/math/BigInteger;", instance("remainder"));
+        put(m, "java/math/BigInteger.mod(Ljava/math/BigInteger;)Ljava/math/BigInteger;", instance("mod"));
+        put(m, "java/math/BigInteger.pow(I)Ljava/math/BigInteger;", instance("pow"));
+        put(m, "java/math/BigInteger.gcd(Ljava/math/BigInteger;)Ljava/math/BigInteger;", instance("gcd"));
+        put(m, "java/math/BigInteger.abs()Ljava/math/BigInteger;", instance("abs"));
+        put(m, "java/math/BigInteger.negate()Ljava/math/BigInteger;", instance("negate"));
+        put(m, "java/math/BigInteger.modPow(Ljava/math/BigInteger;Ljava/math/BigInteger;)Ljava/math/BigInteger;", instance("modPow"));
+        put(m, "java/math/BigInteger.min(Ljava/math/BigInteger;)Ljava/math/BigInteger;", instance("min"));
+        put(m, "java/math/BigInteger.max(Ljava/math/BigInteger;)Ljava/math/BigInteger;", instance("max"));
+        put(m, "java/math/BigInteger.compareTo(Ljava/math/BigInteger;)I", instance("compareTo"));
+        put(m, "java/math/BigInteger.signum()I", instance("signum"));
+        put(m, "java/math/BigInteger.intValue()I", instance("intValue"));
+        put(m, "java/math/BigInteger.longValue()J", instance("longValue"));
+        put(m, "java/math/BigInteger.doubleValue()D", instance("doubleValue"));
+    }
+
+    private static void addTier1Methods1(Map<String, ShimTarget> m) {
+        put(m, "java/math/BigDecimal.valueOf(J)Ljava/math/BigDecimal;", statics("valueOf"));
+        put(m, "java/math/BigDecimal.valueOf(D)Ljava/math/BigDecimal;", statics("valueOf"));
+        put(m, "java/math/BigDecimal.add(Ljava/math/BigDecimal;)Ljava/math/BigDecimal;", instance("add"));
+        put(m, "java/math/BigDecimal.subtract(Ljava/math/BigDecimal;)Ljava/math/BigDecimal;", instance("subtract"));
+        put(m, "java/math/BigDecimal.multiply(Ljava/math/BigDecimal;)Ljava/math/BigDecimal;", instance("multiply"));
+        put(m, "java/math/BigDecimal.divide(Ljava/math/BigDecimal;ILjava/math/RoundingMode;)Ljava/math/BigDecimal;", instance("divide"));
+        put(m, "java/math/BigDecimal.divide(Ljava/math/BigDecimal;Ljava/math/RoundingMode;)Ljava/math/BigDecimal;", instance("divide"));
+        put(m, "java/math/BigDecimal.setScale(ILjava/math/RoundingMode;)Ljava/math/BigDecimal;", instance("setScale"));
+        put(m, "java/math/BigDecimal.scale()I", instance("scale"));
+        put(m, "java/math/BigDecimal.abs()Ljava/math/BigDecimal;", instance("abs"));
+        put(m, "java/math/BigDecimal.negate()Ljava/math/BigDecimal;", instance("negate"));
+        put(m, "java/math/BigDecimal.signum()I", instance("signum"));
+        put(m, "java/math/BigDecimal.compareTo(Ljava/math/BigDecimal;)I", instance("compareTo"));
+        put(m, "java/math/BigDecimal.toBigInteger()Ljava/math/BigInteger;", instance("toBigInteger"));
+        put(m, "java/math/BigDecimal.intValue()I", instance("intValue"));
+        put(m, "java/math/BigDecimal.longValue()J", instance("longValue"));
+        put(m, "java/math/BigDecimal.doubleValue()D", instance("doubleValue"));
+        put(m, "java/util/Scanner.hasNext()Z", instance("hasNext"));
+        put(m, "java/util/Scanner.next()Ljava/lang/String;", instance("next"));
+        put(m, "java/util/Scanner.hasNextInt()Z", instance("hasNextInt"));
+        put(m, "java/util/Scanner.nextInt()I", instance("nextInt"));
+        put(m, "java/util/Scanner.hasNextLong()Z", instance("hasNextLong"));
+        put(m, "java/util/Scanner.nextLong()J", instance("nextLong"));
+        put(m, "java/util/Scanner.hasNextDouble()Z", instance("hasNextDouble"));
+        put(m, "java/util/Scanner.nextDouble()D", instance("nextDouble"));
+        put(m, "java/util/Scanner.hasNextLine()Z", instance("hasNextLine"));
+        put(m, "java/util/Scanner.nextLine()Ljava/lang/String;", instance("nextLine"));
+        put(m, "java/util/Scanner.close()V", instance("close"));
+        put(m, "java/util/StringTokenizer.countTokens()I", instance("countTokens"));
+        put(m, "java/util/StringTokenizer.hasMoreTokens()Z", instance("hasMoreTokens"));
+        put(m, "java/util/StringTokenizer.hasMoreElements()Z", instance("hasMoreElements"));
+        put(m, "java/util/StringTokenizer.nextToken()Ljava/lang/String;", instance("nextToken"));
+        put(m, "java/util/StringTokenizer.nextElement()Ljava/lang/Object;", instance("nextElement"));
+        put(m, "java/text/DecimalFormat.format(D)Ljava/lang/String;", instance("format"));
+        put(m, "java/text/DecimalFormat.format(J)Ljava/lang/String;", instance("format"));
+        put(m, "java/text/DecimalFormat.applyPattern(Ljava/lang/String;)V", instance("applyPattern"));
+        put(m, "java/text/DecimalFormat.toPattern()Ljava/lang/String;", instance("toPattern"));
+    }
+
     private static Map<String, ShimTarget> buildFields() {
         Map<String, ShimTarget> m = new java.util.HashMap<>(256);
         addLangFields0(m);
@@ -2146,6 +2226,18 @@ public final class ShimRegistry {
     }
 
     private static void addNioFields0(Map<String, ShimTarget> m) {
+        put(m, "java/math/BigInteger.ZERO Ljava/math/BigInteger;", statics("ZERO"));
+        put(m, "java/math/BigInteger.ONE Ljava/math/BigInteger;", statics("ONE"));
+        put(m, "java/math/BigInteger.TWO Ljava/math/BigInteger;", statics("TWO"));
+        put(m, "java/math/BigInteger.TEN Ljava/math/BigInteger;", statics("TEN"));
+        put(m, "java/math/RoundingMode.UP Ljava/math/RoundingMode;", statics("UP"));
+        put(m, "java/math/RoundingMode.DOWN Ljava/math/RoundingMode;", statics("DOWN"));
+        put(m, "java/math/RoundingMode.CEILING Ljava/math/RoundingMode;", statics("CEILING"));
+        put(m, "java/math/RoundingMode.FLOOR Ljava/math/RoundingMode;", statics("FLOOR"));
+        put(m, "java/math/RoundingMode.HALF_UP Ljava/math/RoundingMode;", statics("HALF_UP"));
+        put(m, "java/math/RoundingMode.HALF_DOWN Ljava/math/RoundingMode;", statics("HALF_DOWN"));
+        put(m, "java/math/RoundingMode.HALF_EVEN Ljava/math/RoundingMode;", statics("HALF_EVEN"));
+        put(m, "java/math/RoundingMode.UNNECESSARY Ljava/math/RoundingMode;", statics("UNNECESSARY"));
         put(m, "java/nio/charset/StandardCharsets.UTF_8 Ljava/nio/charset/Charset;", statics("UTF_8"));
         put(m, "java/nio/file/StandardCopyOption.REPLACE_EXISTING Ljava/nio/file/StandardCopyOption;", statics("REPLACE_EXISTING"));
         put(m, "java/nio/file/StandardCopyOption.ATOMIC_MOVE Ljava/nio/file/StandardCopyOption;", statics("ATOMIC_MOVE"));
