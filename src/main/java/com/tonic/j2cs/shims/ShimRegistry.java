@@ -110,6 +110,9 @@ public final class ShimRegistry {
         put(m, "java/net/URL", "java/lang/Object");
         put(m, "java/net/Socket", "java/lang/Object");
         put(m, "java/net/ServerSocket", "java/lang/Object");
+        put(m, "java/net/InetAddress", "java/lang/Object");
+        put(m, "java/net/URLConnection", "java/lang/Object");
+        put(m, "java/net/HttpURLConnection", "java/net/URLConnection");
         put(m, "java/util/Queue", "java/util/Collection");
         put(m, "java/util/Deque", "java/util/Queue");
         put(m, "java/util/ArrayDeque", "java/util/Deque");
@@ -588,6 +591,7 @@ public final class ShimRegistry {
         addNavEnumMethods0(m);
         addNetMethods0(m);
         addNetMethods1(m);
+        addNetMethods2(m);
         addCryptoMethods0(m);
         addCryptoMethods1(m);
         addCryptoMethods2(m);
@@ -2561,6 +2565,25 @@ public final class ShimRegistry {
         put(m, "java/net/ServerSocket.getLocalPort()I", instance("getLocalPort"));
         put(m, "java/net/ServerSocket.accept()Ljava/net/Socket;", instance("accept"));
         put(m, "java/net/ServerSocket.close()V", instance("close"));
+    }
+
+    private static void addNetMethods2(Map<String, ShimTarget> m) {
+        put(m, "java/net/InetAddress.getByName(Ljava/lang/String;)Ljava/net/InetAddress;", statics("getByName"));
+        put(m, "java/net/InetAddress.getLocalHost()Ljava/net/InetAddress;", statics("getLocalHost"));
+        put(m, "java/net/InetAddress.getLoopbackAddress()Ljava/net/InetAddress;", statics("getLoopbackAddress"));
+        put(m, "java/net/InetAddress.getHostAddress()Ljava/lang/String;", instance("getHostAddress"));
+        put(m, "java/net/InetAddress.getHostName()Ljava/lang/String;", instance("getHostName"));
+        put(m, "java/net/InetAddress.isLoopbackAddress()Z", instance("isLoopbackAddress"));
+        put(m, "java/net/URL.openConnection()Ljava/net/URLConnection;", instance("openConnection"));
+        put(m, "java/net/URLConnection.connect()V", instance("connect"));
+        put(m, "java/net/URLConnection.getInputStream()Ljava/io/InputStream;", instance("getInputStream"));
+        put(m, "java/net/URLConnection.setRequestProperty(Ljava/lang/String;Ljava/lang/String;)V", instance("setRequestProperty"));
+        put(m, "java/net/URLConnection.setDoOutput(Z)V", instance("setDoOutput"));
+        put(m, "java/net/URLConnection.setConnectTimeout(I)V", instance("setConnectTimeout"));
+        put(m, "java/net/URLConnection.setReadTimeout(I)V", instance("setReadTimeout"));
+        put(m, "java/net/HttpURLConnection.setRequestMethod(Ljava/lang/String;)V", instance("setRequestMethod"));
+        put(m, "java/net/HttpURLConnection.getResponseCode()I", instance("getResponseCode"));
+        put(m, "java/net/HttpURLConnection.disconnect()V", instance("disconnect"));
     }
 
     private static Map<String, ShimTarget> buildFields() {

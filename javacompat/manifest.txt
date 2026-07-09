@@ -121,10 +121,13 @@ java.lang.reflect.Modifier.cs
 java.math.BigDecimal.cs
 java.math.BigInteger.cs
 java.math.RoundingMode.cs
+java.net.HttpURLConnection.cs
+java.net.InetAddress.cs
 java.net.ServerSocket.cs
 java.net.Socket.cs
 java.net.URI.cs
 java.net.URL.cs
+java.net.URLConnection.cs
 java.nio.ByteBuffer.cs
 java.nio.ByteOrder.cs
 java.nio.CharBuffer.cs

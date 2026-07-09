@@ -60,6 +60,13 @@ namespace java.net
             return u;
         }
 
+        public URLConnection openConnection()
+        {
+            var c = new HttpURLConnection(global::java.lang.RawNew.I);
+            c.SetUrl(full);
+            return c;
+        }
+
         public override int equals(global::java.lang.Object o) { return o is URL u && u.full == full ? 1 : 0; }
         public override int hashCode() { return full.GetHashCode(); }
         public override global::java.lang.String toString() { return global::java.lang.String.Wrap(full); }

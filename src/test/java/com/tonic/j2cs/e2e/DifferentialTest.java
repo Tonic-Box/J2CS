@@ -91,6 +91,8 @@ class DifferentialTest {
                 fixture("ProcBuilder"),
                 fixture("SignVerify"),
                 fixture("NetSocket"),
+                fixture("NetAddr"),
+                fixture("HttpConn"),
                 fixture("Boxing1"),
                 fixture("Boxing2"),
                 fixture("BoxingGenerics"),
