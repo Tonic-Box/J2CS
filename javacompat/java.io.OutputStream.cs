@@ -1,6 +1,6 @@
 namespace java.io
 {
-    public class OutputStream : global::java.lang.Object
+    public class OutputStream : global::java.lang.Object, Closeable
     {
         public OutputStream(global::java.lang.RawNew r) : base(r)
         {

@@ -6,6 +6,7 @@ namespace java.lang
         internal global::System.Exception __origin;
         private String message;
         private Throwable cause;
+        private global::System.Collections.Generic.List<Throwable> suppressed;
 
         public Throwable(RawNew r) : base(r)
         {
@@ -50,6 +51,24 @@ namespace java.lang
         public virtual void printStackTrace()
         {
             global::System.Console.Error.WriteLine(toString().Value);
+        }
+
+        public void addSuppressed(Throwable exception)
+        {
+            if (exception == null)
+            {
+                return;
+            }
+            if (suppressed == null)
+            {
+                suppressed = new global::System.Collections.Generic.List<Throwable>();
+            }
+            suppressed.Add(exception);
+        }
+
+        public Throwable[] getSuppressed()
+        {
+            return suppressed == null ? new Throwable[0] : suppressed.ToArray();
         }
     }
 }

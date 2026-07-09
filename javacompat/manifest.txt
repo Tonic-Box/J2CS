@@ -42,6 +42,7 @@ java.io.BufferedReader.cs
 java.io.BufferedWriter.cs
 java.io.ByteArrayInputStream.cs
 java.io.ByteArrayOutputStream.cs
+java.io.Closeable.cs
 java.io.File.cs
 java.io.FileInputStream.cs
 java.io.FileOutputStream.cs
@@ -61,6 +62,7 @@ java.lang.ArithmeticException.cs
 java.lang.ArrayIndexOutOfBoundsException.cs
 java.lang.ArrayStoreException.cs
 java.lang.AssertionError.cs
+java.lang.AutoCloseable.cs
 java.lang.Boolean.cs
 java.lang.Byte.cs
 java.lang.CharSequence.cs

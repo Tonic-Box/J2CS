@@ -1,6 +1,6 @@
 namespace java.io
 {
-    public class Reader : global::java.lang.Object
+    public class Reader : global::java.lang.Object, Closeable
     {
         public Reader(global::java.lang.RawNew r) : base(r)
         {

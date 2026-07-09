@@ -109,6 +109,8 @@ public final class ShimRegistry {
         put(m, "java/lang/Runtime", "java/lang/Object");
         put(m, "java/lang/CharSequence", "java/lang/Object");
         put(m, "java/lang/Comparable", "java/lang/Object");
+        put(m, "java/lang/AutoCloseable", "java/lang/Object");
+        put(m, "java/io/Closeable", "java/lang/AutoCloseable");
     }
 
     private static void addUtilSupers2(Map<String, String> m) {
@@ -980,6 +982,9 @@ public final class ShimRegistry {
         put(m, "java/lang/System.arraycopy(Ljava/lang/Object;ILjava/lang/Object;II)V", statics("arraycopy"));
         put(m, "java/lang/Throwable.getMessage()Ljava/lang/String;", instance("getMessage"));
         put(m, "java/lang/Throwable.getCause()Ljava/lang/Throwable;", instance("getCause"));
+        put(m, "java/lang/Throwable.addSuppressed(Ljava/lang/Throwable;)V", instance("addSuppressed"));
+        put(m, "java/lang/Throwable.getSuppressed()[Ljava/lang/Throwable;", instance("getSuppressed"));
+        put(m, "java/lang/AutoCloseable.close()V", instance("close"));
         put(m, "java/lang/Throwable.toString()Ljava/lang/String;", instance("toString"));
         put(m, "java/lang/Throwable.printStackTrace()V", instance("printStackTrace"));
         put(m, "java/lang/String.format(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;", statics("format"));

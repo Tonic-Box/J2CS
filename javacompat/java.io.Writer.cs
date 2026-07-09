@@ -1,6 +1,6 @@
 namespace java.io
 {
-    public class Writer : global::java.lang.Object
+    public class Writer : global::java.lang.Object, Closeable
     {
         public Writer(global::java.lang.RawNew r) : base(r)
         {
