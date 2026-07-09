@@ -80,6 +80,7 @@ class DifferentialTest {
                 fixture("Tier1"),
                 fixture("TimeText"),
                 fixture("DateCal"),
+                fixture("UtilCollections"),
                 fixture("Boxing1"),
                 fixture("Boxing2"),
                 fixture("BoxingGenerics"),

@@ -22,7 +22,7 @@ public class UnsupportedGraceful {
     }
 
     static int useStack() {
-        return new java.util.Stack<String>().size();
+        return new java.util.WeakHashMap<String, String>().size();
     }
 
     static native int nativeThing();

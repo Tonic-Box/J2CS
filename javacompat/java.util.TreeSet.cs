@@ -107,6 +107,19 @@ namespace java.util
             return null;
         }
 
+        public global::java.lang.Object lower(global::java.lang.Object e)
+        {
+            global::java.lang.Object best = null;
+            foreach (var x in items) { if (Cmp(x, e) < 0) { best = x; } else { break; } }
+            return best;
+        }
+
+        public global::java.lang.Object higher(global::java.lang.Object e)
+        {
+            foreach (var x in items) { if (Cmp(x, e) > 0) { return x; } }
+            return null;
+        }
+
         public Iterator iterator()
         {
             return new ShimListIterator(new global::System.Collections.Generic.List<global::java.lang.Object>(items));

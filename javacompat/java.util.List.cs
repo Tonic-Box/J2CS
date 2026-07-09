@@ -12,6 +12,16 @@ namespace java.util
 
         int indexOf(global::java.lang.Object o);
 
+        ListIterator listIterator()
+        {
+            return new ShimListIndexIter(this, 0);
+        }
+
+        ListIterator listIterator(int index)
+        {
+            return new ShimListIndexIter(this, index);
+        }
+
         void clear()
         {
             for (int i = size() - 1; i >= 0; i--)

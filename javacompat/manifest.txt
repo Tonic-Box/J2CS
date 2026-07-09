@@ -168,6 +168,7 @@ java.util.Arrays.cs
 java.util.Base64$Decoder.cs
 java.util.Base64$Encoder.cs
 java.util.Base64.cs
+java.util.BitSet.cs
 java.util.Calendar.cs
 java.util.Collection.cs
 java.util.Collections.cs
@@ -185,6 +186,7 @@ java.util.JCollections.cs
 java.util.LinkedHashMap.cs
 java.util.LinkedList.cs
 java.util.List.cs
+java.util.ListIterator.cs
 java.util.Locale.cs
 java.util.LongSummaryStatistics.cs
 java.util.Map$Entry.cs
@@ -195,15 +197,18 @@ java.util.OptionalDouble.cs
 java.util.OptionalInt.cs
 java.util.OptionalLong.cs
 java.util.PriorityQueue.cs
+java.util.Properties.cs
 java.util.Queue.cs
 java.util.Random.cs
 java.util.Scanner.cs
 java.util.Set.cs
+java.util.Stack.cs
 java.util.StringTokenizer.cs
 java.util.TimeZone.cs
 java.util.TreeMap.cs
 java.util.TreeSet.cs
 java.util.UUID.cs
+java.util.Vector.cs
 java.util.concurrent.Callable.cs
 java.util.concurrent.CompletableFuture.cs
 java.util.concurrent.ConcurrentHashMap.cs

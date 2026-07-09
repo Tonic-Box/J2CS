@@ -85,6 +85,11 @@ public final class ShimRegistry {
         put(m, "java/util/Collection", "java/util/Iterable");
         put(m, "java/util/List", "java/util/Collection");
         put(m, "java/util/ArrayList", "java/util/List");
+        put(m, "java/util/Vector", "java/util/ArrayList");
+        put(m, "java/util/Stack", "java/util/Vector");
+        put(m, "java/util/BitSet", "java/lang/Object");
+        put(m, "java/util/Properties", "java/util/HashMap");
+        put(m, "java/util/ListIterator", "java/util/Iterator");
         put(m, "java/util/Set", "java/util/Collection");
         put(m, "java/util/Map", "java/lang/Object");
         put(m, "java/util/Map$Entry", "java/lang/Object");
@@ -544,6 +549,7 @@ public final class ShimRegistry {
         addTimeTextMethods0(m);
         addTimeTextMethods1(m);
         addDateCalMethods0(m);
+        addUtilColMethods0(m);
         addLangMethods1(m);
         addLangMethods2(m);
         addLangMethods3(m);
@@ -2296,6 +2302,59 @@ public final class ShimRegistry {
         put(m, "java/text/SimpleDateFormat.toPattern()Ljava/lang/String;", instance("toPattern"));
     }
 
+    private static void addUtilColMethods0(Map<String, ShimTarget> m) {
+        put(m, "java/util/Vector.addElement(Ljava/lang/Object;)V", instance("addElement"));
+        put(m, "java/util/Vector.insertElementAt(Ljava/lang/Object;I)V", instance("insertElementAt"));
+        put(m, "java/util/Vector.setElementAt(Ljava/lang/Object;I)V", instance("setElementAt"));
+        put(m, "java/util/Vector.removeElementAt(I)V", instance("removeElementAt"));
+        put(m, "java/util/Vector.removeElement(Ljava/lang/Object;)Z", instance("removeElement"));
+        put(m, "java/util/Vector.elementAt(I)Ljava/lang/Object;", instance("elementAt"));
+        put(m, "java/util/Vector.firstElement()Ljava/lang/Object;", instance("firstElement"));
+        put(m, "java/util/Vector.lastElement()Ljava/lang/Object;", instance("lastElement"));
+        put(m, "java/util/Vector.capacity()I", instance("capacity"));
+        put(m, "java/util/Stack.push(Ljava/lang/Object;)Ljava/lang/Object;", instance("push"));
+        put(m, "java/util/Stack.pop()Ljava/lang/Object;", instance("pop"));
+        put(m, "java/util/Stack.peek()Ljava/lang/Object;", instance("peek"));
+        put(m, "java/util/Stack.empty()Z", instance("empty"));
+        put(m, "java/util/Stack.search(Ljava/lang/Object;)I", instance("search"));
+        put(m, "java/util/BitSet.set(I)V", instance("set"));
+        put(m, "java/util/BitSet.set(IZ)V", instance("set"));
+        put(m, "java/util/BitSet.clear(I)V", instance("clear"));
+        put(m, "java/util/BitSet.clear()V", instance("clear"));
+        put(m, "java/util/BitSet.flip(I)V", instance("flip"));
+        put(m, "java/util/BitSet.get(I)Z", instance("get"));
+        put(m, "java/util/BitSet.cardinality()I", instance("cardinality"));
+        put(m, "java/util/BitSet.isEmpty()Z", instance("isEmpty"));
+        put(m, "java/util/BitSet.length()I", instance("length"));
+        put(m, "java/util/BitSet.size()I", instance("size"));
+        put(m, "java/util/BitSet.nextSetBit(I)I", instance("nextSetBit"));
+        put(m, "java/util/BitSet.and(Ljava/util/BitSet;)V", instance("and"));
+        put(m, "java/util/BitSet.or(Ljava/util/BitSet;)V", instance("or"));
+        put(m, "java/util/BitSet.xor(Ljava/util/BitSet;)V", instance("xor"));
+        put(m, "java/util/BitSet.andNot(Ljava/util/BitSet;)V", instance("andNot"));
+        put(m, "java/util/Properties.setProperty(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/Object;", instance("setProperty"));
+        put(m, "java/util/Properties.getProperty(Ljava/lang/String;)Ljava/lang/String;", instance("getProperty"));
+        put(m, "java/util/Properties.getProperty(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;", instance("getProperty"));
+        put(m, "java/util/Properties.stringPropertyNames()Ljava/util/Set;", instance("stringPropertyNames"));
+        put(m, "java/util/List.listIterator()Ljava/util/ListIterator;", instance("listIterator"));
+        put(m, "java/util/List.listIterator(I)Ljava/util/ListIterator;", instance("listIterator"));
+        put(m, "java/util/ListIterator.hasPrevious()Z", instance("hasPrevious"));
+        put(m, "java/util/ListIterator.previous()Ljava/lang/Object;", instance("previous"));
+        put(m, "java/util/ListIterator.nextIndex()I", instance("nextIndex"));
+        put(m, "java/util/ListIterator.previousIndex()I", instance("previousIndex"));
+        put(m, "java/util/ListIterator.set(Ljava/lang/Object;)V", instance("set"));
+        put(m, "java/util/ListIterator.add(Ljava/lang/Object;)V", instance("add"));
+        put(m, "java/util/ListIterator.remove()V", instance("remove"));
+        put(m, "java/util/TreeSet.higher(Ljava/lang/Object;)Ljava/lang/Object;", instance("higher"));
+        put(m, "java/util/TreeSet.lower(Ljava/lang/Object;)Ljava/lang/Object;", instance("lower"));
+        put(m, "java/util/TreeMap.firstKey()Ljava/lang/Object;", instance("firstKey"));
+        put(m, "java/util/TreeMap.lastKey()Ljava/lang/Object;", instance("lastKey"));
+        put(m, "java/util/TreeMap.floorKey(Ljava/lang/Object;)Ljava/lang/Object;", instance("floorKey"));
+        put(m, "java/util/TreeMap.ceilingKey(Ljava/lang/Object;)Ljava/lang/Object;", instance("ceilingKey"));
+        put(m, "java/util/TreeMap.higherKey(Ljava/lang/Object;)Ljava/lang/Object;", instance("higherKey"));
+        put(m, "java/util/TreeMap.lowerKey(Ljava/lang/Object;)Ljava/lang/Object;", instance("lowerKey"));
+    }
+
     private static Map<String, ShimTarget> buildFields() {
         Map<String, ShimTarget> m = new java.util.HashMap<>(256);
         addLangFields0(m);
@@ -2602,7 +2661,9 @@ public final class ShimRegistry {
             "java/util/Comparator.thenComparing(Ljava/util/Comparator;)Ljava/util/Comparator;",
             "java/util/Comparator.thenComparing(Ljava/util/function/Function;)Ljava/util/Comparator;",
             "java/util/Comparator.thenComparingInt(Ljava/util/function/ToIntFunction;)Ljava/util/Comparator;",
-            "java/util/List.sort(Ljava/util/Comparator;)V");
+            "java/util/List.sort(Ljava/util/Comparator;)V",
+            "java/util/List.listIterator()Ljava/util/ListIterator;",
+            "java/util/List.listIterator(I)Ljava/util/ListIterator;");
 
     public static boolean isDefaultInterfaceMethod(String ownerInternal, String name, String desc) {
         return DEFAULT_INTERFACE_METHODS.contains(ownerInternal + "." + name + desc);
