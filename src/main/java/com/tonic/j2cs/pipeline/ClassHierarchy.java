@@ -1,6 +1,7 @@
 package com.tonic.j2cs.pipeline;
 
 import com.tonic.j2cs.J2csException;
+import com.tonic.j2cs.shims.ShimRegistry;
 import com.tonic.parser.ClassFile;
 import com.tonic.util.Modifiers;
 import java.util.ArrayDeque;
@@ -109,15 +110,24 @@ public final class ClassHierarchy {
 
     /**
      * Whether a receiver of the given static type exposes members declared by the target type,
-     * so a call needs no upcast: true when the types match, the target is Object, or the target
-     * is a class ancestor or superinterface of the receiver type.
+     * so a call needs no upcast: true when the types match, the target is Object, the target is a
+     * class ancestor or superinterface of the receiver type, or the target is a shim class ancestor
+     * reached once the superclass chain leaves the input (an app subclass of a shim class inherits
+     * its members in C# too). Shim interface relationships are not modeled, so an interface-declared
+     * shim member conservatively keeps its cast.
      */
     public boolean staticallyHasMember(String receiverInternal, String declaringInternal) {
         if (receiverInternal.equals(declaringInternal) || declaringInternal.equals("java/lang/Object")) {
             return true;
         }
-        return classAncestors(receiverInternal).contains(declaringInternal)
-                || allSuperInterfaces(receiverInternal).contains(declaringInternal);
+        if (classAncestors(receiverInternal).contains(declaringInternal)
+                || allSuperInterfaces(receiverInternal).contains(declaringInternal)) {
+            return true;
+        }
+        String shimRoot = ShimRegistry.isShimType(receiverInternal)
+                ? receiverInternal
+                : firstExternalSuper(receiverInternal);
+        return shimRoot != null && ShimRegistry.isShimSubtype(shimRoot, declaringInternal);
     }
 
     /**

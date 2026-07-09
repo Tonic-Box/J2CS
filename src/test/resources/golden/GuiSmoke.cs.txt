@@ -85,7 +85,6 @@ namespace j2cs.reflect
 // ==== gen/jdefault.GuiSmoke.cs ====
 namespace jdefault
 {
-    using java.awt;
     using java.lang;
     using javax.swing;
 
@@ -109,12 +108,11 @@ namespace jdefault
         internal static void main(String[] p0)
         {
             System.@out.println(String.Intern("starting"));
-            JFrame __t0 = new JFrame(RawNew.I);
-            __t0.__init_Ljava_lang_String__V(String.Intern("Smoke Test"));
-            JFrame local1 = __t0;
-            ((Window)local1).setSize(320, 240);
-            ((Window)local1).setDefaultCloseOperation(3);
-            ((Window)local1).setVisible(1);
+            JFrame local1 = new JFrame(RawNew.I);
+            local1.__init_Ljava_lang_String__V(String.Intern("Smoke Test"));
+            local1.setSize(320, 240);
+            local1.setDefaultCloseOperation(3);
+            local1.setVisible(1);
             System.@out.println(String.Intern("shown"));
         }
     }

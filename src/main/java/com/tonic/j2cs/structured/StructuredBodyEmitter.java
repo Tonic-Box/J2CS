@@ -193,24 +193,31 @@ final class StructuredBodyEmitter {
         }
     }
 
+    private void emitVarDecl(VarDeclStmt v) {
+        String targetDesc = descOf(v.getType());
+        CsType type = naming.typeMapper().storageType(targetDesc);
+        String name = localName(v.getName());
+        boolean declare = !inScope(name);
+        if (declare) {
+            declareInScope(name);
+            if (v.getInitializer() != null
+                    && emitTwoPhaseNewInto(name, type.csText() + " ", type, v.getInitializer())) {
+                return;
+            }
+        }
+        String init = v.getInitializer() != null
+                ? coerced(targetDesc, v.getInitializer())
+                : type.defaultLiteral();
+        w.line((declare ? type.csText() + " " : "") + name + " = " + init + ";");
+    }
+
     private void stmt(Statement s) {
         if (s instanceof BlockStmt block) {
             for (Statement child : block.getStatements()) {
                 stmt(child);
             }
         } else if (s instanceof VarDeclStmt v) {
-            String targetDesc = descOf(v.getType());
-            CsType type = naming.typeMapper().storageType(targetDesc);
-            String init = v.getInitializer() != null
-                    ? coerced(targetDesc, v.getInitializer())
-                    : type.defaultLiteral();
-            String name = localName(v.getName());
-            if (inScope(name)) {
-                w.line(name + " = " + init + ";");
-            } else {
-                declareInScope(name);
-                w.line(type.csText() + " " + name + " = " + init + ";");
-            }
+            emitVarDecl(v);
         } else if (s instanceof ExprStmt e) {
             statementExpr(e.getExpression());
         } else if (s instanceof IfStmt i) {
@@ -1002,9 +1009,42 @@ final class StructuredBodyEmitter {
         }
         String temp = freshName("__t");
         declareInScope(temp);
-        w.line(fqcn + " " + temp + " = new " + fqcn + "(global::java.lang.RawNew.I);");
-        w.line(temp + "." + MemberNamer.initMethodName(desc) + "(" + args + ");");
+        emitRawNewAndInit(fqcn + " ", temp, fqcn, desc, args);
         return temp;
+    }
+
+    /** Emits the two-phase RawNew allocation and its __init call against an already-rendered target. */
+    private void emitRawNewAndInit(String declPrefix, String target, String fqcn, String desc, String args) {
+        w.line(declPrefix + target + " = new " + fqcn + "(global::java.lang.RawNew.I);");
+        w.line(target + "." + MemberNamer.initMethodName(desc) + "(" + args + ");");
+    }
+
+    /**
+     * When {@code rhs} is exactly a two-phase (RawNew) allocation of {@code targetType}, construct it
+     * straight into {@code target} and return true, dropping the __t temp newInstance would otherwise
+     * introduce. Only used for fresh local declarations: there is no prior target value and no
+     * out-of-scope observer, so the store-before-__init ordering is unobservable (a throwing __init
+     * leaves the local scoped-out, matching the abandoned store on the JVM). A differing target type,
+     * a real constructor, or a hoist-forbidden context all fall back to the generic path.
+     */
+    private boolean emitTwoPhaseNewInto(String target, String declPrefix, CsType targetType, Expression rhs) {
+        if (!allowHoist || !(rhs instanceof NewExpr n) || n.getEnclosingInstance() != null) {
+            return false;
+        }
+        String className = n.getClassName();
+        if (!naming.isAppClass(className) && !naming.isShimType(className)) {
+            return false;
+        }
+        String desc = n.getDescriptor();
+        if (desc == null || (naming.isAppClass(className) && naming.hasRealConstructor(className, desc))) {
+            return false;
+        }
+        String fqcn = CsNamer.fqcn(className);
+        if (!fqcn.equals(targetType.csText())) {
+            return false;
+        }
+        emitRawNewAndInit(declPrefix, target, fqcn, desc, arguments(desc, n.getArguments()));
+        return true;
     }
 
     private String newArray(NewArrayExpr n) {

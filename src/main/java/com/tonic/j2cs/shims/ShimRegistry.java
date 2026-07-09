@@ -3455,9 +3455,18 @@ public final class ShimRegistry {
     }
 
     public static boolean isThrowableSubtype(String internalName) {
-        String current = internalName;
+        return isShimSubtype(internalName, "java/lang/Throwable");
+    }
+
+    /**
+     * Whether {@code sub} is {@code sup} or a shim subtype of it, following the shim class
+     * super-chain. Only class supertypes are modeled (the chain is single-parent), so shim
+     * interface relationships are not covered.
+     */
+    public static boolean isShimSubtype(String sub, String sup) {
+        String current = sub;
         while (current != null) {
-            if (current.equals("java/lang/Throwable")) {
+            if (current.equals(sup)) {
                 return true;
             }
             current = SHIM_SUPERS.get(current);

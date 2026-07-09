@@ -90,7 +90,7 @@ namespace jdefault
                 if (__ex1 is MyException)
                 {
                     MyException local1 = (MyException)__ex1;
-                    System.@out.println(((Throwable)local1).getMessage());
+                    System.@out.println(local1.getMessage());
                     System.@out.println(local1.code__2());
                 }
                 else
@@ -109,7 +109,7 @@ namespace jdefault
                 if (__ex3 is MyException)
                 {
                     MyException local1_1 = (MyException)__ex3;
-                    System.@out.println(String.Wrap("propagated: " + JRuntime.Str(((Throwable)local1_1).getMessage())));
+                    System.@out.println(String.Wrap("propagated: " + JRuntime.Str(local1_1.getMessage())));
                 }
                 else
                 {
@@ -134,7 +134,7 @@ namespace jdefault
                 if (__ex5 is Exception)
                 {
                     Exception local1_2 = (Exception)__ex5;
-                    System.@out.println(String.Wrap("outer caught: " + JRuntime.Str(((Throwable)local1_2).getMessage())));
+                    System.@out.println(String.Wrap("outer caught: " + JRuntime.Str(local1_2.getMessage())));
                     System.@out.println(Exceptions2.classify(0));
                     System.@out.println(Exceptions2.classify(1));
                     System.@out.println(Exceptions2.classify(2));
@@ -188,7 +188,7 @@ namespace jdefault
                 if (__ex9 is MyException)
                 {
                     MyException local2_2 = (MyException)__ex9;
-                    System.@out.println(String.Wrap("rethrown: " + JRuntime.Str(((Throwable)local2_2).getMessage())));
+                    System.@out.println(String.Wrap("rethrown: " + JRuntime.Str(local2_2.getMessage())));
                 }
                 else
                 {
@@ -239,7 +239,7 @@ namespace jdefault
                     if (__ex2 is RuntimeException)
                     {
                         RuntimeException local1_1 = (RuntimeException)__ex2;
-                        return String.Wrap("rt:" + JRuntime.Str(((Throwable)local1_1).getMessage()));
+                        return String.Wrap("rt:" + JRuntime.Str(local1_1.getMessage()));
                     }
                     else
                     {
@@ -254,7 +254,7 @@ namespace jdefault
                 if (__ex4 is MyException)
                 {
                     MyException local1 = (MyException)__ex4;
-                    return String.Wrap("my:" + JRuntime.Str(((Throwable)local1).getMessage()));
+                    return String.Wrap("my:" + JRuntime.Str(local1.getMessage()));
                 }
                 else
                 {

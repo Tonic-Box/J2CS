@@ -53,6 +53,7 @@ class DifferentialTest {
                 fixture("Reflection"),
                 fixture("FizzBuzz"),
                 fixture("Inherit"),
+                fixture("ShimInherit"),
                 fixture("Interfaces"),
                 fixture("Generics"),
                 fixture("TypeReconcile"),
