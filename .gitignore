@@ -42,3 +42,4 @@ bin/
 ### Mac OS ###
 .DS_Store
 /DemoApp.jar
+/DemoGame-all.jar
