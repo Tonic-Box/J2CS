@@ -123,6 +123,61 @@ namespace java.lang
             return d >= 0 && d < radix ? d : -1;
         }
 
+        public static int isSpaceChar(char c)
+        {
+            var cat = global::System.Char.GetUnicodeCategory(c);
+            return cat == global::System.Globalization.UnicodeCategory.SpaceSeparator
+                    || cat == global::System.Globalization.UnicodeCategory.LineSeparator
+                    || cat == global::System.Globalization.UnicodeCategory.ParagraphSeparator ? 1 : 0;
+        }
+
+        public static int isAlphabetic(int codePoint)
+        {
+            if (codePoint < 0 || codePoint > char.MaxValue)
+            {
+                return 0;
+            }
+            char c = (char)codePoint;
+            return global::System.Char.IsLetter(c)
+                    || global::System.Char.GetUnicodeCategory(c) == global::System.Globalization.UnicodeCategory.LetterNumber ? 1 : 0;
+        }
+
+        public static char forDigit(int digit, int radix)
+        {
+            if (radix < 2 || radix > 36 || digit < 0 || digit >= radix)
+            {
+                return '\0';
+            }
+            return (char)(digit < 10 ? '0' + digit : 'a' + digit - 10);
+        }
+
+        public static int isJavaIdentifierStart(char c)
+        {
+            return global::System.Char.IsLetter(c) || c == '$' || c == '_'
+                    || global::System.Char.GetUnicodeCategory(c) == global::System.Globalization.UnicodeCategory.LetterNumber ? 1 : 0;
+        }
+
+        public static int isJavaIdentifierPart(char c)
+        {
+            if (isJavaIdentifierStart(c) != 0 || global::System.Char.IsDigit(c))
+            {
+                return 1;
+            }
+            var cat = global::System.Char.GetUnicodeCategory(c);
+            return cat == global::System.Globalization.UnicodeCategory.NonSpacingMark
+                    || cat == global::System.Globalization.UnicodeCategory.SpacingCombiningMark
+                    || cat == global::System.Globalization.UnicodeCategory.ConnectorPunctuation ? 1 : 0;
+        }
+
+        public static int compare(char a, char b) { return a - b; }
+        public static int hashCode(char c) { return c; }
+        public static int charCount(int codePoint) { return codePoint >= 0x10000 ? 2 : 1; }
+        public static String toString(int codePoint) { return String.Wrap(global::System.Char.ConvertFromUtf32(codePoint)); }
+        public static int isSurrogate(char c) { return global::System.Char.IsSurrogate(c) ? 1 : 0; }
+        public static int isHighSurrogate(char c) { return global::System.Char.IsHighSurrogate(c) ? 1 : 0; }
+        public static int isLowSurrogate(char c) { return global::System.Char.IsLowSurrogate(c) ? 1 : 0; }
+        public static char[] toChars(int codePoint) { return global::System.Char.ConvertFromUtf32(codePoint).ToCharArray(); }
+
         public char charValue()
         {
             return value;

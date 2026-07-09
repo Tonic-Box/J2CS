@@ -41,6 +41,11 @@ namespace java.lang
             return old == null ? null : String.Wrap(old);
         }
 
+        public static String lineSeparator()
+        {
+            return String.Wrap(global::System.Environment.NewLine);
+        }
+
         public static long nanoTime()
         {
             return (long)(global::System.Diagnostics.Stopwatch.GetTimestamp()

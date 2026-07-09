@@ -1,6 +1,6 @@
 namespace java.util
 {
-    public interface Collection : Iterable
+    public interface Collection : global::java.lang.Iterable
     {
         int add(global::java.lang.Object e);
 

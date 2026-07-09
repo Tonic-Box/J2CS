@@ -1,6 +1,6 @@
 namespace java.lang
 {
-    public class StringBuilder : Object
+    public class StringBuilder : Object, global::java.lang.CharSequence
     {
         private readonly global::System.Text.StringBuilder sb = new global::System.Text.StringBuilder();
 
@@ -18,60 +18,27 @@ namespace java.lang
 
         public void __init_Ljava_lang_String__V(String s)
         {
-            sb.Append(JRuntime.Str(s));
+            sb.Append(s == null ? "null" : s.Value);
         }
 
-        public StringBuilder append(int v)
+        public void __init_Ljava_lang_CharSequence__V(global::java.lang.CharSequence s)
         {
-            sb.Append(JRuntime.Str(v));
-            return this;
+            sb.Append(s == null ? "null" : s.toString().Value);
         }
 
-        public StringBuilder append(long v)
-        {
-            sb.Append(JRuntime.Str(v));
-            return this;
-        }
+        public StringBuilder append(int v) { sb.Append(JRuntime.Str(v)); return this; }
+        public StringBuilder append(long v) { sb.Append(JRuntime.Str(v)); return this; }
+        public StringBuilder append(float v) { sb.Append(JRuntime.Str(v)); return this; }
+        public StringBuilder append(double v) { sb.Append(JRuntime.Str(v)); return this; }
+        public StringBuilder append(char v) { sb.Append(v); return this; }
+        public StringBuilder append_Z(int v) { sb.Append(JRuntime.StrZ(v)); return this; }
+        public StringBuilder append(String v) { sb.Append(JRuntime.Str(v)); return this; }
+        public StringBuilder append(Object v) { sb.Append(JRuntime.Str(v)); return this; }
+        public StringBuilder append(char[] v) { sb.Append(v); return this; }
 
-        public StringBuilder append(float v)
+        public StringBuilder append(char[] v, int offset, int len)
         {
-            sb.Append(JRuntime.Str(v));
-            return this;
-        }
-
-        public StringBuilder append(double v)
-        {
-            sb.Append(JRuntime.Str(v));
-            return this;
-        }
-
-        public StringBuilder append(char v)
-        {
-            sb.Append(v);
-            return this;
-        }
-
-        public StringBuilder append_Z(int v)
-        {
-            sb.Append(JRuntime.StrZ(v));
-            return this;
-        }
-
-        public StringBuilder append(String v)
-        {
-            sb.Append(JRuntime.Str(v));
-            return this;
-        }
-
-        public StringBuilder append(Object v)
-        {
-            sb.Append(JRuntime.Str(v));
-            return this;
-        }
-
-        public StringBuilder append(char[] v)
-        {
-            sb.Append(v);
+            sb.Append(v, offset, len);
             return this;
         }
 
@@ -81,27 +48,45 @@ namespace java.lang
             return this;
         }
 
-        public StringBuilder insert(int offset, String v)
+        public StringBuilder append(global::java.lang.CharSequence v, int start, int end)
         {
-            sb.Insert(offset, JRuntime.Str(v));
+            string s = v == null ? "null" : v.toString().Value;
+            sb.Append(s, start, end - start);
             return this;
         }
 
-        public StringBuilder insert(int offset, char v)
+        public StringBuilder appendCodePoint(int codePoint)
         {
-            sb.Insert(offset, v);
+            sb.Append(global::System.Char.ConvertFromUtf32(codePoint));
             return this;
         }
 
-        public StringBuilder insert(int offset, int v)
+        public StringBuilder insert(int offset, String v) { sb.Insert(offset, JRuntime.Str(v)); return this; }
+        public StringBuilder insert(int offset, char v) { sb.Insert(offset, v); return this; }
+        public StringBuilder insert(int offset, int v) { sb.Insert(offset, JRuntime.Str(v)); return this; }
+        public StringBuilder insert(int offset, long v) { sb.Insert(offset, JRuntime.Str(v)); return this; }
+        public StringBuilder insert(int offset, float v) { sb.Insert(offset, JRuntime.Str(v)); return this; }
+        public StringBuilder insert(int offset, double v) { sb.Insert(offset, JRuntime.Str(v)); return this; }
+        public StringBuilder insert(int offset, Object v) { sb.Insert(offset, JRuntime.Str(v)); return this; }
+        public StringBuilder insert(int offset, char[] v) { sb.Insert(offset, v); return this; }
+        public StringBuilder insert_Z(int offset, int v) { sb.Insert(offset, JRuntime.StrZ(v)); return this; }
+
+        public StringBuilder insert(int offset, char[] v, int off2, int len)
         {
-            sb.Insert(offset, JRuntime.Str(v));
+            sb.Insert(offset, new string(v, off2, len));
             return this;
         }
 
-        public StringBuilder insert(int offset, Object v)
+        public StringBuilder insert(int offset, global::java.lang.CharSequence v)
         {
-            sb.Insert(offset, JRuntime.Str(v));
+            sb.Insert(offset, v == null ? "null" : v.toString().Value);
+            return this;
+        }
+
+        public StringBuilder insert(int offset, global::java.lang.CharSequence v, int start, int end)
+        {
+            string s = v == null ? "null" : v.toString().Value;
+            sb.Insert(offset, s.Substring(start, end - start));
             return this;
         }
 
@@ -114,17 +99,8 @@ namespace java.lang
             return this;
         }
 
-        public StringBuilder deleteCharAt(int index)
-        {
-            sb.Remove(index, 1);
-            return this;
-        }
-
-        public StringBuilder delete(int start, int end)
-        {
-            sb.Remove(start, end - start);
-            return this;
-        }
+        public StringBuilder deleteCharAt(int index) { sb.Remove(index, 1); return this; }
+        public StringBuilder delete(int start, int end) { sb.Remove(start, end - start); return this; }
 
         public StringBuilder replace(int start, int end, String str)
         {
@@ -135,27 +111,73 @@ namespace java.lang
 
         public void setLength(int newLength)
         {
-            sb.Length = newLength;
+            if (newLength > sb.Length)
+            {
+                sb.Append(new string('\0', newLength - sb.Length));
+            }
+            else
+            {
+                sb.Length = newLength;
+            }
         }
 
-        public char charAt(int index)
-        {
-            return sb[index];
-        }
-
-        public void setCharAt(int index, char c)
-        {
-            sb[index] = c;
-        }
+        public char charAt(int index) { return sb[index]; }
+        public void setCharAt(int index, char c) { sb[index] = c; }
+        public int length() { return sb.Length; }
+        public int capacity() { return sb.Capacity; }
+        public void ensureCapacity(int minimumCapacity) { sb.EnsureCapacity(minimumCapacity); }
+        public void trimToSize() { }
 
         public int indexOf(String str)
         {
             return sb.ToString().IndexOf(JRuntime.Str(str), global::System.StringComparison.Ordinal);
         }
 
-        public int length()
+        public int indexOf(String str, int fromIndex)
         {
-            return sb.Length;
+            if (fromIndex < 0) { fromIndex = 0; }
+            string s = sb.ToString();
+            if (fromIndex > s.Length) { return -1; }
+            return s.IndexOf(JRuntime.Str(str), fromIndex, global::System.StringComparison.Ordinal);
+        }
+
+        public int lastIndexOf(String str)
+        {
+            return sb.ToString().LastIndexOf(JRuntime.Str(str), global::System.StringComparison.Ordinal);
+        }
+
+        public int lastIndexOf(String str, int fromIndex)
+        {
+            string s = sb.ToString();
+            string needle = JRuntime.Str(str);
+            if (fromIndex < 0) { return -1; }
+            int start = global::System.Math.Min(fromIndex, s.Length - 1);
+            if (start < 0) { return needle.Length == 0 ? 0 : -1; }
+            for (int i = global::System.Math.Min(start, s.Length - needle.Length); i >= 0; i--)
+            {
+                if (string.CompareOrdinal(s.Substring(i, needle.Length), needle) == 0) { return i; }
+            }
+            return needle.Length == 0 ? 0 : -1;
+        }
+
+        public String substring(int start) { return String.Wrap(sb.ToString().Substring(start)); }
+        public String substring(int start, int end) { return String.Wrap(sb.ToString().Substring(start, end - start)); }
+        public global::java.lang.CharSequence subSequence(int start, int end) { return substring(start, end); }
+
+        public int codePointAt(int index)
+        {
+            char c1 = sb[index];
+            if (global::System.Char.IsHighSurrogate(c1) && index + 1 < sb.Length
+                    && global::System.Char.IsLowSurrogate(sb[index + 1]))
+            {
+                return global::System.Char.ConvertToUtf32(c1, sb[index + 1]);
+            }
+            return c1;
+        }
+
+        public void getChars(int srcBegin, int srcEnd, char[] dst, int dstBegin)
+        {
+            sb.CopyTo(srcBegin, dst, dstBegin, srcEnd - srcBegin);
         }
 
         public override String toString()

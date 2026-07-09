@@ -384,6 +384,313 @@ namespace java.lang
             return result;
         }
 
+        public static String valueOf(char[] data, int offset, int count)
+        {
+            return Wrap(new string(data, offset, count));
+        }
+
+        public static String copyValueOf(char[] data)
+        {
+            return Wrap(new string(data));
+        }
+
+        public static String copyValueOf(char[] data, int offset, int count)
+        {
+            return Wrap(new string(data, offset, count));
+        }
+
+        public static String join(global::java.lang.CharSequence delimiter, global::java.lang.Iterable elements)
+        {
+            var sep = Cs(delimiter);
+            var sb = new global::System.Text.StringBuilder();
+            var it = elements.iterator();
+            bool first = true;
+            while (it.hasNext() != 0)
+            {
+                var e = it.next();
+                if (!first) { sb.Append(sep); }
+                first = false;
+                sb.Append(e == null ? "null" : ((global::java.lang.CharSequence)e).toString().Value);
+            }
+            return Wrap(sb.ToString());
+        }
+
+        public String intern()
+        {
+            return Intern(Value);
+        }
+
+        public int codePointAt(int index)
+        {
+            char c1 = Value[index];
+            if (char.IsHighSurrogate(c1) && index + 1 < Value.Length && char.IsLowSurrogate(Value[index + 1]))
+            {
+                return char.ConvertToUtf32(c1, Value[index + 1]);
+            }
+            return c1;
+        }
+
+        public int codePointBefore(int index)
+        {
+            char c2 = Value[index - 1];
+            if (char.IsLowSurrogate(c2) && index - 2 >= 0 && char.IsHighSurrogate(Value[index - 2]))
+            {
+                return char.ConvertToUtf32(Value[index - 2], c2);
+            }
+            return c2;
+        }
+
+        public int codePointCount(int beginIndex, int endIndex)
+        {
+            int n = 0;
+            for (int i = beginIndex; i < endIndex; )
+            {
+                char c = Value[i];
+                if (char.IsHighSurrogate(c) && i + 1 < endIndex && char.IsLowSurrogate(Value[i + 1]))
+                {
+                    i += 2;
+                }
+                else
+                {
+                    i++;
+                }
+                n++;
+            }
+            return n;
+        }
+
+        public int offsetByCodePoints(int index, int codePointOffset)
+        {
+            int i = index;
+            if (codePointOffset >= 0)
+            {
+                for (int k = 0; k < codePointOffset; k++)
+                {
+                    if (char.IsHighSurrogate(Value[i]) && i + 1 < Value.Length && char.IsLowSurrogate(Value[i + 1]))
+                    {
+                        i += 2;
+                    }
+                    else
+                    {
+                        i++;
+                    }
+                }
+            }
+            else
+            {
+                for (int k = codePointOffset; k < 0; k++)
+                {
+                    i--;
+                    if (char.IsLowSurrogate(Value[i]) && i - 1 >= 0 && char.IsHighSurrogate(Value[i - 1]))
+                    {
+                        i--;
+                    }
+                }
+            }
+            return i;
+        }
+
+        public int regionMatches(int toffset, String other, int ooffset, int len)
+        {
+            if (ooffset < 0 || toffset < 0 || len < 0
+                    || toffset > Value.Length - len || ooffset > other.Value.Length - len)
+            {
+                return 0;
+            }
+            return string.CompareOrdinal(Value.Substring(toffset, len), other.Value.Substring(ooffset, len)) == 0 ? 1 : 0;
+        }
+
+        public int regionMatches(int ignoreCase, int toffset, String other, int ooffset, int len)
+        {
+            if (ooffset < 0 || toffset < 0 || len < 0
+                    || toffset > Value.Length - len || ooffset > other.Value.Length - len)
+            {
+                return 0;
+            }
+            var cmp = ignoreCase != 0
+                    ? global::System.StringComparison.OrdinalIgnoreCase
+                    : global::System.StringComparison.Ordinal;
+            return string.Equals(Value.Substring(toffset, len), other.Value.Substring(ooffset, len), cmp) ? 1 : 0;
+        }
+
+        public int contentEquals(global::java.lang.CharSequence cs)
+        {
+            return string.Equals(Value, cs.toString().Value, global::System.StringComparison.Ordinal) ? 1 : 0;
+        }
+
+        public int contentEquals(global::java.lang.StringBuffer buffer)
+        {
+            return string.Equals(Value, buffer.toString().Value, global::System.StringComparison.Ordinal) ? 1 : 0;
+        }
+
+        public void getChars(int srcBegin, int srcEnd, char[] dst, int dstBegin)
+        {
+            Value.CopyTo(srcBegin, dst, dstBegin, srcEnd - srcBegin);
+        }
+
+        private static int IndexOfNonWhitespace(string s)
+        {
+            int i = 0;
+            while (i < s.Length && char.IsWhiteSpace(s[i])) { i++; }
+            return i;
+        }
+
+        private static int LastIndexOfNonWhitespace(string s)
+        {
+            int i = s.Length;
+            while (i > 0 && char.IsWhiteSpace(s[i - 1])) { i--; }
+            return i;
+        }
+
+        private global::System.Collections.Generic.List<string> LinesList()
+        {
+            var outp = new global::System.Collections.Generic.List<string>();
+            foreach (var line in Value.Split('\n'))
+            {
+                outp.Add(line.EndsWith("\r") ? line.Substring(0, line.Length - 1) : line);
+            }
+            if (outp.Count > 0 && Value.EndsWith("\n"))
+            {
+                outp.RemoveAt(outp.Count - 1);
+            }
+            return outp;
+        }
+
+        public String indent(int n)
+        {
+            if (Value.Length == 0) { return Wrap(""); }
+            var sb = new global::System.Text.StringBuilder();
+            foreach (var line in LinesList())
+            {
+                string outLine;
+                if (n > 0)
+                {
+                    outLine = new string(' ', n) + line;
+                }
+                else if (n == int.MinValue)
+                {
+                    outLine = line.Substring(IndexOfNonWhitespace(line));
+                }
+                else if (n < 0)
+                {
+                    outLine = line.Substring(global::System.Math.Min(-n, IndexOfNonWhitespace(line)));
+                }
+                else
+                {
+                    outLine = line;
+                }
+                sb.Append(outLine).Append('\n');
+            }
+            return Wrap(sb.ToString());
+        }
+
+        public String stripIndent()
+        {
+            int length = Value.Length;
+            if (length == 0) { return Wrap(""); }
+            char lastChar = Value[length - 1];
+            bool optOut = lastChar == '\n' || lastChar == '\r';
+            var lines = LinesList();
+            int outdent = 0;
+            if (!optOut)
+            {
+                outdent = int.MaxValue;
+                foreach (var line in lines)
+                {
+                    int lead = IndexOfNonWhitespace(line);
+                    if (lead != line.Length)
+                    {
+                        outdent = global::System.Math.Min(outdent, lead);
+                    }
+                }
+                string lastLine = lines[lines.Count - 1];
+                bool blank = IndexOfNonWhitespace(lastLine) == lastLine.Length;
+                if (blank)
+                {
+                    outdent = global::System.Math.Min(outdent, lastLine.Length);
+                }
+                if (outdent == int.MaxValue) { outdent = 0; }
+            }
+            var sb = new global::System.Text.StringBuilder();
+            for (int li = 0; li < lines.Count; li++)
+            {
+                string line = lines[li];
+                int firstNon = IndexOfNonWhitespace(line);
+                int lastNon = LastIndexOfNonWhitespace(line);
+                string mapped = firstNon > lastNon
+                        ? ""
+                        : line.Substring(global::System.Math.Min(outdent, firstNon), lastNon - global::System.Math.Min(outdent, firstNon));
+                sb.Append(mapped);
+                if (li < lines.Count - 1) { sb.Append('\n'); }
+            }
+            if (optOut) { sb.Append('\n'); }
+            return Wrap(sb.ToString());
+        }
+
+        public String translateEscapes()
+        {
+            if (Value.Length == 0) { return Wrap(""); }
+            char[] chars = Value.ToCharArray();
+            int length = chars.Length;
+            int from = 0;
+            int to = 0;
+            while (from < length)
+            {
+                char ch = chars[from++];
+                if (ch == '\\')
+                {
+                    ch = from < length ? chars[from++] : '\0';
+                    switch (ch)
+                    {
+                        case 'b': ch = '\b'; break;
+                        case 'f': ch = '\f'; break;
+                        case 'n': ch = '\n'; break;
+                        case 'r': ch = '\r'; break;
+                        case 's': ch = ' '; break;
+                        case 't': ch = '\t'; break;
+                        case '\'':
+                        case '\"':
+                        case '\\':
+                            break;
+                        case '0':
+                        case '1':
+                        case '2':
+                        case '3':
+                        case '4':
+                        case '5':
+                        case '6':
+                        case '7':
+                        {
+                            int limit = global::System.Math.Min(from + (ch <= '3' ? 2 : 1), length);
+                            int code = ch - '0';
+                            while (from < limit)
+                            {
+                                ch = chars[from];
+                                if (ch < '0' || '7' < ch) { break; }
+                                from++;
+                                code = (code << 3) | (ch - '0');
+                            }
+                            ch = (char)code;
+                            break;
+                        }
+                        case '\n':
+                            continue;
+                        case '\r':
+                            if (from < length && chars[from] == '\n') { from++; }
+                            continue;
+                        default:
+                        {
+                            var ex = new global::java.lang.IllegalArgumentException(RawNew.I);
+                            ex.__init_Ljava_lang_String__V(Wrap("Invalid escape sequence: \\" + ch));
+                            throw global::java.lang.JThrow.of(ex);
+                        }
+                    }
+                }
+                chars[to++] = ch;
+            }
+            return Wrap(new string(chars, 0, to));
+        }
+
         private static string Cs(global::java.lang.CharSequence cs)
         {
             return cs == null ? "null" : cs.toString().Value;

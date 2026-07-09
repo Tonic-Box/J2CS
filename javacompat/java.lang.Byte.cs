@@ -5,6 +5,8 @@ namespace java.lang
         public static readonly global::java.lang.Class TYPE = global::java.lang.Class.Of("byte");
         public const sbyte MAX_VALUE = sbyte.MaxValue;
         public const sbyte MIN_VALUE = sbyte.MinValue;
+        public const int SIZE = 8;
+        public const int BYTES = 1;
 
         private static readonly Byte[] Cache = BuildCache();
 
@@ -38,6 +40,36 @@ namespace java.lang
         {
             return Cache[v + 128];
         }
+
+        public static Byte valueOf(String s)
+        {
+            return valueOf(parseByte(s));
+        }
+
+        public static Byte valueOf(String s, int radix)
+        {
+            return valueOf(parseByte(s, radix));
+        }
+
+        public static sbyte parseByte(String s)
+        {
+            return parseByte(s, 10);
+        }
+
+        public static sbyte parseByte(String s, int radix)
+        {
+            int i = Integer.parseInt(s, radix);
+            if (i < sbyte.MinValue || i > sbyte.MaxValue)
+            {
+                throw JRuntime.NumberFormat("Value out of range. Value:\"" + (s == null ? "null" : s.Value) + "\" Radix:" + radix);
+            }
+            return (sbyte)i;
+        }
+
+        public static int compare(sbyte a, sbyte b) { return a - b; }
+        public static int hashCode(sbyte v) { return v; }
+        public static int toUnsignedInt(sbyte v) { return v & 0xff; }
+        public static long toUnsignedLong(sbyte v) { return v & 0xffL; }
 
         public static String toString(sbyte v)
         {

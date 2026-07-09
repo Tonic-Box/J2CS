@@ -61,6 +61,13 @@ public final class ShimRegistry {
 
     private static void addUtilSupers0(Map<String, String> m) {
         put(m, "java/util/Objects", "java/lang/Object");
+        put(m, "java/util/StringJoiner", "java/lang/Object");
+        put(m, "java/util/concurrent/ThreadLocalRandom", "java/lang/Object");
+        put(m, "java/util/Formatter", "java/lang/Object");
+        put(m, "java/util/Currency", "java/lang/Object");
+        put(m, "java/util/concurrent/atomic/AtomicIntegerArray", "java/lang/Object");
+        put(m, "java/util/concurrent/atomic/AtomicLongArray", "java/lang/Object");
+        put(m, "java/util/concurrent/atomic/AtomicReferenceArray", "java/lang/Object");
     }
 
     private static void addLangSupers1(Map<String, String> m) {
@@ -74,15 +81,16 @@ public final class ShimRegistry {
         put(m, "java/lang/Float", "java/lang/Number");
         put(m, "java/lang/Short", "java/lang/Number");
         put(m, "java/lang/Byte", "java/lang/Number");
+        put(m, "java/lang/StrictMath", "java/lang/Object");
         put(m, "java/lang/Boolean", "java/lang/Object");
         put(m, "java/lang/Void", "java/lang/Object");
         put(m, "java/lang/Character", "java/lang/Object");
     }
 
     private static void addUtilSupers1(Map<String, String> m) {
-        put(m, "java/util/Iterable", "java/lang/Object");
+        put(m, "java/lang/Iterable", "java/lang/Object");
         put(m, "java/util/Iterator", "java/lang/Object");
-        put(m, "java/util/Collection", "java/util/Iterable");
+        put(m, "java/util/Collection", "java/lang/Iterable");
         put(m, "java/util/List", "java/util/Collection");
         put(m, "java/util/ArrayList", "java/util/List");
         put(m, "java/util/Vector", "java/util/ArrayList");
@@ -581,6 +589,25 @@ public final class ShimRegistry {
     private static Map<String, ShimTarget> buildMethods() {
         Map<String, ShimTarget> m = new java.util.HashMap<>(2048);
         addLangMethods0(m);
+        addNumberMethods0(m);
+        addNumberMethods1(m);
+        addNumberMethods2(m);
+        addNumberMethods3(m);
+        addNumberMethods4(m);
+        addNumberMethods5(m);
+        addStrictMathMethods0(m);
+        addStrictMathMethods1(m);
+        addTextBuilder0(m);
+        addTextBuilder1(m);
+        addTextString0(m);
+        addTextChar0(m);
+        addTextJoiner0(m);
+        addArraysGaps0(m);
+        addArraysGaps1(m);
+        addArraysGaps2(m);
+        addCollectionsGaps0(m);
+        addMiscGaps0(m);
+        addMiscGaps1(m);
         addIoMethods0(m);
         addNioMethods0(m);
         addNioMethods1(m);
@@ -637,7 +664,6 @@ public final class ShimRegistry {
         addStreamMethods0(m);
         addStreamMethods1(m);
         addUtilMethods5(m);
-        addLangMethods10(m);
         addUtilMethods6(m);
         addSwingMethods0(m);
         addAwtMethods1(m);
@@ -675,6 +701,533 @@ public final class ShimRegistry {
         put(m, "java/lang/String.equals(Ljava/lang/Object;)Z", instance("equals"));
         put(m, "java/lang/String.hashCode()I", instance("hashCode"));
         put(m, "java/lang/String.toString()Ljava/lang/String;", instance("toString"));
+    }
+
+    private static void addNumberMethods0(Map<String, ShimTarget> m) {
+        put(m, "java/util/Objects.requireNonNull(Ljava/lang/Object;Ljava/lang/String;)Ljava/lang/Object;", statics("requireNonNull"));
+        put(m, "java/util/Objects.requireNonNullElse(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", statics("requireNonNullElse"));
+        put(m, "java/util/Objects.requireNonNullElseGet(Ljava/lang/Object;Ljava/util/function/Supplier;)Ljava/lang/Object;", statics("requireNonNullElseGet"));
+        put(m, "java/util/Objects.isNull(Ljava/lang/Object;)Z", statics("isNull"));
+        put(m, "java/util/Objects.nonNull(Ljava/lang/Object;)Z", statics("nonNull"));
+        put(m, "java/util/Objects.equals(Ljava/lang/Object;Ljava/lang/Object;)Z", statics("equals"));
+        put(m, "java/util/Objects.deepEquals(Ljava/lang/Object;Ljava/lang/Object;)Z", statics("deepEquals"));
+        put(m, "java/util/Objects.hashCode(Ljava/lang/Object;)I", statics("hashCode"));
+        put(m, "java/util/Objects.hash([Ljava/lang/Object;)I", statics("hash"));
+        put(m, "java/util/Objects.toString(Ljava/lang/Object;)Ljava/lang/String;", statics("toString"));
+        put(m, "java/util/Objects.toString(Ljava/lang/Object;Ljava/lang/String;)Ljava/lang/String;", statics("toString"));
+        put(m, "java/util/Objects.compare(Ljava/lang/Object;Ljava/lang/Object;Ljava/util/Comparator;)I", statics("compare"));
+        put(m, "java/lang/System.lineSeparator()Ljava/lang/String;", statics("lineSeparator"));
+    }
+
+    private static void addNumberMethods1(Map<String, ShimTarget> m) {
+        put(m, "java/lang/Integer.parseInt(Ljava/lang/String;I)I", statics("parseInt"));
+        put(m, "java/lang/Integer.parseUnsignedInt(Ljava/lang/String;)I", statics("parseUnsignedInt"));
+        put(m, "java/lang/Integer.parseUnsignedInt(Ljava/lang/String;I)I", statics("parseUnsignedInt"));
+        put(m, "java/lang/Integer.valueOf(Ljava/lang/String;)Ljava/lang/Integer;", statics("valueOf"));
+        put(m, "java/lang/Integer.valueOf(Ljava/lang/String;I)Ljava/lang/Integer;", statics("valueOf"));
+        put(m, "java/lang/Integer.compareUnsigned(II)I", statics("compareUnsigned"));
+        put(m, "java/lang/Integer.divideUnsigned(II)I", statics("divideUnsigned"));
+        put(m, "java/lang/Integer.remainderUnsigned(II)I", statics("remainderUnsigned"));
+        put(m, "java/lang/Integer.hashCode(I)I", statics("hashCode"));
+        put(m, "java/lang/Integer.toUnsignedLong(I)J", statics("toUnsignedLong"));
+        put(m, "java/lang/Integer.toString(II)Ljava/lang/String;", statics("toString"));
+        put(m, "java/lang/Integer.toBinaryString(I)Ljava/lang/String;", statics("toBinaryString"));
+        put(m, "java/lang/Integer.toOctalString(I)Ljava/lang/String;", statics("toOctalString"));
+        put(m, "java/lang/Integer.toHexString(I)Ljava/lang/String;", statics("toHexString"));
+        put(m, "java/lang/Integer.toUnsignedString(I)Ljava/lang/String;", statics("toUnsignedString"));
+        put(m, "java/lang/Integer.toUnsignedString(II)Ljava/lang/String;", statics("toUnsignedString"));
+        put(m, "java/lang/Integer.bitCount(I)I", statics("bitCount"));
+        put(m, "java/lang/Integer.numberOfLeadingZeros(I)I", statics("numberOfLeadingZeros"));
+        put(m, "java/lang/Integer.numberOfTrailingZeros(I)I", statics("numberOfTrailingZeros"));
+        put(m, "java/lang/Integer.highestOneBit(I)I", statics("highestOneBit"));
+        put(m, "java/lang/Integer.lowestOneBit(I)I", statics("lowestOneBit"));
+        put(m, "java/lang/Integer.reverse(I)I", statics("reverse"));
+        put(m, "java/lang/Integer.reverseBytes(I)I", statics("reverseBytes"));
+        put(m, "java/lang/Integer.rotateLeft(II)I", statics("rotateLeft"));
+        put(m, "java/lang/Integer.rotateRight(II)I", statics("rotateRight"));
+        put(m, "java/lang/Integer.signum(I)I", statics("signum"));
+    }
+
+    private static void addNumberMethods2(Map<String, ShimTarget> m) {
+        put(m, "java/lang/Long.parseLong(Ljava/lang/String;I)J", statics("parseLong"));
+        put(m, "java/lang/Long.parseUnsignedLong(Ljava/lang/String;)J", statics("parseUnsignedLong"));
+        put(m, "java/lang/Long.parseUnsignedLong(Ljava/lang/String;I)J", statics("parseUnsignedLong"));
+        put(m, "java/lang/Long.valueOf(Ljava/lang/String;)Ljava/lang/Long;", statics("valueOf"));
+        put(m, "java/lang/Long.valueOf(Ljava/lang/String;I)Ljava/lang/Long;", statics("valueOf"));
+        put(m, "java/lang/Long.compare(JJ)I", statics("compare"));
+        put(m, "java/lang/Long.compareUnsigned(JJ)I", statics("compareUnsigned"));
+        put(m, "java/lang/Long.divideUnsigned(JJ)J", statics("divideUnsigned"));
+        put(m, "java/lang/Long.remainderUnsigned(JJ)J", statics("remainderUnsigned"));
+        put(m, "java/lang/Long.hashCode(J)I", statics("hashCode"));
+        put(m, "java/lang/Long.toString(JI)Ljava/lang/String;", statics("toString"));
+        put(m, "java/lang/Long.toBinaryString(J)Ljava/lang/String;", statics("toBinaryString"));
+        put(m, "java/lang/Long.toOctalString(J)Ljava/lang/String;", statics("toOctalString"));
+        put(m, "java/lang/Long.toHexString(J)Ljava/lang/String;", statics("toHexString"));
+        put(m, "java/lang/Long.toUnsignedString(J)Ljava/lang/String;", statics("toUnsignedString"));
+        put(m, "java/lang/Long.toUnsignedString(JI)Ljava/lang/String;", statics("toUnsignedString"));
+        put(m, "java/lang/Long.bitCount(J)I", statics("bitCount"));
+        put(m, "java/lang/Long.numberOfLeadingZeros(J)I", statics("numberOfLeadingZeros"));
+        put(m, "java/lang/Long.numberOfTrailingZeros(J)I", statics("numberOfTrailingZeros"));
+        put(m, "java/lang/Long.highestOneBit(J)J", statics("highestOneBit"));
+        put(m, "java/lang/Long.lowestOneBit(J)J", statics("lowestOneBit"));
+        put(m, "java/lang/Long.reverse(J)J", statics("reverse"));
+        put(m, "java/lang/Long.reverseBytes(J)J", statics("reverseBytes"));
+        put(m, "java/lang/Long.rotateLeft(JI)J", statics("rotateLeft"));
+        put(m, "java/lang/Long.rotateRight(JI)J", statics("rotateRight"));
+        put(m, "java/lang/Long.signum(J)I", statics("signum"));
+    }
+
+    private static void addNumberMethods3(Map<String, ShimTarget> m) {
+        put(m, "java/lang/Short.parseShort(Ljava/lang/String;)S", statics("parseShort"));
+        put(m, "java/lang/Short.parseShort(Ljava/lang/String;I)S", statics("parseShort"));
+        put(m, "java/lang/Short.valueOf(Ljava/lang/String;)Ljava/lang/Short;", statics("valueOf"));
+        put(m, "java/lang/Short.valueOf(Ljava/lang/String;I)Ljava/lang/Short;", statics("valueOf"));
+        put(m, "java/lang/Short.compare(SS)I", statics("compare"));
+        put(m, "java/lang/Short.hashCode(S)I", statics("hashCode"));
+        put(m, "java/lang/Short.toUnsignedInt(S)I", statics("toUnsignedInt"));
+        put(m, "java/lang/Short.toUnsignedLong(S)J", statics("toUnsignedLong"));
+        put(m, "java/lang/Short.reverseBytes(S)S", statics("reverseBytes"));
+        put(m, "java/lang/Byte.parseByte(Ljava/lang/String;)B", statics("parseByte"));
+        put(m, "java/lang/Byte.parseByte(Ljava/lang/String;I)B", statics("parseByte"));
+        put(m, "java/lang/Byte.valueOf(Ljava/lang/String;)Ljava/lang/Byte;", statics("valueOf"));
+        put(m, "java/lang/Byte.valueOf(Ljava/lang/String;I)Ljava/lang/Byte;", statics("valueOf"));
+        put(m, "java/lang/Byte.compare(BB)I", statics("compare"));
+        put(m, "java/lang/Byte.hashCode(B)I", statics("hashCode"));
+        put(m, "java/lang/Byte.toUnsignedInt(B)I", statics("toUnsignedInt"));
+        put(m, "java/lang/Byte.toUnsignedLong(B)J", statics("toUnsignedLong"));
+    }
+
+    private static void addNumberMethods4(Map<String, ShimTarget> m) {
+        put(m, "java/lang/Double.valueOf(Ljava/lang/String;)Ljava/lang/Double;", statics("valueOf"));
+        put(m, "java/lang/Double.isNaN(D)Z", statics("isNaN"));
+        put(m, "java/lang/Double.isInfinite(D)Z", statics("isInfinite"));
+        put(m, "java/lang/Double.isFinite(D)Z", statics("isFinite"));
+        put(m, "java/lang/Double.compare(DD)I", statics("compare"));
+        put(m, "java/lang/Double.doubleToLongBits(D)J", statics("doubleToLongBits"));
+        put(m, "java/lang/Double.doubleToRawLongBits(D)J", statics("doubleToRawLongBits"));
+        put(m, "java/lang/Double.longBitsToDouble(J)D", statics("longBitsToDouble"));
+        put(m, "java/lang/Double.hashCode(D)I", statics("hashCode"));
+        put(m, "java/lang/Double.toHexString(D)Ljava/lang/String;", statics("toHexString"));
+        put(m, "java/lang/Double.isNaN()Z", instance("isNaN"));
+        put(m, "java/lang/Double.isInfinite()Z", instance("isInfinite"));
+        put(m, "java/lang/Float.valueOf(Ljava/lang/String;)Ljava/lang/Float;", statics("valueOf"));
+        put(m, "java/lang/Float.sum(FF)F", statics("sum"));
+        put(m, "java/lang/Float.max(FF)F", statics("max"));
+        put(m, "java/lang/Float.min(FF)F", statics("min"));
+        put(m, "java/lang/Float.isNaN(F)Z", statics("isNaN"));
+        put(m, "java/lang/Float.isInfinite(F)Z", statics("isInfinite"));
+        put(m, "java/lang/Float.isFinite(F)Z", statics("isFinite"));
+        put(m, "java/lang/Float.compare(FF)I", statics("compare"));
+        put(m, "java/lang/Float.floatToIntBits(F)I", statics("floatToIntBits"));
+        put(m, "java/lang/Float.floatToRawIntBits(F)I", statics("floatToRawIntBits"));
+        put(m, "java/lang/Float.intBitsToFloat(I)F", statics("intBitsToFloat"));
+        put(m, "java/lang/Float.hashCode(F)I", statics("hashCode"));
+        put(m, "java/lang/Float.toHexString(F)Ljava/lang/String;", statics("toHexString"));
+        put(m, "java/lang/Float.isNaN()Z", instance("isNaN"));
+        put(m, "java/lang/Float.isInfinite()Z", instance("isInfinite"));
+    }
+
+    private static void addNumberMethods5(Map<String, ShimTarget> m) {
+        put(m, "java/lang/Math.floorDiv(II)I", statics("floorDiv"));
+        put(m, "java/lang/Math.floorDiv(JI)J", statics("floorDiv"));
+        put(m, "java/lang/Math.floorDiv(JJ)J", statics("floorDiv"));
+        put(m, "java/lang/Math.floorMod(II)I", statics("floorMod"));
+        put(m, "java/lang/Math.floorMod(JI)I", statics("floorMod"));
+        put(m, "java/lang/Math.floorMod(JJ)J", statics("floorMod"));
+        put(m, "java/lang/Math.addExact(II)I", statics("addExact"));
+        put(m, "java/lang/Math.addExact(JJ)J", statics("addExact"));
+        put(m, "java/lang/Math.subtractExact(II)I", statics("subtractExact"));
+        put(m, "java/lang/Math.subtractExact(JJ)J", statics("subtractExact"));
+        put(m, "java/lang/Math.multiplyExact(II)I", statics("multiplyExact"));
+        put(m, "java/lang/Math.multiplyExact(JI)J", statics("multiplyExact"));
+        put(m, "java/lang/Math.multiplyExact(JJ)J", statics("multiplyExact"));
+        put(m, "java/lang/Math.incrementExact(I)I", statics("incrementExact"));
+        put(m, "java/lang/Math.incrementExact(J)J", statics("incrementExact"));
+        put(m, "java/lang/Math.decrementExact(I)I", statics("decrementExact"));
+        put(m, "java/lang/Math.decrementExact(J)J", statics("decrementExact"));
+        put(m, "java/lang/Math.negateExact(I)I", statics("negateExact"));
+        put(m, "java/lang/Math.negateExact(J)J", statics("negateExact"));
+        put(m, "java/lang/Math.toIntExact(J)I", statics("toIntExact"));
+        put(m, "java/lang/Math.expm1(D)D", statics("expm1"));
+        put(m, "java/lang/Math.log1p(D)D", statics("log1p"));
+        put(m, "java/lang/Math.asin(D)D", statics("asin"));
+        put(m, "java/lang/Math.acos(D)D", statics("acos"));
+        put(m, "java/lang/Math.atan(D)D", statics("atan"));
+        put(m, "java/lang/Math.sinh(D)D", statics("sinh"));
+        put(m, "java/lang/Math.cosh(D)D", statics("cosh"));
+        put(m, "java/lang/Math.tanh(D)D", statics("tanh"));
+        put(m, "java/lang/Math.copySign(DD)D", statics("copySign"));
+        put(m, "java/lang/Math.copySign(FF)F", statics("copySign"));
+        put(m, "java/lang/Math.nextUp(D)D", statics("nextUp"));
+        put(m, "java/lang/Math.nextUp(F)F", statics("nextUp"));
+        put(m, "java/lang/Math.nextDown(D)D", statics("nextDown"));
+        put(m, "java/lang/Math.nextDown(F)F", statics("nextDown"));
+        put(m, "java/lang/Math.nextAfter(DD)D", statics("nextAfter"));
+        put(m, "java/lang/Math.nextAfter(FD)F", statics("nextAfter"));
+        put(m, "java/lang/Math.ulp(D)D", statics("ulp"));
+        put(m, "java/lang/Math.ulp(F)F", statics("ulp"));
+        put(m, "java/lang/Math.scalb(DI)D", statics("scalb"));
+        put(m, "java/lang/Math.scalb(FI)F", statics("scalb"));
+        put(m, "java/lang/Math.getExponent(D)I", statics("getExponent"));
+        put(m, "java/lang/Math.getExponent(F)I", statics("getExponent"));
+        put(m, "java/lang/Math.rint(D)D", statics("rint"));
+        put(m, "java/lang/Math.IEEEremainder(DD)D", statics("IEEEremainder"));
+        put(m, "java/lang/Math.signum(F)F", statics("signum"));
+    }
+
+    private static void addStrictMathMethods0(Map<String, ShimTarget> m) {
+        put(m, "java/lang/StrictMath.abs(I)I", statics("abs"));
+        put(m, "java/lang/StrictMath.abs(J)J", statics("abs"));
+        put(m, "java/lang/StrictMath.abs(F)F", statics("abs"));
+        put(m, "java/lang/StrictMath.abs(D)D", statics("abs"));
+        put(m, "java/lang/StrictMath.max(II)I", statics("max"));
+        put(m, "java/lang/StrictMath.max(JJ)J", statics("max"));
+        put(m, "java/lang/StrictMath.max(FF)F", statics("max"));
+        put(m, "java/lang/StrictMath.max(DD)D", statics("max"));
+        put(m, "java/lang/StrictMath.min(II)I", statics("min"));
+        put(m, "java/lang/StrictMath.min(JJ)J", statics("min"));
+        put(m, "java/lang/StrictMath.min(FF)F", statics("min"));
+        put(m, "java/lang/StrictMath.min(DD)D", statics("min"));
+        put(m, "java/lang/StrictMath.sqrt(D)D", statics("sqrt"));
+        put(m, "java/lang/StrictMath.cbrt(D)D", statics("cbrt"));
+        put(m, "java/lang/StrictMath.pow(DD)D", statics("pow"));
+        put(m, "java/lang/StrictMath.exp(D)D", statics("exp"));
+        put(m, "java/lang/StrictMath.expm1(D)D", statics("expm1"));
+        put(m, "java/lang/StrictMath.log(D)D", statics("log"));
+        put(m, "java/lang/StrictMath.log10(D)D", statics("log10"));
+        put(m, "java/lang/StrictMath.log1p(D)D", statics("log1p"));
+        put(m, "java/lang/StrictMath.sin(D)D", statics("sin"));
+        put(m, "java/lang/StrictMath.cos(D)D", statics("cos"));
+        put(m, "java/lang/StrictMath.tan(D)D", statics("tan"));
+        put(m, "java/lang/StrictMath.asin(D)D", statics("asin"));
+        put(m, "java/lang/StrictMath.acos(D)D", statics("acos"));
+        put(m, "java/lang/StrictMath.atan(D)D", statics("atan"));
+        put(m, "java/lang/StrictMath.atan2(DD)D", statics("atan2"));
+        put(m, "java/lang/StrictMath.sinh(D)D", statics("sinh"));
+        put(m, "java/lang/StrictMath.cosh(D)D", statics("cosh"));
+        put(m, "java/lang/StrictMath.tanh(D)D", statics("tanh"));
+        put(m, "java/lang/StrictMath.toRadians(D)D", statics("toRadians"));
+        put(m, "java/lang/StrictMath.toDegrees(D)D", statics("toDegrees"));
+        put(m, "java/lang/StrictMath.hypot(DD)D", statics("hypot"));
+        put(m, "java/lang/StrictMath.IEEEremainder(DD)D", statics("IEEEremainder"));
+        put(m, "java/lang/StrictMath.floor(D)D", statics("floor"));
+        put(m, "java/lang/StrictMath.ceil(D)D", statics("ceil"));
+        put(m, "java/lang/StrictMath.rint(D)D", statics("rint"));
+        put(m, "java/lang/StrictMath.round(D)J", statics("round"));
+    }
+
+    private static void addStrictMathMethods1(Map<String, ShimTarget> m) {
+        put(m, "java/lang/StrictMath.round(F)I", statics("round"));
+        put(m, "java/lang/StrictMath.random()D", statics("random"));
+        put(m, "java/lang/StrictMath.signum(D)D", statics("signum"));
+        put(m, "java/lang/StrictMath.signum(F)F", statics("signum"));
+        put(m, "java/lang/StrictMath.copySign(DD)D", statics("copySign"));
+        put(m, "java/lang/StrictMath.copySign(FF)F", statics("copySign"));
+        put(m, "java/lang/StrictMath.nextUp(D)D", statics("nextUp"));
+        put(m, "java/lang/StrictMath.nextUp(F)F", statics("nextUp"));
+        put(m, "java/lang/StrictMath.nextDown(D)D", statics("nextDown"));
+        put(m, "java/lang/StrictMath.nextDown(F)F", statics("nextDown"));
+        put(m, "java/lang/StrictMath.nextAfter(DD)D", statics("nextAfter"));
+        put(m, "java/lang/StrictMath.nextAfter(FD)F", statics("nextAfter"));
+        put(m, "java/lang/StrictMath.ulp(D)D", statics("ulp"));
+        put(m, "java/lang/StrictMath.ulp(F)F", statics("ulp"));
+        put(m, "java/lang/StrictMath.scalb(DI)D", statics("scalb"));
+        put(m, "java/lang/StrictMath.scalb(FI)F", statics("scalb"));
+        put(m, "java/lang/StrictMath.getExponent(D)I", statics("getExponent"));
+        put(m, "java/lang/StrictMath.getExponent(F)I", statics("getExponent"));
+        put(m, "java/lang/StrictMath.floorDiv(II)I", statics("floorDiv"));
+        put(m, "java/lang/StrictMath.floorDiv(JI)J", statics("floorDiv"));
+        put(m, "java/lang/StrictMath.floorDiv(JJ)J", statics("floorDiv"));
+        put(m, "java/lang/StrictMath.floorMod(II)I", statics("floorMod"));
+        put(m, "java/lang/StrictMath.floorMod(JI)I", statics("floorMod"));
+        put(m, "java/lang/StrictMath.floorMod(JJ)J", statics("floorMod"));
+        put(m, "java/lang/StrictMath.addExact(II)I", statics("addExact"));
+        put(m, "java/lang/StrictMath.addExact(JJ)J", statics("addExact"));
+        put(m, "java/lang/StrictMath.subtractExact(II)I", statics("subtractExact"));
+        put(m, "java/lang/StrictMath.subtractExact(JJ)J", statics("subtractExact"));
+        put(m, "java/lang/StrictMath.multiplyExact(II)I", statics("multiplyExact"));
+        put(m, "java/lang/StrictMath.multiplyExact(JI)J", statics("multiplyExact"));
+        put(m, "java/lang/StrictMath.multiplyExact(JJ)J", statics("multiplyExact"));
+        put(m, "java/lang/StrictMath.incrementExact(I)I", statics("incrementExact"));
+        put(m, "java/lang/StrictMath.incrementExact(J)J", statics("incrementExact"));
+        put(m, "java/lang/StrictMath.decrementExact(I)I", statics("decrementExact"));
+        put(m, "java/lang/StrictMath.decrementExact(J)J", statics("decrementExact"));
+        put(m, "java/lang/StrictMath.negateExact(I)I", statics("negateExact"));
+        put(m, "java/lang/StrictMath.negateExact(J)J", statics("negateExact"));
+        put(m, "java/lang/StrictMath.toIntExact(J)I", statics("toIntExact"));
+    }
+
+    private static void addTextBuilder0(Map<String, ShimTarget> m) {
+        put(m, "java/lang/StringBuilder.append(I)Ljava/lang/StringBuilder;", instance("append"));
+        put(m, "java/lang/StringBuilder.append(J)Ljava/lang/StringBuilder;", instance("append"));
+        put(m, "java/lang/StringBuilder.append(F)Ljava/lang/StringBuilder;", instance("append"));
+        put(m, "java/lang/StringBuilder.append(D)Ljava/lang/StringBuilder;", instance("append"));
+        put(m, "java/lang/StringBuilder.append(C)Ljava/lang/StringBuilder;", instance("append"));
+        put(m, "java/lang/StringBuilder.append(Z)Ljava/lang/StringBuilder;", instance("append_Z"));
+        put(m, "java/lang/StringBuilder.append(Ljava/lang/String;)Ljava/lang/StringBuilder;", instance("append"));
+        put(m, "java/lang/StringBuilder.append(Ljava/lang/Object;)Ljava/lang/StringBuilder;", instance("append"));
+        put(m, "java/lang/StringBuilder.append([C)Ljava/lang/StringBuilder;", instance("append"));
+        put(m, "java/lang/StringBuilder.append([CII)Ljava/lang/StringBuilder;", instance("append"));
+        put(m, "java/lang/StringBuilder.append(Ljava/lang/CharSequence;)Ljava/lang/StringBuilder;", instance("append"));
+        put(m, "java/lang/StringBuilder.append(Ljava/lang/CharSequence;II)Ljava/lang/StringBuilder;", instance("append"));
+        put(m, "java/lang/StringBuilder.appendCodePoint(I)Ljava/lang/StringBuilder;", instance("appendCodePoint"));
+        put(m, "java/lang/StringBuilder.insert(ILjava/lang/String;)Ljava/lang/StringBuilder;", instance("insert"));
+        put(m, "java/lang/StringBuilder.insert(IC)Ljava/lang/StringBuilder;", instance("insert"));
+        put(m, "java/lang/StringBuilder.insert(II)Ljava/lang/StringBuilder;", instance("insert"));
+        put(m, "java/lang/StringBuilder.insert(IJ)Ljava/lang/StringBuilder;", instance("insert"));
+        put(m, "java/lang/StringBuilder.insert(IF)Ljava/lang/StringBuilder;", instance("insert"));
+        put(m, "java/lang/StringBuilder.insert(ID)Ljava/lang/StringBuilder;", instance("insert"));
+        put(m, "java/lang/StringBuilder.insert(ILjava/lang/Object;)Ljava/lang/StringBuilder;", instance("insert"));
+        put(m, "java/lang/StringBuilder.insert(I[C)Ljava/lang/StringBuilder;", instance("insert"));
+        put(m, "java/lang/StringBuilder.insert(IZ)Ljava/lang/StringBuilder;", instance("insert_Z"));
+        put(m, "java/lang/StringBuilder.insert(I[CII)Ljava/lang/StringBuilder;", instance("insert"));
+        put(m, "java/lang/StringBuilder.insert(ILjava/lang/CharSequence;)Ljava/lang/StringBuilder;", instance("insert"));
+        put(m, "java/lang/StringBuilder.insert(ILjava/lang/CharSequence;II)Ljava/lang/StringBuilder;", instance("insert"));
+        put(m, "java/lang/StringBuilder.delete(II)Ljava/lang/StringBuilder;", instance("delete"));
+        put(m, "java/lang/StringBuilder.deleteCharAt(I)Ljava/lang/StringBuilder;", instance("deleteCharAt"));
+        put(m, "java/lang/StringBuilder.replace(IILjava/lang/String;)Ljava/lang/StringBuilder;", instance("replace"));
+        put(m, "java/lang/StringBuilder.reverse()Ljava/lang/StringBuilder;", instance("reverse"));
+        put(m, "java/lang/StringBuilder.setLength(I)V", instance("setLength"));
+        put(m, "java/lang/StringBuilder.setCharAt(IC)V", instance("setCharAt"));
+        put(m, "java/lang/StringBuilder.charAt(I)C", instance("charAt"));
+        put(m, "java/lang/StringBuilder.length()I", instance("length"));
+        put(m, "java/lang/StringBuilder.capacity()I", instance("capacity"));
+        put(m, "java/lang/StringBuilder.ensureCapacity(I)V", instance("ensureCapacity"));
+        put(m, "java/lang/StringBuilder.trimToSize()V", instance("trimToSize"));
+        put(m, "java/lang/StringBuilder.indexOf(Ljava/lang/String;)I", instance("indexOf"));
+        put(m, "java/lang/StringBuilder.indexOf(Ljava/lang/String;I)I", instance("indexOf"));
+        put(m, "java/lang/StringBuilder.lastIndexOf(Ljava/lang/String;)I", instance("lastIndexOf"));
+        put(m, "java/lang/StringBuilder.lastIndexOf(Ljava/lang/String;I)I", instance("lastIndexOf"));
+        put(m, "java/lang/StringBuilder.substring(I)Ljava/lang/String;", instance("substring"));
+        put(m, "java/lang/StringBuilder.substring(II)Ljava/lang/String;", instance("substring"));
+        put(m, "java/lang/StringBuilder.subSequence(II)Ljava/lang/CharSequence;", instance("subSequence"));
+        put(m, "java/lang/StringBuilder.codePointAt(I)I", instance("codePointAt"));
+        put(m, "java/lang/StringBuilder.getChars(II[CI)V", instance("getChars"));
+        put(m, "java/lang/StringBuilder.toString()Ljava/lang/String;", instance("toString"));
+    }
+
+    private static void addTextBuilder1(Map<String, ShimTarget> m) {
+        put(m, "java/lang/StringBuffer.append(I)Ljava/lang/StringBuffer;", instance("append"));
+        put(m, "java/lang/StringBuffer.append(J)Ljava/lang/StringBuffer;", instance("append"));
+        put(m, "java/lang/StringBuffer.append(F)Ljava/lang/StringBuffer;", instance("append"));
+        put(m, "java/lang/StringBuffer.append(D)Ljava/lang/StringBuffer;", instance("append"));
+        put(m, "java/lang/StringBuffer.append(C)Ljava/lang/StringBuffer;", instance("append"));
+        put(m, "java/lang/StringBuffer.append(Z)Ljava/lang/StringBuffer;", instance("append_Z"));
+        put(m, "java/lang/StringBuffer.append(Ljava/lang/String;)Ljava/lang/StringBuffer;", instance("append"));
+        put(m, "java/lang/StringBuffer.append(Ljava/lang/Object;)Ljava/lang/StringBuffer;", instance("append"));
+        put(m, "java/lang/StringBuffer.append([C)Ljava/lang/StringBuffer;", instance("append"));
+        put(m, "java/lang/StringBuffer.append([CII)Ljava/lang/StringBuffer;", instance("append"));
+        put(m, "java/lang/StringBuffer.append(Ljava/lang/CharSequence;)Ljava/lang/StringBuffer;", instance("append"));
+        put(m, "java/lang/StringBuffer.append(Ljava/lang/CharSequence;II)Ljava/lang/StringBuffer;", instance("append"));
+        put(m, "java/lang/StringBuffer.appendCodePoint(I)Ljava/lang/StringBuffer;", instance("appendCodePoint"));
+        put(m, "java/lang/StringBuffer.insert(ILjava/lang/String;)Ljava/lang/StringBuffer;", instance("insert"));
+        put(m, "java/lang/StringBuffer.insert(IC)Ljava/lang/StringBuffer;", instance("insert"));
+        put(m, "java/lang/StringBuffer.insert(II)Ljava/lang/StringBuffer;", instance("insert"));
+        put(m, "java/lang/StringBuffer.insert(IJ)Ljava/lang/StringBuffer;", instance("insert"));
+        put(m, "java/lang/StringBuffer.insert(IF)Ljava/lang/StringBuffer;", instance("insert"));
+        put(m, "java/lang/StringBuffer.insert(ID)Ljava/lang/StringBuffer;", instance("insert"));
+        put(m, "java/lang/StringBuffer.insert(ILjava/lang/Object;)Ljava/lang/StringBuffer;", instance("insert"));
+        put(m, "java/lang/StringBuffer.insert(I[C)Ljava/lang/StringBuffer;", instance("insert"));
+        put(m, "java/lang/StringBuffer.insert(IZ)Ljava/lang/StringBuffer;", instance("insert_Z"));
+        put(m, "java/lang/StringBuffer.insert(I[CII)Ljava/lang/StringBuffer;", instance("insert"));
+        put(m, "java/lang/StringBuffer.insert(ILjava/lang/CharSequence;)Ljava/lang/StringBuffer;", instance("insert"));
+        put(m, "java/lang/StringBuffer.insert(ILjava/lang/CharSequence;II)Ljava/lang/StringBuffer;", instance("insert"));
+        put(m, "java/lang/StringBuffer.delete(II)Ljava/lang/StringBuffer;", instance("delete"));
+        put(m, "java/lang/StringBuffer.deleteCharAt(I)Ljava/lang/StringBuffer;", instance("deleteCharAt"));
+        put(m, "java/lang/StringBuffer.replace(IILjava/lang/String;)Ljava/lang/StringBuffer;", instance("replace"));
+        put(m, "java/lang/StringBuffer.reverse()Ljava/lang/StringBuffer;", instance("reverse"));
+        put(m, "java/lang/StringBuffer.setLength(I)V", instance("setLength"));
+        put(m, "java/lang/StringBuffer.setCharAt(IC)V", instance("setCharAt"));
+        put(m, "java/lang/StringBuffer.charAt(I)C", instance("charAt"));
+        put(m, "java/lang/StringBuffer.length()I", instance("length"));
+        put(m, "java/lang/StringBuffer.capacity()I", instance("capacity"));
+        put(m, "java/lang/StringBuffer.ensureCapacity(I)V", instance("ensureCapacity"));
+        put(m, "java/lang/StringBuffer.trimToSize()V", instance("trimToSize"));
+        put(m, "java/lang/StringBuffer.indexOf(Ljava/lang/String;)I", instance("indexOf"));
+        put(m, "java/lang/StringBuffer.indexOf(Ljava/lang/String;I)I", instance("indexOf"));
+        put(m, "java/lang/StringBuffer.lastIndexOf(Ljava/lang/String;)I", instance("lastIndexOf"));
+        put(m, "java/lang/StringBuffer.lastIndexOf(Ljava/lang/String;I)I", instance("lastIndexOf"));
+        put(m, "java/lang/StringBuffer.substring(I)Ljava/lang/String;", instance("substring"));
+        put(m, "java/lang/StringBuffer.substring(II)Ljava/lang/String;", instance("substring"));
+        put(m, "java/lang/StringBuffer.subSequence(II)Ljava/lang/CharSequence;", instance("subSequence"));
+        put(m, "java/lang/StringBuffer.codePointAt(I)I", instance("codePointAt"));
+        put(m, "java/lang/StringBuffer.getChars(II[CI)V", instance("getChars"));
+        put(m, "java/lang/StringBuffer.toString()Ljava/lang/String;", instance("toString"));
+    }
+
+    private static void addTextString0(Map<String, ShimTarget> m) {
+        put(m, "java/lang/String.valueOf([CII)Ljava/lang/String;", statics("valueOf"));
+        put(m, "java/lang/String.copyValueOf([C)Ljava/lang/String;", statics("copyValueOf"));
+        put(m, "java/lang/String.copyValueOf([CII)Ljava/lang/String;", statics("copyValueOf"));
+        put(m, "java/lang/String.join(Ljava/lang/CharSequence;Ljava/lang/Iterable;)Ljava/lang/String;", statics("join"));
+        put(m, "java/lang/String.intern()Ljava/lang/String;", instance("intern"));
+        put(m, "java/lang/String.codePointAt(I)I", instance("codePointAt"));
+        put(m, "java/lang/String.codePointBefore(I)I", instance("codePointBefore"));
+        put(m, "java/lang/String.codePointCount(II)I", instance("codePointCount"));
+        put(m, "java/lang/String.offsetByCodePoints(II)I", instance("offsetByCodePoints"));
+        put(m, "java/lang/String.regionMatches(ILjava/lang/String;II)Z", instance("regionMatches"));
+        put(m, "java/lang/String.regionMatches(ZILjava/lang/String;II)Z", instance("regionMatches"));
+        put(m, "java/lang/String.contentEquals(Ljava/lang/CharSequence;)Z", instance("contentEquals"));
+        put(m, "java/lang/String.contentEquals(Ljava/lang/StringBuffer;)Z", instance("contentEquals"));
+        put(m, "java/lang/String.getChars(II[CI)V", instance("getChars"));
+        put(m, "java/lang/String.indent(I)Ljava/lang/String;", instance("indent"));
+        put(m, "java/lang/String.stripIndent()Ljava/lang/String;", instance("stripIndent"));
+        put(m, "java/lang/String.translateEscapes()Ljava/lang/String;", instance("translateEscapes"));
+    }
+
+    private static void addTextChar0(Map<String, ShimTarget> m) {
+        put(m, "java/lang/Character.isSpaceChar(C)Z", statics("isSpaceChar"));
+        put(m, "java/lang/Character.isAlphabetic(I)Z", statics("isAlphabetic"));
+        put(m, "java/lang/Character.forDigit(II)C", statics("forDigit"));
+        put(m, "java/lang/Character.isJavaIdentifierStart(C)Z", statics("isJavaIdentifierStart"));
+        put(m, "java/lang/Character.isJavaIdentifierPart(C)Z", statics("isJavaIdentifierPart"));
+        put(m, "java/lang/Character.compare(CC)I", statics("compare"));
+        put(m, "java/lang/Character.hashCode(C)I", statics("hashCode"));
+        put(m, "java/lang/Character.charCount(I)I", statics("charCount"));
+        put(m, "java/lang/Character.toString(I)Ljava/lang/String;", statics("toString"));
+        put(m, "java/lang/Character.isSurrogate(C)Z", statics("isSurrogate"));
+        put(m, "java/lang/Character.isHighSurrogate(C)Z", statics("isHighSurrogate"));
+        put(m, "java/lang/Character.isLowSurrogate(C)Z", statics("isLowSurrogate"));
+        put(m, "java/lang/Character.toChars(I)[C", statics("toChars"));
+    }
+
+    private static void addTextJoiner0(Map<String, ShimTarget> m) {
+        put(m, "java/util/StringJoiner.add(Ljava/lang/CharSequence;)Ljava/util/StringJoiner;", instance("add"));
+        put(m, "java/util/StringJoiner.toString()Ljava/lang/String;", instance("toString"));
+        put(m, "java/util/StringJoiner.length()I", instance("length"));
+        put(m, "java/util/StringJoiner.setEmptyValue(Ljava/lang/CharSequence;)Ljava/util/StringJoiner;", instance("setEmptyValue"));
+        put(m, "java/util/StringJoiner.merge(Ljava/util/StringJoiner;)Ljava/util/StringJoiner;", instance("merge"));
+    }
+
+    private static void addArraysGaps0(Map<String, ShimTarget> m) {
+        put(m, "java/util/Arrays.toString([F)Ljava/lang/String;", statics("toString"));
+        put(m, "java/util/Arrays.toString([B)Ljava/lang/String;", statics("toString"));
+        put(m, "java/util/Arrays.toString([S)Ljava/lang/String;", statics("toString"));
+        put(m, "java/util/Arrays.hashCode([I)I", statics("hashCode"));
+        put(m, "java/util/Arrays.hashCode([J)I", statics("hashCode"));
+        put(m, "java/util/Arrays.hashCode([D)I", statics("hashCode"));
+        put(m, "java/util/Arrays.hashCode([C)I", statics("hashCode"));
+        put(m, "java/util/Arrays.hashCode([B)I", statics("hashCode"));
+        put(m, "java/util/Arrays.hashCode([S)I", statics("hashCode"));
+        put(m, "java/util/Arrays.hashCode([F)I", statics("hashCode"));
+        put(m, "java/util/Arrays.hashCode([Ljava/lang/Object;)I", statics("hashCode"));
+        put(m, "java/util/Arrays.fill([DD)V", statics("fill"));
+        put(m, "java/util/Arrays.fill([FF)V", statics("fill"));
+        put(m, "java/util/Arrays.fill([BB)V", statics("fill"));
+        put(m, "java/util/Arrays.fill([SS)V", statics("fill"));
+        put(m, "java/util/Arrays.sort([F)V", statics("sort"));
+        put(m, "java/util/Arrays.sort([B)V", statics("sort"));
+        put(m, "java/util/Arrays.sort([S)V", statics("sort"));
+        put(m, "java/util/Arrays.stream([J)Ljava/util/stream/LongStream;", statics("stream"));
+        put(m, "java/util/Arrays.stream([D)Ljava/util/stream/DoubleStream;", statics("stream"));
+    }
+
+    private static void addArraysGaps1(Map<String, ShimTarget> m) {
+        put(m, "java/util/Arrays.copyOf([JI)[J", statics("copyOf"));
+        put(m, "java/util/Arrays.copyOf([DI)[D", statics("copyOf"));
+        put(m, "java/util/Arrays.copyOf([CI)[C", statics("copyOf"));
+        put(m, "java/util/Arrays.copyOf([BI)[B", statics("copyOf"));
+        put(m, "java/util/Arrays.copyOf([SI)[S", statics("copyOf"));
+        put(m, "java/util/Arrays.copyOf([FI)[F", statics("copyOf"));
+        put(m, "java/util/Arrays.copyOfRange([JII)[J", statics("copyOfRange"));
+        put(m, "java/util/Arrays.copyOfRange([DII)[D", statics("copyOfRange"));
+        put(m, "java/util/Arrays.copyOfRange([CII)[C", statics("copyOfRange"));
+        put(m, "java/util/Arrays.equals([J[J)Z", statics("equals"));
+        put(m, "java/util/Arrays.equals([D[D)Z", statics("equals"));
+        put(m, "java/util/Arrays.equals([C[C)Z", statics("equals"));
+        put(m, "java/util/Arrays.equals([B[B)Z", statics("equals"));
+        put(m, "java/util/Arrays.equals([S[S)Z", statics("equals"));
+        put(m, "java/util/Arrays.equals([F[F)Z", statics("equals"));
+        put(m, "java/util/Arrays.binarySearch([JJ)I", statics("binarySearch"));
+        put(m, "java/util/Arrays.binarySearch([DD)I", statics("binarySearch"));
+        put(m, "java/util/Arrays.binarySearch([CC)I", statics("binarySearch"));
+        put(m, "java/util/Arrays.binarySearch([Ljava/lang/Object;Ljava/lang/Object;)I", statics("binarySearch"));
+        put(m, "java/util/Arrays.binarySearch([Ljava/lang/Object;Ljava/lang/Object;Ljava/util/Comparator;)I", statics("binarySearch"));
+    }
+
+    private static void addArraysGaps2(Map<String, ShimTarget> m) {
+        put(m, "java/util/Arrays.deepToString([Ljava/lang/Object;)Ljava/lang/String;", statics("deepToString"));
+        put(m, "java/util/Arrays.deepEquals([Ljava/lang/Object;[Ljava/lang/Object;)Z", statics("deepEquals"));
+        put(m, "java/util/Arrays.deepHashCode([Ljava/lang/Object;)I", statics("deepHashCode"));
+        put(m, "java/util/Arrays.setAll([Ljava/lang/Object;Ljava/util/function/IntFunction;)V", statics("setAll"));
+    }
+
+    private static void addCollectionsGaps0(Map<String, ShimTarget> m) {
+        put(m, "java/util/Collections.swap(Ljava/util/List;II)V", statics("swap"));
+        put(m, "java/util/Collections.shuffle(Ljava/util/List;Ljava/util/Random;)V", statics("shuffle"));
+        put(m, "java/util/Collections.shuffle(Ljava/util/List;)V", statics("shuffle"));
+        put(m, "java/util/Collections.binarySearch(Ljava/util/List;Ljava/lang/Object;)I", statics("binarySearch"));
+        put(m, "java/util/Collections.binarySearch(Ljava/util/List;Ljava/lang/Object;Ljava/util/Comparator;)I", statics("binarySearch"));
+        put(m, "java/util/Collections.rotate(Ljava/util/List;I)V", statics("rotate"));
+        put(m, "java/util/Collections.nCopies(ILjava/lang/Object;)Ljava/util/List;", statics("nCopies"));
+        put(m, "java/util/Collections.addAll(Ljava/util/Collection;[Ljava/lang/Object;)Z", statics("addAll"));
+        put(m, "java/util/Collections.disjoint(Ljava/util/Collection;Ljava/util/Collection;)Z", statics("disjoint"));
+        put(m, "java/util/Collections.fill(Ljava/util/List;Ljava/lang/Object;)V", statics("fill"));
+        put(m, "java/util/Collections.replaceAll(Ljava/util/List;Ljava/lang/Object;Ljava/lang/Object;)Z", statics("replaceAll"));
+        put(m, "java/util/Collections.copy(Ljava/util/List;Ljava/util/List;)V", statics("copy"));
+        put(m, "java/util/Collections.singleton(Ljava/lang/Object;)Ljava/util/Set;", statics("singleton"));
+        put(m, "java/util/Collections.singletonMap(Ljava/lang/Object;Ljava/lang/Object;)Ljava/util/Map;", statics("singletonMap"));
+        put(m, "java/util/Collections.synchronizedList(Ljava/util/List;)Ljava/util/List;", statics("synchronizedList"));
+        put(m, "java/util/Collections.synchronizedSet(Ljava/util/Set;)Ljava/util/Set;", statics("synchronizedSet"));
+        put(m, "java/util/Collections.synchronizedMap(Ljava/util/Map;)Ljava/util/Map;", statics("synchronizedMap"));
+        put(m, "java/util/Collections.synchronizedCollection(Ljava/util/Collection;)Ljava/util/Collection;", statics("synchronizedCollection"));
+        put(m, "java/util/Collections.reverseOrder()Ljava/util/Comparator;", statics("reverseOrder"));
+        put(m, "java/util/Collections.reverseOrder(Ljava/util/Comparator;)Ljava/util/Comparator;", statics("reverseOrder"));
+    }
+
+    private static void addMiscGaps0(Map<String, ShimTarget> m) {
+        put(m, "java/util/concurrent/ThreadLocalRandom.current()Ljava/util/concurrent/ThreadLocalRandom;", statics("current"));
+        put(m, "java/util/concurrent/ThreadLocalRandom.nextInt()I", instance("nextInt"));
+        put(m, "java/util/concurrent/ThreadLocalRandom.nextInt(I)I", instance("nextInt"));
+        put(m, "java/util/concurrent/ThreadLocalRandom.nextInt(II)I", instance("nextInt"));
+        put(m, "java/util/concurrent/ThreadLocalRandom.nextLong()J", instance("nextLong"));
+        put(m, "java/util/concurrent/ThreadLocalRandom.nextLong(J)J", instance("nextLong"));
+        put(m, "java/util/concurrent/ThreadLocalRandom.nextDouble()D", instance("nextDouble"));
+        put(m, "java/util/concurrent/ThreadLocalRandom.nextDouble(D)D", instance("nextDouble"));
+        put(m, "java/util/concurrent/ThreadLocalRandom.nextFloat()F", instance("nextFloat"));
+        put(m, "java/util/concurrent/ThreadLocalRandom.nextBoolean()Z", instance("nextBoolean"));
+        put(m, "java/util/Formatter.format(Ljava/lang/String;[Ljava/lang/Object;)Ljava/util/Formatter;", instance("format"));
+        put(m, "java/util/Formatter.toString()Ljava/lang/String;", instance("toString"));
+        put(m, "java/util/Formatter.close()V", instance("close"));
+        put(m, "java/util/Formatter.flush()V", instance("flush"));
+        put(m, "java/util/Currency.getInstance(Ljava/lang/String;)Ljava/util/Currency;", statics("getInstance"));
+        put(m, "java/util/Currency.getCurrencyCode()Ljava/lang/String;", instance("getCurrencyCode"));
+        put(m, "java/util/Currency.getDefaultFractionDigits()I", instance("getDefaultFractionDigits"));
+        put(m, "java/util/Currency.getNumericCode()I", instance("getNumericCode"));
+        put(m, "java/util/Currency.toString()Ljava/lang/String;", instance("toString"));
+    }
+
+    private static void addMiscGaps1(Map<String, ShimTarget> m) {
+        put(m, "java/util/concurrent/atomic/AtomicIntegerArray.length()I", instance("length"));
+        put(m, "java/util/concurrent/atomic/AtomicIntegerArray.get(I)I", instance("get"));
+        put(m, "java/util/concurrent/atomic/AtomicIntegerArray.set(II)V", instance("set"));
+        put(m, "java/util/concurrent/atomic/AtomicIntegerArray.getAndSet(II)I", instance("getAndSet"));
+        put(m, "java/util/concurrent/atomic/AtomicIntegerArray.incrementAndGet(I)I", instance("incrementAndGet"));
+        put(m, "java/util/concurrent/atomic/AtomicIntegerArray.decrementAndGet(I)I", instance("decrementAndGet"));
+        put(m, "java/util/concurrent/atomic/AtomicIntegerArray.getAndIncrement(I)I", instance("getAndIncrement"));
+        put(m, "java/util/concurrent/atomic/AtomicIntegerArray.getAndDecrement(I)I", instance("getAndDecrement"));
+        put(m, "java/util/concurrent/atomic/AtomicIntegerArray.addAndGet(II)I", instance("addAndGet"));
+        put(m, "java/util/concurrent/atomic/AtomicIntegerArray.getAndAdd(II)I", instance("getAndAdd"));
+        put(m, "java/util/concurrent/atomic/AtomicIntegerArray.compareAndSet(III)Z", instance("compareAndSet"));
+        put(m, "java/util/concurrent/atomic/AtomicIntegerArray.toString()Ljava/lang/String;", instance("toString"));
+        put(m, "java/util/concurrent/atomic/AtomicLongArray.length()I", instance("length"));
+        put(m, "java/util/concurrent/atomic/AtomicLongArray.get(I)J", instance("get"));
+        put(m, "java/util/concurrent/atomic/AtomicLongArray.set(IJ)V", instance("set"));
+        put(m, "java/util/concurrent/atomic/AtomicLongArray.getAndSet(IJ)J", instance("getAndSet"));
+        put(m, "java/util/concurrent/atomic/AtomicLongArray.incrementAndGet(I)J", instance("incrementAndGet"));
+        put(m, "java/util/concurrent/atomic/AtomicLongArray.decrementAndGet(I)J", instance("decrementAndGet"));
+        put(m, "java/util/concurrent/atomic/AtomicLongArray.getAndIncrement(I)J", instance("getAndIncrement"));
+        put(m, "java/util/concurrent/atomic/AtomicLongArray.getAndDecrement(I)J", instance("getAndDecrement"));
+        put(m, "java/util/concurrent/atomic/AtomicLongArray.addAndGet(IJ)J", instance("addAndGet"));
+        put(m, "java/util/concurrent/atomic/AtomicLongArray.getAndAdd(IJ)J", instance("getAndAdd"));
+        put(m, "java/util/concurrent/atomic/AtomicLongArray.compareAndSet(IJJ)Z", instance("compareAndSet"));
+        put(m, "java/util/concurrent/atomic/AtomicLongArray.toString()Ljava/lang/String;", instance("toString"));
+        put(m, "java/util/concurrent/atomic/AtomicReferenceArray.length()I", instance("length"));
+        put(m, "java/util/concurrent/atomic/AtomicReferenceArray.get(I)Ljava/lang/Object;", instance("get"));
+        put(m, "java/util/concurrent/atomic/AtomicReferenceArray.set(ILjava/lang/Object;)V", instance("set"));
+        put(m, "java/util/concurrent/atomic/AtomicReferenceArray.getAndSet(ILjava/lang/Object;)Ljava/lang/Object;", instance("getAndSet"));
+        put(m, "java/util/concurrent/atomic/AtomicReferenceArray.compareAndSet(ILjava/lang/Object;Ljava/lang/Object;)Z", instance("compareAndSet"));
+        put(m, "java/util/concurrent/atomic/AtomicReferenceArray.toString()Ljava/lang/String;", instance("toString"));
     }
 
     private static void addIoMethods0(Map<String, ShimTarget> m) {
@@ -920,30 +1473,6 @@ public final class ShimRegistry {
 
 
     private static void addLangMethods1(Map<String, ShimTarget> m) {
-        put(m, "java/lang/StringBuilder.append(I)Ljava/lang/StringBuilder;", instance("append"));
-        put(m, "java/lang/StringBuilder.append(J)Ljava/lang/StringBuilder;", instance("append"));
-        put(m, "java/lang/StringBuilder.append(F)Ljava/lang/StringBuilder;", instance("append"));
-        put(m, "java/lang/StringBuilder.append(D)Ljava/lang/StringBuilder;", instance("append"));
-        put(m, "java/lang/StringBuilder.append(C)Ljava/lang/StringBuilder;", instance("append"));
-        put(m, "java/lang/StringBuilder.append(Z)Ljava/lang/StringBuilder;", instance("append_Z"));
-        put(m, "java/lang/StringBuilder.append(Ljava/lang/String;)Ljava/lang/StringBuilder;", instance("append"));
-        put(m, "java/lang/StringBuilder.append(Ljava/lang/Object;)Ljava/lang/StringBuilder;", instance("append"));
-        put(m, "java/lang/StringBuilder.append([C)Ljava/lang/StringBuilder;", instance("append"));
-        put(m, "java/lang/StringBuilder.append(Ljava/lang/CharSequence;)Ljava/lang/StringBuilder;", instance("append"));
-        put(m, "java/lang/StringBuilder.insert(ILjava/lang/String;)Ljava/lang/StringBuilder;", instance("insert"));
-        put(m, "java/lang/StringBuilder.insert(IC)Ljava/lang/StringBuilder;", instance("insert"));
-        put(m, "java/lang/StringBuilder.insert(II)Ljava/lang/StringBuilder;", instance("insert"));
-        put(m, "java/lang/StringBuilder.insert(ILjava/lang/Object;)Ljava/lang/StringBuilder;", instance("insert"));
-        put(m, "java/lang/StringBuilder.reverse()Ljava/lang/StringBuilder;", instance("reverse"));
-        put(m, "java/lang/StringBuilder.deleteCharAt(I)Ljava/lang/StringBuilder;", instance("deleteCharAt"));
-        put(m, "java/lang/StringBuilder.delete(II)Ljava/lang/StringBuilder;", instance("delete"));
-        put(m, "java/lang/StringBuilder.replace(IILjava/lang/String;)Ljava/lang/StringBuilder;", instance("replace"));
-        put(m, "java/lang/StringBuilder.setLength(I)V", instance("setLength"));
-        put(m, "java/lang/StringBuilder.charAt(I)C", instance("charAt"));
-        put(m, "java/lang/StringBuilder.setCharAt(IC)V", instance("setCharAt"));
-        put(m, "java/lang/StringBuilder.indexOf(Ljava/lang/String;)I", instance("indexOf"));
-        put(m, "java/lang/StringBuilder.length()I", instance("length"));
-        put(m, "java/lang/StringBuilder.toString()Ljava/lang/String;", instance("toString"));
         put(m, "java/lang/String.substring(I)Ljava/lang/String;", instance("substring"));
         put(m, "java/lang/String.substring(II)Ljava/lang/String;", instance("substring"));
         put(m, "java/lang/String.indexOf(I)I", instance("indexOf"));
@@ -1706,17 +2235,10 @@ public final class ShimRegistry {
         put(m, "java/util/List.sort(Ljava/util/Comparator;)V", instance("sort"));
     }
 
-    private static void addLangMethods10(Map<String, ShimTarget> m) {
-        put(m, "java/lang/StringBuffer.append(Ljava/lang/String;)Ljava/lang/StringBuffer;", instance("append"));
-        put(m, "java/lang/StringBuffer.append(I)Ljava/lang/StringBuffer;", instance("append"));
-        put(m, "java/lang/StringBuffer.append(Ljava/lang/Object;)Ljava/lang/StringBuffer;", instance("append"));
-        put(m, "java/lang/StringBuffer.length()I", instance("length"));
-        put(m, "java/lang/StringBuffer.toString()Ljava/lang/String;", instance("toString"));
-    }
 
     private static void addUtilMethods6(Map<String, ShimTarget> m) {
         put(m, "java/util/Objects.requireNonNull(Ljava/lang/Object;)Ljava/lang/Object;", statics("requireNonNull"));
-        put(m, "java/util/Iterable.iterator()Ljava/util/Iterator;", instance("iterator"));
+        put(m, "java/lang/Iterable.iterator()Ljava/util/Iterator;", instance("iterator"));
         put(m, "java/util/Iterator.hasNext()Z", instance("hasNext"));
         put(m, "java/util/Iterator.next()Ljava/lang/Object;", instance("next"));
         put(m, "java/util/Queue.offer(Ljava/lang/Object;)Z", instance("offer"));
@@ -2645,6 +3167,7 @@ public final class ShimRegistry {
     private static Map<String, ShimTarget> buildFields() {
         Map<String, ShimTarget> m = new java.util.HashMap<>(256);
         addLangFields0(m);
+        addNumberFields0(m);
         addConcurrentFields0(m);
         addTimeFields0(m);
         addNioFields0(m);
@@ -2669,6 +3192,28 @@ public final class ShimRegistry {
         put(m, "java/lang/Boolean.TYPE Ljava/lang/Class;", statics("TYPE"));
         put(m, "java/lang/Void.TYPE Ljava/lang/Class;", statics("TYPE"));
         put(m, "java/lang/System.err Ljava/io/PrintStream;", statics("err"));
+    }
+
+    private static void addNumberFields0(Map<String, ShimTarget> m) {
+        put(m, "java/lang/Short.SIZE I", statics("SIZE"));
+        put(m, "java/lang/Short.BYTES I", statics("BYTES"));
+        put(m, "java/lang/Byte.SIZE I", statics("SIZE"));
+        put(m, "java/lang/Byte.BYTES I", statics("BYTES"));
+        put(m, "java/lang/Double.SIZE I", statics("SIZE"));
+        put(m, "java/lang/Double.BYTES I", statics("BYTES"));
+        put(m, "java/lang/Double.MIN_NORMAL D", statics("MIN_NORMAL"));
+        put(m, "java/lang/Double.MAX_EXPONENT I", statics("MAX_EXPONENT"));
+        put(m, "java/lang/Double.MIN_EXPONENT I", statics("MIN_EXPONENT"));
+        put(m, "java/lang/Float.SIZE I", statics("SIZE"));
+        put(m, "java/lang/Float.BYTES I", statics("BYTES"));
+        put(m, "java/lang/Float.MIN_NORMAL F", statics("MIN_NORMAL"));
+        put(m, "java/lang/Float.MAX_EXPONENT I", statics("MAX_EXPONENT"));
+        put(m, "java/lang/Float.MIN_EXPONENT I", statics("MIN_EXPONENT"));
+        put(m, "java/lang/Float.POSITIVE_INFINITY F", statics("POSITIVE_INFINITY"));
+        put(m, "java/lang/Float.NEGATIVE_INFINITY F", statics("NEGATIVE_INFINITY"));
+        put(m, "java/lang/Float.NaN F", statics("NaN"));
+        put(m, "java/lang/StrictMath.PI D", statics("PI"));
+        put(m, "java/lang/StrictMath.E D", statics("E"));
     }
 
     private static void addConcurrentFields0(Map<String, ShimTarget> m) {
