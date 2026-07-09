@@ -1,6 +1,6 @@
 namespace java.util
 {
-    public class TreeMap : HashMap
+    public class TreeMap : HashMap, SortedMap
     {
         public TreeMap(global::java.lang.RawNew r) : base(r)
         {
@@ -53,6 +53,33 @@ namespace java.util
         {
             foreach (var k in SortedKeys()) { if (JCollections.NaturalCompare(k, key) > 0) { return k; } }
             return null;
+        }
+
+        public SortedMap headMap(global::java.lang.Object toKey)
+        {
+            var r = new TreeMap(global::java.lang.RawNew.I);
+            r.__init__V();
+            foreach (var k in SortedKeys()) { if (JCollections.NaturalCompare(k, toKey) < 0) { r.put(k, get(k)); } }
+            return r;
+        }
+
+        public SortedMap tailMap(global::java.lang.Object fromKey)
+        {
+            var r = new TreeMap(global::java.lang.RawNew.I);
+            r.__init__V();
+            foreach (var k in SortedKeys()) { if (JCollections.NaturalCompare(k, fromKey) >= 0) { r.put(k, get(k)); } }
+            return r;
+        }
+
+        public SortedMap subMap(global::java.lang.Object fromKey, global::java.lang.Object toKey)
+        {
+            var r = new TreeMap(global::java.lang.RawNew.I);
+            r.__init__V();
+            foreach (var k in SortedKeys())
+            {
+                if (JCollections.NaturalCompare(k, fromKey) >= 0 && JCollections.NaturalCompare(k, toKey) < 0) { r.put(k, get(k)); }
+            }
+            return r;
         }
     }
 }

@@ -2,7 +2,7 @@ namespace java.util
 {
     /// <summary>Sorted set backed by an ordered list (Comparator or natural ordering), so iteration
     /// and toString are in ascending order like Java's TreeSet.</summary>
-    public class TreeSet : global::java.lang.Object, Set
+    public class TreeSet : global::java.lang.Object, SortedSet
     {
         private readonly global::System.Collections.Generic.List<global::java.lang.Object> items =
                 new global::System.Collections.Generic.List<global::java.lang.Object>();
@@ -118,6 +118,35 @@ namespace java.util
         {
             foreach (var x in items) { if (Cmp(x, e) > 0) { return x; } }
             return null;
+        }
+
+        private TreeSet EmptyLike()
+        {
+            var r = new TreeSet(global::java.lang.RawNew.I);
+            r.__init__V();
+            r.comparator = comparator;
+            return r;
+        }
+
+        public SortedSet headSet(global::java.lang.Object toElement)
+        {
+            var r = EmptyLike();
+            foreach (var x in items) { if (Cmp(x, toElement) < 0) { r.add(x); } }
+            return r;
+        }
+
+        public SortedSet tailSet(global::java.lang.Object fromElement)
+        {
+            var r = EmptyLike();
+            foreach (var x in items) { if (Cmp(x, fromElement) >= 0) { r.add(x); } }
+            return r;
+        }
+
+        public SortedSet subSet(global::java.lang.Object fromElement, global::java.lang.Object toElement)
+        {
+            var r = EmptyLike();
+            foreach (var x in items) { if (Cmp(x, fromElement) >= 0 && Cmp(x, toElement) < 0) { r.add(x); } }
+            return r;
         }
 
         public Iterator iterator()

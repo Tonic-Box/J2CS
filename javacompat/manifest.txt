@@ -106,6 +106,7 @@ java.lang.StringBuffer.cs
 java.lang.StringBuilder.cs
 java.lang.System.cs
 java.lang.Thread.cs
+java.lang.ThreadLocal.cs
 java.lang.Throwable.cs
 java.lang.Void.cs
 java.lang.annotation.Annotation.cs
@@ -204,6 +205,8 @@ java.util.Queue.cs
 java.util.Random.cs
 java.util.Scanner.cs
 java.util.Set.cs
+java.util.SortedMap.cs
+java.util.SortedSet.cs
 java.util.Stack.cs
 java.util.StringTokenizer.cs
 java.util.TimeZone.cs

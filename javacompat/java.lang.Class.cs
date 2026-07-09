@@ -158,6 +158,33 @@ namespace java.lang
             return meta != null && meta.SuperName != null ? Of(meta.SuperName) : null;
         }
 
+        public global::java.lang.Object[] getEnumConstants()
+        {
+            if (type == null)
+            {
+                return null;
+            }
+            var mi = type.GetMethod("values",
+                    global::System.Reflection.BindingFlags.Static | global::System.Reflection.BindingFlags.Public
+                            | global::System.Reflection.BindingFlags.NonPublic,
+                    null, global::System.Type.EmptyTypes, null);
+            if (mi == null)
+            {
+                return null;
+            }
+            var arr = mi.Invoke(null, null) as global::System.Array;
+            if (arr == null)
+            {
+                return null;
+            }
+            var r = new global::java.lang.Object[arr.Length];
+            for (int i = 0; i < arr.Length; i++)
+            {
+                r[i] = (global::java.lang.Object)arr.GetValue(i);
+            }
+            return r;
+        }
+
         public global::java.lang.reflect.Field[] getDeclaredFields()
         {
             return meta != null ? meta.Fields() : global::System.Array.Empty<global::java.lang.reflect.Field>();

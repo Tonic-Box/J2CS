@@ -97,7 +97,10 @@ public final class ShimRegistry {
         put(m, "java/util/Map$Entry", "java/lang/Object");
         put(m, "java/util/HashMap", "java/util/Map");
         put(m, "java/util/HashSet", "java/util/Set");
-        put(m, "java/util/TreeSet", "java/util/Set");
+        put(m, "java/util/TreeSet", "java/util/SortedSet");
+        put(m, "java/util/SortedSet", "java/util/Set");
+        put(m, "java/util/SortedMap", "java/util/Map");
+        put(m, "java/lang/ThreadLocal", "java/lang/Object");
         put(m, "java/util/Queue", "java/util/Collection");
         put(m, "java/util/Deque", "java/util/Queue");
         put(m, "java/util/ArrayDeque", "java/util/Deque");
@@ -561,6 +564,7 @@ public final class ShimRegistry {
         addUtilColMethods0(m);
         addEnumStrMethods0(m);
         addConcurrentMethods2(m);
+        addNavEnumMethods0(m);
         addLangMethods1(m);
         addLangMethods2(m);
         addLangMethods3(m);
@@ -2403,6 +2407,23 @@ public final class ShimRegistry {
         put(m, "java/util/concurrent/CyclicBarrier.await()I", instance("await"));
         put(m, "java/util/concurrent/CyclicBarrier.getParties()I", instance("getParties"));
         put(m, "java/util/concurrent/CyclicBarrier.getNumberWaiting()I", instance("getNumberWaiting"));
+    }
+
+    private static void addNavEnumMethods0(Map<String, ShimTarget> m) {
+        put(m, "java/lang/Class.getEnumConstants()[Ljava/lang/Object;", instance("getEnumConstants"));
+        put(m, "java/util/EnumSet.allOf(Ljava/lang/Class;)Ljava/util/EnumSet;", statics("allOf"));
+        put(m, "java/util/EnumSet.range(Ljava/lang/Enum;Ljava/lang/Enum;)Ljava/util/EnumSet;", statics("range"));
+        put(m, "java/lang/ThreadLocal.withInitial(Ljava/util/function/Supplier;)Ljava/lang/ThreadLocal;", statics("withInitial"));
+        put(m, "java/lang/ThreadLocal.get()Ljava/lang/Object;", instance("get"));
+        put(m, "java/lang/ThreadLocal.set(Ljava/lang/Object;)V", instance("set"));
+        put(m, "java/lang/ThreadLocal.remove()V", instance("remove"));
+        put(m, "java/lang/ThreadLocal.initialValue()Ljava/lang/Object;", instance("initialValue"));
+        put(m, "java/util/TreeSet.headSet(Ljava/lang/Object;)Ljava/util/SortedSet;", instance("headSet"));
+        put(m, "java/util/TreeSet.tailSet(Ljava/lang/Object;)Ljava/util/SortedSet;", instance("tailSet"));
+        put(m, "java/util/TreeSet.subSet(Ljava/lang/Object;Ljava/lang/Object;)Ljava/util/SortedSet;", instance("subSet"));
+        put(m, "java/util/TreeMap.headMap(Ljava/lang/Object;)Ljava/util/SortedMap;", instance("headMap"));
+        put(m, "java/util/TreeMap.tailMap(Ljava/lang/Object;)Ljava/util/SortedMap;", instance("tailMap"));
+        put(m, "java/util/TreeMap.subMap(Ljava/lang/Object;Ljava/lang/Object;)Ljava/util/SortedMap;", instance("subMap"));
     }
 
     private static Map<String, ShimTarget> buildFields() {

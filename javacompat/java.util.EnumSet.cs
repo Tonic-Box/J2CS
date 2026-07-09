@@ -54,6 +54,31 @@ namespace java.util
 
         public static EnumSet noneOf(global::java.lang.Class elementType) { return new EnumSet(global::java.lang.RawNew.I); }
 
+        public static EnumSet allOf(global::java.lang.Class elementType)
+        {
+            var s = new EnumSet(global::java.lang.RawNew.I);
+            var vals = elementType.getEnumConstants();
+            if (vals != null) { foreach (var e in vals) { s.add(e); } }
+            return s;
+        }
+
+        public static EnumSet range(global::java.lang.Enum from, global::java.lang.Enum to)
+        {
+            var s = new EnumSet(global::java.lang.RawNew.I);
+            var vals = from.getClass().getEnumConstants();
+            int lo = from.ordinal();
+            int hi = to.ordinal();
+            if (vals != null)
+            {
+                foreach (var e in vals)
+                {
+                    int o = ((global::java.lang.Enum)e).ordinal();
+                    if (o >= lo && o <= hi) { s.add(e); }
+                }
+            }
+            return s;
+        }
+
         public static EnumSet of(global::java.lang.Enum e)
         {
             var s = new EnumSet(global::java.lang.RawNew.I);
