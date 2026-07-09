@@ -97,7 +97,11 @@ internal static class VisDriver
               .Append(R(p.X)).Append('|').Append(R(p.Y)).Append('|')
               .Append(R(c.Bounds.Width)).Append('|').Append(R(c.Bounds.Height)).Append('|')
               .Append(Argb(Bg(c))).Append('|')
-              .Append(Argb(Fg(c))).Append('\n');
+              .Append(Argb(Fg(c))).Append('|')
+              .Append(Bg(c) != null ? 1 : 0).Append('|')
+              .Append(FontFamilyOf(c)).Append('|')
+              .Append(FontSizeOf(c)).Append('|')
+              .Append(FontStyleOf(c)).Append('\n');
         }
         foreach (var child in root.GetVisualChildren()) { Dump(child, sb); }
     }
@@ -117,6 +121,34 @@ internal static class VisDriver
         if (c is TextBlock tb) { return tb.Foreground; }
         if (c is Avalonia.Controls.Primitives.TemplatedControl t) { return t.Foreground; }
         return null;
+    }
+
+    private static string FontFamilyOf(Control c)
+    {
+        if (c is TextBlock tb) { return tb.FontFamily?.Name ?? "?"; }
+        if (c is Avalonia.Controls.Primitives.TemplatedControl t) { return t.FontFamily?.Name ?? "?"; }
+        return "?";
+    }
+
+    private static int FontSizeOf(Control c)
+    {
+        if (c is TextBlock tb) { return (int)Math.Round(tb.FontSize); }
+        if (c is Avalonia.Controls.Primitives.TemplatedControl t) { return (int)Math.Round(t.FontSize); }
+        return 0;
+    }
+
+    // Java Font.getStyle() encoding: 0 plain, 1 bold, 2 italic, 3 bold+italic.
+    private static int FontStyleOf(Control c)
+    {
+        FontWeight w;
+        FontStyle st;
+        if (c is TextBlock tb) { w = tb.FontWeight; st = tb.FontStyle; }
+        else if (c is Avalonia.Controls.Primitives.TemplatedControl t) { w = t.FontWeight; st = t.FontStyle; }
+        else { return 0; }
+        int s = 0;
+        if (w >= FontWeight.Bold) { s |= 1; }
+        if (st == FontStyle.Italic) { s |= 2; }
+        return s;
     }
 
     private static string Argb(IBrush brush)

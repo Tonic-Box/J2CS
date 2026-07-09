@@ -15,7 +15,10 @@ namespace javax.swing
                 list = new global::Avalonia.Controls.ListBox
                 {
                     Foreground = global::java.awt.J2csTheme.MetalText,
-                    Background = global::Avalonia.Media.Brushes.White
+                    Background = global::Avalonia.Media.Brushes.White,
+                    // Metal's List.font is the bold control font; set locally (Fluent's ControlTheme
+                    // pins the templated default).
+                    FontWeight = global::Avalonia.Media.FontWeight.Bold
                 };
                 AvControl = list;
             }

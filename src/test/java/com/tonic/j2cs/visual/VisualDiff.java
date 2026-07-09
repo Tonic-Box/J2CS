@@ -42,14 +42,21 @@ public final class VisualDiff {
             boolean fgBad = !eqColor(r[7], c[7])
                     && !"none".equalsIgnoreCase(r[7]) && !"none".equalsIgnoreCase(c[7])
                     && !eqColor(r[6], r[7]);
-            if (geoBad || bgBad || fgBad) {
+            // Font style (bold/italic bits). Family and raw size are not gated: the candidate
+            // renders in a different font stack (Segoe UI vs Metal's Dialog) and reports size in
+            // device pixels while the ref reports points, so only the style flag is comparable.
+            boolean fontKnown = r.length > 11 && c.length > 11
+                    && !"?".equals(r[9]) && !"?".equals(c[9]);
+            boolean styleBad = fontKnown && !r[11].equals(c[11]);
+            if (geoBad || bgBad || fgBad || styleBad) {
                 violations++;
             }
-            sb.append(geoBad || bgBad || fgBad ? "DIFF " : "ok   ")
+            sb.append(geoBad || bgBad || fgBad || styleBad ? "DIFF " : "ok   ")
               .append(String.format("%-12s", name))
               .append(" pos d(").append(dx).append(',').append(dy).append(") size d(").append(dw).append(',').append(dh).append(')');
             if (bgBad) { sb.append("  bg ref=").append(r[6]).append(" cand=").append(c[6]); }
             if (fgBad) { sb.append("  fg ref=").append(r[7]).append(" cand=").append(c[7]); }
+            if (styleBad) { sb.append("  style ref=").append(r[11]).append(" cand=").append(c[11]); }
             sb.append("  [ref ").append(r[1]).append(" -> cand ").append(c[1]).append(']');
             sb.append('\n');
         }

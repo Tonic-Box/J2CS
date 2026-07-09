@@ -12,6 +12,7 @@ namespace javax.swing
         {
             if (label == null)
             {
+                // Bold Metal control font comes from the app theme's TextBlock style.
                 label = new global::Avalonia.Controls.TextBlock();
                 AvControl = label;
             }
@@ -68,7 +69,7 @@ namespace javax.swing
             if (label != null && font != null)
             {
                 label.FontFamily = font.CsFamily();
-                label.FontSize = font.Size;
+                label.FontSize = font.PxSize();
                 label.FontWeight = (font.Style & 1) != 0
                         ? global::Avalonia.Media.FontWeight.Bold
                         : global::Avalonia.Media.FontWeight.Normal;

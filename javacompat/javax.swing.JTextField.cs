@@ -10,11 +10,21 @@ namespace javax.swing
 
         public void __init_I_V(int columns)
         {
+            J2csBuildField(columns);
+        }
+
+        /// <summary>Shared construction so JPasswordField inherits the same Metal fg/bg and
+        /// font-metrics-based column width instead of a bare TextBox.</summary>
+        internal void J2csBuildField(int columns)
+        {
             field = new global::Avalonia.Controls.TextBox
             {
-                MinWidth = columns * 8,
+                MinWidth = columns * global::java.awt.J2csTheme.ColumnWidth(),
                 Foreground = global::java.awt.J2csTheme.MetalText,
-                Background = global::java.awt.J2csTheme.White
+                Background = global::java.awt.J2csTheme.White,
+                // Text components use Metal's plain "user" font, not the bold control font the
+                // app theme applies to every other TemplatedControl.
+                FontWeight = global::Avalonia.Media.FontWeight.Normal
             };
             AvControl = field;
         }

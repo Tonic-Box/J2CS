@@ -10,7 +10,9 @@ namespace java.awt
         internal global::Avalonia.Media.DrawingContext Ctx;
         internal global::Avalonia.Matrix Transform = global::Avalonia.Matrix.Identity;
         internal global::Avalonia.Media.IBrush Brush = global::Avalonia.Media.Brushes.Black;
-        internal double FontSize = 12;
+        internal double FontSize = global::java.awt.J2csTheme.UiFontSize;
+        internal global::Avalonia.Media.Typeface Face =
+            new global::Avalonia.Media.Typeface(global::java.awt.J2csTheme.UiFont);
 
         public Graphics(global::java.lang.RawNew r) : base(r)
         {
@@ -23,6 +25,7 @@ namespace java.awt
             g.Transform = Transform;
             g.Brush = Brush;
             g.FontSize = FontSize;
+            g.Face = Face;
             return g;
         }
 
@@ -42,7 +45,15 @@ namespace java.awt
         {
             if (f != null)
             {
-                FontSize = f.Size;
+                FontSize = f.PxSize();
+                Face = new global::Avalonia.Media.Typeface(
+                    f.CsFamily(),
+                    (f.Style & 2) != 0
+                        ? global::Avalonia.Media.FontStyle.Italic
+                        : global::Avalonia.Media.FontStyle.Normal,
+                    (f.Style & 1) != 0
+                        ? global::Avalonia.Media.FontWeight.Bold
+                        : global::Avalonia.Media.FontWeight.Normal);
             }
         }
 
@@ -103,7 +114,7 @@ namespace java.awt
                 global::java.lang.JRuntime.Cs(s),
                 global::System.Globalization.CultureInfo.CurrentCulture,
                 global::Avalonia.Media.FlowDirection.LeftToRight,
-                new global::Avalonia.Media.Typeface("Segoe UI"),
+                Face,
                 FontSize, Brush);
             using (Ctx.PushTransform(Transform))
             {

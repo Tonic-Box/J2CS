@@ -19,7 +19,23 @@ namespace java.awt
             global::Avalonia.Media.Brushes.White;
         internal static readonly global::Avalonia.Media.FontFamily UiFont =
             new global::Avalonia.Media.FontFamily("Segoe UI");
+        // Metal's default control font. The reference renders 12pt at ~12px em, so map 1:1.
         internal const double UiFontSize = 12.0;
+
+        /// <summary>Advance width of one text-field "column" (the width of 'm' in the default,
+        /// plain UI font), mirroring Swing's FontMetrics-based column sizing so JTextField/
+        /// JPasswordField widths scale with the font instead of a fixed constant.</summary>
+        internal static double ColumnWidth()
+        {
+            var ft = new global::Avalonia.Media.FormattedText(
+                "m",
+                global::System.Globalization.CultureInfo.InvariantCulture,
+                global::Avalonia.Media.FlowDirection.LeftToRight,
+                new global::Avalonia.Media.Typeface(UiFont),
+                UiFontSize,
+                MetalText);
+            return ft.Width;
+        }
 
         public static void Apply(global::Avalonia.Application app)
         {
@@ -47,6 +63,9 @@ namespace java.awt
                 global::Avalonia.Controls.TextBlock.FontFamilyProperty, UiFont));
             tb.Setters.Add(new global::Avalonia.Styling.Setter(
                 global::Avalonia.Controls.TextBlock.ForegroundProperty, MetalText));
+            tb.Setters.Add(new global::Avalonia.Styling.Setter(
+                global::Avalonia.Controls.TextBlock.FontWeightProperty,
+                global::Avalonia.Media.FontWeight.Bold));
             app.Styles.Add(tb);
 
             var btn = new global::Avalonia.Styling.Style(x =>
@@ -64,6 +83,28 @@ namespace java.awt
             btn.Setters.Add(new global::Avalonia.Styling.Setter(
                 global::Avalonia.Layout.Layoutable.MinHeightProperty, 0.0));
             app.Styles.Add(btn);
+
+            // Fluent's ListBoxItem template is tall (generous padding + min height); tighten it
+            // toward Metal's cell height, which is essentially the font line height.
+            var lbi = new global::Avalonia.Styling.Style(x =>
+                global::Avalonia.Styling.Selectors.OfType<global::Avalonia.Controls.ListBoxItem>(x));
+            lbi.Setters.Add(new global::Avalonia.Styling.Setter(
+                global::Avalonia.Controls.Primitives.TemplatedControl.PaddingProperty,
+                new global::Avalonia.Thickness(4, 0, 4, 0)));
+            lbi.Setters.Add(new global::Avalonia.Styling.Setter(
+                global::Avalonia.Layout.Layoutable.MinHeightProperty, 0.0));
+            app.Styles.Add(lbi);
+
+            // Fluent's TextBox is ~30px tall with generous padding; Metal's field is ~font height
+            // plus a thin inset. Tighten padding and drop the min height toward the Metal look.
+            var txt = new global::Avalonia.Styling.Style(x =>
+                global::Avalonia.Styling.Selectors.OfType<global::Avalonia.Controls.TextBox>(x));
+            txt.Setters.Add(new global::Avalonia.Styling.Setter(
+                global::Avalonia.Controls.Primitives.TemplatedControl.PaddingProperty,
+                new global::Avalonia.Thickness(4, 2, 4, 2)));
+            txt.Setters.Add(new global::Avalonia.Styling.Setter(
+                global::Avalonia.Layout.Layoutable.MinHeightProperty, 0.0));
+            app.Styles.Add(txt);
         }
     }
 }

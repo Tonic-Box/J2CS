@@ -13,7 +13,10 @@ namespace javax.swing
             button = new global::Avalonia.Controls.Button
             {
                 Content = global::java.lang.JRuntime.Cs(text),
-                Foreground = global::java.awt.J2csTheme.MetalText
+                Foreground = global::java.awt.J2csTheme.MetalText,
+                // Metal control font is bold; set locally because Fluent's ControlTheme pins the
+                // templated default and an app-level Style can't override it.
+                FontWeight = global::Avalonia.Media.FontWeight.Bold
             };
             AvControl = button;
         }

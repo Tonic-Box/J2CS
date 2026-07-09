@@ -149,14 +149,14 @@ namespace java.awt
             var family = f.CsFamily();
             if (AvControl is global::Avalonia.Controls.TextBlock tb)
             {
-                tb.FontSize = f.Size;
+                tb.FontSize = f.PxSize();
                 tb.FontWeight = weight;
                 tb.FontStyle = style;
                 tb.FontFamily = family;
             }
             else if (AvControl is global::Avalonia.Controls.Primitives.TemplatedControl tc)
             {
-                tc.FontSize = f.Size;
+                tc.FontSize = f.PxSize();
                 tc.FontWeight = weight;
                 tc.FontStyle = style;
                 tc.FontFamily = family;

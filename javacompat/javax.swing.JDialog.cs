@@ -33,12 +33,14 @@ namespace javax.swing
                 {
                     __modalFrame = new global::Avalonia.Threading.DispatcherFrame();
                     AvWindow.Show();
+                    J2csCompensateSize();
                     global::Avalonia.Threading.Dispatcher.UIThread.PushFrame(__modalFrame);
                     __modalFrame = null;
                 }
                 else
                 {
                     AvWindow.Show();
+                    J2csCompensateSize();
                 }
             }
             else

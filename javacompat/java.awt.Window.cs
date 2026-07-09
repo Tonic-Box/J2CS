@@ -7,6 +7,9 @@ namespace java.awt
         internal Container __contentPane;
         internal global::Avalonia.Threading.DispatcherFrame __modalFrame;
         internal global::javax.swing.JMenuBar __menuBar;
+        internal double __reqW = -1;
+        internal double __reqH = -1;
+        private bool __sizeCompensated;
 
         public void setTitle(global::java.lang.String title)
         {
@@ -114,6 +117,7 @@ namespace java.awt
                     AvWindow.Content = content;
                 }
                 AvWindow.Show();
+                J2csCompensateSize();
             }
             else
             {
@@ -133,11 +137,57 @@ namespace java.awt
 
         public void setSize(int width, int height)
         {
+            // Swing's setSize is the OUTER window size; Avalonia's Width/Height set the client
+            // (content) area. Remember the requested outer size and, once the window is shown and
+            // its decorations are known, shrink the client so the outer frame matches Swing.
+            __reqW = width;
+            __reqH = height;
             if (AvWindow != null)
             {
                 AvWindow.Width = width;
                 AvWindow.Height = height;
             }
+        }
+
+        internal void J2csCompensateSize()
+        {
+            if (__sizeCompensated || AvWindow == null || __reqW <= 0)
+            {
+                return;
+            }
+            if (AvWindow.SizeToContent != global::Avalonia.Controls.SizeToContent.Manual)
+            {
+                return;
+            }
+            var frame = AvWindow.FrameSize;
+            if (frame == null)
+            {
+                return;
+            }
+            double dw = frame.Value.Width - AvWindow.ClientSize.Width;
+            double dh = frame.Value.Height - AvWindow.ClientSize.Height;
+            if (dw > 0 || dh > 0)
+            {
+                AvWindow.Width = __reqW - dw;
+                AvWindow.Height = __reqH - dh;
+                __sizeCompensated = true;
+            }
+        }
+
+        public Insets getInsets()
+        {
+            var ins = new Insets(global::java.lang.RawNew.I);
+            if (AvWindow == null || AvWindow.FrameSize == null)
+            {
+                ins.__init_IIII_V(0, 0, 0, 0);
+                return ins;
+            }
+            var frame = AvWindow.FrameSize.Value;
+            int dw = (int)global::System.Math.Round(frame.Width - AvWindow.ClientSize.Width);
+            int dh = (int)global::System.Math.Round(frame.Height - AvWindow.ClientSize.Height);
+            int border = dw / 2;
+            ins.__init_IIII_V(dh - border, border, border, border);
+            return ins;
         }
 
         public void setResizable(int resizable)

@@ -8,12 +8,8 @@ namespace javax.swing
 
         public void __init_I_V(int columns)
         {
-            field = new global::Avalonia.Controls.TextBox
-            {
-                MinWidth = columns * 8,
-                PasswordChar = '*'
-            };
-            AvControl = field;
+            J2csBuildField(columns);
+            field.PasswordChar = '*';
         }
 
         public char[] getPassword()

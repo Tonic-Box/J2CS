@@ -16,7 +16,8 @@ namespace javax.swing
                 {
                     Increment = 1,
                     Foreground = global::java.awt.J2csTheme.MetalText,
-                    Background = global::java.awt.J2csTheme.MetalGray
+                    Background = global::java.awt.J2csTheme.MetalGray,
+                    FontWeight = global::Avalonia.Media.FontWeight.Bold
                 };
                 AvControl = spinner;
             }

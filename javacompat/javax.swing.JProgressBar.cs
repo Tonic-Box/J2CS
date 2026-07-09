@@ -37,6 +37,7 @@ namespace javax.swing
             b.CornerRadius = new global::Avalonia.CornerRadius(0);
             b.MinWidth = 0;
             b.MinHeight = 0;
+            b.FontWeight = global::Avalonia.Media.FontWeight.Bold;
             return b;
         }
 

@@ -25,6 +25,15 @@ namespace java.awt
             Size = size;
         }
 
+        /// <summary>Point size mapped to the Avalonia font size (device-independent pixels).
+        /// Measured against the Metal reference (VisualRef), Swing renders its point sizes at
+        /// essentially point==pixel here (a 12pt label is 16px tall, a 16pt label 19px), so the
+        /// mapping is 1:1. This stays a single knob in case a dpi correction is wanted later.</summary>
+        internal double PxSize()
+        {
+            return Size;
+        }
+
         /// <summary>Resolve Java logical font names to concrete families available on the host.</summary>
         internal global::Avalonia.Media.FontFamily CsFamily()
         {

@@ -17,7 +17,8 @@ namespace javax.swing
                     Minimum = 0,
                     Maximum = 100,
                     Background = global::java.awt.J2csTheme.MetalGray,
-                    Foreground = global::java.awt.J2csTheme.MetalAccent
+                    Foreground = global::java.awt.J2csTheme.MetalAccent,
+                    FontWeight = global::Avalonia.Media.FontWeight.Bold
                 };
                 AvControl = slider;
             }
