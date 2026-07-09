@@ -71,7 +71,10 @@ public final class TypeReconciler {
     /** Emit an explicit checkcast to the target from a source of the given type. */
     public String cast(CsType target, IRType sourceType, String sourceExpr) {
         CsType source = sourceType != null ? naming.typeMapper().computeType(sourceType) : null;
-        if (source != null && (source.csText().equals(target.csText()) || isAssignable(source, target))) {
+        if (source != null && source.csText().equals(target.csText())) {
+            return sourceExpr;
+        }
+        if (source != null && isAssignable(source, target)) {
             return "(" + target.csText() + ")(" + sourceExpr + ")";
         }
         return bridgedCast(target, source, sourceExpr);

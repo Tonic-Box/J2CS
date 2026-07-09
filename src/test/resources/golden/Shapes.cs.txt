@@ -231,7 +231,7 @@ namespace jdefault
             System.@out.println(Counter.next());
             System.@out.println(Counter.next());
             System.@out.println_Z(((local1 is Circle) ? 1 : 0));
-            Circle local6 = (Circle)(local1);
+            Circle local6 = local1;
             System.@out.println(local6.area());
             System.@out.println_Z(local1.equals((Object)(local6)));
             System.@out.println_Z(local1.equals((Object)(local2)));

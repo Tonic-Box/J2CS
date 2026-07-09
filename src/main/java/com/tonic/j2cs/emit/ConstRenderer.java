@@ -10,8 +10,10 @@ import com.tonic.analysis.ssa.value.NullConstant;
 import com.tonic.analysis.ssa.value.StringConstant;
 
 /**
- * Renders IR constants as C# expressions. Floating-point constants are emitted bit-exact via
- * BitConverter so NaN payloads, infinities, and negative zero always round-trip.
+ * Renders IR constants as C# expressions. A finite float/double is emitted as its shortest decimal
+ * literal when that literal round-trips to the exact same bits (including negative zero); NaN,
+ * infinities, and any value whose decimal doesn't round-trip fall back to a bit-exact BitConverter
+ * call so their payloads survive.
  */
 public final class ConstRenderer {
 
@@ -28,12 +30,10 @@ public final class ConstRenderer {
             return v == Long.MIN_VALUE ? "(-9223372036854775807L - 1L)" : v + "L";
         }
         if (constant instanceof FloatConstant f) {
-            return "global::System.BitConverter.Int32BitsToSingle("
-                    + Float.floatToRawIntBits(f.getValue()) + ")";
+            return floatLiteral(f.getValue());
         }
         if (constant instanceof DoubleConstant d) {
-            return "global::System.BitConverter.Int64BitsToDouble("
-                    + Double.doubleToRawLongBits(d.getValue()) + "L)";
+            return doubleLiteral(d.getValue());
         }
         if (constant instanceof StringConstant s) {
             return "global::java.lang.String.Intern(" + CsStrings.quote(s.getValue()) + ")";
@@ -60,10 +60,10 @@ public final class ConstRenderer {
             return l == Long.MIN_VALUE ? "(-9223372036854775807L - 1L)" : l + "L";
         }
         if (value instanceof Float f) {
-            return "global::System.BitConverter.Int32BitsToSingle(" + Float.floatToRawIntBits(f) + ")";
+            return floatLiteral(f);
         }
         if (value instanceof Double d) {
-            return "global::System.BitConverter.Int64BitsToDouble(" + Double.doubleToRawLongBits(d) + "L)";
+            return doubleLiteral(d);
         }
         if (value instanceof String s) {
             return "global::java.lang.String.Intern(" + CsStrings.quote(s) + ")";
@@ -75,5 +75,27 @@ public final class ConstRenderer {
             return b ? "1" : "0";
         }
         throw new UnsupportedBodyException("literal not supported: " + value.getClass().getSimpleName());
+    }
+
+    private static String floatLiteral(float f) {
+        int bits = Float.floatToRawIntBits(f);
+        if (!Float.isNaN(f) && !Float.isInfinite(f)) {
+            String s = Float.toString(f);
+            if (Float.floatToRawIntBits(Float.parseFloat(s)) == bits) {
+                return s + "f";
+            }
+        }
+        return "global::System.BitConverter.Int32BitsToSingle(" + bits + ")";
+    }
+
+    private static String doubleLiteral(double d) {
+        long bits = Double.doubleToRawLongBits(d);
+        if (!Double.isNaN(d) && !Double.isInfinite(d)) {
+            String s = Double.toString(d);
+            if (Double.doubleToRawLongBits(Double.parseDouble(s)) == bits) {
+                return s;
+            }
+        }
+        return "global::System.BitConverter.Int64BitsToDouble(" + bits + "L)";
     }
 }

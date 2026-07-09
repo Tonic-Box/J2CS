@@ -1152,7 +1152,7 @@ final class StructuredBodyEmitter {
             throw new UnsupportedBodyException("structured: cast to " + c.getTargetType());
         }
         if (TypeMapper.isPrimitiveDescriptor(targetDesc)) {
-            return primitiveCast(targetDesc, sourceDesc, operand);
+            return primitiveCast(targetDesc, sourceDesc, operand, needsParens(c.getExpression()));
         }
         // (T[]) arr.clone() already renders the clone cast to the array type, but the recovered
         // clone expression is typed Object; skip the redundant Object->array bridge (no unbox).
@@ -1174,21 +1174,24 @@ final class StructuredBodyEmitter {
         return rd != null && rd.startsWith("[");
     }
 
-    private String primitiveCast(String targetDesc, String sourceDesc, String operand) {
+    private String primitiveCast(String targetDesc, String sourceDesc, String operand, boolean parenNeeded) {
         String jr = "global::java.lang.JRuntime";
         boolean fromFloat = "F".equals(sourceDesc) || "D".equals(sourceDesc);
+        // A prefix cast binds tighter than a binary/unary operand, so only those need wrapping; the
+        // F2I/D2L helpers take the operand as a call argument, where the call parens already isolate it.
+        String op = parenNeeded ? "(" + operand + ")" : operand;
         return switch (targetDesc) {
             case "I" -> fromFloat
                     ? jr + ("F".equals(sourceDesc) ? ".F2I(" : ".D2I(") + operand + ")"
-                    : "unchecked((int)(" + operand + "))";
+                    : "unchecked((int)" + op + ")";
             case "J" -> fromFloat
                     ? jr + ("F".equals(sourceDesc) ? ".F2L(" : ".D2L(") + operand + ")"
-                    : "unchecked((long)(" + operand + "))";
-            case "F" -> "(float)(" + operand + ")";
-            case "D" -> "(double)(" + operand + ")";
-            case "B" -> "unchecked((sbyte)(" + operand + "))";
-            case "C" -> "unchecked((char)(" + operand + "))";
-            case "S" -> "unchecked((short)(" + operand + "))";
+                    : "unchecked((long)" + op + ")";
+            case "F" -> "(float)" + op;
+            case "D" -> "(double)" + op;
+            case "B" -> "unchecked((sbyte)" + op + ")";
+            case "C" -> "unchecked((char)" + op + ")";
+            case "S" -> "unchecked((short)" + op + ")";
             default -> throw new UnsupportedBodyException("structured: cast to " + targetDesc);
         };
     }
@@ -1234,7 +1237,7 @@ final class StructuredBodyEmitter {
             // such a slot always needs an explicit cast; wider slots only when the type differs.
             boolean subInt = targetDesc.equals("C") || targetDesc.equals("B") || targetDesc.equals("S");
             if (subInt || !sourceDesc.equals(targetDesc)) {
-                return primitiveCast(targetDesc, sourceDesc, raw);
+                return primitiveCast(targetDesc, sourceDesc, raw, needsParens(e));
             }
             return raw;
         }
@@ -1259,10 +1262,15 @@ final class StructuredBodyEmitter {
     /** Parenthesizes compound sub-expressions for precedence safety. */
     private String atom(Expression e) {
         String text = expr(e);
-        if (e instanceof BinaryExpr || e instanceof CastExpr || e instanceof UnaryExpr) {
+        if (needsParens(e)) {
             return "(" + text + ")";
         }
         return text;
+    }
+
+    /** Whether a rendered expression binds looser than a prefix cast/unary operator would want. */
+    private static boolean needsParens(Expression e) {
+        return e instanceof BinaryExpr || e instanceof CastExpr || e instanceof UnaryExpr;
     }
 
     private String descOf(SourceType type) {
