@@ -192,6 +192,12 @@ public final class Transpiler {
         report.divergence("TreeMap iterates in natural key order and LinkedHashMap in insertion order, but a TreeMap constructed with a custom Comparator still uses natural ordering");
         report.divergence("java time/date, UUID, and SecureRandom values are runtime-dependent and do not match a specific JVM run");
         report.divergence("Swing/AWT is rendered via Avalonia; widget structure and behavior are preserved but visual styling and pixel layout differ from the JVM");
+        report.divergence("volatile long/double fields are emitted non-volatile (C# forbids the modifier on 64-bit types); their use as a memory barrier diverges");
+        report.divergence("ConcurrentHashMap is backed by the plain HashMap shim and is not thread-safe");
+        report.divergence("ExecutorService/CompletableFuture run submitted work synchronously on the calling thread; there is no real parallelism");
+        report.divergence("StrictMath delegates to .NET System.Math and is not fdlibm bit-exact for transcendental functions");
+        report.divergence("strictfp is ignored; floating-point uses the default .NET evaluation");
+        report.divergence("sealed-class permits are not enforced");
     }
 
     /**

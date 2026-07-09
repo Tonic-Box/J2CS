@@ -67,8 +67,11 @@ public final class ClassEmitter {
             for (FieldEntry field : classFile.getFields()) {
                 CsType type = types.storageType(field.getDesc());
                 boolean isStatic = (field.getAccess() & AccessFlags.ACC_STATIC) != 0;
-                w.line("internal " + (isStatic ? "static " : "") + type.csText() + " "
-                        + namer.fieldName(field) + ";");
+                // C# forbids `volatile` on 64-bit types; a volatile long/double stays plain (reported).
+                boolean isVolatile = (field.getAccess() & AccessFlags.ACC_VOLATILE) != 0
+                        && !field.getDesc().equals("J") && !field.getDesc().equals("D");
+                w.line("internal " + (isStatic ? "static " : "") + (isVolatile ? "volatile " : "")
+                        + type.csText() + " " + namer.fieldName(field) + ";");
             }
             w.line();
             boolean isRoot = policy.baseFqcn() == null;
@@ -138,8 +141,26 @@ public final class ClassEmitter {
                     + "(" + paramList(desc, types) + ")";
         }
         w.open(header);
-        if (EnumSynthesis.emit(w, classFile, name, desc, namer)) {
+        // A synchronized method holds the receiver's (instance) or the class's (static) monitor for
+        // its whole body; the ACC_SYNCHRONIZED flag carries no bytecode, so mirror it with `lock`.
+        boolean synchronizedMethod = !isInterface
+                && !name.equals("<init>") && !name.equals("<clinit>")
+                && (method.getAccess() & AccessFlags.ACC_SYNCHRONIZED) != 0;
+        if (synchronizedMethod) {
+            boolean isStatic = (method.getAccess() & AccessFlags.ACC_STATIC) != 0;
+            w.open(isStatic ? "lock (typeof(" + csClassName + "))" : "lock (this)");
+        }
+        emitBody(w, classFile, method, plan, namer, name, desc);
+        if (synchronizedMethod) {
             w.close();
+        }
+        w.close();
+    }
+
+    /** Emits the method body content (no enclosing braces): enum synthesis, structured, or classic. */
+    private void emitBody(CsWriter w, ClassFile classFile, MethodEntry method, MethodPlan plan,
+                          MemberNamer namer, String name, String desc) {
+        if (EnumSynthesis.emit(w, classFile, name, desc, namer)) {
             return;
         }
         // Bootstrapped JDK classes stay on the goto emitter: their bytecode is the hairiest input
@@ -150,7 +171,6 @@ public final class ClassEmitter {
             java.util.Optional<String> body = structured.tryEmit(classFile, method, 3);
             if (body.isPresent()) {
                 w.raw(body.get());
-                w.close();
                 return;
             }
         }
@@ -168,7 +188,6 @@ public final class ClassEmitter {
                 w.raw(body);
             }
         }
-        w.close();
     }
 
     private void emitRealConstructor(CsWriter w, String csClassName, String desc, TypeMapper types) {

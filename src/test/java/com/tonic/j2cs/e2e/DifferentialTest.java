@@ -59,6 +59,8 @@ class DifferentialTest {
                 fixture("TypeReconcile"),
                 fixture("ArrayClone"),
                 fixture("EnumAssert"),
+                fixture("EnumReflect"),
+                fixture("SyncVolatile"),
                 fixture("ShimGrowth"),
                 fixture("Exceptions1"),
                 fixture("Exceptions2"),

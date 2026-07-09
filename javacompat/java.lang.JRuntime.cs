@@ -117,6 +117,20 @@ namespace java.lang
             return JThrow.of(nfe);
         }
 
+        public static JThrow IllegalArgument(string message)
+        {
+            var iae = new IllegalArgumentException(RawNew.I);
+            iae.__init_Ljava_lang_String__V(String.Wrap(message));
+            return JThrow.of(iae);
+        }
+
+        public static JThrow NullPointer(string message)
+        {
+            var npe = new NullPointerException(RawNew.I);
+            npe.__init_Ljava_lang_String__V(String.Wrap(message));
+            return JThrow.of(npe);
+        }
+
         public static JThrow Simple(Throwable t)
         {
             t.__init__V();

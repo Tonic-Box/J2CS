@@ -33,8 +33,11 @@ final class EnumSynthesis {
             w.line("return __vals[__i];");
             w.close();
             w.close();
-            w.line("throw new global::System.ArgumentException("
-                    + CsStrings.quote("No enum constant " + self.replace('/', '.') + ".") + ");");
+            w.line("if (p0 == null) throw global::java.lang.JRuntime.NullPointer("
+                    + CsStrings.quote("Name is null") + ");");
+            String canonical = self.replace('/', '.').replace('$', '.');
+            w.line("throw global::java.lang.JRuntime.IllegalArgument("
+                    + CsStrings.quote("No enum constant " + canonical + ".") + " + p0.Value);");
             return true;
         }
         return false;

@@ -160,29 +160,20 @@ namespace java.lang
 
         public global::java.lang.Object[] getEnumConstants()
         {
-            if (type == null)
+            if (meta == null)
             {
                 return null;
             }
-            var mi = type.GetMethod("values",
-                    global::System.Reflection.BindingFlags.Static | global::System.Reflection.BindingFlags.Public
-                            | global::System.Reflection.BindingFlags.NonPublic,
-                    null, global::System.Type.EmptyTypes, null);
-            if (mi == null)
+            var m = meta.FindMethod("values", global::System.Array.Empty<global::java.lang.Class>());
+            if (m == null)
             {
                 return null;
             }
-            var arr = mi.Invoke(null, null) as global::System.Array;
-            if (arr == null)
-            {
-                return null;
-            }
-            var r = new global::java.lang.Object[arr.Length];
-            for (int i = 0; i < arr.Length; i++)
-            {
-                r[i] = (global::java.lang.Object)arr.GetValue(i);
-            }
-            return r;
+            // values() returns the concrete E[] (boxed); hand it back via array covariance so the
+            // caller's checkcast to E[] (from Class<T>.getEnumConstants's T[] erasure) still succeeds.
+            return global::java.lang.JRuntime.Unbox(
+                    m.invoke(null, global::System.Array.Empty<global::java.lang.Object>()))
+                    as global::java.lang.Object[];
         }
 
         public global::java.lang.reflect.Field[] getDeclaredFields()
