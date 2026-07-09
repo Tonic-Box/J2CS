@@ -84,6 +84,7 @@ class DifferentialTest {
                 fixture("EnumStrings"),
                 fixture("Concurrency"),
                 fixture("NavEnum"),
+                fixture("NetUri"),
                 fixture("Boxing1"),
                 fixture("Boxing2"),
                 fixture("BoxingGenerics"),

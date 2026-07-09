@@ -101,6 +101,8 @@ public final class ShimRegistry {
         put(m, "java/util/SortedSet", "java/util/Set");
         put(m, "java/util/SortedMap", "java/util/Map");
         put(m, "java/lang/ThreadLocal", "java/lang/Object");
+        put(m, "java/net/URI", "java/lang/Object");
+        put(m, "java/net/URL", "java/lang/Object");
         put(m, "java/util/Queue", "java/util/Collection");
         put(m, "java/util/Deque", "java/util/Queue");
         put(m, "java/util/ArrayDeque", "java/util/Deque");
@@ -565,6 +567,7 @@ public final class ShimRegistry {
         addEnumStrMethods0(m);
         addConcurrentMethods2(m);
         addNavEnumMethods0(m);
+        addNetMethods0(m);
         addLangMethods1(m);
         addLangMethods2(m);
         addLangMethods3(m);
@@ -2424,6 +2427,28 @@ public final class ShimRegistry {
         put(m, "java/util/TreeMap.headMap(Ljava/lang/Object;)Ljava/util/SortedMap;", instance("headMap"));
         put(m, "java/util/TreeMap.tailMap(Ljava/lang/Object;)Ljava/util/SortedMap;", instance("tailMap"));
         put(m, "java/util/TreeMap.subMap(Ljava/lang/Object;Ljava/lang/Object;)Ljava/util/SortedMap;", instance("subMap"));
+    }
+
+    private static void addNetMethods0(Map<String, ShimTarget> m) {
+        put(m, "java/net/URI.getScheme()Ljava/lang/String;", instance("getScheme"));
+        put(m, "java/net/URI.getAuthority()Ljava/lang/String;", instance("getAuthority"));
+        put(m, "java/net/URI.getUserInfo()Ljava/lang/String;", instance("getUserInfo"));
+        put(m, "java/net/URI.getHost()Ljava/lang/String;", instance("getHost"));
+        put(m, "java/net/URI.getPort()I", instance("getPort"));
+        put(m, "java/net/URI.getPath()Ljava/lang/String;", instance("getPath"));
+        put(m, "java/net/URI.getQuery()Ljava/lang/String;", instance("getQuery"));
+        put(m, "java/net/URI.getFragment()Ljava/lang/String;", instance("getFragment"));
+        put(m, "java/net/URI.isAbsolute()Z", instance("isAbsolute"));
+        put(m, "java/net/URI.toURL()Ljava/net/URL;", instance("toURL"));
+        put(m, "java/net/URL.getProtocol()Ljava/lang/String;", instance("getProtocol"));
+        put(m, "java/net/URL.getHost()Ljava/lang/String;", instance("getHost"));
+        put(m, "java/net/URL.getPort()I", instance("getPort"));
+        put(m, "java/net/URL.getPath()Ljava/lang/String;", instance("getPath"));
+        put(m, "java/net/URL.getQuery()Ljava/lang/String;", instance("getQuery"));
+        put(m, "java/net/URL.getRef()Ljava/lang/String;", instance("getRef"));
+        put(m, "java/net/URL.getFile()Ljava/lang/String;", instance("getFile"));
+        put(m, "java/net/URL.toExternalForm()Ljava/lang/String;", instance("toExternalForm"));
+        put(m, "java/net/URL.toURI()Ljava/net/URI;", instance("toURI"));
     }
 
     private static Map<String, ShimTarget> buildFields() {
