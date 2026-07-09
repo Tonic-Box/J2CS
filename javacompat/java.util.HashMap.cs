@@ -372,35 +372,6 @@ namespace java.util
         }
     }
 
-    internal sealed class ShimMapEntry : global::java.lang.Object, Map_S_Entry
-    {
-        private readonly global::java.lang.Object key;
-        private readonly global::java.lang.Object value;
-
-        internal ShimMapEntry(global::java.lang.Object key, global::java.lang.Object value)
-                : base(global::java.lang.RawNew.I)
-        {
-            this.key = key;
-            this.value = value;
-        }
-
-        public global::java.lang.Object getKey()
-        {
-            return key;
-        }
-
-        public global::java.lang.Object getValue()
-        {
-            return value;
-        }
-
-        public override global::java.lang.String toString()
-        {
-            return global::java.lang.String.Wrap(
-                    global::java.lang.JRuntime.Str(key) + "=" + global::java.lang.JRuntime.Str(value));
-        }
-    }
-
     internal sealed class ShimListView : global::java.lang.Object, Set
     {
         private readonly global::System.Collections.Generic.List<global::java.lang.Object> items;

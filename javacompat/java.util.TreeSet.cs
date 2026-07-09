@@ -2,7 +2,7 @@ namespace java.util
 {
     /// <summary>Sorted set backed by an ordered list (Comparator or natural ordering), so iteration
     /// and toString are in ascending order like Java's TreeSet.</summary>
-    public class TreeSet : global::java.lang.Object, SortedSet
+    public class TreeSet : global::java.lang.Object, NavigableSet
     {
         private readonly global::System.Collections.Generic.List<global::java.lang.Object> items =
                 new global::System.Collections.Generic.List<global::java.lang.Object>();
@@ -147,6 +147,50 @@ namespace java.util
             var r = EmptyLike();
             foreach (var x in items) { if (Cmp(x, fromElement) >= 0 && Cmp(x, toElement) < 0) { r.add(x); } }
             return r;
+        }
+
+        public NavigableSet headSet(global::java.lang.Object toElement, int inclusive)
+        {
+            var r = EmptyLike();
+            foreach (var x in items) { int c = Cmp(x, toElement); if (c < 0 || (inclusive != 0 && c == 0)) { r.add(x); } }
+            return r;
+        }
+
+        public NavigableSet tailSet(global::java.lang.Object fromElement, int inclusive)
+        {
+            var r = EmptyLike();
+            foreach (var x in items) { int c = Cmp(x, fromElement); if (c > 0 || (inclusive != 0 && c == 0)) { r.add(x); } }
+            return r;
+        }
+
+        public NavigableSet subSet(global::java.lang.Object fromElement, int fromInclusive,
+                global::java.lang.Object toElement, int toInclusive)
+        {
+            var r = EmptyLike();
+            foreach (var x in items)
+            {
+                int cf = Cmp(x, fromElement);
+                int ct = Cmp(x, toElement);
+                bool lo = cf > 0 || (fromInclusive != 0 && cf == 0);
+                bool hi = ct < 0 || (toInclusive != 0 && ct == 0);
+                if (lo && hi) { r.add(x); }
+            }
+            return r;
+        }
+
+        public NavigableSet descendingSet()
+        {
+            var r = new TreeSet(global::java.lang.RawNew.I);
+            r.__init_Ljava_util_Comparator__V(new ReverseComparator(comparator));
+            foreach (var x in items) { r.add(x); }
+            return r;
+        }
+
+        public Iterator descendingIterator()
+        {
+            var rev = new global::System.Collections.Generic.List<global::java.lang.Object>(items);
+            rev.Reverse();
+            return new ShimListIterator(rev);
         }
 
         public Iterator iterator()

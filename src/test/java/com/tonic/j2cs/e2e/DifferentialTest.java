@@ -87,6 +87,7 @@ class DifferentialTest {
                 fixture("NetUri"),
                 fixture("Crypto"),
                 fixture("AesCipher"),
+                fixture("NavViews"),
                 fixture("Boxing1"),
                 fixture("Boxing2"),
                 fixture("BoxingGenerics"),

@@ -97,9 +97,11 @@ public final class ShimRegistry {
         put(m, "java/util/Map$Entry", "java/lang/Object");
         put(m, "java/util/HashMap", "java/util/Map");
         put(m, "java/util/HashSet", "java/util/Set");
-        put(m, "java/util/TreeSet", "java/util/SortedSet");
+        put(m, "java/util/TreeSet", "java/util/NavigableSet");
         put(m, "java/util/SortedSet", "java/util/Set");
         put(m, "java/util/SortedMap", "java/util/Map");
+        put(m, "java/util/NavigableSet", "java/util/SortedSet");
+        put(m, "java/util/NavigableMap", "java/util/SortedMap");
         put(m, "java/lang/ThreadLocal", "java/lang/Object");
         put(m, "java/net/URI", "java/lang/Object");
         put(m, "java/net/URL", "java/lang/Object");
@@ -577,6 +579,7 @@ public final class ShimRegistry {
         addNetMethods0(m);
         addCryptoMethods0(m);
         addCryptoMethods1(m);
+        addNavViewMethods0(m);
         addLangMethods1(m);
         addLangMethods2(m);
         addLangMethods3(m);
@@ -2486,6 +2489,25 @@ public final class ShimRegistry {
         put(m, "javax/crypto/Cipher.doFinal([B)[B", instance("doFinal"));
         put(m, "javax/crypto/Cipher.getBlockSize()I", instance("getBlockSize"));
         put(m, "javax/crypto/spec/IvParameterSpec.getIV()[B", instance("getIV"));
+    }
+
+    private static void addNavViewMethods0(Map<String, ShimTarget> m) {
+        put(m, "java/util/TreeSet.headSet(Ljava/lang/Object;Z)Ljava/util/NavigableSet;", instance("headSet"));
+        put(m, "java/util/TreeSet.tailSet(Ljava/lang/Object;Z)Ljava/util/NavigableSet;", instance("tailSet"));
+        put(m, "java/util/TreeSet.subSet(Ljava/lang/Object;ZLjava/lang/Object;Z)Ljava/util/NavigableSet;", instance("subSet"));
+        put(m, "java/util/TreeSet.descendingSet()Ljava/util/NavigableSet;", instance("descendingSet"));
+        put(m, "java/util/TreeSet.descendingIterator()Ljava/util/Iterator;", instance("descendingIterator"));
+        put(m, "java/util/TreeMap.firstEntry()Ljava/util/Map$Entry;", instance("firstEntry"));
+        put(m, "java/util/TreeMap.lastEntry()Ljava/util/Map$Entry;", instance("lastEntry"));
+        put(m, "java/util/TreeMap.floorEntry(Ljava/lang/Object;)Ljava/util/Map$Entry;", instance("floorEntry"));
+        put(m, "java/util/TreeMap.ceilingEntry(Ljava/lang/Object;)Ljava/util/Map$Entry;", instance("ceilingEntry"));
+        put(m, "java/util/TreeMap.higherEntry(Ljava/lang/Object;)Ljava/util/Map$Entry;", instance("higherEntry"));
+        put(m, "java/util/TreeMap.lowerEntry(Ljava/lang/Object;)Ljava/util/Map$Entry;", instance("lowerEntry"));
+        put(m, "java/util/TreeMap.navigableKeySet()Ljava/util/NavigableSet;", instance("navigableKeySet"));
+        put(m, "java/util/TreeMap.descendingKeySet()Ljava/util/NavigableSet;", instance("descendingKeySet"));
+        put(m, "java/util/TreeMap.headMap(Ljava/lang/Object;Z)Ljava/util/NavigableMap;", instance("headMap"));
+        put(m, "java/util/TreeMap.tailMap(Ljava/lang/Object;Z)Ljava/util/NavigableMap;", instance("tailMap"));
+        put(m, "java/util/TreeMap.subMap(Ljava/lang/Object;ZLjava/lang/Object;Z)Ljava/util/NavigableMap;", instance("subMap"));
     }
 
     private static Map<String, ShimTarget> buildFields() {

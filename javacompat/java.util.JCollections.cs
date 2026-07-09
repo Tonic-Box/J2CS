@@ -45,6 +45,40 @@ namespace java.util
         public void remove() { backing.remove(--cursor); last = -1; }
     }
 
+    internal sealed class ShimMapEntry : global::java.lang.Object, Map_S_Entry
+    {
+        private readonly global::java.lang.Object key;
+        private readonly global::java.lang.Object value;
+
+        internal ShimMapEntry(global::java.lang.Object key, global::java.lang.Object value)
+                : base(global::java.lang.RawNew.I)
+        {
+            this.key = key;
+            this.value = value;
+        }
+
+        public global::java.lang.Object getKey() { return key; }
+        public global::java.lang.Object getValue() { return value; }
+
+        public override global::java.lang.String toString()
+        {
+            return global::java.lang.String.Wrap(
+                    global::java.lang.JRuntime.Str(key) + "=" + global::java.lang.JRuntime.Str(value));
+        }
+    }
+
+    internal sealed class ReverseComparator : global::java.lang.Object, Comparator
+    {
+        private readonly Comparator baseCmp;
+
+        internal ReverseComparator(Comparator b) : base(global::java.lang.RawNew.I) { baseCmp = b; }
+
+        public int compare(global::java.lang.Object a, global::java.lang.Object b)
+        {
+            return baseCmp != null ? -baseCmp.compare(a, b) : -JCollections.NaturalCompare(a, b);
+        }
+    }
+
     internal static class JCollections
     {
         public static bool Eq(global::java.lang.Object a, global::java.lang.Object b)

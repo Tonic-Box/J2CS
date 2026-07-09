@@ -198,6 +198,8 @@ java.util.Locale.cs
 java.util.LongSummaryStatistics.cs
 java.util.Map$Entry.cs
 java.util.Map.cs
+java.util.NavigableMap.cs
+java.util.NavigableSet.cs
 java.util.Objects.cs
 java.util.Optional.cs
 java.util.OptionalDouble.cs
