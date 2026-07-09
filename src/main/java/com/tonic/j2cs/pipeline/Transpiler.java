@@ -9,6 +9,7 @@ import com.tonic.j2cs.emit.EntryPointEmitter;
 import com.tonic.j2cs.emit.ReflectionMetadataEmitter;
 import com.tonic.j2cs.emit.SyntheticClasses;
 import com.tonic.j2cs.emit.StubEmitter;
+import com.tonic.j2cs.emit.UsingRewriter;
 import com.tonic.util.Modifiers;
 import com.tonic.j2cs.frontend.BootstrapLoader;
 import com.tonic.j2cs.frontend.InputLoader;
@@ -101,6 +102,21 @@ public final class Transpiler {
         boolean usesGui = referenced.stream()
                 .anyMatch(name -> name.startsWith("javax/swing/") || name.startsWith("java/awt/"));
         String programCs = new EntryPointEmitter().emit(input.entryClassInternalName(), naming, usesGui);
+
+        Set<String> ownSimpleNames = new java.util.HashSet<>();
+        for (String internal : ShimRegistry.types()) {
+            ownSimpleNames.add(CsNamer.classNameOf(internal));
+        }
+        for (String dotted : genFiles.keySet()) {
+            ownSimpleNames.add(dotted.substring(dotted.lastIndexOf('.') + 1));
+        }
+        for (String dotted : stubFiles.keySet()) {
+            ownSimpleNames.add(dotted.substring(dotted.lastIndexOf('.') + 1));
+        }
+        UsingRewriter usingRewriter = new UsingRewriter(ownSimpleNames);
+        genFiles = usingRewriter.rewriteAll(genFiles);
+        stubFiles = usingRewriter.rewriteAll(stubFiles);
+
         Path appDir = new SolutionGenerator().generate(options.outDir(),
                 new GeneratedSolution(genFiles, stubFiles, programCs, bootstrappedInternal, usesGui));
         new NativeFragmentPackager().copy(appDir, BootstrapPolicy.nativeFragments(bootstrappedInternal));

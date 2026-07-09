@@ -105,6 +105,7 @@ class DifferentialTest {
                 fixture("TextGaps"),
                 fixture("CollectionGaps"),
                 fixture("MiscGaps"),
+                fixture("ShadowName"),
                 fixture("Bootstrap", "java.lang.Boolean"),
                 fixture("WrapperBootstrap",
                         "java.lang.Integer", "java.lang.Long", "java.lang.Short", "java.lang.Byte"),
