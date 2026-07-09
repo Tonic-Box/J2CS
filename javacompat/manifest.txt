@@ -158,6 +158,11 @@ java.nio.file.Path.cs
 java.nio.file.Paths.cs
 java.nio.file.StandardCopyOption.cs
 java.nio.file.StandardOpenOption.cs
+java.nio.file.StandardWatchEventKinds.cs
+java.nio.file.WatchEvent$Kind.cs
+java.nio.file.WatchEvent.cs
+java.nio.file.WatchKey.cs
+java.nio.file.WatchService.cs
 java.nio.file.attribute.BasicFileAttributes.cs
 java.nio.file.attribute.FileAttribute.cs
 java.security.Key.cs

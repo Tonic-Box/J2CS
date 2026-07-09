@@ -298,6 +298,11 @@ public final class ShimRegistry {
         put(m, "java/nio/file/LinkOption", "java/lang/Object");
         put(m, "java/nio/file/attribute/FileAttribute", "java/lang/Object");
         put(m, "java/nio/file/CopyOption", "java/lang/Object");
+        put(m, "java/nio/file/WatchService", "java/lang/Object");
+        put(m, "java/nio/file/WatchKey", "java/lang/Object");
+        put(m, "java/nio/file/WatchEvent", "java/lang/Object");
+        put(m, "java/nio/file/WatchEvent$Kind", "java/lang/Object");
+        put(m, "java/nio/file/StandardWatchEventKinds", "java/lang/Object");
         put(m, "java/nio/file/FileVisitOption", "java/lang/Object");
         put(m, "java/nio/file/StandardCopyOption", "java/lang/Object");
         put(m, "java/nio/file/StandardOpenOption", "java/lang/Object");
@@ -602,6 +607,7 @@ public final class ShimRegistry {
         addNetMethods1(m);
         addNetMethods2(m);
         addHttpClientMethods0(m);
+        addWatchMethods0(m);
         addCryptoMethods0(m);
         addCryptoMethods1(m);
         addCryptoMethods2(m);
@@ -2620,6 +2626,22 @@ public final class ShimRegistry {
         put(m, "java/net/http/HttpResponse$BodyHandlers.ofByteArray()Ljava/net/http/HttpResponse$BodyHandler;", statics("ofByteArray"));
     }
 
+    private static void addWatchMethods0(Map<String, ShimTarget> m) {
+        put(m, "java/nio/file/FileSystem.newWatchService()Ljava/nio/file/WatchService;", instance("newWatchService"));
+        put(m, "java/nio/file/Path.register(Ljava/nio/file/WatchService;[Ljava/nio/file/WatchEvent$Kind;)Ljava/nio/file/WatchKey;", instance("register"));
+        put(m, "java/nio/file/WatchService.take()Ljava/nio/file/WatchKey;", instance("take"));
+        put(m, "java/nio/file/WatchService.poll()Ljava/nio/file/WatchKey;", instance("poll"));
+        put(m, "java/nio/file/WatchService.close()V", instance("close"));
+        put(m, "java/nio/file/WatchKey.pollEvents()Ljava/util/List;", instance("pollEvents"));
+        put(m, "java/nio/file/WatchKey.reset()Z", instance("reset"));
+        put(m, "java/nio/file/WatchKey.cancel()V", instance("cancel"));
+        put(m, "java/nio/file/WatchKey.isValid()Z", instance("isValid"));
+        put(m, "java/nio/file/WatchEvent.kind()Ljava/nio/file/WatchEvent$Kind;", instance("kind"));
+        put(m, "java/nio/file/WatchEvent.context()Ljava/lang/Object;", instance("context"));
+        put(m, "java/nio/file/WatchEvent.count()I", instance("count"));
+        put(m, "java/nio/file/WatchEvent$Kind.name()Ljava/lang/String;", instance("name"));
+    }
+
     private static Map<String, ShimTarget> buildFields() {
         Map<String, ShimTarget> m = new java.util.HashMap<>(256);
         addLangFields0(m);
@@ -2661,6 +2683,10 @@ public final class ShimRegistry {
     }
 
     private static void addNioFields0(Map<String, ShimTarget> m) {
+        put(m, "java/nio/file/StandardWatchEventKinds.ENTRY_CREATE Ljava/nio/file/WatchEvent$Kind;", statics("ENTRY_CREATE"));
+        put(m, "java/nio/file/StandardWatchEventKinds.ENTRY_DELETE Ljava/nio/file/WatchEvent$Kind;", statics("ENTRY_DELETE"));
+        put(m, "java/nio/file/StandardWatchEventKinds.ENTRY_MODIFY Ljava/nio/file/WatchEvent$Kind;", statics("ENTRY_MODIFY"));
+        put(m, "java/nio/file/StandardWatchEventKinds.OVERFLOW Ljava/nio/file/WatchEvent$Kind;", statics("OVERFLOW"));
         put(m, "javax/crypto/Cipher.ENCRYPT_MODE I", statics("ENCRYPT_MODE"));
         put(m, "javax/crypto/Cipher.DECRYPT_MODE I", statics("DECRYPT_MODE"));
         put(m, "javax/crypto/Cipher.WRAP_MODE I", statics("WRAP_MODE"));

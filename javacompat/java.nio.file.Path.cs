@@ -131,6 +131,32 @@ namespace java.nio.file
             return list.iterator();
         }
 
+        public WatchKey register(WatchService watcher, WatchEvent_S_Kind[] events)
+        {
+            var key = new WatchKey(global::java.lang.RawNew.I);
+            key.service = watcher;
+            var fsw = new global::System.IO.FileSystemWatcher(value);
+            key.fsw = fsw;
+            watcher.watchers.Add(fsw);
+            foreach (var k in events)
+            {
+                if (k.kindName == "ENTRY_CREATE")
+                {
+                    fsw.Created += (s, e) => key.Enqueue(new WatchEvent(StandardWatchEventKinds.ENTRY_CREATE, new Path(e.Name)));
+                }
+                else if (k.kindName == "ENTRY_DELETE")
+                {
+                    fsw.Deleted += (s, e) => key.Enqueue(new WatchEvent(StandardWatchEventKinds.ENTRY_DELETE, new Path(e.Name)));
+                }
+                else if (k.kindName == "ENTRY_MODIFY")
+                {
+                    fsw.Changed += (s, e) => key.Enqueue(new WatchEvent(StandardWatchEventKinds.ENTRY_MODIFY, new Path(e.Name)));
+                }
+            }
+            fsw.EnableRaisingEvents = true;
+            return key;
+        }
+
         public override int equals(global::java.lang.Object o)
         {
             return o is Path p && p.value == value ? 1 : 0;

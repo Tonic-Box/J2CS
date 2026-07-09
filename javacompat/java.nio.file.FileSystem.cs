@@ -15,5 +15,10 @@ namespace java.nio.file
         {
             return Paths.get(first, more);
         }
+
+        public WatchService newWatchService()
+        {
+            return new WatchService(global::java.lang.RawNew.I);
+        }
     }
 }
