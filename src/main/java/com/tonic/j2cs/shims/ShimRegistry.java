@@ -127,6 +127,11 @@ public final class ShimRegistry {
         put(m, "java/util/Locale", "java/lang/Object");
         put(m, "java/text/NumberFormat", "java/lang/Object");
         put(m, "java/text/MessageFormat", "java/lang/Object");
+        put(m, "java/util/Date", "java/lang/Object");
+        put(m, "java/util/TimeZone", "java/lang/Object");
+        put(m, "java/util/Calendar", "java/lang/Object");
+        put(m, "java/util/GregorianCalendar", "java/util/Calendar");
+        put(m, "java/text/SimpleDateFormat", "java/lang/Object");
     }
 
     private static void addUtilSupers2(Map<String, String> m) {
@@ -538,6 +543,7 @@ public final class ShimRegistry {
         addTier1Methods1(m);
         addTimeTextMethods0(m);
         addTimeTextMethods1(m);
+        addDateCalMethods0(m);
         addLangMethods1(m);
         addLangMethods2(m);
         addLangMethods3(m);
@@ -2262,6 +2268,34 @@ public final class ShimRegistry {
         put(m, "java/text/MessageFormat.format([Ljava/lang/Object;)Ljava/lang/String;", instance("format"));
     }
 
+    private static void addDateCalMethods0(Map<String, ShimTarget> m) {
+        put(m, "java/util/Date.getTime()J", instance("getTime"));
+        put(m, "java/util/Date.setTime(J)V", instance("setTime"));
+        put(m, "java/util/Date.before(Ljava/util/Date;)Z", instance("before"));
+        put(m, "java/util/Date.after(Ljava/util/Date;)Z", instance("after"));
+        put(m, "java/util/Date.compareTo(Ljava/util/Date;)I", instance("compareTo"));
+        put(m, "java/util/TimeZone.getTimeZone(Ljava/lang/String;)Ljava/util/TimeZone;", statics("getTimeZone"));
+        put(m, "java/util/TimeZone.getDefault()Ljava/util/TimeZone;", statics("getDefault"));
+        put(m, "java/util/TimeZone.getID()Ljava/lang/String;", instance("getID"));
+        put(m, "java/util/TimeZone.getRawOffset()I", instance("getRawOffset"));
+        put(m, "java/util/Calendar.getInstance()Ljava/util/Calendar;", statics("getInstance"));
+        put(m, "java/util/Calendar.getInstance(Ljava/util/TimeZone;)Ljava/util/Calendar;", statics("getInstance"));
+        put(m, "java/util/Calendar.setTime(Ljava/util/Date;)V", instance("setTime"));
+        put(m, "java/util/Calendar.getTime()Ljava/util/Date;", instance("getTime"));
+        put(m, "java/util/Calendar.getTimeInMillis()J", instance("getTimeInMillis"));
+        put(m, "java/util/Calendar.setTimeInMillis(J)V", instance("setTimeInMillis"));
+        put(m, "java/util/Calendar.setTimeZone(Ljava/util/TimeZone;)V", instance("setTimeZone"));
+        put(m, "java/util/Calendar.getTimeZone()Ljava/util/TimeZone;", instance("getTimeZone"));
+        put(m, "java/util/Calendar.get(I)I", instance("get"));
+        put(m, "java/util/Calendar.set(II)V", instance("set"));
+        put(m, "java/util/Calendar.set(III)V", instance("set"));
+        put(m, "java/util/Calendar.add(II)V", instance("add"));
+        put(m, "java/text/SimpleDateFormat.setTimeZone(Ljava/util/TimeZone;)V", instance("setTimeZone"));
+        put(m, "java/text/SimpleDateFormat.format(Ljava/util/Date;)Ljava/lang/String;", instance("format"));
+        put(m, "java/text/SimpleDateFormat.parse(Ljava/lang/String;)Ljava/util/Date;", instance("parse"));
+        put(m, "java/text/SimpleDateFormat.toPattern()Ljava/lang/String;", instance("toPattern"));
+    }
+
     private static Map<String, ShimTarget> buildFields() {
         Map<String, ShimTarget> m = new java.util.HashMap<>(256);
         addLangFields0(m);
@@ -2303,6 +2337,45 @@ public final class ShimRegistry {
     }
 
     private static void addNioFields0(Map<String, ShimTarget> m) {
+        put(m, "java/util/Calendar.ERA I", statics("ERA"));
+        put(m, "java/util/Calendar.YEAR I", statics("YEAR"));
+        put(m, "java/util/Calendar.MONTH I", statics("MONTH"));
+        put(m, "java/util/Calendar.WEEK_OF_YEAR I", statics("WEEK_OF_YEAR"));
+        put(m, "java/util/Calendar.WEEK_OF_MONTH I", statics("WEEK_OF_MONTH"));
+        put(m, "java/util/Calendar.DATE I", statics("DATE"));
+        put(m, "java/util/Calendar.DAY_OF_MONTH I", statics("DAY_OF_MONTH"));
+        put(m, "java/util/Calendar.DAY_OF_YEAR I", statics("DAY_OF_YEAR"));
+        put(m, "java/util/Calendar.DAY_OF_WEEK I", statics("DAY_OF_WEEK"));
+        put(m, "java/util/Calendar.DAY_OF_WEEK_IN_MONTH I", statics("DAY_OF_WEEK_IN_MONTH"));
+        put(m, "java/util/Calendar.AM_PM I", statics("AM_PM"));
+        put(m, "java/util/Calendar.HOUR I", statics("HOUR"));
+        put(m, "java/util/Calendar.HOUR_OF_DAY I", statics("HOUR_OF_DAY"));
+        put(m, "java/util/Calendar.MINUTE I", statics("MINUTE"));
+        put(m, "java/util/Calendar.SECOND I", statics("SECOND"));
+        put(m, "java/util/Calendar.MILLISECOND I", statics("MILLISECOND"));
+        put(m, "java/util/Calendar.ZONE_OFFSET I", statics("ZONE_OFFSET"));
+        put(m, "java/util/Calendar.DST_OFFSET I", statics("DST_OFFSET"));
+        put(m, "java/util/Calendar.JANUARY I", statics("JANUARY"));
+        put(m, "java/util/Calendar.FEBRUARY I", statics("FEBRUARY"));
+        put(m, "java/util/Calendar.MARCH I", statics("MARCH"));
+        put(m, "java/util/Calendar.APRIL I", statics("APRIL"));
+        put(m, "java/util/Calendar.MAY I", statics("MAY"));
+        put(m, "java/util/Calendar.JUNE I", statics("JUNE"));
+        put(m, "java/util/Calendar.JULY I", statics("JULY"));
+        put(m, "java/util/Calendar.AUGUST I", statics("AUGUST"));
+        put(m, "java/util/Calendar.SEPTEMBER I", statics("SEPTEMBER"));
+        put(m, "java/util/Calendar.OCTOBER I", statics("OCTOBER"));
+        put(m, "java/util/Calendar.NOVEMBER I", statics("NOVEMBER"));
+        put(m, "java/util/Calendar.DECEMBER I", statics("DECEMBER"));
+        put(m, "java/util/Calendar.SUNDAY I", statics("SUNDAY"));
+        put(m, "java/util/Calendar.MONDAY I", statics("MONDAY"));
+        put(m, "java/util/Calendar.TUESDAY I", statics("TUESDAY"));
+        put(m, "java/util/Calendar.WEDNESDAY I", statics("WEDNESDAY"));
+        put(m, "java/util/Calendar.THURSDAY I", statics("THURSDAY"));
+        put(m, "java/util/Calendar.FRIDAY I", statics("FRIDAY"));
+        put(m, "java/util/Calendar.SATURDAY I", statics("SATURDAY"));
+        put(m, "java/util/Calendar.AM I", statics("AM"));
+        put(m, "java/util/Calendar.PM I", statics("PM"));
         put(m, "java/time/Month.JANUARY Ljava/time/Month;", statics("JANUARY"));
         put(m, "java/time/Month.FEBRUARY Ljava/time/Month;", statics("FEBRUARY"));
         put(m, "java/time/Month.MARCH Ljava/time/Month;", statics("MARCH"));

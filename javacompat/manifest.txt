@@ -146,6 +146,7 @@ java.security.SecureRandom.cs
 java.text.DecimalFormat.cs
 java.text.MessageFormat.cs
 java.text.NumberFormat.cs
+java.text.SimpleDateFormat.cs
 java.time.DayOfWeek.cs
 java.time.Duration.cs
 java.time.Instant.cs
@@ -167,11 +168,14 @@ java.util.Arrays.cs
 java.util.Base64$Decoder.cs
 java.util.Base64$Encoder.cs
 java.util.Base64.cs
+java.util.Calendar.cs
 java.util.Collection.cs
 java.util.Collections.cs
 java.util.Comparator.cs
+java.util.Date.cs
 java.util.Deque.cs
 java.util.DoubleSummaryStatistics.cs
+java.util.GregorianCalendar.cs
 java.util.HashMap.cs
 java.util.HashSet.cs
 java.util.IntSummaryStatistics.cs
@@ -196,6 +200,7 @@ java.util.Random.cs
 java.util.Scanner.cs
 java.util.Set.cs
 java.util.StringTokenizer.cs
+java.util.TimeZone.cs
 java.util.TreeMap.cs
 java.util.TreeSet.cs
 java.util.UUID.cs
