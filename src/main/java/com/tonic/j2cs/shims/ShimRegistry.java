@@ -118,6 +118,15 @@ public final class ShimRegistry {
         put(m, "java/util/Scanner", "java/lang/Object");
         put(m, "java/util/StringTokenizer", "java/lang/Object");
         put(m, "java/text/DecimalFormat", "java/lang/Object");
+        put(m, "java/time/Instant", "java/lang/Object");
+        put(m, "java/time/LocalTime", "java/lang/Object");
+        put(m, "java/time/Period", "java/lang/Object");
+        put(m, "java/time/ZoneId", "java/lang/Object");
+        put(m, "java/time/Month", "java/lang/Object");
+        put(m, "java/time/Year", "java/lang/Object");
+        put(m, "java/util/Locale", "java/lang/Object");
+        put(m, "java/text/NumberFormat", "java/lang/Object");
+        put(m, "java/text/MessageFormat", "java/lang/Object");
     }
 
     private static void addUtilSupers2(Map<String, String> m) {
@@ -527,6 +536,8 @@ public final class ShimRegistry {
         addNioMethods9(m);
         addTier1Methods0(m);
         addTier1Methods1(m);
+        addTimeTextMethods0(m);
+        addTimeTextMethods1(m);
         addLangMethods1(m);
         addLangMethods2(m);
         addLangMethods3(m);
@@ -2185,6 +2196,72 @@ public final class ShimRegistry {
         put(m, "java/text/DecimalFormat.toPattern()Ljava/lang/String;", instance("toPattern"));
     }
 
+    private static void addTimeTextMethods0(Map<String, ShimTarget> m) {
+        put(m, "java/time/Instant.ofEpochSecond(J)Ljava/time/Instant;", statics("ofEpochSecond"));
+        put(m, "java/time/Instant.ofEpochSecond(JJ)Ljava/time/Instant;", statics("ofEpochSecond"));
+        put(m, "java/time/Instant.ofEpochMilli(J)Ljava/time/Instant;", statics("ofEpochMilli"));
+        put(m, "java/time/Instant.getEpochSecond()J", instance("getEpochSecond"));
+        put(m, "java/time/Instant.getNano()I", instance("getNano"));
+        put(m, "java/time/Instant.toEpochMilli()J", instance("toEpochMilli"));
+        put(m, "java/time/Instant.plusSeconds(J)Ljava/time/Instant;", instance("plusSeconds"));
+        put(m, "java/time/Instant.minusSeconds(J)Ljava/time/Instant;", instance("minusSeconds"));
+        put(m, "java/time/Instant.plusMillis(J)Ljava/time/Instant;", instance("plusMillis"));
+        put(m, "java/time/Instant.isBefore(Ljava/time/Instant;)Z", instance("isBefore"));
+        put(m, "java/time/Instant.isAfter(Ljava/time/Instant;)Z", instance("isAfter"));
+        put(m, "java/time/Instant.compareTo(Ljava/time/Instant;)I", instance("compareTo"));
+        put(m, "java/time/LocalTime.of(II)Ljava/time/LocalTime;", statics("of"));
+        put(m, "java/time/LocalTime.of(III)Ljava/time/LocalTime;", statics("of"));
+        put(m, "java/time/LocalTime.of(IIII)Ljava/time/LocalTime;", statics("of"));
+        put(m, "java/time/LocalTime.getHour()I", instance("getHour"));
+        put(m, "java/time/LocalTime.getMinute()I", instance("getMinute"));
+        put(m, "java/time/LocalTime.getSecond()I", instance("getSecond"));
+        put(m, "java/time/LocalTime.getNano()I", instance("getNano"));
+        put(m, "java/time/LocalTime.plusHours(J)Ljava/time/LocalTime;", instance("plusHours"));
+        put(m, "java/time/LocalTime.plusMinutes(J)Ljava/time/LocalTime;", instance("plusMinutes"));
+        put(m, "java/time/LocalTime.isBefore(Ljava/time/LocalTime;)Z", instance("isBefore"));
+        put(m, "java/time/LocalTime.isAfter(Ljava/time/LocalTime;)Z", instance("isAfter"));
+        put(m, "java/time/LocalTime.compareTo(Ljava/time/LocalTime;)I", instance("compareTo"));
+        put(m, "java/time/Period.of(III)Ljava/time/Period;", statics("of"));
+        put(m, "java/time/Period.ofYears(I)Ljava/time/Period;", statics("ofYears"));
+        put(m, "java/time/Period.ofMonths(I)Ljava/time/Period;", statics("ofMonths"));
+        put(m, "java/time/Period.ofWeeks(I)Ljava/time/Period;", statics("ofWeeks"));
+        put(m, "java/time/Period.ofDays(I)Ljava/time/Period;", statics("ofDays"));
+        put(m, "java/time/Period.getYears()I", instance("getYears"));
+        put(m, "java/time/Period.getMonths()I", instance("getMonths"));
+        put(m, "java/time/Period.getDays()I", instance("getDays"));
+        put(m, "java/time/Period.plusYears(J)Ljava/time/Period;", instance("plusYears"));
+        put(m, "java/time/Period.plusMonths(J)Ljava/time/Period;", instance("plusMonths"));
+        put(m, "java/time/Period.plusDays(J)Ljava/time/Period;", instance("plusDays"));
+        put(m, "java/time/ZoneId.of(Ljava/lang/String;)Ljava/time/ZoneId;", statics("of"));
+        put(m, "java/time/ZoneId.systemDefault()Ljava/time/ZoneId;", statics("systemDefault"));
+        put(m, "java/time/ZoneId.getId()Ljava/lang/String;", instance("getId"));
+        put(m, "java/time/Month.of(I)Ljava/time/Month;", statics("of"));
+        put(m, "java/time/Month.values()[Ljava/time/Month;", statics("values"));
+        put(m, "java/time/Month.getValue()I", instance("getValue"));
+        put(m, "java/time/Year.of(I)Ljava/time/Year;", statics("of"));
+        put(m, "java/time/Year.isLeap(J)Z", statics("isLeap"));
+        put(m, "java/time/Year.getValue()I", instance("getValue"));
+        put(m, "java/time/Year.isLeap()Z", instance("isLeap"));
+    }
+
+    private static void addTimeTextMethods1(Map<String, ShimTarget> m) {
+        put(m, "java/util/Locale.getDefault()Ljava/util/Locale;", statics("getDefault"));
+        put(m, "java/util/Locale.getLanguage()Ljava/lang/String;", instance("getLanguage"));
+        put(m, "java/util/Locale.getCountry()Ljava/lang/String;", instance("getCountry"));
+        put(m, "java/text/NumberFormat.getInstance()Ljava/text/NumberFormat;", statics("getInstance"));
+        put(m, "java/text/NumberFormat.getInstance(Ljava/util/Locale;)Ljava/text/NumberFormat;", statics("getInstance"));
+        put(m, "java/text/NumberFormat.getNumberInstance()Ljava/text/NumberFormat;", statics("getNumberInstance"));
+        put(m, "java/text/NumberFormat.getIntegerInstance()Ljava/text/NumberFormat;", statics("getIntegerInstance"));
+        put(m, "java/text/NumberFormat.format(D)Ljava/lang/String;", instance("format"));
+        put(m, "java/text/NumberFormat.format(J)Ljava/lang/String;", instance("format"));
+        put(m, "java/text/NumberFormat.setMaximumFractionDigits(I)V", instance("setMaximumFractionDigits"));
+        put(m, "java/text/NumberFormat.setMinimumFractionDigits(I)V", instance("setMinimumFractionDigits"));
+        put(m, "java/text/NumberFormat.setGroupingUsed(Z)V", instance("setGroupingUsed"));
+        put(m, "java/text/NumberFormat.isGroupingUsed()Z", instance("isGroupingUsed"));
+        put(m, "java/text/MessageFormat.format(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;", statics("format"));
+        put(m, "java/text/MessageFormat.format([Ljava/lang/Object;)Ljava/lang/String;", instance("format"));
+    }
+
     private static Map<String, ShimTarget> buildFields() {
         Map<String, ShimTarget> m = new java.util.HashMap<>(256);
         addLangFields0(m);
@@ -2226,6 +2303,22 @@ public final class ShimRegistry {
     }
 
     private static void addNioFields0(Map<String, ShimTarget> m) {
+        put(m, "java/time/Month.JANUARY Ljava/time/Month;", statics("JANUARY"));
+        put(m, "java/time/Month.FEBRUARY Ljava/time/Month;", statics("FEBRUARY"));
+        put(m, "java/time/Month.MARCH Ljava/time/Month;", statics("MARCH"));
+        put(m, "java/time/Month.APRIL Ljava/time/Month;", statics("APRIL"));
+        put(m, "java/time/Month.MAY Ljava/time/Month;", statics("MAY"));
+        put(m, "java/time/Month.JUNE Ljava/time/Month;", statics("JUNE"));
+        put(m, "java/time/Month.JULY Ljava/time/Month;", statics("JULY"));
+        put(m, "java/time/Month.AUGUST Ljava/time/Month;", statics("AUGUST"));
+        put(m, "java/time/Month.SEPTEMBER Ljava/time/Month;", statics("SEPTEMBER"));
+        put(m, "java/time/Month.OCTOBER Ljava/time/Month;", statics("OCTOBER"));
+        put(m, "java/time/Month.NOVEMBER Ljava/time/Month;", statics("NOVEMBER"));
+        put(m, "java/time/Month.DECEMBER Ljava/time/Month;", statics("DECEMBER"));
+        put(m, "java/util/Locale.ROOT Ljava/util/Locale;", statics("ROOT"));
+        put(m, "java/util/Locale.ENGLISH Ljava/util/Locale;", statics("ENGLISH"));
+        put(m, "java/util/Locale.US Ljava/util/Locale;", statics("US"));
+        put(m, "java/util/Locale.UK Ljava/util/Locale;", statics("UK"));
         put(m, "java/math/BigInteger.ZERO Ljava/math/BigInteger;", statics("ZERO"));
         put(m, "java/math/BigInteger.ONE Ljava/math/BigInteger;", statics("ONE"));
         put(m, "java/math/BigInteger.TWO Ljava/math/BigInteger;", statics("TWO"));

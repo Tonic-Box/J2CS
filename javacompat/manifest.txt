@@ -144,10 +144,18 @@ java.nio.file.attribute.FileAttribute.cs
 java.security.MessageDigest.cs
 java.security.SecureRandom.cs
 java.text.DecimalFormat.cs
+java.text.MessageFormat.cs
+java.text.NumberFormat.cs
 java.time.DayOfWeek.cs
 java.time.Duration.cs
+java.time.Instant.cs
 java.time.LocalDate.cs
 java.time.LocalDateTime.cs
+java.time.LocalTime.cs
+java.time.Month.cs
+java.time.Period.cs
+java.time.Year.cs
+java.time.ZoneId.cs
 java.time.chrono.ChronoLocalDate.cs
 java.time.chrono.ChronoLocalDateTime.cs
 java.time.format.DateTimeFormatter.cs
@@ -173,6 +181,7 @@ java.util.JCollections.cs
 java.util.LinkedHashMap.cs
 java.util.LinkedList.cs
 java.util.List.cs
+java.util.Locale.cs
 java.util.LongSummaryStatistics.cs
 java.util.Map$Entry.cs
 java.util.Map.cs
