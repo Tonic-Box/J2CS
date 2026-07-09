@@ -144,6 +144,7 @@ java.nio.file.StandardCopyOption.cs
 java.nio.file.StandardOpenOption.cs
 java.nio.file.attribute.BasicFileAttributes.cs
 java.nio.file.attribute.FileAttribute.cs
+java.security.Key.cs
 java.security.MessageDigest.cs
 java.security.SecureRandom.cs
 java.text.DecimalFormat.cs
@@ -282,6 +283,9 @@ java.util.stream.DoubleStream.cs
 java.util.stream.IntStream.cs
 java.util.stream.LongStream.cs
 java.util.stream.Stream.cs
+javax.crypto.Mac.cs
+javax.crypto.SecretKey.cs
+javax.crypto.spec.SecretKeySpec.cs
 javax.swing.AbstractButton.cs
 javax.swing.BorderFactory.cs
 javax.swing.Box.cs

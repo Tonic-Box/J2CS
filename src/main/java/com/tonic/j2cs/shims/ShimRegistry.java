@@ -248,6 +248,10 @@ public final class ShimRegistry {
 
     private static void addSecuritySupers0(Map<String, String> m) {
         put(m, "java/security/MessageDigest", "java/lang/Object");
+        put(m, "java/security/Key", "java/lang/Object");
+        put(m, "javax/crypto/SecretKey", "java/security/Key");
+        put(m, "javax/crypto/spec/SecretKeySpec", "javax/crypto/SecretKey");
+        put(m, "javax/crypto/Mac", "java/lang/Object");
         put(m, "java/security/SecureRandom", "java/lang/Object");
     }
 
@@ -568,6 +572,7 @@ public final class ShimRegistry {
         addConcurrentMethods2(m);
         addNavEnumMethods0(m);
         addNetMethods0(m);
+        addCryptoMethods0(m);
         addLangMethods1(m);
         addLangMethods2(m);
         addLangMethods3(m);
@@ -2449,6 +2454,25 @@ public final class ShimRegistry {
         put(m, "java/net/URL.getFile()Ljava/lang/String;", instance("getFile"));
         put(m, "java/net/URL.toExternalForm()Ljava/lang/String;", instance("toExternalForm"));
         put(m, "java/net/URL.toURI()Ljava/net/URI;", instance("toURI"));
+    }
+
+    private static void addCryptoMethods0(Map<String, ShimTarget> m) {
+        put(m, "java/security/Key.getAlgorithm()Ljava/lang/String;", instance("getAlgorithm"));
+        put(m, "java/security/Key.getEncoded()[B", instance("getEncoded"));
+        put(m, "java/security/Key.getFormat()Ljava/lang/String;", instance("getFormat"));
+        put(m, "javax/crypto/Mac.getInstance(Ljava/lang/String;)Ljavax/crypto/Mac;", statics("getInstance"));
+        put(m, "javax/crypto/Mac.init(Ljava/security/Key;)V", instance("init"));
+        put(m, "javax/crypto/Mac.update([B)V", instance("update"));
+        put(m, "javax/crypto/Mac.doFinal()[B", instance("doFinal"));
+        put(m, "javax/crypto/Mac.doFinal([B)[B", instance("doFinal"));
+        put(m, "javax/crypto/Mac.getMacLength()I", instance("getMacLength"));
+        put(m, "javax/crypto/Mac.getAlgorithm()Ljava/lang/String;", instance("getAlgorithm"));
+        put(m, "javax/crypto/Mac.reset()V", instance("reset"));
+        put(m, "java/security/MessageDigest.update([B)V", instance("update"));
+        put(m, "java/security/MessageDigest.update(B)V", instance("update"));
+        put(m, "java/security/MessageDigest.digest()[B", instance("digest"));
+        put(m, "java/security/MessageDigest.getAlgorithm()Ljava/lang/String;", instance("getAlgorithm"));
+        put(m, "java/security/MessageDigest.isEqual([B[B)Z", statics("isEqual"));
     }
 
     private static Map<String, ShimTarget> buildFields() {
