@@ -176,6 +176,8 @@ java.util.Comparator.cs
 java.util.Date.cs
 java.util.Deque.cs
 java.util.DoubleSummaryStatistics.cs
+java.util.EnumMap.cs
+java.util.EnumSet.cs
 java.util.GregorianCalendar.cs
 java.util.HashMap.cs
 java.util.HashSet.cs

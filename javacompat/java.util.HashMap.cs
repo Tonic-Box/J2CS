@@ -319,6 +319,16 @@ namespace java.util
                 }
                 return;
             }
+            if (this is global::java.util.EnumMap)
+            {
+                var byOrdinal = new global::System.Collections.Generic.List<global::java.lang.Object>(keyOrder);
+                byOrdinal.Sort((a, b) => ((global::java.lang.Enum)a).ordinal() - ((global::java.lang.Enum)b).ordinal());
+                foreach (global::java.lang.Object k in byOrdinal)
+                {
+                    action(k, get(k));
+                }
+                return;
+            }
             if (this is global::java.util.LinkedHashMap)
             {
                 foreach (global::java.lang.Object k in keyOrder)

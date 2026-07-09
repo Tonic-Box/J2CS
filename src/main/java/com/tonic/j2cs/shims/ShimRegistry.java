@@ -89,6 +89,8 @@ public final class ShimRegistry {
         put(m, "java/util/Stack", "java/util/Vector");
         put(m, "java/util/BitSet", "java/lang/Object");
         put(m, "java/util/Properties", "java/util/HashMap");
+        put(m, "java/util/EnumSet", "java/util/Set");
+        put(m, "java/util/EnumMap", "java/util/HashMap");
         put(m, "java/util/ListIterator", "java/util/Iterator");
         put(m, "java/util/Set", "java/util/Collection");
         put(m, "java/util/Map", "java/lang/Object");
@@ -550,6 +552,7 @@ public final class ShimRegistry {
         addTimeTextMethods1(m);
         addDateCalMethods0(m);
         addUtilColMethods0(m);
+        addEnumStrMethods0(m);
         addLangMethods1(m);
         addLangMethods2(m);
         addLangMethods3(m);
@@ -2353,6 +2356,25 @@ public final class ShimRegistry {
         put(m, "java/util/TreeMap.ceilingKey(Ljava/lang/Object;)Ljava/lang/Object;", instance("ceilingKey"));
         put(m, "java/util/TreeMap.higherKey(Ljava/lang/Object;)Ljava/lang/Object;", instance("higherKey"));
         put(m, "java/util/TreeMap.lowerKey(Ljava/lang/Object;)Ljava/lang/Object;", instance("lowerKey"));
+    }
+
+    private static void addEnumStrMethods0(Map<String, ShimTarget> m) {
+        put(m, "java/util/EnumMap.put(Ljava/lang/Enum;Ljava/lang/Object;)Ljava/lang/Object;", instance("put"));
+        put(m, "java/util/EnumSet.noneOf(Ljava/lang/Class;)Ljava/util/EnumSet;", statics("noneOf"));
+        put(m, "java/util/EnumSet.of(Ljava/lang/Enum;)Ljava/util/EnumSet;", statics("of"));
+        put(m, "java/util/EnumSet.of(Ljava/lang/Enum;Ljava/lang/Enum;)Ljava/util/EnumSet;", statics("of"));
+        put(m, "java/util/EnumSet.of(Ljava/lang/Enum;Ljava/lang/Enum;Ljava/lang/Enum;)Ljava/util/EnumSet;", statics("of"));
+        put(m, "java/util/EnumSet.of(Ljava/lang/Enum;Ljava/lang/Enum;Ljava/lang/Enum;Ljava/lang/Enum;)Ljava/util/EnumSet;", statics("of"));
+        put(m, "java/util/EnumSet.of(Ljava/lang/Enum;Ljava/lang/Enum;Ljava/lang/Enum;Ljava/lang/Enum;Ljava/lang/Enum;)Ljava/util/EnumSet;", statics("of"));
+        put(m, "java/util/EnumSet.of(Ljava/lang/Enum;[Ljava/lang/Enum;)Ljava/util/EnumSet;", statics("of"));
+        put(m, "java/util/EnumSet.copyOf(Ljava/util/Collection;)Ljava/util/EnumSet;", statics("copyOf"));
+        put(m, "java/lang/String.isBlank()Z", instance("isBlank"));
+        put(m, "java/lang/String.stripLeading()Ljava/lang/String;", instance("stripLeading"));
+        put(m, "java/lang/String.stripTrailing()Ljava/lang/String;", instance("stripTrailing"));
+        put(m, "java/lang/String.chars()Ljava/util/stream/IntStream;", instance("chars"));
+        put(m, "java/lang/String.codePoints()Ljava/util/stream/IntStream;", instance("codePoints"));
+        put(m, "java/lang/String.lines()Ljava/util/stream/Stream;", instance("lines"));
+        put(m, "java/lang/String.formatted([Ljava/lang/Object;)Ljava/lang/String;", instance("formatted"));
     }
 
     private static Map<String, ShimTarget> buildFields() {

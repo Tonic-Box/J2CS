@@ -199,6 +199,56 @@ namespace java.lang
             return Wrap(Value.Trim());
         }
 
+        public String stripLeading()
+        {
+            return Wrap(Value.TrimStart());
+        }
+
+        public String stripTrailing()
+        {
+            return Wrap(Value.TrimEnd());
+        }
+
+        public int isBlank()
+        {
+            foreach (char c in Value)
+            {
+                if (!char.IsWhiteSpace(c)) { return 0; }
+            }
+            return 1;
+        }
+
+        public global::java.util.stream.IntStream chars()
+        {
+            var arr = new int[Value.Length];
+            for (int i = 0; i < Value.Length; i++) { arr[i] = Value[i]; }
+            return global::java.util.stream.IntStream.of(arr);
+        }
+
+        public global::java.util.stream.IntStream codePoints()
+        {
+            return chars();
+        }
+
+        public global::java.util.stream.Stream lines()
+        {
+            var outp = new global::System.Collections.Generic.List<global::java.lang.Object>();
+            foreach (var line in Value.Split('\n'))
+            {
+                outp.Add(Wrap(line.EndsWith("\r") ? line.Substring(0, line.Length - 1) : line));
+            }
+            if (outp.Count > 0 && Value.EndsWith("\n"))
+            {
+                outp.RemoveAt(outp.Count - 1);
+            }
+            return global::java.util.stream.Stream.Wrap(outp);
+        }
+
+        public String formatted(global::java.lang.Object[] args)
+        {
+            return Wrap(global::java.lang.JRuntime.Format(Value, args));
+        }
+
         public String repeat(int count)
         {
             if (count < 0)
