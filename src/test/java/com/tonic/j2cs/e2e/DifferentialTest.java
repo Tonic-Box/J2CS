@@ -82,6 +82,7 @@ class DifferentialTest {
                 fixture("DateCal"),
                 fixture("UtilCollections"),
                 fixture("EnumStrings"),
+                fixture("Concurrency"),
                 fixture("Boxing1"),
                 fixture("Boxing2"),
                 fixture("BoxingGenerics"),

@@ -203,6 +203,13 @@ public final class ShimRegistry {
 
     private static void addConcurrentSupers0(Map<String, String> m) {
         put(m, "java/util/concurrent/TimeUnit", "java/lang/Object");
+        put(m, "java/util/concurrent/BlockingQueue", "java/util/Queue");
+        put(m, "java/util/concurrent/LinkedBlockingQueue", "java/util/concurrent/BlockingQueue");
+        put(m, "java/util/concurrent/ArrayBlockingQueue", "java/util/concurrent/BlockingQueue");
+        put(m, "java/util/concurrent/ConcurrentLinkedQueue", "java/util/Queue");
+        put(m, "java/util/concurrent/CountDownLatch", "java/lang/Object");
+        put(m, "java/util/concurrent/Semaphore", "java/lang/Object");
+        put(m, "java/util/concurrent/CyclicBarrier", "java/lang/Object");
         put(m, "java/util/concurrent/ConcurrentHashMap", "java/util/HashMap");
         put(m, "java/util/concurrent/CopyOnWriteArrayList", "java/util/ArrayList");
         put(m, "java/util/concurrent/atomic/AtomicInteger", "java/lang/Number");
@@ -553,6 +560,7 @@ public final class ShimRegistry {
         addDateCalMethods0(m);
         addUtilColMethods0(m);
         addEnumStrMethods0(m);
+        addConcurrentMethods2(m);
         addLangMethods1(m);
         addLangMethods2(m);
         addLangMethods3(m);
@@ -2375,6 +2383,26 @@ public final class ShimRegistry {
         put(m, "java/lang/String.codePoints()Ljava/util/stream/IntStream;", instance("codePoints"));
         put(m, "java/lang/String.lines()Ljava/util/stream/Stream;", instance("lines"));
         put(m, "java/lang/String.formatted([Ljava/lang/Object;)Ljava/lang/String;", instance("formatted"));
+    }
+
+    private static void addConcurrentMethods2(Map<String, ShimTarget> m) {
+        put(m, "java/util/concurrent/BlockingQueue.put(Ljava/lang/Object;)V", instance("put"));
+        put(m, "java/util/concurrent/BlockingQueue.take()Ljava/lang/Object;", instance("take"));
+        put(m, "java/util/concurrent/BlockingQueue.remainingCapacity()I", instance("remainingCapacity"));
+        put(m, "java/util/concurrent/CountDownLatch.countDown()V", instance("countDown"));
+        put(m, "java/util/concurrent/CountDownLatch.getCount()J", instance("getCount"));
+        put(m, "java/util/concurrent/CountDownLatch.await()V", instance("await"));
+        put(m, "java/util/concurrent/CountDownLatch.await(JLjava/util/concurrent/TimeUnit;)Z", instance("await"));
+        put(m, "java/util/concurrent/Semaphore.acquire()V", instance("acquire"));
+        put(m, "java/util/concurrent/Semaphore.acquire(I)V", instance("acquire"));
+        put(m, "java/util/concurrent/Semaphore.release()V", instance("release"));
+        put(m, "java/util/concurrent/Semaphore.release(I)V", instance("release"));
+        put(m, "java/util/concurrent/Semaphore.tryAcquire()Z", instance("tryAcquire"));
+        put(m, "java/util/concurrent/Semaphore.tryAcquire(JLjava/util/concurrent/TimeUnit;)Z", instance("tryAcquire"));
+        put(m, "java/util/concurrent/Semaphore.availablePermits()I", instance("availablePermits"));
+        put(m, "java/util/concurrent/CyclicBarrier.await()I", instance("await"));
+        put(m, "java/util/concurrent/CyclicBarrier.getParties()I", instance("getParties"));
+        put(m, "java/util/concurrent/CyclicBarrier.getNumberWaiting()I", instance("getNumberWaiting"));
     }
 
     private static Map<String, ShimTarget> buildFields() {
