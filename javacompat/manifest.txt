@@ -147,6 +147,7 @@ java.nio.file.attribute.FileAttribute.cs
 java.security.Key.cs
 java.security.MessageDigest.cs
 java.security.SecureRandom.cs
+java.security.spec.AlgorithmParameterSpec.cs
 java.text.DecimalFormat.cs
 java.text.MessageFormat.cs
 java.text.NumberFormat.cs
@@ -283,8 +284,10 @@ java.util.stream.DoubleStream.cs
 java.util.stream.IntStream.cs
 java.util.stream.LongStream.cs
 java.util.stream.Stream.cs
+javax.crypto.Cipher.cs
 javax.crypto.Mac.cs
 javax.crypto.SecretKey.cs
+javax.crypto.spec.IvParameterSpec.cs
 javax.crypto.spec.SecretKeySpec.cs
 javax.swing.AbstractButton.cs
 javax.swing.BorderFactory.cs

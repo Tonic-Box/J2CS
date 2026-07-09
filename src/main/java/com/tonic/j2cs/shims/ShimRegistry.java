@@ -252,6 +252,9 @@ public final class ShimRegistry {
         put(m, "javax/crypto/SecretKey", "java/security/Key");
         put(m, "javax/crypto/spec/SecretKeySpec", "javax/crypto/SecretKey");
         put(m, "javax/crypto/Mac", "java/lang/Object");
+        put(m, "java/security/spec/AlgorithmParameterSpec", "java/lang/Object");
+        put(m, "javax/crypto/spec/IvParameterSpec", "java/lang/Object");
+        put(m, "javax/crypto/Cipher", "java/lang/Object");
         put(m, "java/security/SecureRandom", "java/lang/Object");
     }
 
@@ -573,6 +576,7 @@ public final class ShimRegistry {
         addNavEnumMethods0(m);
         addNetMethods0(m);
         addCryptoMethods0(m);
+        addCryptoMethods1(m);
         addLangMethods1(m);
         addLangMethods2(m);
         addLangMethods3(m);
@@ -2475,6 +2479,15 @@ public final class ShimRegistry {
         put(m, "java/security/MessageDigest.isEqual([B[B)Z", statics("isEqual"));
     }
 
+    private static void addCryptoMethods1(Map<String, ShimTarget> m) {
+        put(m, "javax/crypto/Cipher.getInstance(Ljava/lang/String;)Ljavax/crypto/Cipher;", statics("getInstance"));
+        put(m, "javax/crypto/Cipher.init(ILjava/security/Key;)V", instance("init"));
+        put(m, "javax/crypto/Cipher.init(ILjava/security/Key;Ljava/security/spec/AlgorithmParameterSpec;)V", instance("init"));
+        put(m, "javax/crypto/Cipher.doFinal([B)[B", instance("doFinal"));
+        put(m, "javax/crypto/Cipher.getBlockSize()I", instance("getBlockSize"));
+        put(m, "javax/crypto/spec/IvParameterSpec.getIV()[B", instance("getIV"));
+    }
+
     private static Map<String, ShimTarget> buildFields() {
         Map<String, ShimTarget> m = new java.util.HashMap<>(256);
         addLangFields0(m);
@@ -2516,6 +2529,10 @@ public final class ShimRegistry {
     }
 
     private static void addNioFields0(Map<String, ShimTarget> m) {
+        put(m, "javax/crypto/Cipher.ENCRYPT_MODE I", statics("ENCRYPT_MODE"));
+        put(m, "javax/crypto/Cipher.DECRYPT_MODE I", statics("DECRYPT_MODE"));
+        put(m, "javax/crypto/Cipher.WRAP_MODE I", statics("WRAP_MODE"));
+        put(m, "javax/crypto/Cipher.UNWRAP_MODE I", statics("UNWRAP_MODE"));
         put(m, "java/util/Calendar.ERA I", statics("ERA"));
         put(m, "java/util/Calendar.YEAR I", statics("YEAR"));
         put(m, "java/util/Calendar.MONTH I", statics("MONTH"));

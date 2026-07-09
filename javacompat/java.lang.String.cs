@@ -22,6 +22,28 @@ namespace java.lang
             Value = original == null ? "" : original.Value;
         }
 
+        public void __init__B_V(sbyte[] bytes)
+        {
+            Value = bytes == null ? "" : new global::System.Text.UTF8Encoding(false).GetString(global::java.lang.JRuntime.UnsignedBytes(bytes));
+        }
+
+        public void __init__BLjava_nio_charset_Charset__V(sbyte[] bytes, global::java.nio.charset.Charset cs)
+        {
+            var enc = cs == null ? new global::System.Text.UTF8Encoding(false) : cs.encoding;
+            Value = bytes == null ? "" : enc.GetString(global::java.lang.JRuntime.UnsignedBytes(bytes));
+        }
+
+        public void __init__BII_V(sbyte[] bytes, int offset, int length)
+        {
+            Value = new global::System.Text.UTF8Encoding(false).GetString(global::java.lang.JRuntime.UnsignedBytes(bytes), offset, length);
+        }
+
+        public void __init__BIILjava_nio_charset_Charset__V(sbyte[] bytes, int offset, int length, global::java.nio.charset.Charset cs)
+        {
+            var enc = cs == null ? new global::System.Text.UTF8Encoding(false) : cs.encoding;
+            Value = enc.GetString(global::java.lang.JRuntime.UnsignedBytes(bytes), offset, length);
+        }
+
         private String(string value) : base(RawNew.I)
         {
             Value = value;
