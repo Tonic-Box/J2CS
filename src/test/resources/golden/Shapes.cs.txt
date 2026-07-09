@@ -19,6 +19,10 @@ internal static class Program
 // ==== gen/j2cs.reflect.__Bootstrap.cs ====
 namespace j2cs.reflect
 {
+    using java.lang;
+    using java.lang.annotation;
+    using jdefault;
+
     internal static class __Bootstrap
     {
         internal static void InitAll()
@@ -31,139 +35,139 @@ namespace j2cs.reflect
 
         private static void Register_0()
         {
-            var __m = global::j2cs.reflect.ClassMeta.New("Circle", typeof(global::jdefault.Circle), "java.lang.Object").WithAnnotations(global::System.Array.Empty<global::java.lang.annotation.Annotation>());
-            __m.AddField("count", global::java.lang.Class.Of("int"), 8, __o => global::java.lang.Integer.valueOf(global::jdefault.Circle.count), (__o, __v) => global::jdefault.Circle.count = ((global::java.lang.Number)__v).intValue(), global::System.Array.Empty<global::java.lang.annotation.Annotation>());
-            __m.AddField("radius", global::java.lang.Class.Of("int"), 0, __o => global::java.lang.Integer.valueOf(((global::jdefault.Circle)__o).radius), (__o, __v) => ((global::jdefault.Circle)__o).radius = ((global::java.lang.Number)__v).intValue(), global::System.Array.Empty<global::java.lang.annotation.Annotation>());
-            __m.AddMethod("area", global::System.Array.Empty<global::java.lang.Class>(), global::java.lang.Class.Of("int"), 0, (__o, __a) => global::java.lang.Integer.valueOf(((global::jdefault.Circle)__o).area()), global::System.Array.Empty<global::java.lang.annotation.Annotation>());
-            __m.AddMethod("toString", global::System.Array.Empty<global::java.lang.Class>(), global::java.lang.Class.Of("java.lang.String"), 1, (__o, __a) => (global::java.lang.Object)(((global::jdefault.Circle)__o).toString()), global::System.Array.Empty<global::java.lang.annotation.Annotation>());
-            __m.AddCtor(new global::java.lang.Class[]{ global::java.lang.Class.Of("int") }, 0, __a => { var __o = new global::jdefault.Circle(global::java.lang.RawNew.I); __o.__init_I_V(((global::java.lang.Number)__a[0]).intValue()); return __o; });
-            global::j2cs.reflect.Registry.Register(__m);
+            var __m = ClassMeta.New("Circle", typeof(Circle), "java.lang.Object").WithAnnotations(global::System.Array.Empty<Annotation>());
+            __m.AddField("count", Class.Of("int"), 8, __o => Integer.valueOf(Circle.count), (__o, __v) => Circle.count = ((Number)__v).intValue(), global::System.Array.Empty<Annotation>());
+            __m.AddField("radius", Class.Of("int"), 0, __o => Integer.valueOf(((Circle)__o).radius), (__o, __v) => ((Circle)__o).radius = ((Number)__v).intValue(), global::System.Array.Empty<Annotation>());
+            __m.AddMethod("area", global::System.Array.Empty<Class>(), Class.Of("int"), 0, (__o, __a) => Integer.valueOf(((Circle)__o).area()), global::System.Array.Empty<Annotation>());
+            __m.AddMethod("toString", global::System.Array.Empty<Class>(), Class.Of("java.lang.String"), 1, (__o, __a) => (Object)(((Circle)__o).toString()), global::System.Array.Empty<Annotation>());
+            __m.AddCtor(new Class[]{ Class.Of("int") }, 0, __a => { var __o = new Circle(RawNew.I); __o.__init_I_V(((Number)__a[0]).intValue()); return __o; });
+            Registry.Register(__m);
         }
 
         private static void Register_1()
         {
-            var __m = global::j2cs.reflect.ClassMeta.New("Counter", typeof(global::jdefault.Counter), "java.lang.Object").WithAnnotations(global::System.Array.Empty<global::java.lang.annotation.Annotation>());
-            __m.AddField("value", global::java.lang.Class.Of("int"), 8, __o => global::java.lang.Integer.valueOf(global::jdefault.Counter.value), (__o, __v) => global::jdefault.Counter.value = ((global::java.lang.Number)__v).intValue(), global::System.Array.Empty<global::java.lang.annotation.Annotation>());
-            __m.AddMethod("next", global::System.Array.Empty<global::java.lang.Class>(), global::java.lang.Class.Of("int"), 8, (__o, __a) => global::java.lang.Integer.valueOf(global::jdefault.Counter.next()), global::System.Array.Empty<global::java.lang.annotation.Annotation>());
-            __m.AddCtor(global::System.Array.Empty<global::java.lang.Class>(), 0, __a => { var __o = new global::jdefault.Counter(global::java.lang.RawNew.I); __o.__init__V(); return __o; });
-            global::j2cs.reflect.Registry.Register(__m);
+            var __m = ClassMeta.New("Counter", typeof(Counter), "java.lang.Object").WithAnnotations(global::System.Array.Empty<Annotation>());
+            __m.AddField("value", Class.Of("int"), 8, __o => Integer.valueOf(Counter.value), (__o, __v) => Counter.value = ((Number)__v).intValue(), global::System.Array.Empty<Annotation>());
+            __m.AddMethod("next", global::System.Array.Empty<Class>(), Class.Of("int"), 8, (__o, __a) => Integer.valueOf(Counter.next()), global::System.Array.Empty<Annotation>());
+            __m.AddCtor(global::System.Array.Empty<Class>(), 0, __a => { var __o = new Counter(RawNew.I); __o.__init__V(); return __o; });
+            Registry.Register(__m);
         }
 
         private static void Register_2()
         {
-            var __m = global::j2cs.reflect.ClassMeta.New("Rect", typeof(global::jdefault.Rect), "java.lang.Object").WithAnnotations(global::System.Array.Empty<global::java.lang.annotation.Annotation>());
-            __m.AddField("w", global::java.lang.Class.Of("int"), 0, __o => global::java.lang.Integer.valueOf(((global::jdefault.Rect)__o).w), (__o, __v) => ((global::jdefault.Rect)__o).w = ((global::java.lang.Number)__v).intValue(), global::System.Array.Empty<global::java.lang.annotation.Annotation>());
-            __m.AddField("h", global::java.lang.Class.Of("int"), 0, __o => global::java.lang.Integer.valueOf(((global::jdefault.Rect)__o).h), (__o, __v) => ((global::jdefault.Rect)__o).h = ((global::java.lang.Number)__v).intValue(), global::System.Array.Empty<global::java.lang.annotation.Annotation>());
-            __m.AddMethod("area", global::System.Array.Empty<global::java.lang.Class>(), global::java.lang.Class.Of("int"), 0, (__o, __a) => global::java.lang.Integer.valueOf(((global::jdefault.Rect)__o).area()), global::System.Array.Empty<global::java.lang.annotation.Annotation>());
-            __m.AddMethod("describe", global::System.Array.Empty<global::java.lang.Class>(), global::java.lang.Class.Of("java.lang.String"), 0, (__o, __a) => (global::java.lang.Object)(((global::jdefault.Rect)__o).describe()), global::System.Array.Empty<global::java.lang.annotation.Annotation>());
-            __m.AddCtor(new global::java.lang.Class[]{ global::java.lang.Class.Of("int"), global::java.lang.Class.Of("int") }, 0, __a => { var __o = new global::jdefault.Rect(global::java.lang.RawNew.I); __o.__init_II_V(((global::java.lang.Number)__a[0]).intValue(), ((global::java.lang.Number)__a[1]).intValue()); return __o; });
-            __m.AddCtor(new global::java.lang.Class[]{ global::java.lang.Class.Of("int") }, 0, __a => { var __o = new global::jdefault.Rect(global::java.lang.RawNew.I); __o.__init_I_V(((global::java.lang.Number)__a[0]).intValue()); return __o; });
-            global::j2cs.reflect.Registry.Register(__m);
+            var __m = ClassMeta.New("Rect", typeof(Rect), "java.lang.Object").WithAnnotations(global::System.Array.Empty<Annotation>());
+            __m.AddField("w", Class.Of("int"), 0, __o => Integer.valueOf(((Rect)__o).w), (__o, __v) => ((Rect)__o).w = ((Number)__v).intValue(), global::System.Array.Empty<Annotation>());
+            __m.AddField("h", Class.Of("int"), 0, __o => Integer.valueOf(((Rect)__o).h), (__o, __v) => ((Rect)__o).h = ((Number)__v).intValue(), global::System.Array.Empty<Annotation>());
+            __m.AddMethod("area", global::System.Array.Empty<Class>(), Class.Of("int"), 0, (__o, __a) => Integer.valueOf(((Rect)__o).area()), global::System.Array.Empty<Annotation>());
+            __m.AddMethod("describe", global::System.Array.Empty<Class>(), Class.Of("java.lang.String"), 0, (__o, __a) => (Object)(((Rect)__o).describe()), global::System.Array.Empty<Annotation>());
+            __m.AddCtor(new Class[]{ Class.Of("int"), Class.Of("int") }, 0, __a => { var __o = new Rect(RawNew.I); __o.__init_II_V(((Number)__a[0]).intValue(), ((Number)__a[1]).intValue()); return __o; });
+            __m.AddCtor(new Class[]{ Class.Of("int") }, 0, __a => { var __o = new Rect(RawNew.I); __o.__init_I_V(((Number)__a[0]).intValue()); return __o; });
+            Registry.Register(__m);
         }
 
         private static void Register_3()
         {
-            var __m = global::j2cs.reflect.ClassMeta.New("Shapes", typeof(global::jdefault.Shapes), "java.lang.Object").WithAnnotations(global::System.Array.Empty<global::java.lang.annotation.Annotation>());
-            __m.AddMethod("main", new global::java.lang.Class[]{ global::java.lang.Class.Of("[Ljava.lang.String;") }, global::java.lang.Class.Of("void"), 9, (__o, __a) => { global::jdefault.Shapes.main((global::java.lang.String[])global::java.lang.JRuntime.Unbox(__a[0])); return null; }, global::System.Array.Empty<global::java.lang.annotation.Annotation>());
-            __m.AddCtor(global::System.Array.Empty<global::java.lang.Class>(), 1, __a => { var __o = new global::jdefault.Shapes(global::java.lang.RawNew.I); __o.__init__V(); return __o; });
-            global::j2cs.reflect.Registry.Register(__m);
+            var __m = ClassMeta.New("Shapes", typeof(Shapes), "java.lang.Object").WithAnnotations(global::System.Array.Empty<Annotation>());
+            __m.AddMethod("main", new Class[]{ Class.Of("[Ljava.lang.String;") }, Class.Of("void"), 9, (__o, __a) => { Shapes.main((String[])JRuntime.Unbox(__a[0])); return null; }, global::System.Array.Empty<Annotation>());
+            __m.AddCtor(global::System.Array.Empty<Class>(), 1, __a => { var __o = new Shapes(RawNew.I); __o.__init__V(); return __o; });
+            Registry.Register(__m);
         }
     }
 }
 // ==== gen/jdefault.Circle.cs ====
 namespace jdefault
 {
-    internal class Circle : global::java.lang.Object
+    using java.lang;
+
+    internal class Circle : Object
     {
         internal static int count;
         internal int radius;
 
-        public Circle(global::java.lang.RawNew r) : base(r)
+        public Circle(RawNew r) : base(r)
         {
         }
 
-        internal Circle(int p0) : this(global::java.lang.RawNew.I)
+        internal Circle(int p0) : this(RawNew.I)
         {
             __init_I_V(p0);
         }
 
         internal void __init_I_V(int p0)
         {
-            ((global::java.lang.Object)this).__init__V();
+            ((Object)this).__init__V();
             this.radius = p0;
-            global::jdefault.Circle.count = unchecked(global::jdefault.Circle.count + 1);
-            return;
+            Circle.count = unchecked(Circle.count + 1);
         }
 
         public virtual int area()
         {
             return unchecked((unchecked(this.radius * this.radius)) * 3);
-            throw new global::System.InvalidOperationException("j2cs: fell off method end");
         }
 
-        public override global::java.lang.String toString()
+        public override String toString()
         {
-            return global::java.lang.String.Intern("circle");
-            throw new global::System.InvalidOperationException("j2cs: fell off method end");
+            return String.Intern("circle");
         }
     }
 }
 // ==== gen/jdefault.Counter.cs ====
 namespace jdefault
 {
-    internal class Counter : global::java.lang.Object
+    using java.lang;
+
+    internal class Counter : Object
     {
         internal static int value;
 
-        public Counter(global::java.lang.RawNew r) : base(r)
+        public Counter(RawNew r) : base(r)
         {
         }
 
-        internal Counter() : this(global::java.lang.RawNew.I)
+        internal Counter() : this(RawNew.I)
         {
             __init__V();
         }
 
         internal void __init__V()
         {
-            ((global::java.lang.Object)this).__init__V();
-            return;
+            ((Object)this).__init__V();
         }
 
         internal static int next()
         {
-            global::jdefault.Counter.value = unchecked(global::jdefault.Counter.value + 1);
-            return global::jdefault.Counter.value;
-            throw new global::System.InvalidOperationException("j2cs: fell off method end");
+            Counter.value = unchecked(Counter.value + 1);
+            return Counter.value;
         }
     }
 }
 // ==== gen/jdefault.Rect.cs ====
 namespace jdefault
 {
-    internal class Rect : global::java.lang.Object
+    using java.lang;
+
+    internal class Rect : Object
     {
         internal int w;
         internal int h;
 
-        public Rect(global::java.lang.RawNew r) : base(r)
+        public Rect(RawNew r) : base(r)
         {
         }
 
-        internal Rect(int p0, int p1) : this(global::java.lang.RawNew.I)
+        internal Rect(int p0, int p1) : this(RawNew.I)
         {
             __init_II_V(p0, p1);
         }
 
         internal void __init_II_V(int p0, int p1)
         {
-            ((global::java.lang.Object)this).__init__V();
+            ((Object)this).__init__V();
             this.w = p0;
             this.h = p1;
-            return;
         }
 
-        internal Rect(int p0) : this(global::java.lang.RawNew.I)
+        internal Rect(int p0) : this(RawNew.I)
         {
             __init_I_V(p0);
         }
@@ -171,69 +175,66 @@ namespace jdefault
         internal void __init_I_V(int p0)
         {
             this.__init_II_V(p0, p0);
-            return;
         }
 
         public virtual int area()
         {
             return unchecked(this.w * this.h);
-            throw new global::System.InvalidOperationException("j2cs: fell off method end");
         }
 
-        public virtual global::java.lang.String describe()
+        public virtual String describe()
         {
-            return ((this.w <= this.h) ? (global::java.lang.String.Intern("tall")) : (global::java.lang.String.Intern("wide")));
-            throw new global::System.InvalidOperationException("j2cs: fell off method end");
+            return ((this.w <= this.h) ? (String.Intern("tall")) : (String.Intern("wide")));
         }
     }
 }
 // ==== gen/jdefault.Shapes.cs ====
 namespace jdefault
 {
-    internal class Shapes : global::java.lang.Object
+    using java.lang;
+
+    internal class Shapes : Object
     {
 
-        public Shapes(global::java.lang.RawNew r) : base(r)
+        public Shapes(RawNew r) : base(r)
         {
         }
 
-        internal Shapes() : this(global::java.lang.RawNew.I)
+        internal Shapes() : this(RawNew.I)
         {
             __init__V();
         }
 
         internal void __init__V()
         {
-            ((global::java.lang.Object)this).__init__V();
-            return;
+            ((Object)this).__init__V();
         }
 
-        internal static void main(global::java.lang.String[] p0)
+        internal static void main(String[] p0)
         {
-            global::jdefault.Circle local1 = new global::jdefault.Circle(5);
-            global::jdefault.Rect local2 = new global::jdefault.Rect(3, 4);
-            global::java.lang.System.@out.println(local1.area());
-            global::java.lang.System.@out.println(local2.area());
-            global::java.lang.System.@out.println(global::jdefault.Circle.count);
-            global::jdefault.Circle local3 = new global::jdefault.Circle(2);
-            global::java.lang.System.@out.println(global::jdefault.Circle.count);
-            global::java.lang.System.@out.println(local3.area());
-            global::java.lang.System.@out.println(local1.radius);
+            Circle local1 = new Circle(5);
+            Rect local2 = new Rect(3, 4);
+            System.@out.println(local1.area());
+            System.@out.println(local2.area());
+            System.@out.println(Circle.count);
+            Circle local3 = new Circle(2);
+            System.@out.println(Circle.count);
+            System.@out.println(local3.area());
+            System.@out.println(local1.radius);
             local1.radius = 10;
-            global::java.lang.System.@out.println(local1.area());
-            global::java.lang.System.@out.println((global::java.lang.Object)(local1));
-            global::java.lang.System.@out.println(local2.describe());
-            global::java.lang.System.@out.println(new global::jdefault.Rect(4, 9).describe());
-            global::java.lang.System.@out.println(new global::jdefault.Rect(6).area());
-            global::java.lang.System.@out.println(global::jdefault.Counter.next());
-            global::java.lang.System.@out.println(global::jdefault.Counter.next());
-            global::java.lang.System.@out.println(global::jdefault.Counter.next());
-            global::java.lang.System.@out.println_Z((((local1 is global::jdefault.Circle)) ? 1 : 0));
-            global::jdefault.Circle local6 = (global::jdefault.Circle)(local1);
-            global::java.lang.System.@out.println(local6.area());
-            global::java.lang.System.@out.println_Z(local1.equals((global::java.lang.Object)(local6)));
-            global::java.lang.System.@out.println_Z(local1.equals((global::java.lang.Object)(local2)));
-            return;
+            System.@out.println(local1.area());
+            System.@out.println((Object)(local1));
+            System.@out.println(local2.describe());
+            System.@out.println(new Rect(4, 9).describe());
+            System.@out.println(new Rect(6).area());
+            System.@out.println(Counter.next());
+            System.@out.println(Counter.next());
+            System.@out.println(Counter.next());
+            System.@out.println_Z(((local1 is Circle) ? 1 : 0));
+            Circle local6 = (Circle)(local1);
+            System.@out.println(local6.area());
+            System.@out.println_Z(local1.equals((Object)(local6)));
+            System.@out.println_Z(local1.equals((Object)(local2)));
         }
     }
 }

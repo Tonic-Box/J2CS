@@ -62,6 +62,10 @@ internal static class Program
 // ==== gen/j2cs.reflect.__Bootstrap.cs ====
 namespace j2cs.reflect
 {
+    using java.lang;
+    using java.lang.annotation;
+    using jdefault;
+
     internal static class __Bootstrap
     {
         internal static void InitAll()
@@ -71,45 +75,47 @@ namespace j2cs.reflect
 
         private static void Register_0()
         {
-            var __m = global::j2cs.reflect.ClassMeta.New("GuiSmoke", typeof(global::jdefault.GuiSmoke), "java.lang.Object").WithAnnotations(global::System.Array.Empty<global::java.lang.annotation.Annotation>());
-            __m.AddMethod("main", new global::java.lang.Class[]{ global::java.lang.Class.Of("[Ljava.lang.String;") }, global::java.lang.Class.Of("void"), 9, (__o, __a) => { global::jdefault.GuiSmoke.main((global::java.lang.String[])global::java.lang.JRuntime.Unbox(__a[0])); return null; }, global::System.Array.Empty<global::java.lang.annotation.Annotation>());
-            __m.AddCtor(global::System.Array.Empty<global::java.lang.Class>(), 1, __a => { var __o = new global::jdefault.GuiSmoke(global::java.lang.RawNew.I); __o.__init__V(); return __o; });
-            global::j2cs.reflect.Registry.Register(__m);
+            var __m = ClassMeta.New("GuiSmoke", typeof(GuiSmoke), "java.lang.Object").WithAnnotations(global::System.Array.Empty<Annotation>());
+            __m.AddMethod("main", new Class[]{ Class.Of("[Ljava.lang.String;") }, Class.Of("void"), 9, (__o, __a) => { GuiSmoke.main((String[])JRuntime.Unbox(__a[0])); return null; }, global::System.Array.Empty<Annotation>());
+            __m.AddCtor(global::System.Array.Empty<Class>(), 1, __a => { var __o = new GuiSmoke(RawNew.I); __o.__init__V(); return __o; });
+            Registry.Register(__m);
         }
     }
 }
 // ==== gen/jdefault.GuiSmoke.cs ====
 namespace jdefault
 {
-    internal class GuiSmoke : global::java.lang.Object
+    using java.awt;
+    using java.lang;
+    using javax.swing;
+
+    internal class GuiSmoke : Object
     {
 
-        public GuiSmoke(global::java.lang.RawNew r) : base(r)
+        public GuiSmoke(RawNew r) : base(r)
         {
         }
 
-        internal GuiSmoke() : this(global::java.lang.RawNew.I)
+        internal GuiSmoke() : this(RawNew.I)
         {
             __init__V();
         }
 
         internal void __init__V()
         {
-            ((global::java.lang.Object)this).__init__V();
-            return;
+            ((Object)this).__init__V();
         }
 
-        internal static void main(global::java.lang.String[] p0)
+        internal static void main(String[] p0)
         {
-            global::java.lang.System.@out.println(global::java.lang.String.Intern("starting"));
-            global::javax.swing.JFrame __t0 = new global::javax.swing.JFrame(global::java.lang.RawNew.I);
-            __t0.__init_Ljava_lang_String__V(global::java.lang.String.Intern("Smoke Test"));
-            global::javax.swing.JFrame local1 = __t0;
-            ((global::java.awt.Window)local1).setSize(320, 240);
-            ((global::java.awt.Window)local1).setDefaultCloseOperation(3);
-            ((global::java.awt.Window)local1).setVisible(1);
-            global::java.lang.System.@out.println(global::java.lang.String.Intern("shown"));
-            return;
+            System.@out.println(String.Intern("starting"));
+            JFrame __t0 = new JFrame(RawNew.I);
+            __t0.__init_Ljava_lang_String__V(String.Intern("Smoke Test"));
+            JFrame local1 = __t0;
+            ((Window)local1).setSize(320, 240);
+            ((Window)local1).setDefaultCloseOperation(3);
+            ((Window)local1).setVisible(1);
+            System.@out.println(String.Intern("shown"));
         }
     }
 }

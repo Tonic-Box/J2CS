@@ -19,6 +19,10 @@ internal static class Program
 // ==== gen/j2cs.reflect.__Bootstrap.cs ====
 namespace j2cs.reflect
 {
+    using java.lang;
+    using java.lang.annotation;
+    using jdefault;
+
     internal static class __Bootstrap
     {
         internal static void InitAll()
@@ -28,82 +32,79 @@ namespace j2cs.reflect
 
         private static void Register_0()
         {
-            var __m = global::j2cs.reflect.ClassMeta.New("FizzBuzz", typeof(global::jdefault.FizzBuzz), "java.lang.Object").WithAnnotations(global::System.Array.Empty<global::java.lang.annotation.Annotation>());
-            __m.AddMethod("main", new global::java.lang.Class[]{ global::java.lang.Class.Of("[Ljava.lang.String;") }, global::java.lang.Class.Of("void"), 9, (__o, __a) => { global::jdefault.FizzBuzz.main((global::java.lang.String[])global::java.lang.JRuntime.Unbox(__a[0])); return null; }, global::System.Array.Empty<global::java.lang.annotation.Annotation>());
-            __m.AddMethod("label", new global::java.lang.Class[]{ global::java.lang.Class.Of("int") }, global::java.lang.Class.Of("java.lang.String"), 8, (__o, __a) => (global::java.lang.Object)(global::jdefault.FizzBuzz.label(((global::java.lang.Number)__a[0]).intValue())), global::System.Array.Empty<global::java.lang.annotation.Annotation>());
-            __m.AddCtor(global::System.Array.Empty<global::java.lang.Class>(), 1, __a => { var __o = new global::jdefault.FizzBuzz(global::java.lang.RawNew.I); __o.__init__V(); return __o; });
-            global::j2cs.reflect.Registry.Register(__m);
+            var __m = ClassMeta.New("FizzBuzz", typeof(FizzBuzz), "java.lang.Object").WithAnnotations(global::System.Array.Empty<Annotation>());
+            __m.AddMethod("main", new Class[]{ Class.Of("[Ljava.lang.String;") }, Class.Of("void"), 9, (__o, __a) => { FizzBuzz.main((String[])JRuntime.Unbox(__a[0])); return null; }, global::System.Array.Empty<Annotation>());
+            __m.AddMethod("label", new Class[]{ Class.Of("int") }, Class.Of("java.lang.String"), 8, (__o, __a) => (Object)(FizzBuzz.label(((Number)__a[0]).intValue())), global::System.Array.Empty<Annotation>());
+            __m.AddCtor(global::System.Array.Empty<Class>(), 1, __a => { var __o = new FizzBuzz(RawNew.I); __o.__init__V(); return __o; });
+            Registry.Register(__m);
         }
     }
 }
 // ==== gen/jdefault.FizzBuzz.cs ====
 namespace jdefault
 {
-    internal class FizzBuzz : global::java.lang.Object
+    using java.lang;
+
+    internal class FizzBuzz : Object
     {
 
-        public FizzBuzz(global::java.lang.RawNew r) : base(r)
+        public FizzBuzz(RawNew r) : base(r)
         {
         }
 
-        internal FizzBuzz() : this(global::java.lang.RawNew.I)
+        internal FizzBuzz() : this(RawNew.I)
         {
             __init__V();
         }
 
         internal void __init__V()
         {
-            ((global::java.lang.Object)this).__init__V();
-            return;
+            ((Object)this).__init__V();
         }
 
-        internal static void main(global::java.lang.String[] p0)
+        internal static void main(String[] p0)
         {
-            int local1 = 1;
-            for (; local1 <= 30; local1 = unchecked(local1 + 1))
+            for (int local1 = 1; local1 <= 30; local1 = unchecked(local1 + 1))
             {
-                if ((global::java.lang.JRuntime.Irem(local1, 15)) != 0)
+                if ((JRuntime.Irem(local1, 15)) != 0)
                 {
-                    if ((global::java.lang.JRuntime.Irem(local1, 3)) != 0)
+                    if ((JRuntime.Irem(local1, 3)) != 0)
                     {
-                        if ((global::java.lang.JRuntime.Irem(local1, 5)) != 0)
+                        if ((JRuntime.Irem(local1, 5)) != 0)
                         {
-                            global::java.lang.System.@out.println(local1);
+                            System.@out.println(local1);
                         }
                         else
                         {
-                            global::java.lang.System.@out.println(global::java.lang.String.Intern("Buzz"));
+                            System.@out.println(String.Intern("Buzz"));
                         }
                     }
                     else
                     {
-                        global::java.lang.System.@out.println(global::java.lang.String.Intern("Fizz"));
+                        System.@out.println(String.Intern("Fizz"));
                     }
                 }
                 else
                 {
-                    global::java.lang.System.@out.println(global::java.lang.String.Intern("FizzBuzz"));
+                    System.@out.println(String.Intern("FizzBuzz"));
                 }
             }
-            int local1_1 = 1;
-            for (; local1_1 <= 5; local1_1 = unchecked(local1_1 + 1))
+            for (int local1_1 = 1; local1_1 <= 5; local1_1 = unchecked(local1_1 + 1))
             {
-                global::java.lang.System.@out.println(global::java.lang.String.Wrap(global::System.String.Concat(new string[] { global::java.lang.JRuntime.Str(local1_1), global::java.lang.JRuntime.Str(global::java.lang.String.Intern(": ")), global::java.lang.JRuntime.Str(global::jdefault.FizzBuzz.label(local1_1)) })));
+                System.@out.println(String.Wrap(JRuntime.Str(local1_1) + ": " + JRuntime.Str(FizzBuzz.label(local1_1))));
             }
-            return;
         }
 
-        internal static global::java.lang.String label(int p0)
+        internal static String label(int p0)
         {
-            global::java.lang.String s4 = (global::java.lang.String)(null);
-            if ((global::java.lang.JRuntime.Irem(p0, 3)) == 0)
+            String s4 = (String)(null);
+            if ((JRuntime.Irem(p0, 3)) == 0)
             {
-                s4 = global::java.lang.String.Intern("Fizz");
+                s4 = String.Intern("Fizz");
                 return s4;
             }
-            s4 = global::java.lang.String.Wrap(global::System.String.Concat(new string[] { global::java.lang.JRuntime.Str(global::java.lang.String.Intern("n")), global::java.lang.JRuntime.Str(p0) }));
+            s4 = String.Wrap("n" + JRuntime.Str(p0));
             return s4;
-            throw new global::System.InvalidOperationException("j2cs: fell off method end");
         }
     }
 }

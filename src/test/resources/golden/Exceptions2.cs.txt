@@ -19,6 +19,10 @@ internal static class Program
 // ==== gen/j2cs.reflect.__Bootstrap.cs ====
 namespace j2cs.reflect
 {
+    using java.lang;
+    using java.lang.annotation;
+    using jdefault;
+
     internal static class __Bootstrap
     {
         internal static void InitAll()
@@ -29,64 +33,65 @@ namespace j2cs.reflect
 
         private static void Register_0()
         {
-            var __m = global::j2cs.reflect.ClassMeta.New("Exceptions2", typeof(global::jdefault.Exceptions2), "java.lang.Object").WithAnnotations(global::System.Array.Empty<global::java.lang.annotation.Annotation>());
-            __m.AddMethod("main", new global::java.lang.Class[]{ global::java.lang.Class.Of("[Ljava.lang.String;") }, global::java.lang.Class.Of("void"), 9, (__o, __a) => { global::jdefault.Exceptions2.main((global::java.lang.String[])global::java.lang.JRuntime.Unbox(__a[0])); return null; }, global::System.Array.Empty<global::java.lang.annotation.Annotation>());
-            __m.AddMethod("level1", new global::java.lang.Class[]{ global::java.lang.Class.Of("int") }, global::java.lang.Class.Of("void"), 8, (__o, __a) => { global::jdefault.Exceptions2.level1(((global::java.lang.Number)__a[0]).intValue()); return null; }, global::System.Array.Empty<global::java.lang.annotation.Annotation>());
-            __m.AddMethod("level2", new global::java.lang.Class[]{ global::java.lang.Class.Of("int") }, global::java.lang.Class.Of("void"), 8, (__o, __a) => { global::jdefault.Exceptions2.level2(((global::java.lang.Number)__a[0]).intValue()); return null; }, global::System.Array.Empty<global::java.lang.annotation.Annotation>());
-            __m.AddMethod("classify", new global::java.lang.Class[]{ global::java.lang.Class.Of("int") }, global::java.lang.Class.Of("java.lang.String"), 8, (__o, __a) => (global::java.lang.Object)(global::jdefault.Exceptions2.classify(((global::java.lang.Number)__a[0]).intValue())), global::System.Array.Empty<global::java.lang.annotation.Annotation>());
-            __m.AddMethod("rethrower", global::System.Array.Empty<global::java.lang.Class>(), global::java.lang.Class.Of("void"), 8, (__o, __a) => { global::jdefault.Exceptions2.rethrower(); return null; }, global::System.Array.Empty<global::java.lang.annotation.Annotation>());
-            __m.AddMethod("multiCatch", new global::java.lang.Class[]{ global::java.lang.Class.Of("int") }, global::java.lang.Class.Of("int"), 8, (__o, __a) => global::java.lang.Integer.valueOf(global::jdefault.Exceptions2.multiCatch(((global::java.lang.Number)__a[0]).intValue())), global::System.Array.Empty<global::java.lang.annotation.Annotation>());
-            __m.AddCtor(global::System.Array.Empty<global::java.lang.Class>(), 1, __a => { var __o = new global::jdefault.Exceptions2(global::java.lang.RawNew.I); __o.__init__V(); return __o; });
-            global::j2cs.reflect.Registry.Register(__m);
+            var __m = ClassMeta.New("Exceptions2", typeof(Exceptions2), "java.lang.Object").WithAnnotations(global::System.Array.Empty<Annotation>());
+            __m.AddMethod("main", new Class[]{ Class.Of("[Ljava.lang.String;") }, Class.Of("void"), 9, (__o, __a) => { Exceptions2.main((String[])JRuntime.Unbox(__a[0])); return null; }, global::System.Array.Empty<Annotation>());
+            __m.AddMethod("level1", new Class[]{ Class.Of("int") }, Class.Of("void"), 8, (__o, __a) => { Exceptions2.level1(((Number)__a[0]).intValue()); return null; }, global::System.Array.Empty<Annotation>());
+            __m.AddMethod("level2", new Class[]{ Class.Of("int") }, Class.Of("void"), 8, (__o, __a) => { Exceptions2.level2(((Number)__a[0]).intValue()); return null; }, global::System.Array.Empty<Annotation>());
+            __m.AddMethod("classify", new Class[]{ Class.Of("int") }, Class.Of("java.lang.String"), 8, (__o, __a) => (Object)(Exceptions2.classify(((Number)__a[0]).intValue())), global::System.Array.Empty<Annotation>());
+            __m.AddMethod("rethrower", global::System.Array.Empty<Class>(), Class.Of("void"), 8, (__o, __a) => { Exceptions2.rethrower(); return null; }, global::System.Array.Empty<Annotation>());
+            __m.AddMethod("multiCatch", new Class[]{ Class.Of("int") }, Class.Of("int"), 8, (__o, __a) => Integer.valueOf(Exceptions2.multiCatch(((Number)__a[0]).intValue())), global::System.Array.Empty<Annotation>());
+            __m.AddCtor(global::System.Array.Empty<Class>(), 1, __a => { var __o = new Exceptions2(RawNew.I); __o.__init__V(); return __o; });
+            Registry.Register(__m);
         }
 
         private static void Register_1()
         {
-            var __m = global::j2cs.reflect.ClassMeta.New("MyException", typeof(global::jdefault.MyException), "java.lang.Exception").WithAnnotations(global::System.Array.Empty<global::java.lang.annotation.Annotation>());
-            __m.AddField("code", global::java.lang.Class.Of("int"), 18, __o => global::java.lang.Integer.valueOf(((global::jdefault.MyException)__o).code), (__o, __v) => ((global::jdefault.MyException)__o).code = ((global::java.lang.Number)__v).intValue(), global::System.Array.Empty<global::java.lang.annotation.Annotation>());
-            __m.AddMethod("code", global::System.Array.Empty<global::java.lang.Class>(), global::java.lang.Class.Of("int"), 0, (__o, __a) => global::java.lang.Integer.valueOf(((global::jdefault.MyException)__o).code__2()), global::System.Array.Empty<global::java.lang.annotation.Annotation>());
-            __m.AddCtor(new global::java.lang.Class[]{ global::java.lang.Class.Of("java.lang.String") }, 0, __a => { var __o = new global::jdefault.MyException(global::java.lang.RawNew.I); __o.__init_Ljava_lang_String__V((global::java.lang.String)__a[0]); return __o; });
-            global::j2cs.reflect.Registry.Register(__m);
+            var __m = ClassMeta.New("MyException", typeof(MyException), "java.lang.Exception").WithAnnotations(global::System.Array.Empty<Annotation>());
+            __m.AddField("code", Class.Of("int"), 18, __o => Integer.valueOf(((MyException)__o).code), (__o, __v) => ((MyException)__o).code = ((Number)__v).intValue(), global::System.Array.Empty<Annotation>());
+            __m.AddMethod("code", global::System.Array.Empty<Class>(), Class.Of("int"), 0, (__o, __a) => Integer.valueOf(((MyException)__o).code__2()), global::System.Array.Empty<Annotation>());
+            __m.AddCtor(new Class[]{ Class.Of("java.lang.String") }, 0, __a => { var __o = new MyException(RawNew.I); __o.__init_Ljava_lang_String__V((String)__a[0]); return __o; });
+            Registry.Register(__m);
         }
     }
 }
 // ==== gen/jdefault.Exceptions2.cs ====
 namespace jdefault
 {
-    internal class Exceptions2 : global::java.lang.Object
+    using java.lang;
+
+    internal class Exceptions2 : Object
     {
 
-        public Exceptions2(global::java.lang.RawNew r) : base(r)
+        public Exceptions2(RawNew r) : base(r)
         {
         }
 
-        internal Exceptions2() : this(global::java.lang.RawNew.I)
+        internal Exceptions2() : this(RawNew.I)
         {
             __init__V();
         }
 
         internal void __init__V()
         {
-            ((global::java.lang.Object)this).__init__V();
-            return;
+            ((Object)this).__init__V();
         }
 
-        internal static void main(global::java.lang.String[] p0)
+        internal static void main(String[] p0)
         {
             int local1_3 = 0;
             try
             {
-                throw global::java.lang.JThrow.of(new global::jdefault.MyException(global::java.lang.String.Intern("boom")));
+                throw JThrow.of(new MyException(String.Intern("boom")));
             }
             catch (global::System.Exception __e0)
             {
                 if (__e0 is global::System.NotSupportedException) throw;
-                global::java.lang.Throwable __ex1 = global::java.lang.JRuntime.Normalize(__e0);
-                if (__ex1 is global::jdefault.MyException)
+                Throwable __ex1 = JRuntime.Normalize(__e0);
+                if (__ex1 is MyException)
                 {
-                    global::jdefault.MyException local1 = (global::jdefault.MyException)__ex1;
-                    global::java.lang.System.@out.println(((global::java.lang.Throwable)local1).getMessage());
-                    global::java.lang.System.@out.println(local1.code__2());
+                    MyException local1 = (MyException)__ex1;
+                    System.@out.println(((Throwable)local1).getMessage());
+                    System.@out.println(local1.code__2());
                 }
                 else
                 {
@@ -95,16 +100,16 @@ namespace jdefault
             }
             try
             {
-                global::jdefault.Exceptions2.level1(3);
+                Exceptions2.level1(3);
             }
             catch (global::System.Exception __e2)
             {
                 if (__e2 is global::System.NotSupportedException) throw;
-                global::java.lang.Throwable __ex3 = global::java.lang.JRuntime.Normalize(__e2);
-                if (__ex3 is global::jdefault.MyException)
+                Throwable __ex3 = JRuntime.Normalize(__e2);
+                if (__ex3 is MyException)
                 {
-                    global::jdefault.MyException local1_1 = (global::jdefault.MyException)__ex3;
-                    global::java.lang.System.@out.println(global::java.lang.String.Wrap(global::System.String.Concat(new string[] { global::java.lang.JRuntime.Str(global::java.lang.String.Intern("propagated: ")), global::java.lang.JRuntime.Str(((global::java.lang.Throwable)local1_1).getMessage()) })));
+                    MyException local1_1 = (MyException)__ex3;
+                    System.@out.println(String.Wrap("propagated: " + JRuntime.Str(((Throwable)local1_1).getMessage())));
                 }
                 else
                 {
@@ -115,24 +120,24 @@ namespace jdefault
             {
                 try
                 {
-                    throw global::java.lang.JThrow.of(new global::jdefault.MyException(global::java.lang.String.Intern("inner")));
+                    throw JThrow.of(new MyException(String.Intern("inner")));
                 }
                 finally
                 {
-                    global::java.lang.System.@out.println(global::java.lang.String.Intern("finally ran"));
+                    System.@out.println(String.Intern("finally ran"));
                 }
             }
             catch (global::System.Exception __e4)
             {
                 if (__e4 is global::System.NotSupportedException) throw;
-                global::java.lang.Throwable __ex5 = global::java.lang.JRuntime.Normalize(__e4);
-                if (__ex5 is global::java.lang.Exception)
+                Throwable __ex5 = JRuntime.Normalize(__e4);
+                if (__ex5 is Exception)
                 {
-                    global::java.lang.Exception local1_2 = (global::java.lang.Exception)__ex5;
-                    global::java.lang.System.@out.println(global::java.lang.String.Wrap(global::System.String.Concat(new string[] { global::java.lang.JRuntime.Str(global::java.lang.String.Intern("outer caught: ")), global::java.lang.JRuntime.Str(((global::java.lang.Throwable)local1_2).getMessage()) })));
-                    global::java.lang.System.@out.println(global::jdefault.Exceptions2.classify(0));
-                    global::java.lang.System.@out.println(global::jdefault.Exceptions2.classify(1));
-                    global::java.lang.System.@out.println(global::jdefault.Exceptions2.classify(2));
+                    Exception local1_2 = (Exception)__ex5;
+                    System.@out.println(String.Wrap("outer caught: " + JRuntime.Str(((Throwable)local1_2).getMessage())));
+                    System.@out.println(Exceptions2.classify(0));
+                    System.@out.println(Exceptions2.classify(1));
+                    System.@out.println(Exceptions2.classify(2));
                     local1_3 = 0;
                 }
                 else
@@ -140,14 +145,13 @@ namespace jdefault
                     throw;
                 }
             }
-            int local2_1 = 0;
-            for (; local2_1 < 5; local2_1 = unchecked(local2_1 + 1))
+            for (int local2_1 = 0; local2_1 < 5; local2_1 = unchecked(local2_1 + 1))
             {
                 try
                 {
                     if (local2_1 == 2)
                     {
-                        throw global::java.lang.JThrow.of(new global::jdefault.MyException(global::java.lang.String.Intern("skip")));
+                        throw JThrow.of(new MyException(String.Intern("skip")));
                     }
                     if (local2_1 != 4)
                     {
@@ -161,10 +165,10 @@ namespace jdefault
                 catch (global::System.Exception __e6)
                 {
                     if (__e6 is global::System.NotSupportedException) throw;
-                    global::java.lang.Throwable __ex7 = global::java.lang.JRuntime.Normalize(__e6);
-                    if (__ex7 is global::jdefault.MyException)
+                    Throwable __ex7 = JRuntime.Normalize(__e6);
+                    if (__ex7 is MyException)
                     {
-                        global::jdefault.MyException local3 = (global::jdefault.MyException)__ex7;
+                        MyException local3 = (MyException)__ex7;
                     }
                     else
                     {
@@ -172,48 +176,45 @@ namespace jdefault
                     }
                 }
             }
-            global::java.lang.System.@out.println(local1_3);
+            System.@out.println(local1_3);
             try
             {
-                global::jdefault.Exceptions2.rethrower();
+                Exceptions2.rethrower();
             }
             catch (global::System.Exception __e8)
             {
                 if (__e8 is global::System.NotSupportedException) throw;
-                global::java.lang.Throwable __ex9 = global::java.lang.JRuntime.Normalize(__e8);
-                if (__ex9 is global::jdefault.MyException)
+                Throwable __ex9 = JRuntime.Normalize(__e8);
+                if (__ex9 is MyException)
                 {
-                    global::jdefault.MyException local2_2 = (global::jdefault.MyException)__ex9;
-                    global::java.lang.System.@out.println(global::java.lang.String.Wrap(global::System.String.Concat(new string[] { global::java.lang.JRuntime.Str(global::java.lang.String.Intern("rethrown: ")), global::java.lang.JRuntime.Str(((global::java.lang.Throwable)local2_2).getMessage()) })));
+                    MyException local2_2 = (MyException)__ex9;
+                    System.@out.println(String.Wrap("rethrown: " + JRuntime.Str(((Throwable)local2_2).getMessage())));
                 }
                 else
                 {
                     throw;
                 }
             }
-            global::java.lang.System.@out.println(global::jdefault.Exceptions2.multiCatch(0));
-            global::java.lang.System.@out.println(global::jdefault.Exceptions2.multiCatch(1));
-            global::java.lang.System.@out.println(global::jdefault.Exceptions2.multiCatch(2));
-            global::java.lang.System.@out.println(global::java.lang.String.Intern("done"));
-            return;
+            System.@out.println(Exceptions2.multiCatch(0));
+            System.@out.println(Exceptions2.multiCatch(1));
+            System.@out.println(Exceptions2.multiCatch(2));
+            System.@out.println(String.Intern("done"));
         }
 
         internal static void level1(int p0)
         {
-            global::jdefault.Exceptions2.level2(p0);
-            return;
+            Exceptions2.level2(p0);
         }
 
         internal static void level2(int p0)
         {
             if (p0 > 0)
             {
-                throw global::java.lang.JThrow.of(new global::jdefault.MyException(global::java.lang.String.Wrap(global::System.String.Concat(new string[] { global::java.lang.JRuntime.Str(global::java.lang.String.Intern("deep ")), global::java.lang.JRuntime.Str(p0) }))));
+                throw JThrow.of(new MyException(String.Wrap("deep " + JRuntime.Str(p0))));
             }
-            return;
         }
 
-        internal static global::java.lang.String classify(int p0)
+        internal static String classify(int p0)
         {
             try
             {
@@ -221,24 +222,24 @@ namespace jdefault
                 {
                     if (p0 == 0)
                     {
-                        throw global::java.lang.JThrow.of(new global::jdefault.MyException(global::java.lang.String.Intern("zero")));
+                        throw JThrow.of(new MyException(String.Intern("zero")));
                     }
                     if (p0 == 1)
                     {
-                        global::java.lang.IllegalStateException __t0 = new global::java.lang.IllegalStateException(global::java.lang.RawNew.I);
-                        __t0.__init_Ljava_lang_String__V(global::java.lang.String.Intern("one"));
-                        throw global::java.lang.JThrow.of(__t0);
+                        IllegalStateException __t0 = new IllegalStateException(RawNew.I);
+                        __t0.__init_Ljava_lang_String__V(String.Intern("one"));
+                        throw JThrow.of(__t0);
                     }
-                    return global::java.lang.String.Intern("none");
+                    return String.Intern("none");
                 }
                 catch (global::System.Exception __e1)
                 {
                     if (__e1 is global::System.NotSupportedException) throw;
-                    global::java.lang.Throwable __ex2 = global::java.lang.JRuntime.Normalize(__e1);
-                    if (__ex2 is global::java.lang.RuntimeException)
+                    Throwable __ex2 = JRuntime.Normalize(__e1);
+                    if (__ex2 is RuntimeException)
                     {
-                        global::java.lang.RuntimeException local1_1 = (global::java.lang.RuntimeException)__ex2;
-                        return global::java.lang.String.Wrap(global::System.String.Concat(new string[] { global::java.lang.JRuntime.Str(global::java.lang.String.Intern("rt:")), global::java.lang.JRuntime.Str(((global::java.lang.Throwable)local1_1).getMessage()) }));
+                        RuntimeException local1_1 = (RuntimeException)__ex2;
+                        return String.Wrap("rt:" + JRuntime.Str(((Throwable)local1_1).getMessage()));
                     }
                     else
                     {
@@ -249,34 +250,33 @@ namespace jdefault
             catch (global::System.Exception __e3)
             {
                 if (__e3 is global::System.NotSupportedException) throw;
-                global::java.lang.Throwable __ex4 = global::java.lang.JRuntime.Normalize(__e3);
-                if (__ex4 is global::jdefault.MyException)
+                Throwable __ex4 = JRuntime.Normalize(__e3);
+                if (__ex4 is MyException)
                 {
-                    global::jdefault.MyException local1 = (global::jdefault.MyException)__ex4;
-                    return global::java.lang.String.Wrap(global::System.String.Concat(new string[] { global::java.lang.JRuntime.Str(global::java.lang.String.Intern("my:")), global::java.lang.JRuntime.Str(((global::java.lang.Throwable)local1).getMessage()) }));
+                    MyException local1 = (MyException)__ex4;
+                    return String.Wrap("my:" + JRuntime.Str(((Throwable)local1).getMessage()));
                 }
                 else
                 {
                     throw;
                 }
             }
-            throw new global::System.InvalidOperationException("j2cs: fell off method end");
         }
 
         internal static void rethrower()
         {
             try
             {
-                throw global::java.lang.JThrow.of(new global::jdefault.MyException(global::java.lang.String.Intern("original")));
+                throw JThrow.of(new MyException(String.Intern("original")));
             }
             catch (global::System.Exception __e0)
             {
                 if (__e0 is global::System.NotSupportedException) throw;
-                global::java.lang.Throwable __ex1 = global::java.lang.JRuntime.Normalize(__e0);
-                if (__ex1 is global::jdefault.MyException)
+                Throwable __ex1 = JRuntime.Normalize(__e0);
+                if (__ex1 is MyException)
                 {
-                    global::jdefault.MyException local0 = (global::jdefault.MyException)__ex1;
-                    throw global::java.lang.JThrow.of(local0);
+                    MyException local0 = (MyException)__ex1;
+                    throw JThrow.of(local0);
                 }
                 else
                 {
@@ -291,25 +291,25 @@ namespace jdefault
             {
                 if (p0 == 0)
                 {
-                    global::java.lang.IllegalStateException __t0 = new global::java.lang.IllegalStateException(global::java.lang.RawNew.I);
-                    __t0.__init_Ljava_lang_String__V(global::java.lang.String.Intern("s"));
-                    throw global::java.lang.JThrow.of(__t0);
+                    IllegalStateException __t0 = new IllegalStateException(RawNew.I);
+                    __t0.__init_Ljava_lang_String__V(String.Intern("s"));
+                    throw JThrow.of(__t0);
                 }
                 if (p0 == 1)
                 {
-                    global::java.lang.NumberFormatException __t1 = new global::java.lang.NumberFormatException(global::java.lang.RawNew.I);
-                    __t1.__init_Ljava_lang_String__V(global::java.lang.String.Intern("n"));
-                    throw global::java.lang.JThrow.of(__t1);
+                    NumberFormatException __t1 = new NumberFormatException(RawNew.I);
+                    __t1.__init_Ljava_lang_String__V(String.Intern("n"));
+                    throw JThrow.of(__t1);
                 }
                 return 100;
             }
             catch (global::System.Exception __e2)
             {
                 if (__e2 is global::System.NotSupportedException) throw;
-                global::java.lang.Throwable __ex3 = global::java.lang.JRuntime.Normalize(__e2);
-                if (__ex3 is global::java.lang.IllegalStateException || __ex3 is global::java.lang.NumberFormatException)
+                Throwable __ex3 = JRuntime.Normalize(__e2);
+                if (__ex3 is IllegalStateException || __ex3 is NumberFormatException)
                 {
-                    global::java.lang.Throwable local1 = __ex3;
+                    Throwable local1 = __ex3;
                     return -1;
                 }
                 else
@@ -317,38 +317,37 @@ namespace jdefault
                     throw;
                 }
             }
-            throw new global::System.InvalidOperationException("j2cs: fell off method end");
         }
     }
 }
 // ==== gen/jdefault.MyException.cs ====
 namespace jdefault
 {
-    internal class MyException : global::java.lang.Exception
+    using java.lang;
+
+    internal class MyException : Exception
     {
         internal int code;
 
-        public MyException(global::java.lang.RawNew r) : base(r)
+        public MyException(RawNew r) : base(r)
         {
             JavaClassName = "MyException";
         }
 
-        internal MyException(global::java.lang.String p0) : this(global::java.lang.RawNew.I)
+        internal MyException(String p0) : this(RawNew.I)
         {
             __init_Ljava_lang_String__V(p0);
         }
 
-        internal void __init_Ljava_lang_String__V(global::java.lang.String p0)
+        internal void __init_Ljava_lang_String__V(String p0)
         {
-            ((global::java.lang.Exception)this).__init_Ljava_lang_String__V(p0);
+            ((Exception)this).__init_Ljava_lang_String__V(p0);
             this.code = p0.length();
-            return;
         }
 
         public virtual int code__2()
         {
             return this.code;
-            throw new global::System.InvalidOperationException("j2cs: fell off method end");
         }
     }
 }

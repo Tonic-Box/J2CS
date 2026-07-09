@@ -113,13 +113,20 @@ final class StructuredBodyEmitter {
         this.allowHoist = true;
         pushScope();
         mapParameters(recovered);
-        for (Statement s : recovered.body().getStatements()) {
-            stmt(s);
+        List<Statement> body = recovered.body().getStatements();
+        int count = body.size();
+        // A void method's trailing bare `return;` is redundant — control falls off the end anyway.
+        if ("V".equals(returnDesc) && count > 0
+                && body.get(count - 1) instanceof ReturnStmt r && r.getValue() == null) {
+            count--;
         }
-        // Non-void methods need a guaranteed terminator: recovery may leave a path without a
-        // return (or one C# cannot prove returns), so mirror the goto emitter's fall-off guard.
-        // Unreachable-code (CS0162) when the body already returns everywhere is suppressed.
-        if (!"V".equals(returnDesc)) {
+        for (int i = 0; i < count; i++) {
+            stmt(body.get(i));
+        }
+        // Non-void methods need a guaranteed terminator: recovery may leave a path without a return
+        // (or one C# cannot prove returns), so mirror the goto emitter's fall-off guard — but only
+        // when the body doesn't already return on every path, else the guard is dead (CS0162) code.
+        if (!"V".equals(returnDesc) && !alwaysReturns(body)) {
             w.line("throw new global::System.InvalidOperationException(\"j2cs: fell off method end\");");
         }
         return w.toString();
@@ -601,6 +608,51 @@ final class StructuredBodyEmitter {
                 || last instanceof BreakStmt || last instanceof ContinueStmt;
     }
 
+    /**
+     * Whether a statement (list) leaves the method via return/throw on every path — C#'s definite-
+     * return rule (CS0161). Deliberately conservative: unknown shapes answer false, so the fall-off
+     * guard is only ever kept, never wrongly dropped. Break/continue don't count here (unlike
+     * {@link #endsInTerminator}); they exit a loop/switch, not the method.
+     */
+    private static boolean alwaysReturns(List<Statement> statements) {
+        return !statements.isEmpty() && alwaysReturns(statements.get(statements.size() - 1));
+    }
+
+    private static boolean alwaysReturns(Statement s) {
+        if (s instanceof ReturnStmt || s instanceof ThrowStmt) {
+            return true;
+        }
+        if (s instanceof BlockStmt block) {
+            return alwaysReturns(block.getStatements());
+        }
+        if (s instanceof IfStmt i) {
+            return i.getElseBranch() != null
+                    && alwaysReturns(i.getThenBranch()) && alwaysReturns(i.getElseBranch());
+        }
+        if (s instanceof TryCatchStmt t) {
+            if (!alwaysReturns(t.getTryBlock())) {
+                return false;
+            }
+            for (CatchClause c : t.getCatches()) {
+                if (!alwaysReturns(c.body())) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        if (s instanceof SwitchStmt sw) {
+            boolean hasDefault = false;
+            for (SwitchCase c : sw.getCases()) {
+                hasDefault |= c.isDefault();
+                if (!alwaysReturns(c.statements())) {
+                    return false;
+                }
+            }
+            return hasDefault;
+        }
+        return false;
+    }
+
     /** Runs the supplier with hoisting disabled — for re-evaluated/conditional positions. */
     private String noHoist(java.util.function.Supplier<String> f) {
         boolean prev = allowHoist;
@@ -705,7 +757,7 @@ final class StructuredBodyEmitter {
     /** Renders in value position: C#-bool results bridge to the int ABI. */
     private String expr(Expression e) {
         if (isBoolNative(e)) {
-            return "((" + condition(e) + ") ? 1 : 0)";
+            return "(" + condition(e) + " ? 1 : 0)";
         }
         return value(e);
     }
@@ -735,12 +787,14 @@ final class StructuredBodyEmitter {
         }
         if (e instanceof UnaryExpr u
                 && u.getOperator() == com.tonic.analysis.source.ast.expr.UnaryOperator.NOT) {
-            return "!(" + condition(u.getOperand()) + ")";
+            Expression operand = u.getOperand();
+            // Negating an int operand's != 0 bridge is just == 0; avoid the !((x) != 0) double-negation.
+            return isBoolNative(operand) ? "!(" + condition(operand) + ")" : atom(operand) + " == 0";
         }
         if (e instanceof InstanceOfExpr i) {
             return instanceOf(i);
         }
-        return "(" + value(e) + ") != 0";
+        return atom(e) + " != 0";
     }
 
     private static boolean isBoolNative(Expression e) {
