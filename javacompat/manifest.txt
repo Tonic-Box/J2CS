@@ -180,6 +180,7 @@ java.util.Collections.cs
 java.util.Comparator.cs
 java.util.Date.cs
 java.util.Deque.cs
+java.util.DescendingTreeMap.cs
 java.util.DoubleSummaryStatistics.cs
 java.util.EnumMap.cs
 java.util.EnumSet.cs

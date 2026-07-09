@@ -309,6 +309,16 @@ namespace java.util
         private void ForEachEntry(
                 global::System.Action<global::java.lang.Object, global::java.lang.Object> action)
         {
+            if (this is global::java.util.DescendingTreeMap)
+            {
+                var desc = new global::System.Collections.Generic.List<global::java.lang.Object>(keyOrder);
+                desc.Sort((a, b) => global::java.util.JCollections.NaturalCompare(b, a));
+                foreach (global::java.lang.Object k in desc)
+                {
+                    action(k, get(k));
+                }
+                return;
+            }
             if (this is global::java.util.TreeMap)
             {
                 var sorted = new global::System.Collections.Generic.List<global::java.lang.Object>(keyOrder);

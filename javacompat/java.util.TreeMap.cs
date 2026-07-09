@@ -120,6 +120,14 @@ namespace java.util
             return r;
         }
 
+        public NavigableMap descendingMap()
+        {
+            var r = new DescendingTreeMap(global::java.lang.RawNew.I);
+            r.__init__V();
+            foreach (var k in SortedKeys()) { r.put(k, get(k)); }
+            return r;
+        }
+
         public NavigableMap headMap(global::java.lang.Object toKey, int inclusive)
         {
             var r = new TreeMap(global::java.lang.RawNew.I);

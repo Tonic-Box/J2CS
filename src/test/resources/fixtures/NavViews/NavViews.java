@@ -27,5 +27,6 @@ public class NavViews {
         System.out.println(tm.lowerEntry(3));
         System.out.println(tm.headMap(5, true));
         System.out.println(tm.tailMap(3, false));
+        System.out.println(tm.descendingMap());
     }
 }

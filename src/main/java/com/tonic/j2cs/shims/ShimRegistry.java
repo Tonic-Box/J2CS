@@ -102,6 +102,7 @@ public final class ShimRegistry {
         put(m, "java/util/SortedMap", "java/util/Map");
         put(m, "java/util/NavigableSet", "java/util/SortedSet");
         put(m, "java/util/NavigableMap", "java/util/SortedMap");
+        put(m, "java/util/DescendingTreeMap", "java/util/TreeMap");
         put(m, "java/lang/ThreadLocal", "java/lang/Object");
         put(m, "java/net/URI", "java/lang/Object");
         put(m, "java/net/URL", "java/lang/Object");
@@ -2505,6 +2506,7 @@ public final class ShimRegistry {
         put(m, "java/util/TreeMap.lowerEntry(Ljava/lang/Object;)Ljava/util/Map$Entry;", instance("lowerEntry"));
         put(m, "java/util/TreeMap.navigableKeySet()Ljava/util/NavigableSet;", instance("navigableKeySet"));
         put(m, "java/util/TreeMap.descendingKeySet()Ljava/util/NavigableSet;", instance("descendingKeySet"));
+        put(m, "java/util/TreeMap.descendingMap()Ljava/util/NavigableMap;", instance("descendingMap"));
         put(m, "java/util/TreeMap.headMap(Ljava/lang/Object;Z)Ljava/util/NavigableMap;", instance("headMap"));
         put(m, "java/util/TreeMap.tailMap(Ljava/lang/Object;Z)Ljava/util/NavigableMap;", instance("tailMap"));
         put(m, "java/util/TreeMap.subMap(Ljava/lang/Object;ZLjava/lang/Object;Z)Ljava/util/NavigableMap;", instance("subMap"));
