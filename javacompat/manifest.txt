@@ -96,6 +96,8 @@ java.lang.Number.cs
 java.lang.NumberFormatException.cs
 java.lang.Object.cs
 java.lang.Package.cs
+java.lang.Process.cs
+java.lang.ProcessBuilder.cs
 java.lang.RawNew.cs
 java.lang.Runnable.cs
 java.lang.Runtime.cs
@@ -119,6 +121,8 @@ java.lang.reflect.Modifier.cs
 java.math.BigDecimal.cs
 java.math.BigInteger.cs
 java.math.RoundingMode.cs
+java.net.ServerSocket.cs
+java.net.Socket.cs
 java.net.URI.cs
 java.net.URL.cs
 java.nio.ByteBuffer.cs
@@ -145,8 +149,13 @@ java.nio.file.StandardOpenOption.cs
 java.nio.file.attribute.BasicFileAttributes.cs
 java.nio.file.attribute.FileAttribute.cs
 java.security.Key.cs
+java.security.KeyPair.cs
+java.security.KeyPairGenerator.cs
 java.security.MessageDigest.cs
+java.security.PrivateKey.cs
+java.security.PublicKey.cs
 java.security.SecureRandom.cs
+java.security.Signature.cs
 java.security.spec.AlgorithmParameterSpec.cs
 java.text.DecimalFormat.cs
 java.text.MessageFormat.cs

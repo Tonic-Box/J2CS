@@ -104,8 +104,12 @@ public final class ShimRegistry {
         put(m, "java/util/NavigableMap", "java/util/SortedMap");
         put(m, "java/util/DescendingTreeMap", "java/util/TreeMap");
         put(m, "java/lang/ThreadLocal", "java/lang/Object");
+        put(m, "java/lang/Process", "java/lang/Object");
+        put(m, "java/lang/ProcessBuilder", "java/lang/Object");
         put(m, "java/net/URI", "java/lang/Object");
         put(m, "java/net/URL", "java/lang/Object");
+        put(m, "java/net/Socket", "java/lang/Object");
+        put(m, "java/net/ServerSocket", "java/lang/Object");
         put(m, "java/util/Queue", "java/util/Collection");
         put(m, "java/util/Deque", "java/util/Queue");
         put(m, "java/util/ArrayDeque", "java/util/Deque");
@@ -258,6 +262,11 @@ public final class ShimRegistry {
         put(m, "java/security/spec/AlgorithmParameterSpec", "java/lang/Object");
         put(m, "javax/crypto/spec/IvParameterSpec", "java/lang/Object");
         put(m, "javax/crypto/Cipher", "java/lang/Object");
+        put(m, "java/security/PublicKey", "java/security/Key");
+        put(m, "java/security/PrivateKey", "java/security/Key");
+        put(m, "java/security/KeyPair", "java/lang/Object");
+        put(m, "java/security/KeyPairGenerator", "java/lang/Object");
+        put(m, "java/security/Signature", "java/lang/Object");
         put(m, "java/security/SecureRandom", "java/lang/Object");
     }
 
@@ -578,9 +587,12 @@ public final class ShimRegistry {
         addConcurrentMethods2(m);
         addNavEnumMethods0(m);
         addNetMethods0(m);
+        addNetMethods1(m);
         addCryptoMethods0(m);
         addCryptoMethods1(m);
+        addCryptoMethods2(m);
         addNavViewMethods0(m);
+        addProcessMethods0(m);
         addLangMethods1(m);
         addLangMethods2(m);
         addLangMethods3(m);
@@ -2510,6 +2522,45 @@ public final class ShimRegistry {
         put(m, "java/util/TreeMap.headMap(Ljava/lang/Object;Z)Ljava/util/NavigableMap;", instance("headMap"));
         put(m, "java/util/TreeMap.tailMap(Ljava/lang/Object;Z)Ljava/util/NavigableMap;", instance("tailMap"));
         put(m, "java/util/TreeMap.subMap(Ljava/lang/Object;ZLjava/lang/Object;Z)Ljava/util/NavigableMap;", instance("subMap"));
+    }
+
+    private static void addProcessMethods0(Map<String, ShimTarget> m) {
+        put(m, "java/lang/ProcessBuilder.redirectErrorStream(Z)Ljava/lang/ProcessBuilder;", instance("redirectErrorStream"));
+        put(m, "java/lang/ProcessBuilder.directory(Ljava/io/File;)Ljava/lang/ProcessBuilder;", instance("directory"));
+        put(m, "java/lang/ProcessBuilder.start()Ljava/lang/Process;", instance("start"));
+        put(m, "java/lang/Process.getInputStream()Ljava/io/InputStream;", instance("getInputStream"));
+        put(m, "java/lang/Process.getErrorStream()Ljava/io/InputStream;", instance("getErrorStream"));
+        put(m, "java/lang/Process.getOutputStream()Ljava/io/OutputStream;", instance("getOutputStream"));
+        put(m, "java/lang/Process.waitFor()I", instance("waitFor"));
+        put(m, "java/lang/Process.exitValue()I", instance("exitValue"));
+        put(m, "java/lang/Process.isAlive()Z", instance("isAlive"));
+        put(m, "java/lang/Process.destroy()V", instance("destroy"));
+    }
+
+    private static void addCryptoMethods2(Map<String, ShimTarget> m) {
+        put(m, "java/security/KeyPairGenerator.getInstance(Ljava/lang/String;)Ljava/security/KeyPairGenerator;", statics("getInstance"));
+        put(m, "java/security/KeyPairGenerator.initialize(I)V", instance("initialize"));
+        put(m, "java/security/KeyPairGenerator.generateKeyPair()Ljava/security/KeyPair;", instance("generateKeyPair"));
+        put(m, "java/security/KeyPairGenerator.genKeyPair()Ljava/security/KeyPair;", instance("genKeyPair"));
+        put(m, "java/security/KeyPair.getPublic()Ljava/security/PublicKey;", instance("getPublic"));
+        put(m, "java/security/KeyPair.getPrivate()Ljava/security/PrivateKey;", instance("getPrivate"));
+        put(m, "java/security/Signature.getInstance(Ljava/lang/String;)Ljava/security/Signature;", statics("getInstance"));
+        put(m, "java/security/Signature.initSign(Ljava/security/PrivateKey;)V", instance("initSign"));
+        put(m, "java/security/Signature.initVerify(Ljava/security/PublicKey;)V", instance("initVerify"));
+        put(m, "java/security/Signature.update([B)V", instance("update"));
+        put(m, "java/security/Signature.sign()[B", instance("sign"));
+        put(m, "java/security/Signature.verify([B)Z", instance("verify"));
+    }
+
+    private static void addNetMethods1(Map<String, ShimTarget> m) {
+        put(m, "java/net/Socket.getInputStream()Ljava/io/InputStream;", instance("getInputStream"));
+        put(m, "java/net/Socket.getOutputStream()Ljava/io/OutputStream;", instance("getOutputStream"));
+        put(m, "java/net/Socket.getPort()I", instance("getPort"));
+        put(m, "java/net/Socket.getLocalPort()I", instance("getLocalPort"));
+        put(m, "java/net/Socket.close()V", instance("close"));
+        put(m, "java/net/ServerSocket.getLocalPort()I", instance("getLocalPort"));
+        put(m, "java/net/ServerSocket.accept()Ljava/net/Socket;", instance("accept"));
+        put(m, "java/net/ServerSocket.close()V", instance("close"));
     }
 
     private static Map<String, ShimTarget> buildFields() {
