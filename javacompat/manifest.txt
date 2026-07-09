@@ -128,6 +128,15 @@ java.net.Socket.cs
 java.net.URI.cs
 java.net.URL.cs
 java.net.URLConnection.cs
+java.net.http.HttpClient$Builder.cs
+java.net.http.HttpClient.cs
+java.net.http.HttpRequest$BodyPublisher.cs
+java.net.http.HttpRequest$BodyPublishers.cs
+java.net.http.HttpRequest$Builder.cs
+java.net.http.HttpRequest.cs
+java.net.http.HttpResponse$BodyHandler.cs
+java.net.http.HttpResponse$BodyHandlers.cs
+java.net.http.HttpResponse.cs
 java.nio.ByteBuffer.cs
 java.nio.ByteOrder.cs
 java.nio.CharBuffer.cs

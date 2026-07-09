@@ -113,6 +113,15 @@ public final class ShimRegistry {
         put(m, "java/net/InetAddress", "java/lang/Object");
         put(m, "java/net/URLConnection", "java/lang/Object");
         put(m, "java/net/HttpURLConnection", "java/net/URLConnection");
+        put(m, "java/net/http/HttpClient", "java/lang/Object");
+        put(m, "java/net/http/HttpClient$Builder", "java/lang/Object");
+        put(m, "java/net/http/HttpRequest", "java/lang/Object");
+        put(m, "java/net/http/HttpRequest$Builder", "java/lang/Object");
+        put(m, "java/net/http/HttpRequest$BodyPublisher", "java/lang/Object");
+        put(m, "java/net/http/HttpRequest$BodyPublishers", "java/lang/Object");
+        put(m, "java/net/http/HttpResponse", "java/lang/Object");
+        put(m, "java/net/http/HttpResponse$BodyHandler", "java/lang/Object");
+        put(m, "java/net/http/HttpResponse$BodyHandlers", "java/lang/Object");
         put(m, "java/util/Queue", "java/util/Collection");
         put(m, "java/util/Deque", "java/util/Queue");
         put(m, "java/util/ArrayDeque", "java/util/Deque");
@@ -592,6 +601,7 @@ public final class ShimRegistry {
         addNetMethods0(m);
         addNetMethods1(m);
         addNetMethods2(m);
+        addHttpClientMethods0(m);
         addCryptoMethods0(m);
         addCryptoMethods1(m);
         addCryptoMethods2(m);
@@ -2584,6 +2594,30 @@ public final class ShimRegistry {
         put(m, "java/net/HttpURLConnection.setRequestMethod(Ljava/lang/String;)V", instance("setRequestMethod"));
         put(m, "java/net/HttpURLConnection.getResponseCode()I", instance("getResponseCode"));
         put(m, "java/net/HttpURLConnection.disconnect()V", instance("disconnect"));
+    }
+
+    private static void addHttpClientMethods0(Map<String, ShimTarget> m) {
+        put(m, "java/net/URI.create(Ljava/lang/String;)Ljava/net/URI;", statics("create"));
+        put(m, "java/net/http/HttpClient.newHttpClient()Ljava/net/http/HttpClient;", statics("newHttpClient"));
+        put(m, "java/net/http/HttpClient.newBuilder()Ljava/net/http/HttpClient$Builder;", statics("newBuilder"));
+        put(m, "java/net/http/HttpClient.send(Ljava/net/http/HttpRequest;Ljava/net/http/HttpResponse$BodyHandler;)Ljava/net/http/HttpResponse;", instance("send"));
+        put(m, "java/net/http/HttpClient$Builder.connectTimeout(Ljava/time/Duration;)Ljava/net/http/HttpClient$Builder;", instance("connectTimeout"));
+        put(m, "java/net/http/HttpClient$Builder.build()Ljava/net/http/HttpClient;", instance("build"));
+        put(m, "java/net/http/HttpRequest.newBuilder()Ljava/net/http/HttpRequest$Builder;", statics("newBuilder"));
+        put(m, "java/net/http/HttpRequest.newBuilder(Ljava/net/URI;)Ljava/net/http/HttpRequest$Builder;", statics("newBuilder"));
+        put(m, "java/net/http/HttpRequest$Builder.uri(Ljava/net/URI;)Ljava/net/http/HttpRequest$Builder;", instance("uri"));
+        put(m, "java/net/http/HttpRequest$Builder.GET()Ljava/net/http/HttpRequest$Builder;", instance("GET"));
+        put(m, "java/net/http/HttpRequest$Builder.DELETE()Ljava/net/http/HttpRequest$Builder;", instance("DELETE"));
+        put(m, "java/net/http/HttpRequest$Builder.POST(Ljava/net/http/HttpRequest$BodyPublisher;)Ljava/net/http/HttpRequest$Builder;", instance("POST"));
+        put(m, "java/net/http/HttpRequest$Builder.PUT(Ljava/net/http/HttpRequest$BodyPublisher;)Ljava/net/http/HttpRequest$Builder;", instance("PUT"));
+        put(m, "java/net/http/HttpRequest$Builder.header(Ljava/lang/String;Ljava/lang/String;)Ljava/net/http/HttpRequest$Builder;", instance("header"));
+        put(m, "java/net/http/HttpRequest$Builder.build()Ljava/net/http/HttpRequest;", instance("build"));
+        put(m, "java/net/http/HttpRequest$BodyPublishers.ofString(Ljava/lang/String;)Ljava/net/http/HttpRequest$BodyPublisher;", statics("ofString"));
+        put(m, "java/net/http/HttpRequest$BodyPublishers.noBody()Ljava/net/http/HttpRequest$BodyPublisher;", statics("noBody"));
+        put(m, "java/net/http/HttpResponse.statusCode()I", instance("statusCode"));
+        put(m, "java/net/http/HttpResponse.body()Ljava/lang/Object;", instance("body"));
+        put(m, "java/net/http/HttpResponse$BodyHandlers.ofString()Ljava/net/http/HttpResponse$BodyHandler;", statics("ofString"));
+        put(m, "java/net/http/HttpResponse$BodyHandlers.ofByteArray()Ljava/net/http/HttpResponse$BodyHandler;", statics("ofByteArray"));
     }
 
     private static Map<String, ShimTarget> buildFields() {

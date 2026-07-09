@@ -19,6 +19,13 @@ namespace java.net
             Parse(str == null ? "" : str.Value);
         }
 
+        public static URI create(global::java.lang.String str)
+        {
+            var u = new URI(global::java.lang.RawNew.I);
+            u.__init_Ljava_lang_String__V(str);
+            return u;
+        }
+
         private void Parse(string s)
         {
             full = s;
