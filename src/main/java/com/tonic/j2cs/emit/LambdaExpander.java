@@ -60,11 +60,17 @@ public final class LambdaExpander {
         String samCsName;
         if (appIface) {
             Resolved samResolved = naming.resolveVirtual(ifaceInternal, instr.getName(), samDesc);
-            if (!(samResolved instanceof Resolved.AppMethod samMethod)) {
+            if (samResolved instanceof Resolved.AppMethod samMethod) {
+                samCsName = samMethod.csName();
+            } else if (samResolved instanceof Resolved.ShimMethod shimMethod) {
+                // The SAM is inherited from a shim super-interface (e.g. an app functional interface
+                // extending java.util.function.Function); the synthetic implements it under the shim's
+                // member name.
+                samCsName = shimMethod.target().csMemberName();
+            } else {
                 throw new UnsupportedBodyException("abstract method not found on functional interface: "
                         + ifaceInternal + "." + instr.getName() + samDesc);
             }
-            samCsName = samMethod.csName();
         } else {
             Optional<ShimTarget> shimSam = naming.shimMethod(ifaceInternal, instr.getName(), samDesc);
             if (shimSam.isEmpty()) {

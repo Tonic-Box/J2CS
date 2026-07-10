@@ -736,13 +736,29 @@ final class StructuredBodyEmitter {
 
     private String assignmentText(BinaryExpr assign) {
         String lhs = lvalue(assign.getLeft());
-        String targetDesc = descOf(assign.getLeft().getType());
+        String targetDesc = lvalueDesc(assign.getLeft());
         if (assign.getOperator() == BinaryOperator.ASSIGN) {
             return lhs + " = " + coerced(targetDesc, assign.getRight());
         }
         BinaryOperator base = compoundBase(assign.getOperator());
         String value = binaryValue(base, lhs, expr(assign.getRight()), targetDesc);
         return lhs + " = " + value;
+    }
+
+    /**
+     * The assignment target's descriptor: a declared local's C# variable holds its declared type, so
+     * coercion must target that (the lvalue reference's AST type can be a narrower phi-merge type, which
+     * would drop a needed cast — e.g. an interface value stored into an Object slot). Falls back to the
+     * expression's own type for fields and other lvalues.
+     */
+    private String lvalueDesc(Expression lhs) {
+        if (lhs instanceof VarRefExpr v) {
+            String declared = declaredDesc.get(localName(v.getName()));
+            if (declared != null) {
+                return declared;
+            }
+        }
+        return descOf(lhs.getType());
     }
 
     private static BinaryOperator compoundBase(BinaryOperator op) {
@@ -1291,7 +1307,22 @@ final class StructuredBodyEmitter {
                 return declared;
             }
         }
+        if (e instanceof TernaryExpr t) {
+            // C# infers a conditional's type from its branches; when one branch is the null literal
+            // the result type is the other branch's, not the widened (often Object) type YABR gave
+            // the node. Using the node type would drive a spurious bridge cast — e.g. coercing the
+            // whole `cond ? array : null` to its array return type via Unbox, which a raw array fails.
+            boolean thenNull = isNullLiteral(t.getThenExpr());
+            boolean elseNull = isNullLiteral(t.getElseExpr());
+            if (thenNull ^ elseNull) {
+                return effectiveDesc(thenNull ? t.getElseExpr() : t.getThenExpr());
+            }
+        }
         return descOf(e.getType());
+    }
+
+    private static boolean isNullLiteral(Expression e) {
+        return e instanceof LiteralExpr lit && lit.getValue() == null;
     }
 
     private static String internalFromDesc(String desc) {

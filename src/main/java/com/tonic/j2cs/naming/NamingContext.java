@@ -8,7 +8,9 @@ import com.tonic.j2cs.types.TypeMapper;
 import com.tonic.parser.ClassFile;
 import com.tonic.parser.MethodEntry;
 import com.tonic.util.Modifiers;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -410,6 +412,10 @@ public final class NamingContext {
                     return found;
                 }
             }
+            Resolved shimInherited = resolveThroughShimSuperInterfaces(refOwner, name, desc);
+            if (shimInherited != null) {
+                return shimInherited;
+            }
             return objectShim(name, desc, "interface method not found in closure: "
                     + refOwner + "." + name + desc);
         }
@@ -440,6 +446,32 @@ public final class NamingContext {
             }
         }
         return new Resolved.Unresolved("method not found in closure: " + refOwner + "." + name + desc);
+    }
+
+    /**
+     * Resolves a method an app interface inherits from a shim super-interface (e.g. a functional
+     * interface extending java.util.function.Function inherits its SAM). {@code allSuperInterfaces}
+     * only spans closure-internal interfaces, so shim supers — reachable by name via interfacesOf —
+     * are walked here. Returns null when no shim super-interface declares the method.
+     */
+    private Resolved resolveThroughShimSuperInterfaces(String appInterface, String name, String desc) {
+        Set<String> visited = new HashSet<>();
+        Deque<String> work = new ArrayDeque<>(hierarchy.interfacesOf(appInterface));
+        while (!work.isEmpty()) {
+            String iface = work.poll();
+            if (!visited.add(iface)) {
+                continue;
+            }
+            if (ShimRegistry.isShimType(iface)) {
+                Optional<ShimRegistry.WalkResult> walked = ShimRegistry.resolveMethodWalking(iface, name, desc);
+                if (walked.isPresent()) {
+                    return new Resolved.ShimMethod(walked.get().declaringInternal(), walked.get().target());
+                }
+            } else if (appClassFiles.containsKey(iface)) {
+                work.addAll(hierarchy.interfacesOf(iface));
+            }
+        }
+        return null;
     }
 
     private Resolved findInInterface(String iface, String name, String desc) {

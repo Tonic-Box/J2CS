@@ -55,6 +55,84 @@ namespace java.lang
             return valueOf(parseInt(s, radix));
         }
 
+        public static Integer decode(String nm)
+        {
+            if (nm == null)
+            {
+                throw JRuntime.NumberFormat("Cannot parse null string");
+            }
+            string s = nm.Value;
+            if (s.Length == 0)
+            {
+                throw JRuntime.NumberFormat("Zero length string");
+            }
+            int radix = 10;
+            int index = 0;
+            bool negative = false;
+            char firstChar = s[0];
+            if (firstChar == '-') { negative = true; index++; }
+            else if (firstChar == '+') { index++; }
+
+            if (s.Length > index + 1 && s[index] == '0' && (s[index + 1] == 'x' || s[index + 1] == 'X'))
+            {
+                index += 2;
+                radix = 16;
+            }
+            else if (s.Length > index && s[index] == '#')
+            {
+                index++;
+                radix = 16;
+            }
+            else if (s.Length > index + 1 && s[index] == '0')
+            {
+                index++;
+                radix = 8;
+            }
+
+            if (index < s.Length && (s[index] == '-' || s[index] == '+'))
+            {
+                throw JRuntime.NumberFormat("Sign character in wrong position");
+            }
+
+            string magnitude = s.Substring(index);
+            try
+            {
+                int result = parseInt(String.Wrap(magnitude), radix);
+                return valueOf(negative ? -result : result);
+            }
+            catch (JThrow jt) when (jt.payload is NumberFormatException)
+            {
+                return valueOf(parseInt(String.Wrap(negative ? "-" + magnitude : magnitude), radix));
+            }
+        }
+
+        public static Integer getInteger(String nm)
+        {
+            return getInteger(nm, (Integer)null);
+        }
+
+        public static Integer getInteger(String nm, int val)
+        {
+            Integer result = getInteger(nm, (Integer)null);
+            return result == null ? valueOf(val) : result;
+        }
+
+        public static Integer getInteger(String nm, Integer val)
+        {
+            String v = global::java.lang.System.getProperty(nm);
+            if (v != null)
+            {
+                try
+                {
+                    return decode(v);
+                }
+                catch (JThrow jt) when (jt.payload is NumberFormatException)
+                {
+                }
+            }
+            return val;
+        }
+
         private static int DigitOf(char c, int radix)
         {
             int d = -1;

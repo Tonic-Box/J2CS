@@ -90,6 +90,7 @@ java.lang.J2csNative.cs
 java.lang.JForeignError.cs
 java.lang.JRuntime.cs
 java.lang.JThrow.cs
+java.lang.LinkageError.cs
 java.lang.Long.cs
 java.lang.Math.cs
 java.lang.NoSuchFieldError.cs

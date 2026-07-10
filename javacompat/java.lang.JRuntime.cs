@@ -298,6 +298,20 @@ namespace java.lang
             return o == null ? "null" : Str(o.toString());
         }
 
+        /// <summary>
+        /// Concatenation of a value whose static C# type is an interface: a C# interface does not
+        /// derive from the java.lang.Object shim, so it binds here rather than to Str(Object). Class
+        /// and String operands still prefer their more specific overloads, so this adds no cast to them.
+        /// </summary>
+        public static string Str(object o)
+        {
+            if (o == null)
+            {
+                return "null";
+            }
+            return o is global::java.lang.Object jo ? Str(jo) : o.ToString();
+        }
+
         public static byte[] UnsignedBytes(sbyte[] a)
         {
             if (a == null)

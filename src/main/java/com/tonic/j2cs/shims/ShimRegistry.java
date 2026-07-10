@@ -374,6 +374,7 @@ public final class ShimRegistry {
     private static void addLangSupers4(Map<String, String> m) {
         put(m, "java/lang/StringBuffer", "java/lang/Object");
         put(m, "java/lang/NoSuchFieldError", "java/lang/Error");
+        put(m, "java/lang/LinkageError", "java/lang/Error");
     }
 
     private static void addAwtSupers0(Map<String, String> m) {
@@ -775,6 +776,10 @@ public final class ShimRegistry {
         put(m, "java/lang/Integer.parseUnsignedInt(Ljava/lang/String;I)I", statics("parseUnsignedInt"));
         put(m, "java/lang/Integer.valueOf(Ljava/lang/String;)Ljava/lang/Integer;", statics("valueOf"));
         put(m, "java/lang/Integer.valueOf(Ljava/lang/String;I)Ljava/lang/Integer;", statics("valueOf"));
+        put(m, "java/lang/Integer.decode(Ljava/lang/String;)Ljava/lang/Integer;", statics("decode"));
+        put(m, "java/lang/Integer.getInteger(Ljava/lang/String;)Ljava/lang/Integer;", statics("getInteger"));
+        put(m, "java/lang/Integer.getInteger(Ljava/lang/String;I)Ljava/lang/Integer;", statics("getInteger"));
+        put(m, "java/lang/Integer.getInteger(Ljava/lang/String;Ljava/lang/Integer;)Ljava/lang/Integer;", statics("getInteger"));
         put(m, "java/lang/Integer.compareUnsigned(II)I", statics("compareUnsigned"));
         put(m, "java/lang/Integer.divideUnsigned(II)I", statics("divideUnsigned"));
         put(m, "java/lang/Integer.remainderUnsigned(II)I", statics("remainderUnsigned"));

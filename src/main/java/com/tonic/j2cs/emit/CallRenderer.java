@@ -91,7 +91,10 @@ public final class CallRenderer {
                     + appMethod.csName() + "(" + args + ")";
         }
         if (resolved instanceof Resolved.ShimMethod shim) {
-            return reconciler.castTo("java/lang/Object", receiver.expr()) + "."
+            // The method resolves on a shim supertype: the Object trio (owner java/lang/Object) or a
+            // method inherited from a shim super-interface such as java.util.function.Function. Cast
+            // to that declaring type so the member is in scope.
+            return reconciler.castTo(shim.ownerInternal(), receiver.expr()) + "."
                     + shim.target().csMemberName() + "(" + args + ")";
         }
         throw new UnsupportedBodyException(((Resolved.Unresolved) resolved).reason());

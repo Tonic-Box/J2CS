@@ -117,8 +117,14 @@ public final class ClassHierarchy {
      * shim member conservatively keeps its cast.
      */
     public boolean staticallyHasMember(String receiverInternal, String declaringInternal) {
-        if (receiverInternal.equals(declaringInternal) || declaringInternal.equals("java/lang/Object")) {
+        if (receiverInternal.equals(declaringInternal)) {
             return true;
+        }
+        if (declaringInternal.equals("java/lang/Object")) {
+            // A C# interface does not expose the java.lang.Object shim's members, so an Object-member
+            // call (e.g. getClass) on an interface-typed receiver must upcast to Object first; a class
+            // receiver inherits them directly and needs no cast.
+            return !isAppInterface(receiverInternal);
         }
         if (classAncestors(receiverInternal).contains(declaringInternal)
                 || allSuperInterfaces(receiverInternal).contains(declaringInternal)) {
