@@ -83,6 +83,7 @@ final class StructuredBodyEmitter {
     private String returnDesc;
     private StructuredRecovery.Recovered recovered;
     private Map<String, String> names;
+    private Map<String, String> declaredDesc;
     private Set<String> usedNames;
     private Map<String, String> breakLabels;
     private Map<SSAValue, String> paramNames;
@@ -106,6 +107,7 @@ final class StructuredBodyEmitter {
         this.currentClass = classFile.getClassName();
         this.returnDesc = TypeMapper.returnDescriptor(method.getDesc());
         this.names = new HashMap<>();
+        this.declaredDesc = new HashMap<>();
         this.usedNames = new HashSet<>();
         this.breakLabels = new HashMap<>();
         this.scopes = new java.util.ArrayDeque<>();
@@ -197,6 +199,7 @@ final class StructuredBodyEmitter {
         String targetDesc = descOf(v.getType());
         CsType type = naming.typeMapper().storageType(targetDesc);
         String name = localName(v.getName());
+        declaredDesc.put(name, targetDesc);
         boolean declare = !inScope(name);
         if (declare) {
             declareInScope(name);
@@ -1263,9 +1266,31 @@ final class StructuredBodyEmitter {
         return sb.toString();
     }
 
+    /**
+     * The descriptor C# actually sees for an expression. For a local variable that is its declared
+     * (possibly slot-merged, widened) storage type rather than the AST's flow-narrowed type: C# has
+     * no flow narrowing, so a use of a widened local needs an explicit cast the narrowed type would
+     * otherwise hide.
+     */
+    private String effectiveDesc(Expression e) {
+        if (e instanceof VarRefExpr ref) {
+            String declared = declaredDesc.get(localName(ref.getName()));
+            if (declared != null) {
+                return declared;
+            }
+        }
+        return descOf(e.getType());
+    }
+
+    private static String internalFromDesc(String desc) {
+        return desc != null && desc.startsWith("L") && desc.endsWith(";")
+                ? desc.substring(1, desc.length() - 1)
+                : null;
+    }
+
     private String coerced(String targetDesc, Expression e) {
         String raw = expr(e);
-        String sourceDesc = descOf(e.getType());
+        String sourceDesc = effectiveDesc(e);
         if (sourceDesc == null) {
             return raw;
         }
@@ -1290,13 +1315,13 @@ final class StructuredBodyEmitter {
         }
         // A method invoked on an array receiver is always a java.lang.Object method (clone and
         // length are handled elsewhere), so box the native array to reach the shim Object.
-        String desc = descOf(receiver.getType());
+        String desc = effectiveDesc(receiver);
         if (desc != null && desc.startsWith("[")) {
             return new CallRenderer.Receiver(
                     "global::java.lang.JRuntime.Box(" + atom(receiver) + ", \"" + desc + "\")",
                     "java/lang/Object");
         }
-        return new CallRenderer.Receiver(atom(receiver), internalOf(receiver.getType()));
+        return new CallRenderer.Receiver(atom(receiver), internalFromDesc(desc));
     }
 
     /** Parenthesizes compound sub-expressions for precedence safety. */
