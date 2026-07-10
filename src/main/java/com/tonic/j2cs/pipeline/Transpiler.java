@@ -116,16 +116,19 @@ public final class Transpiler {
         String programCs = new EntryPointEmitter().emit(input.entryClassInternalName(), naming, usesGui);
 
         Set<String> ownSimpleNames = new java.util.HashSet<>();
+        Map<String, Set<String>> namespaceTypes = new java.util.HashMap<>();
         for (String internal : ShimRegistry.types()) {
-            ownSimpleNames.add(CsNamer.classNameOf(internal));
+            String simple = CsNamer.classNameOf(internal);
+            ownSimpleNames.add(simple);
+            namespaceTypes.computeIfAbsent(CsNamer.namespaceOf(internal), k -> new java.util.HashSet<>()).add(simple);
         }
         for (String dotted : genFiles.keySet()) {
-            ownSimpleNames.add(dotted.substring(dotted.lastIndexOf('.') + 1));
+            addNamespaceType(ownSimpleNames, namespaceTypes, dotted);
         }
         for (String dotted : stubFiles.keySet()) {
-            ownSimpleNames.add(dotted.substring(dotted.lastIndexOf('.') + 1));
+            addNamespaceType(ownSimpleNames, namespaceTypes, dotted);
         }
-        UsingRewriter usingRewriter = new UsingRewriter(ownSimpleNames);
+        UsingRewriter usingRewriter = new UsingRewriter(ownSimpleNames, namespaceTypes);
         genFiles = usingRewriter.rewriteAll(genFiles);
         stubFiles = usingRewriter.rewriteAll(stubFiles);
 
@@ -251,5 +254,15 @@ public final class Transpiler {
 
     private static String dottedName(String internalName) {
         return CsNamer.namespaceOf(internalName) + "." + CsNamer.classNameOf(internalName);
+    }
+
+    private static void addNamespaceType(Set<String> ownSimpleNames,
+                                         Map<String, Set<String>> namespaceTypes, String dotted) {
+        int dot = dotted.lastIndexOf('.');
+        String simple = dotted.substring(dot + 1);
+        ownSimpleNames.add(simple);
+        if (dot > 0) {
+            namespaceTypes.computeIfAbsent(dotted.substring(0, dot), k -> new java.util.HashSet<>()).add(simple);
+        }
     }
 }

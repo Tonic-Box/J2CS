@@ -3,6 +3,7 @@ package com.tonic.j2cs.unit;
 import com.tonic.j2cs.emit.UsingRewriter;
 import org.junit.jupiter.api.Test;
 
+import java.util.Map;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -11,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class UsingRewriterTest {
 
     private static String rewrite(String cs, String... ownSimple) {
-        return new UsingRewriter(Set.of(ownSimple)).rewrite(cs);
+        return new UsingRewriter(Set.of(ownSimple), Map.of()).rewrite(cs);
     }
 
     private static String wrap(String ns, String body) {
@@ -90,6 +91,20 @@ class UsingRewriterTest {
         assertTrue(out.contains("Holder.make()"), out);
         assertFalse(out.contains("using jdefault;"), out);
         assertFalse(out.contains("global::jdefault.Holder"), out);
+    }
+
+    @Test
+    void keepsGlobalWhenSimpleNameLatentInAnotherImportedNamespace() {
+        // Only org.a.Socket is referenced, but shortening org.b.Widget imports org.b, which also
+        // declares a Socket; a bare Socket would then be ambiguous, so org.a.Socket stays global::.
+        Map<String, Set<String>> nsTypes = Map.of(
+                "org.a", Set.of("Socket"),
+                "org.b", Set.of("Widget", "Socket"));
+        String cs = wrap("jdefault",
+                "        var a = new global::org.a.Socket(); var b = new global::org.b.Widget();");
+        String out = new UsingRewriter(Set.of(), nsTypes).rewrite(cs);
+        assertTrue(out.contains("global::org.a.Socket"), out);
+        assertTrue(out.contains("new Widget()"), out);
     }
 
     @Test

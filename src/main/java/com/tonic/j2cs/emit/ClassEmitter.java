@@ -96,6 +96,13 @@ public final class ClassEmitter {
             w.line();
             emitMethod(w, classFile, csClassName, method, plan, namer, types, isInterface);
         }
+        if (!isInterface && Modifiers.isAbstract(classFile.getAccess()) && policy.unsupportedReason() == null) {
+            for (NamingContext.AbstractMethodDecl decl : naming.unimplementedInterfaceMethods(internalName)) {
+                w.line();
+                w.line("public abstract " + types.returnType(decl.desc()).csText() + " "
+                        + decl.csName() + "(" + paramList(decl.desc(), types) + ");");
+            }
+        }
         w.close();
         w.close();
         return w.toString();
@@ -159,6 +166,47 @@ public final class ClassEmitter {
             w.close();
         }
         w.close();
+        if (isInterface && !name.equals("<init>") && !name.equals("<clinit>")
+                && !Modifiers.isAbstract(method.getAccess())
+                && !Modifiers.isStatic(method.getAccess())
+                && !Modifiers.isPrivate(method.getAccess())) {
+            emitInterfaceOverrideBridges(w, classFile, method, namer, types);
+        }
+    }
+
+    /**
+     * A Java default method that overrides a super-interface's abstract method silently satisfies it;
+     * the equivalent C# default interface method only hides it, leaving classes that implement this
+     * interface with an unimplemented member. For each overridden super-interface declaration, emit an
+     * explicit implementation that forwards to this interface's default method, restoring the linkage.
+     */
+    private void emitInterfaceOverrideBridges(CsWriter w, ClassFile classFile, MethodEntry method,
+                                              MemberNamer namer, TypeMapper types) {
+        String desc = method.getDesc();
+        List<NamingContext.InterfaceMethodDecl> decls =
+                naming.overriddenInterfaceDecls(classFile.getClassName(), method.getName(), desc);
+        if (decls.isEmpty()) {
+            return;
+        }
+        CsType returnType = types.returnType(desc);
+        boolean isVoid = returnType.csText().equals("void");
+        String csName = namer.methodName(method);
+        String ifaceCs = CsNamer.fqcn(classFile.getClassName());
+        int paramCount = types.paramTypes(desc).size();
+        StringBuilder forward = new StringBuilder();
+        for (int i = 0; i < paramCount; i++) {
+            if (i > 0) {
+                forward.append(", ");
+            }
+            forward.append("p").append(i);
+        }
+        String call = "((" + ifaceCs + ")this)." + csName + "(" + forward + ")";
+        for (NamingContext.InterfaceMethodDecl decl : decls) {
+            w.open(returnType.csText() + " " + decl.csType() + "." + decl.csMember()
+                    + "(" + paramList(desc, types) + ")");
+            w.line(isVoid ? call + ";" : "return " + call + ";");
+            w.close();
+        }
     }
 
     /** Emits the method body content (no enclosing braces): enum synthesis, structured, or classic. */

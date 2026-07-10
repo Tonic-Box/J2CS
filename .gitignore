@@ -44,3 +44,4 @@ bin/
 /DemoApp.jar
 /DemoGame-all.jar
 /NativeSmokeBullet-all.jar
+/NativeSmokeGlfw-all.jar

@@ -30,7 +30,8 @@ public final class MethodModifiers {
         boolean isOverride = !isRoot
                 && (MemberNamer.isObjectOverride(method.getName(), method.getDesc())
                 || ancestorClassDeclares(naming, classInternalName, method.getName(), method.getDesc())
-                || shimSuperDeclares(naming, classInternalName, method.getName(), method.getDesc()));
+                || shimSuperDeclares(naming, classInternalName, method.getName(), method.getDesc())
+                || naming.ancestorImplementsInterfaceMethod(classInternalName, method.getName(), method.getDesc()));
         if (isOverride) {
             return isAbstract ? "public abstract override " : "public override ";
         }

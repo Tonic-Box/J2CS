@@ -8,7 +8,9 @@ import com.tonic.j2cs.types.TypeMapper;
 import com.tonic.parser.ClassFile;
 import com.tonic.parser.MethodEntry;
 import com.tonic.util.Modifiers;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -146,6 +148,180 @@ public final class NamingContext {
             throw new IllegalArgumentException("no namer for class " + internalName);
         }
         return namer;
+    }
+
+    /** A super-interface method that a C# default method must explicitly implement to satisfy it. */
+    public record InterfaceMethodDecl(String csType, String csMember) {
+    }
+
+    /**
+     * Super-interface declarations that a concrete (default) method on the given interface overrides
+     * in Java but only <em>hides</em> in C#. A Java default method silently satisfies the abstract
+     * method it overrides in every super-interface; a C# default interface method does not, so a
+     * class implementing this interface is left with an unimplemented member (CS0535). Emitting an
+     * explicit implementation for each returned declaration restores the linkage. Both app and shim
+     * super-interfaces are walked; only abstract (non-default) declarations are returned.
+     */
+    public List<InterfaceMethodDecl> overriddenInterfaceDecls(String ifaceInternal, String name, String desc) {
+        Set<String> roots = new LinkedHashSet<>();
+        Set<String> visited = new HashSet<>();
+        for (String sup : hierarchy.interfacesOf(ifaceInternal)) {
+            collectAbstractInterfaceDecls(sup, name, desc, roots, visited);
+        }
+        List<InterfaceMethodDecl> decls = new ArrayList<>();
+        for (String root : roots) {
+            decls.add(new InterfaceMethodDecl(CsNamer.fqcn(root), interfaceMemberName(root, name, desc)));
+        }
+        return decls;
+    }
+
+    private void collectAbstractInterfaceDecls(String type, String name, String desc,
+                                               Set<String> roots, Set<String> visited) {
+        if (!visited.add(type)) {
+            return;
+        }
+        if (ShimRegistry.isShimType(type)) {
+            ShimRegistry.resolveMethodWalking(type, name, desc).ifPresent(walk -> {
+                if (!ShimRegistry.isDefaultInterfaceMethod(walk.declaringInternal(), name, desc)) {
+                    roots.add(walk.declaringInternal());
+                }
+            });
+            return;
+        }
+        ClassFile cf = appClassFiles.get(type);
+        if (cf == null || !Modifiers.isInterface(cf.getAccess())) {
+            return;
+        }
+        for (MethodEntry m : cf.getMethods()) {
+            if (m.getName().equals(name) && m.getDesc().equals(desc)) {
+                if (Modifiers.isAbstract(m.getAccess())) {
+                    roots.add(type);
+                }
+                return;
+            }
+        }
+        for (String sup : hierarchy.interfacesOf(type)) {
+            collectAbstractInterfaceDecls(sup, name, desc, roots, visited);
+        }
+    }
+
+    /** An interface method an abstract class must re-declare as abstract to satisfy C#. */
+    public record AbstractMethodDecl(String csName, String desc) {
+    }
+
+    /**
+     * Abstract interface methods that the given class implements but neither it nor any ancestor
+     * provides a body for. Java lets an abstract class inherit the obligation silently; C# requires
+     * the class to re-declare each such member as {@code abstract}, or it reports CS0535. Interface
+     * methods with a default, and those implemented by the class or an ancestor, are excluded.
+     */
+    public List<AbstractMethodDecl> unimplementedInterfaceMethods(String classInternal) {
+        Map<String, MethodEntry> requiredMethod = new LinkedHashMap<>();
+        Map<String, String> requiredIface = new LinkedHashMap<>();
+        Set<String> provided = new HashSet<>();
+        for (String iface : hierarchy.allSuperInterfaces(classInternal)) {
+            ClassFile cf = appClassFiles.get(iface);
+            if (cf == null) {
+                continue;
+            }
+            for (MethodEntry m : cf.getMethods()) {
+                String n = m.getName();
+                if (n.equals("<clinit>") || Modifiers.isStatic(m.getAccess()) || Modifiers.isPrivate(m.getAccess())
+                        || MemberNamer.isObjectOverride(n, m.getDesc())) {
+                    continue;
+                }
+                String k = n + m.getDesc();
+                if (Modifiers.isAbstract(m.getAccess())) {
+                    if (requiredMethod.putIfAbsent(k, m) == null) {
+                        requiredIface.put(k, iface);
+                    }
+                } else {
+                    provided.add(k);
+                }
+            }
+        }
+        if (requiredMethod.isEmpty()) {
+            return List.of();
+        }
+        addDeclaredMethods(classInternal, provided);
+        for (String ancestor : hierarchy.classAncestors(classInternal)) {
+            addDeclaredMethods(ancestor, provided);
+        }
+        String external = hierarchy.firstExternalSuper(classInternal);
+        if (external != null && ShimRegistry.isExtendable(external)) {
+            provided.addAll(ShimRegistry.EXTENDABLE_VIRTUALS.keySet());
+        }
+        List<AbstractMethodDecl> out = new ArrayList<>();
+        for (Map.Entry<String, MethodEntry> e : requiredMethod.entrySet()) {
+            MethodEntry m = e.getValue();
+            if (provided.contains(e.getKey())
+                    || ancestorImplementsInterfaceMethod(classInternal, m.getName(), m.getDesc())) {
+                continue;
+            }
+            MemberNamer ifaceNamer = namers.get(requiredIface.get(e.getKey()));
+            String csName = ifaceNamer == null ? null
+                    : ifaceNamer.findMethodName(e.getValue().getName(), e.getValue().getDesc());
+            if (csName != null) {
+                out.add(new AbstractMethodDecl(csName, e.getValue().getDesc()));
+            }
+        }
+        return out;
+    }
+
+    /**
+     * Whether a strict class ancestor of the given class transitively implements an interface that
+     * declares this instance method. When true, that ancestor owns the C# member slot for it, so an
+     * implementation here overrides (rather than introduces) it and a re-abstraction is redundant.
+     */
+    public boolean ancestorImplementsInterfaceMethod(String classInternal, String name, String desc) {
+        for (String ancestor : hierarchy.classAncestors(classInternal)) {
+            if (typeImplementsInterfaceMethod(ancestor, name, desc)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean typeImplementsInterfaceMethod(String classInternal, String name, String desc) {
+        boolean hasAbstract = false;
+        boolean hasDefault = false;
+        for (String iface : hierarchy.allSuperInterfaces(classInternal)) {
+            ClassFile cf = appClassFiles.get(iface);
+            if (cf == null) {
+                continue;
+            }
+            for (MethodEntry m : cf.getMethods()) {
+                if (!m.getName().equals(name) || !m.getDesc().equals(desc)
+                        || Modifiers.isStatic(m.getAccess()) || Modifiers.isPrivate(m.getAccess())) {
+                    continue;
+                }
+                if (Modifiers.isAbstract(m.getAccess())) {
+                    hasAbstract = true;
+                } else {
+                    hasDefault = true;
+                }
+            }
+        }
+        return hasAbstract && !hasDefault;
+    }
+
+    private void addDeclaredMethods(String classInternal, Set<String> provided) {
+        ClassFile cf = appClassFiles.get(classInternal);
+        if (cf == null) {
+            return;
+        }
+        for (MethodEntry m : cf.getMethods()) {
+            provided.add(m.getName() + m.getDesc());
+        }
+    }
+
+    private String interfaceMemberName(String root, String name, String desc) {
+        if (ShimRegistry.isShimType(root)) {
+            return ShimRegistry.method(root, name, desc).map(ShimTarget::csMemberName).orElse(name);
+        }
+        MemberNamer namer = namers.get(root);
+        String csName = namer == null ? null : namer.findMethodName(name, desc);
+        return csName == null ? name : csName;
     }
 
     public String classUnsupportedReason(String internalName) {

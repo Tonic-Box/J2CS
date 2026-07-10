@@ -48,13 +48,18 @@ public final class UsingRewriter {
             Pattern.compile("(?m)^namespace\\s+([@\\w.]+)");
 
     private final Set<String> ownSimpleNames;
+    private final Map<String, Set<String>> namespaceTypes;
 
     /**
      * @param ownSimpleNames simple C# type names of all shim + app + generated types, used to keep
      *                       BCL references global:: when they collide with one of our types.
+     * @param namespaceTypes namespace → simple type names it declares, used to keep a reference
+     *                       global:: when shortening it would make its simple name ambiguous
+     *                       against another namespace already imported into the same file.
      */
-    public UsingRewriter(Set<String> ownSimpleNames) {
+    public UsingRewriter(Set<String> ownSimpleNames, Map<String, Set<String>> namespaceTypes) {
         this.ownSimpleNames = ownSimpleNames;
+        this.namespaceTypes = namespaceTypes;
     }
 
     public Map<String, String> rewriteAll(Map<String, String> files) {
@@ -89,8 +94,7 @@ public final class UsingRewriter {
             fqnsBySimple.computeIfAbsent(r.simple, k -> new java.util.HashSet<>()).add(r.fqn());
         }
 
-        Set<String> imports = new TreeSet<>();
-        List<Ref> toStrip = new ArrayList<>();
+        List<Ref> candidates = new ArrayList<>();
         for (Ref r : refs) {
             if (fqnsBySimple.get(r.simple).size() != 1) {
                 continue;
@@ -99,6 +103,22 @@ public final class UsingRewriter {
                 continue;
             }
             if (r.bcl && ownSimpleNames.contains(r.simple)) {
+                continue;
+            }
+            candidates.add(r);
+        }
+        // Shortening a reference imports its namespace, which also brings every other type in that
+        // namespace into scope. If a candidate's simple name is declared by a second namespace that
+        // is likewise imported into this file, the bare name would be ambiguous — keep it global::.
+        Set<String> usedNamespaces = new java.util.HashSet<>();
+        usedNamespaces.add(fileNs);
+        for (Ref r : candidates) {
+            usedNamespaces.add(r.namespace);
+        }
+        Set<String> imports = new TreeSet<>();
+        List<Ref> toStrip = new ArrayList<>();
+        for (Ref r : candidates) {
+            if (!r.bcl && ambiguousAcross(r.simple, usedNamespaces)) {
                 continue;
             }
             toStrip.add(r);
@@ -122,6 +142,20 @@ public final class UsingRewriter {
             return body.toString();
         }
         return injectUsings(body.toString(), fileNs, imports);
+    }
+
+    /** Whether {@code simple} is declared by two or more of the given namespaces. */
+    private boolean ambiguousAcross(String simple, Set<String> namespaces) {
+        int count = 0;
+        for (String ns : namespaces) {
+            Set<String> types = namespaceTypes.get(ns);
+            if (types != null && types.contains(simple)) {
+                if (++count >= 2) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private static String injectUsings(String cs, String fileNs, Set<String> imports) {

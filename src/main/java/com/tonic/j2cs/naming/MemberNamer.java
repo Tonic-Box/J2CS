@@ -220,18 +220,33 @@ public final class MemberNamer {
             String group = base + "|" + paramSignature(method.getDesc(), typeMapper);
             byBaseAndParams.computeIfAbsent(group, g -> new ArrayList<>()).add(method);
         }
+        Set<String> assignedNames = new HashSet<>(methodNames.values());
+        assignedNames.addAll(baseByJavaName.values());
         for (List<MethodEntry> group : byBaseAndParams.values()) {
             for (MethodEntry method : group) {
                 if (methodNames.containsKey(key(method.getName(), method.getDesc()))) {
                     continue;
                 }
                 String base = baseByJavaName.get(method.getName());
-                String name = group.size() == 1
-                        ? base
-                        : base + "__r" + descriptorSuffix(TypeMapper.returnDescriptor(method.getDesc()));
+                String name;
+                if (group.size() == 1) {
+                    name = base;
+                } else {
+                    name = base + "__r" + descriptorSuffix(TypeMapper.returnDescriptor(method.getDesc()));
+                    if (assignedNames.contains(name)) {
+                        name = base + "__" + descriptorSuffix(paramDescriptor(method.getDesc()))
+                                + "r" + descriptorSuffix(TypeMapper.returnDescriptor(method.getDesc()));
+                    }
+                }
+                assignedNames.add(name);
                 methodNames.put(key(method.getName(), method.getDesc()), name);
             }
         }
+    }
+
+    private static String paramDescriptor(String methodDescriptor) {
+        int close = methodDescriptor.indexOf(')');
+        return close < 0 ? "" : methodDescriptor.substring(1, close);
     }
 
     private static String unique(String base, Set<String> taken) {
