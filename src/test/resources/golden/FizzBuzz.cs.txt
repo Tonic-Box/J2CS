@@ -97,14 +97,7 @@ namespace jdefault
 
         internal static String label(int p0)
         {
-            String s4 = (String)(null);
-            if ((JRuntime.Irem(p0, 3)) == 0)
-            {
-                s4 = String.Intern("Fizz");
-                return s4;
-            }
-            s4 = String.Wrap("n" + JRuntime.Str(p0));
-            return s4;
+            return (((JRuntime.Irem(p0, 3)) != 0) ? (String.Wrap("n" + JRuntime.Str(p0))) : (String.Intern("Fizz")));
         }
     }
 }

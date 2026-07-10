@@ -62,6 +62,8 @@ namespace j2cs.jni
                 slots[143] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, void>)&CallStaticVoidMethodImpl;
                 slots[167] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr>)&NewStringUTFImpl;
                 slots[219] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, int>)&GetJavaVMImpl;
+                slots[226] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr>)&NewRefImpl;
+                slots[227] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, void>)&DeleteRefImpl;
                 slots[228] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, byte>)&ExceptionCheckImpl;
 
                 envSlot = (global::System.IntPtr)global::System.Runtime.InteropServices.NativeMemory.Alloc(
@@ -73,9 +75,11 @@ namespace j2cs.jni
                 global::System.IntPtr* vmSlots = (global::System.IntPtr*)
                     global::System.Runtime.InteropServices.NativeMemory.Alloc(
                         (nuint)8, (nuint)global::System.IntPtr.Size);
+                global::System.IntPtr vmTrap =
+                    (global::System.IntPtr)(delegate* unmanaged[Cdecl]<void>)&TrapImpl;
                 for (int i = 0; i < 8; i++)
                 {
-                    vmSlots[i] = trap;
+                    vmSlots[i] = vmTrap;
                 }
                 vmSlots[4] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, int>)&AttachCurrentThreadImpl;
                 vmSlots[5] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, int>)&DetachCurrentThreadImpl;
@@ -394,6 +398,7 @@ namespace j2cs.jni
             global::System.Console.Error.WriteLine(
                 "j2cs: unimplemented JNIEnv function invoked by native code");
         }
+
 
 
         /** Decodes a NUL-terminated JNI modified-UTF-8 C string (CESU-8; NUL as 0xC0 0x80). */
