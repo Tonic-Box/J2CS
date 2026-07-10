@@ -17,7 +17,7 @@ namespace java.lang
             return supplier != null ? supplier.get() : initialValue();
         }
 
-        protected virtual global::java.lang.Object initialValue() { return null; }
+        public virtual global::java.lang.Object initialValue() { return null; }
 
         public global::java.lang.Object get() { return tl.Value; }
         public void set(global::java.lang.Object value) { tl.Value = value; }

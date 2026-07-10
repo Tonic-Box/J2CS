@@ -538,6 +538,7 @@ public final class ShimRegistry {
             "java/lang/reflect/InvocationTargetException",
             "java/lang/Enum",
             "java/lang/NoSuchFieldError",
+            "java/lang/ThreadLocal",
             "javax/swing/JFrame",
             "javax/swing/JDialog",
             "javax/swing/JPanel",
@@ -571,7 +572,8 @@ public final class ShimRegistry {
             Map.entry("paintComponent(Ljava/awt/Graphics;)V", "paintComponent"),
             Map.entry("doInBackground()Ljava/lang/Object;", "doInBackground"),
             Map.entry("process(Ljava/util/List;)V", "process"),
-            Map.entry("done()V", "done"));
+            Map.entry("done()V", "done"),
+            Map.entry("initialValue()Ljava/lang/Object;", "initialValue"));
 
     public static final Set<String> EXTENDABLE_MEMBER_NAMES = Set.of(
             "getMessage", "JavaClassName", "message", "__origin",
@@ -579,7 +581,7 @@ public final class ShimRegistry {
             "mouseClicked", "mousePressed", "mouseReleased", "mouseEntered", "mouseExited",
             "mouseDragged", "mouseMoved", "windowOpened", "windowClosing", "windowClosed",
             "windowIconified", "windowDeiconified", "windowActivated", "windowDeactivated",
-            "paintComponent", "doInBackground", "process", "done");
+            "paintComponent", "doInBackground", "process", "done", "initialValue");
 
     public record WalkResult(String declaringInternal, ShimTarget target) {
     }

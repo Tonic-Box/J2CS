@@ -84,6 +84,7 @@ final class StructuredBodyEmitter {
     private StructuredRecovery.Recovered recovered;
     private Map<String, String> names;
     private Map<String, String> declaredDesc;
+    private Set<String> declaredEver;
     private Set<String> usedNames;
     private Map<String, String> breakLabels;
     private Map<SSAValue, String> paramNames;
@@ -108,6 +109,7 @@ final class StructuredBodyEmitter {
         this.returnDesc = TypeMapper.returnDescriptor(method.getDesc());
         this.names = new HashMap<>();
         this.declaredDesc = new HashMap<>();
+        this.declaredEver = new HashSet<>();
         this.usedNames = new HashSet<>();
         this.breakLabels = new HashMap<>();
         this.scopes = new java.util.ArrayDeque<>();
@@ -199,9 +201,19 @@ final class StructuredBodyEmitter {
         String targetDesc = descOf(v.getType());
         CsType type = naming.typeMapper().storageType(targetDesc);
         String name = localName(v.getName());
-        declaredDesc.put(name, targetDesc);
         boolean declare = !inScope(name);
+        if (declare && declaredEver.contains(name)) {
+            // A distinct same-named local was already declared in another (now-closed) scope. C#
+            // forbids a nested scope reusing an enclosing scope's local name, so give this one a
+            // fresh unique name and remap; its in-scope references follow the remap.
+            String unique = CsNamer.unique(name, usedNames);
+            usedNames.add(unique);
+            names.put(v.getName(), unique);
+            name = unique;
+        }
+        declaredDesc.put(name, targetDesc);
         if (declare) {
+            declaredEver.add(name);
             declareInScope(name);
             if (v.getInitializer() != null
                     && emitTwoPhaseNewInto(name, type.csText() + " ", type, v.getInitializer())) {
