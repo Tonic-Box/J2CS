@@ -241,7 +241,7 @@ public final class ClassEmitter {
         List<String> paramDescs = TypeMapper.splitParams(desc);
         String retDesc = TypeMapper.returnDescriptor(desc);
         boolean eligible = Modifiers.isStatic(method.getAccess())
-                && TypeMapper.isPrimitiveDescriptor(retDesc)
+                && (TypeMapper.isPrimitiveDescriptor(retDesc) || isStringDescriptor(retDesc))
                 && paramDescs.stream().allMatch(TypeMapper::isPrimitiveDescriptor);
         if (!eligible) {
             w.open(MethodModifiers.prefixFor(naming, owner, method) + signature);
@@ -294,8 +294,18 @@ public final class ClassEmitter {
         return sb.toString();
     }
 
-    /** The C# type used at the native ABI boundary for a JNI primitive (jboolean is unsigned 8-bit). */
+    private static boolean isStringDescriptor(String desc) {
+        return desc.equals("Ljava/lang/String;");
+    }
+
+    /**
+     * The C# type at the native ABI boundary for a JNI primitive (jboolean is unsigned 8-bit) or a
+     * String, which crosses as a jstring handle (an IntPtr into the JNIEnv object table).
+     */
     private static String nativeAbiType(String desc) {
+        if (isStringDescriptor(desc)) {
+            return "global::System.IntPtr";
+        }
         return switch (desc.charAt(0)) {
             case 'Z' -> "byte";
             case 'B' -> "sbyte";
@@ -306,7 +316,7 @@ public final class ClassEmitter {
             case 'F' -> "float";
             case 'D' -> "double";
             case 'V' -> "void";
-            default -> throw new IllegalArgumentException("not a primitive descriptor: " + desc);
+            default -> throw new IllegalArgumentException("not a bridgeable descriptor: " + desc);
         };
     }
 
@@ -319,6 +329,9 @@ public final class ClassEmitter {
     }
 
     private static String fromNativeReturn(String desc, String expr) {
+        if (isStringDescriptor(desc)) {
+            return "global::j2cs.jni.J2csJni.ResolveString(" + expr + ")";
+        }
         return switch (desc.charAt(0)) {
             case 'Z' -> expr + " != 0 ? 1 : 0";
             case 'C' -> "(char)" + expr;

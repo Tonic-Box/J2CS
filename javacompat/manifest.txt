@@ -1,3 +1,4 @@
+j2cs.jni.J2csJni.cs
 j2cs.reflect.Meta.cs
 java.awt.BorderLayout.cs
 java.awt.CardLayout.cs

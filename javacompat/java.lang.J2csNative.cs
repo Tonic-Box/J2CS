@@ -11,6 +11,8 @@ namespace java.lang
 
         public static void Load(string path)
         {
+            global::j2cs.jni.J2csJni.EnsureInitialized();
+            Env = global::j2cs.jni.J2csJni.Env;
             string resolved = Resolve(path);
             global::System.IntPtr handle = global::System.Runtime.InteropServices.NativeLibrary.Load(resolved);
             lock (Gate)
