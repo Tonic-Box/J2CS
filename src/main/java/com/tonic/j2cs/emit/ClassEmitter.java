@@ -240,11 +240,11 @@ public final class ClassEmitter {
 
         List<String> paramDescs = TypeMapper.splitParams(desc);
         String retDesc = TypeMapper.returnDescriptor(desc);
-        boolean eligible = Modifiers.isStatic(method.getAccess())
-                && (TypeMapper.isPrimitiveDescriptor(retDesc) || isStringDescriptor(retDesc))
-                && paramDescs.stream().allMatch(TypeMapper::isPrimitiveDescriptor);
+        boolean eligible = isBridgeableDescriptor(retDesc)
+                && paramDescs.stream().allMatch(ClassEmitter::isBridgeableDescriptor);
+        String prefix = MethodModifiers.prefixFor(naming, owner, method);
         if (!eligible) {
-            w.open(MethodModifiers.prefixFor(naming, owner, method) + signature);
+            w.open(prefix + signature);
             emitStubBody(w, classFile, name, desc, "native method");
             w.close();
             return;
@@ -254,13 +254,16 @@ public final class ClassEmitter {
         String fnPtrType = nativeFnPtrType(paramDescs, retDesc);
         String field = "__np_" + symbol;
         w.line("private static unsafe " + fnPtrType + " " + field + ";");
-        w.open("internal static unsafe " + signature);
+        w.open(prefix + "unsafe " + signature);
         w.open("if (" + field + " == null)");
         w.line(field + " = (" + fnPtrType + ")global::java.lang.J2csNative.Export("
                 + CsStrings.quote(symbol) + ");");
         w.close();
+        String receiver = Modifiers.isStatic(method.getAccess())
+                ? "global::System.IntPtr.Zero"
+                : "global::j2cs.jni.J2csJni.ToHandle(this)";
         StringBuilder call = new StringBuilder(field
-                + "(global::java.lang.J2csNative.Env, global::System.IntPtr.Zero");
+                + "(global::java.lang.J2csNative.Env, " + receiver);
         for (int i = 0; i < paramDescs.size(); i++) {
             call.append(", ").append(toNativeArg(paramDescs.get(i), "p" + i));
         }
@@ -269,7 +272,7 @@ public final class ClassEmitter {
             w.line(call + ";");
         } else {
             w.line(nativeAbiType(retDesc) + " __r = " + call + ";");
-            w.line("return " + fromNativeReturn(retDesc, "__r") + ";");
+            w.line("return " + fromNativeReturn(retDesc, returnType.csText(), "__r") + ";");
         }
         w.close();
     }
@@ -298,12 +301,17 @@ public final class ClassEmitter {
         return desc.equals("Ljava/lang/String;");
     }
 
+    /** A native parameter/return type J2CS can marshal: a primitive, or any object reference. */
+    private static boolean isBridgeableDescriptor(String desc) {
+        return TypeMapper.isPrimitiveDescriptor(desc) || desc.startsWith("L");
+    }
+
     /**
-     * The C# type at the native ABI boundary for a JNI primitive (jboolean is unsigned 8-bit) or a
-     * String, which crosses as a jstring handle (an IntPtr into the JNIEnv object table).
+     * The C# type at the native ABI boundary. A JNI primitive maps directly (jboolean is unsigned
+     * 8-bit); an object reference crosses as a handle (IntPtr) into the JNIEnv object table.
      */
     private static String nativeAbiType(String desc) {
-        if (isStringDescriptor(desc)) {
+        if (desc.startsWith("L")) {
             return "global::System.IntPtr";
         }
         return switch (desc.charAt(0)) {
@@ -321,6 +329,9 @@ public final class ClassEmitter {
     }
 
     private static String toNativeArg(String desc, String expr) {
+        if (desc.startsWith("L")) {
+            return "global::j2cs.jni.J2csJni.ToHandle(" + expr + ")";
+        }
         return switch (desc.charAt(0)) {
             case 'Z' -> "(byte)(" + expr + " != 0 ? 1 : 0)";
             case 'C' -> "(ushort)" + expr;
@@ -328,9 +339,12 @@ public final class ClassEmitter {
         };
     }
 
-    private static String fromNativeReturn(String desc, String expr) {
+    private static String fromNativeReturn(String desc, String csType, String expr) {
         if (isStringDescriptor(desc)) {
             return "global::j2cs.jni.J2csJni.ResolveString(" + expr + ")";
+        }
+        if (desc.startsWith("L")) {
+            return "(" + csType + ")global::j2cs.jni.J2csJni.ResolveObject(" + expr + ")";
         }
         return switch (desc.charAt(0)) {
             case 'Z' -> expr + " != 0 ? 1 : 0";

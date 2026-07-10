@@ -70,6 +70,7 @@ java.lang.CharSequence.cs
 java.lang.Character.cs
 java.lang.Class.cs
 java.lang.ClassCastException.cs
+java.lang.CloneNotSupportedException.cs
 java.lang.Comparable.cs
 java.lang.Double.cs
 java.lang.Enum.cs
@@ -117,6 +118,9 @@ java.lang.Throwable.cs
 java.lang.UnsupportedOperationException.cs
 java.lang.Void.cs
 java.lang.annotation.Annotation.cs
+java.lang.ref.Reference.cs
+java.lang.ref.ReferenceQueue.cs
+java.lang.ref.WeakReference.cs
 java.lang.reflect.Array.cs
 java.lang.reflect.Constructor.cs
 java.lang.reflect.Field.cs

@@ -508,6 +508,10 @@ public final class ShimRegistry {
         put(m, "java/lang/NumberFormatException", "java/lang/IllegalArgumentException");
         put(m, "java/lang/IllegalStateException", "java/lang/RuntimeException");
         put(m, "java/lang/UnsupportedOperationException", "java/lang/RuntimeException");
+        put(m, "java/lang/CloneNotSupportedException", "java/lang/Exception");
+        put(m, "java/lang/ref/Reference", "java/lang/Object");
+        put(m, "java/lang/ref/WeakReference", "java/lang/ref/Reference");
+        put(m, "java/lang/ref/ReferenceQueue", "java/lang/Object");
     }
 
     /** All shim internal names: SHIM_SUPERS keys plus the root java/lang/Object. */
@@ -534,6 +538,7 @@ public final class ShimRegistry {
             "java/lang/NumberFormatException",
             "java/lang/IllegalStateException",
             "java/lang/UnsupportedOperationException",
+            "java/lang/CloneNotSupportedException",
             "java/lang/InterruptedException",
             "java/lang/IllegalAccessException",
             "java/lang/NoSuchFieldException",
@@ -544,6 +549,7 @@ public final class ShimRegistry {
             "java/lang/NoSuchFieldError",
             "java/lang/ThreadLocal",
             "java/lang/Thread",
+            "java/lang/ref/WeakReference",
             "javax/swing/JFrame",
             "javax/swing/JDialog",
             "javax/swing/JPanel",
@@ -696,7 +702,19 @@ public final class ShimRegistry {
         addLangMethods13(m);
         addAwtMethods9(m);
         addUtilLoggingMethods(m);
+        addRefMethods(m);
         return Map.copyOf(m);
+    }
+
+    private static void addRefMethods(Map<String, ShimTarget> m) {
+        put(m, "java/lang/ref/Reference.get()Ljava/lang/Object;", instance("get"));
+        put(m, "java/lang/ref/Reference.clear()V", instance("clear"));
+        put(m, "java/lang/ref/Reference.refersTo(Ljava/lang/Object;)Z", instance("refersTo"));
+        put(m, "java/lang/ref/Reference.isEnqueued()Z", instance("isEnqueued"));
+        put(m, "java/lang/ref/Reference.enqueue()Z", instance("enqueue"));
+        put(m, "java/lang/ref/ReferenceQueue.poll()Ljava/lang/ref/Reference;", instance("poll"));
+        put(m, "java/lang/ref/ReferenceQueue.remove()Ljava/lang/ref/Reference;", instance("remove"));
+        put(m, "java/lang/ref/ReferenceQueue.remove(J)Ljava/lang/ref/Reference;", instance("remove"));
     }
 
     private static void addUtilLoggingMethods(Map<String, ShimTarget> m) {
@@ -726,6 +744,7 @@ public final class ShimRegistry {
         put(m, "java/lang/Object.hashCode()I", instance("hashCode"));
         put(m, "java/lang/Object.equals(Ljava/lang/Object;)Z", instance("equals"));
         put(m, "java/lang/Object.getClass()Ljava/lang/Class;", instance("getClass"));
+        put(m, "java/lang/Object.clone()Ljava/lang/Object;", instance("clone"));
         put(m, "java/lang/String.length()I", instance("length"));
         put(m, "java/lang/String.charAt(I)C", instance("charAt"));
         put(m, "java/lang/String.isEmpty()Z", instance("isEmpty"));
@@ -1834,6 +1853,7 @@ public final class ShimRegistry {
         put(m, "java/lang/String.valueOf(Ljava/lang/Object;)Ljava/lang/String;", statics("valueOf"));
         put(m, "java/lang/Class.getName()Ljava/lang/String;", instance("getName"));
         put(m, "java/lang/Class.getSimpleName()Ljava/lang/String;", instance("getSimpleName"));
+        put(m, "java/lang/Class.getCanonicalName()Ljava/lang/String;", instance("getCanonicalName"));
         put(m, "java/lang/Class.isArray()Z", instance("isArray"));
         put(m, "java/lang/Class.getComponentType()Ljava/lang/Class;", instance("getComponentType"));
         put(m, "java/lang/Class.getSuperclass()Ljava/lang/Class;", instance("getSuperclass"));

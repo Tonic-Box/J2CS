@@ -33,5 +33,10 @@ namespace java.lang
         {
             return global::java.lang.Class.forType(GetType());
         }
+
+        public virtual global::java.lang.Object clone()
+        {
+            return (global::java.lang.Object)MemberwiseClone();
+        }
     }
 }

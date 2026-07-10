@@ -125,6 +125,15 @@ namespace java.lang
             return String.Wrap(name);
         }
 
+        public String getCanonicalName()
+        {
+            if (componentDesc != null)
+            {
+                return String.Wrap(getComponentType().getCanonicalName().Value + "[]");
+            }
+            return String.Wrap(name.Replace('$', '.'));
+        }
+
         public Package getPackage()
         {
             int i = name.LastIndexOf('.');
