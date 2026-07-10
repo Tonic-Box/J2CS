@@ -119,6 +119,10 @@ public final class ClassEmitter {
                             MethodPlan plan, MemberNamer namer, TypeMapper types, boolean isInterface) {
         String name = method.getName();
         String desc = method.getDesc();
+        if (!isInterface && Modifiers.isNative(method.getAccess())) {
+            emitNativeMethod(w, classFile, method, namer, types);
+            return;
+        }
         String header;
         if (name.equals("<clinit>")) {
             header = "static " + csClassName + "()";
@@ -216,6 +220,110 @@ public final class ClassEmitter {
         report.unsupportedMethod(owner, name, desc, reason);
         w.line("throw new global::System.NotSupportedException("
                 + CsStrings.quote("j2cs: " + owner + "." + name + desc + ": " + reason) + ");");
+    }
+
+    /**
+     * Bridges a classic-JNI native method to the loaded library's exported symbol. A static native
+     * whose parameters and return are all primitive is emitted as a real P/Invoke through a cached
+     * unmanaged function pointer; the JNIEnv/jclass leading arguments are passed as the synthesized
+     * env (J2csNative.Env) and a null class handle, which the pure probes ignore. Anything needing
+     * object marshalling or the instance receiver degrades to the native-method stub for now.
+     */
+    private void emitNativeMethod(CsWriter w, ClassFile classFile, MethodEntry method,
+                                  MemberNamer namer, TypeMapper types) {
+        String owner = classFile.getClassName();
+        String name = method.getName();
+        String desc = method.getDesc();
+        String csName = namer.methodName(method);
+        CsType returnType = types.returnType(desc);
+        String signature = returnType.csText() + " " + csName + "(" + paramList(desc, types) + ")";
+
+        List<String> paramDescs = TypeMapper.splitParams(desc);
+        String retDesc = TypeMapper.returnDescriptor(desc);
+        boolean eligible = Modifiers.isStatic(method.getAccess())
+                && TypeMapper.isPrimitiveDescriptor(retDesc)
+                && paramDescs.stream().allMatch(TypeMapper::isPrimitiveDescriptor);
+        if (!eligible) {
+            w.open(MethodModifiers.prefixFor(naming, owner, method) + signature);
+            emitStubBody(w, classFile, name, desc, "native method");
+            w.close();
+            return;
+        }
+
+        String symbol = JniMangler.entryPoint(owner, name, desc, isOverloadedNative(classFile, name));
+        String fnPtrType = nativeFnPtrType(paramDescs, retDesc);
+        String field = "__np_" + symbol;
+        w.line("private static unsafe " + fnPtrType + " " + field + ";");
+        w.open("internal static unsafe " + signature);
+        w.open("if (" + field + " == null)");
+        w.line(field + " = (" + fnPtrType + ")global::java.lang.J2csNative.Export("
+                + CsStrings.quote(symbol) + ");");
+        w.close();
+        StringBuilder call = new StringBuilder(field
+                + "(global::java.lang.J2csNative.Env, global::System.IntPtr.Zero");
+        for (int i = 0; i < paramDescs.size(); i++) {
+            call.append(", ").append(toNativeArg(paramDescs.get(i), "p" + i));
+        }
+        call.append(")");
+        if (retDesc.equals("V")) {
+            w.line(call + ";");
+        } else {
+            w.line(nativeAbiType(retDesc) + " __r = " + call + ";");
+            w.line("return " + fromNativeReturn(retDesc, "__r") + ";");
+        }
+        w.close();
+    }
+
+    private static boolean isOverloadedNative(ClassFile classFile, String name) {
+        int count = 0;
+        for (MethodEntry other : classFile.getMethods()) {
+            if (Modifiers.isNative(other.getAccess()) && other.getName().equals(name)) {
+                count++;
+            }
+        }
+        return count > 1;
+    }
+
+    private static String nativeFnPtrType(List<String> paramDescs, String retDesc) {
+        StringBuilder sb = new StringBuilder(
+                "delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr");
+        for (String paramDesc : paramDescs) {
+            sb.append(", ").append(nativeAbiType(paramDesc));
+        }
+        sb.append(", ").append(nativeAbiType(retDesc)).append(">");
+        return sb.toString();
+    }
+
+    /** The C# type used at the native ABI boundary for a JNI primitive (jboolean is unsigned 8-bit). */
+    private static String nativeAbiType(String desc) {
+        return switch (desc.charAt(0)) {
+            case 'Z' -> "byte";
+            case 'B' -> "sbyte";
+            case 'C' -> "ushort";
+            case 'S' -> "short";
+            case 'I' -> "int";
+            case 'J' -> "long";
+            case 'F' -> "float";
+            case 'D' -> "double";
+            case 'V' -> "void";
+            default -> throw new IllegalArgumentException("not a primitive descriptor: " + desc);
+        };
+    }
+
+    private static String toNativeArg(String desc, String expr) {
+        return switch (desc.charAt(0)) {
+            case 'Z' -> "(byte)(" + expr + " != 0 ? 1 : 0)";
+            case 'C' -> "(ushort)" + expr;
+            default -> expr;
+        };
+    }
+
+    private static String fromNativeReturn(String desc, String expr) {
+        return switch (desc.charAt(0)) {
+            case 'Z' -> expr + " != 0 ? 1 : 0";
+            case 'C' -> "(char)" + expr;
+            default -> expr;
+        };
     }
 
     private boolean extendsShimThrowable(String internalName) {

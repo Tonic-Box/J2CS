@@ -130,7 +130,8 @@ public final class Transpiler {
         stubFiles = usingRewriter.rewriteAll(stubFiles);
 
         Path appDir = new SolutionGenerator().generate(options.outDir(),
-                new GeneratedSolution(genFiles, stubFiles, programCs, bootstrappedInternal, usesGui));
+                new GeneratedSolution(genFiles, stubFiles, programCs, bootstrappedInternal, usesGui),
+                options.input());
         new NativeFragmentPackager().copy(appDir, BootstrapPolicy.nativeFragments(bootstrappedInternal));
 
         Path reportPath = new ReportWriter().write(report, options.outDir());

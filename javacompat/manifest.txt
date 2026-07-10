@@ -84,6 +84,7 @@ java.lang.Integer.cs
 java.lang.InterruptedException.cs
 java.lang.Iterable.cs
 java.lang.J2csArray.cs
+java.lang.J2csNative.cs
 java.lang.JForeignError.cs
 java.lang.JRuntime.cs
 java.lang.JThrow.cs
@@ -112,6 +113,7 @@ java.lang.System.cs
 java.lang.Thread.cs
 java.lang.ThreadLocal.cs
 java.lang.Throwable.cs
+java.lang.UnsupportedOperationException.cs
 java.lang.Void.cs
 java.lang.annotation.Annotation.cs
 java.lang.reflect.Array.cs

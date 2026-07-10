@@ -15,6 +15,58 @@ namespace java.lang
         {
         }
 
+        static System()
+        {
+            Props["os.name"] = OsName();
+            Props["os.arch"] = OsArch();
+            Props["os.version"] = global::System.Environment.OSVersion.Version.ToString();
+            Props["file.separator"] = global::System.IO.Path.DirectorySeparatorChar.ToString();
+            Props["path.separator"] = global::System.IO.Path.PathSeparator.ToString();
+            Props["line.separator"] = "\n";
+            Props["java.io.tmpdir"] = global::System.IO.Path.GetTempPath();
+            Props["user.dir"] = global::System.Environment.CurrentDirectory;
+            Props["user.home"] = global::System.Environment.GetFolderPath(
+                global::System.Environment.SpecialFolder.UserProfile);
+            Props["user.name"] = global::System.Environment.UserName;
+            Props["java.version"] = "17.0.0";
+            Props["java.vendor"] = "j2cs";
+            Props["java.specification.version"] = "17";
+        }
+
+        private static string OsName()
+        {
+            if (global::System.OperatingSystem.IsWindows())
+            {
+                return "Windows 10";
+            }
+            if (global::System.OperatingSystem.IsMacOS())
+            {
+                return "Mac OS X";
+            }
+            if (global::System.OperatingSystem.IsLinux())
+            {
+                return "Linux";
+            }
+            return global::System.Runtime.InteropServices.RuntimeInformation.OSDescription;
+        }
+
+        private static string OsArch()
+        {
+            switch (global::System.Runtime.InteropServices.RuntimeInformation.OSArchitecture)
+            {
+                case global::System.Runtime.InteropServices.Architecture.X64:
+                    return "amd64";
+                case global::System.Runtime.InteropServices.Architecture.X86:
+                    return "x86";
+                case global::System.Runtime.InteropServices.Architecture.Arm64:
+                    return "aarch64";
+                case global::System.Runtime.InteropServices.Architecture.Arm:
+                    return "arm";
+                default:
+                    return "amd64";
+            }
+        }
+
         public static String getProperty(String key)
         {
             if (key != null && Props.TryGetValue(key.Value, out var v))
@@ -60,6 +112,21 @@ namespace java.lang
         public static void exit(int status)
         {
             global::System.Environment.Exit(status);
+        }
+
+        public static void load(String filename)
+        {
+            global::java.lang.J2csNative.Load(filename == null ? null : filename.Value);
+        }
+
+        public static void loadLibrary(String libname)
+        {
+            global::java.lang.J2csNative.LoadLibrary(libname == null ? null : libname.Value);
+        }
+
+        public static String mapLibraryName(String libname)
+        {
+            return String.Wrap(global::java.lang.J2csNative.MapLibraryName(libname.Value));
         }
 
         public static void arraycopy(global::System.Array src, int srcPos,

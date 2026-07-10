@@ -132,10 +132,31 @@ public final class Cli {
         Path target = options.outDir().resolve(baseName + ".exe");
         try {
             Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
+            copyNativeLibsSidecar(publishDir.resolve("nativelibs"), options.outDir().resolve("nativelibs"));
         } catch (IOException e) {
             throw new J2csException("failed to copy exe to " + target + ": " + e.getMessage(), e);
         }
         return target;
+    }
+
+    /**
+     * The named exe is copied out of the single-file publish directory; its external nativelibs
+     * (kept beside the exe rather than bundled) must travel with it or the loaded library's exports
+     * cannot be resolved at runtime.
+     */
+    private static void copyNativeLibsSidecar(Path sourceDir, Path targetDir) throws IOException {
+        if (!Files.isDirectory(sourceDir)) {
+            return;
+        }
+        Files.createDirectories(targetDir);
+        try (java.util.stream.Stream<Path> files = Files.list(sourceDir)) {
+            for (Path file : (Iterable<Path>) files::iterator) {
+                if (Files.isRegularFile(file)) {
+                    Files.copy(file, targetDir.resolve(file.getFileName()),
+                            StandardCopyOption.REPLACE_EXISTING);
+                }
+            }
+        }
     }
 
     public static CliOptions parse(String[] args) {

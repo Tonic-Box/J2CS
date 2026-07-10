@@ -25,7 +25,7 @@ public class UnsupportedGraceful {
         return new java.util.WeakHashMap<String, String>().size();
     }
 
-    static native int nativeThing();
+    native int nativeThing();
 }
 
 enum Color {

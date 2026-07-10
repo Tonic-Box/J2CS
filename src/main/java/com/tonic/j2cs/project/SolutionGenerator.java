@@ -14,18 +14,21 @@ import java.util.stream.Stream;
  */
 public final class SolutionGenerator {
 
-    private static final String[] GENERATED_DIRS = {"gen", "stubs", "javacompat", "native"};
+    private static final String[] GENERATED_DIRS = {"gen", "stubs", "javacompat", "native", "nativelibs"};
 
     private final ShimPackager shimPackager = new ShimPackager();
+    private final NativeLibPackager nativeLibPackager = new NativeLibPackager();
 
-    public Path generate(Path outDir, GeneratedSolution solution) {
+    public Path generate(Path outDir, GeneratedSolution solution, Path inputJar) {
         Path appDir = outDir.resolve("App");
         try {
             Files.createDirectories(appDir);
             for (String generated : GENERATED_DIRS) {
                 deleteRecursively(appDir.resolve(generated));
             }
-            Files.writeString(appDir.resolve("App.csproj"), CsprojTemplate.csproj(solution.usesGui()));
+            java.util.List<String> nativeLibs = nativeLibPackager.copy(appDir, inputJar);
+            Files.writeString(appDir.resolve("App.csproj"),
+                    CsprojTemplate.csproj(solution.usesGui(), nativeLibs));
             Files.writeString(appDir.resolve("Program.cs"), solution.programCs());
             writeSources(appDir.resolve("gen"), solution.genFiles());
             writeSources(appDir.resolve("stubs"), solution.stubFiles());

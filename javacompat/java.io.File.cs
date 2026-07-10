@@ -86,7 +86,8 @@ namespace java.io
 
         public int exists()
         {
-            return global::System.IO.File.Exists(path) || global::System.IO.Directory.Exists(path) ? 1 : 0;
+            return global::System.IO.File.Exists(path) || global::System.IO.Directory.Exists(path)
+                    || global::java.lang.J2csNative.IsPackagedNative(path) ? 1 : 0;
         }
 
         public int isDirectory()

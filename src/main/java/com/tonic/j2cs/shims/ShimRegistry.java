@@ -507,6 +507,7 @@ public final class ShimRegistry {
         put(m, "java/lang/IllegalArgumentException", "java/lang/RuntimeException");
         put(m, "java/lang/NumberFormatException", "java/lang/IllegalArgumentException");
         put(m, "java/lang/IllegalStateException", "java/lang/RuntimeException");
+        put(m, "java/lang/UnsupportedOperationException", "java/lang/RuntimeException");
     }
 
     /** All shim internal names: SHIM_SUPERS keys plus the root java/lang/Object. */
@@ -532,6 +533,7 @@ public final class ShimRegistry {
             "java/lang/IllegalArgumentException",
             "java/lang/NumberFormatException",
             "java/lang/IllegalStateException",
+            "java/lang/UnsupportedOperationException",
             "java/lang/InterruptedException",
             "java/lang/IllegalAccessException",
             "java/lang/NoSuchFieldException",
@@ -1647,6 +1649,9 @@ public final class ShimRegistry {
 
     private static void addLangMethods4(Map<String, ShimTarget> m) {
         put(m, "java/lang/System.exit(I)V", statics("exit"));
+        put(m, "java/lang/System.load(Ljava/lang/String;)V", statics("load"));
+        put(m, "java/lang/System.loadLibrary(Ljava/lang/String;)V", statics("loadLibrary"));
+        put(m, "java/lang/System.mapLibraryName(Ljava/lang/String;)Ljava/lang/String;", statics("mapLibraryName"));
     }
 
     private static void addUtilMethods0(Map<String, ShimTarget> m) {
