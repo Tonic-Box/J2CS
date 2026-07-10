@@ -57,6 +57,8 @@ namespace j2cs.jni
                 slots[23] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, void>)&DeleteRefImpl;
                 slots[25] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr>)&NewRefImpl;
                 slots[113] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, global::System.IntPtr>)&GetStaticMethodIDImpl;
+                slots[35] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, global::System.IntPtr>)&CallObjectMethodVImpl;
+                slots[62] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, void>)&CallVoidMethodVImpl;
                 slots[141] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, void>)&CallStaticVoidMethodImpl;
                 slots[142] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, void>)&CallStaticVoidMethodImpl;
                 slots[143] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, void>)&CallStaticVoidMethodImpl;
@@ -280,6 +282,75 @@ namespace j2cs.jni
 
         [global::System.Runtime.InteropServices.UnmanagedCallersOnly(
             CallConvs = new[] { typeof(global::System.Runtime.CompilerServices.CallConvCdecl) })]
+        private static void CallVoidMethodVImpl(global::System.IntPtr env,
+            global::System.IntPtr obj, global::System.IntPtr methodId, global::System.IntPtr vaList)
+        {
+            if (ResolveHandle(methodId) is global::java.lang.reflect.Method m)
+            {
+                var receiver = ResolveHandle(obj) as global::java.lang.Object;
+                try
+                {
+                    m.invoke(receiver, ReadVarArgs(vaList, m.ParamTypesInternal));
+                }
+                catch (global::System.Exception e)
+                {
+                    PendingThrowable = e;
+                }
+            }
+        }
+
+        [global::System.Runtime.InteropServices.UnmanagedCallersOnly(
+            CallConvs = new[] { typeof(global::System.Runtime.CompilerServices.CallConvCdecl) })]
+        private static global::System.IntPtr CallObjectMethodVImpl(global::System.IntPtr env,
+            global::System.IntPtr obj, global::System.IntPtr methodId, global::System.IntPtr vaList)
+        {
+            if (ResolveHandle(methodId) is global::java.lang.reflect.Method m)
+            {
+                var receiver = ResolveHandle(obj) as global::java.lang.Object;
+                try
+                {
+                    global::java.lang.Object result = m.invoke(receiver, ReadVarArgs(vaList, m.ParamTypesInternal));
+                    return result == null ? global::System.IntPtr.Zero : Intern(result);
+                }
+                catch (global::System.Exception e)
+                {
+                    PendingThrowable = e;
+                }
+            }
+            return global::System.IntPtr.Zero;
+        }
+
+        /** Reads a win-x64 va_list (8 bytes per slot; float promoted to double) into boxed method args. */
+        private static global::java.lang.Object[] ReadVarArgs(global::System.IntPtr vaList,
+            global::java.lang.Class[] paramTypes)
+        {
+            var args = new global::java.lang.Object[paramTypes.Length];
+            if (paramTypes.Length == 0 || vaList == global::System.IntPtr.Zero)
+            {
+                return args;
+            }
+            byte* p = (byte*)vaList;
+            for (int i = 0; i < paramTypes.Length; i++)
+            {
+                switch (paramTypes[i].getName().Value)
+                {
+                    case "boolean": args[i] = global::java.lang.Boolean.valueOf(*(int*)p != 0 ? 1 : 0); break;
+                    case "byte": args[i] = global::java.lang.Byte.valueOf((sbyte)*(int*)p); break;
+                    case "char": args[i] = global::java.lang.Character.valueOf((char)*(int*)p); break;
+                    case "short": args[i] = global::java.lang.Short.valueOf((short)*(int*)p); break;
+                    case "int": args[i] = global::java.lang.Integer.valueOf(*(int*)p); break;
+                    case "long": args[i] = global::java.lang.Long.valueOf(*(long*)p); break;
+                    case "float": args[i] = global::java.lang.Float.valueOf((float)*(double*)p); break;
+                    case "double": args[i] = global::java.lang.Double.valueOf(*(double*)p); break;
+                    default: args[i] = ResolveHandle(*(global::System.IntPtr*)p) as global::java.lang.Object; break;
+                }
+                p += 8;
+            }
+            return args;
+        }
+
+        [global::System.Runtime.InteropServices.UnmanagedCallersOnly(
+            CallConvs = new[] { typeof(global::System.Runtime.CompilerServices.CallConvCdecl) })]
         private static int GetJavaVMImpl(global::System.IntPtr env, global::System.IntPtr vm)
         {
             if (vm != global::System.IntPtr.Zero)
@@ -398,6 +469,7 @@ namespace j2cs.jni
             global::System.Console.Error.WriteLine(
                 "j2cs: unimplemented JNIEnv function invoked by native code");
         }
+
 
 
 
