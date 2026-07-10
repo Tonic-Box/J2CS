@@ -484,6 +484,8 @@ public final class ShimRegistry {
 
     private static void addUtilSupers6(Map<String, String> m) {
         put(m, "java/util/Arrays", "java/lang/Object");
+        put(m, "java/util/logging/Logger", "java/lang/Object");
+        put(m, "java/util/logging/Level", "java/lang/Object");
     }
 
     private static void addIoSupers0(Map<String, String> m) {
@@ -539,6 +541,7 @@ public final class ShimRegistry {
             "java/lang/Enum",
             "java/lang/NoSuchFieldError",
             "java/lang/ThreadLocal",
+            "java/lang/Thread",
             "javax/swing/JFrame",
             "javax/swing/JDialog",
             "javax/swing/JPanel",
@@ -573,6 +576,7 @@ public final class ShimRegistry {
             Map.entry("doInBackground()Ljava/lang/Object;", "doInBackground"),
             Map.entry("process(Ljava/util/List;)V", "process"),
             Map.entry("done()V", "done"),
+            Map.entry("run()V", "run"),
             Map.entry("initialValue()Ljava/lang/Object;", "initialValue"));
 
     public static final Set<String> EXTENDABLE_MEMBER_NAMES = Set.of(
@@ -581,7 +585,7 @@ public final class ShimRegistry {
             "mouseClicked", "mousePressed", "mouseReleased", "mouseEntered", "mouseExited",
             "mouseDragged", "mouseMoved", "windowOpened", "windowClosing", "windowClosed",
             "windowIconified", "windowDeiconified", "windowActivated", "windowDeactivated",
-            "paintComponent", "doInBackground", "process", "done", "initialValue");
+            "paintComponent", "doInBackground", "process", "done", "run", "initialValue");
 
     public record WalkResult(String declaringInternal, ShimTarget target) {
     }
@@ -689,7 +693,30 @@ public final class ShimRegistry {
         addAwtMethods8(m);
         addLangMethods13(m);
         addAwtMethods9(m);
+        addUtilLoggingMethods(m);
         return Map.copyOf(m);
+    }
+
+    private static void addUtilLoggingMethods(Map<String, ShimTarget> m) {
+        put(m, "java/util/logging/Logger.getLogger(Ljava/lang/String;)Ljava/util/logging/Logger;", statics("getLogger"));
+        put(m, "java/util/logging/Logger.getLogger(Ljava/lang/String;Ljava/lang/String;)Ljava/util/logging/Logger;", statics("getLogger"));
+        put(m, "java/util/logging/Logger.getName()Ljava/lang/String;", instance("getName"));
+        put(m, "java/util/logging/Logger.setLevel(Ljava/util/logging/Level;)V", instance("setLevel"));
+        put(m, "java/util/logging/Logger.getLevel()Ljava/util/logging/Level;", instance("getLevel"));
+        put(m, "java/util/logging/Logger.isLoggable(Ljava/util/logging/Level;)Z", instance("isLoggable"));
+        put(m, "java/util/logging/Logger.log(Ljava/util/logging/Level;Ljava/lang/String;)V", instance("log"));
+        put(m, "java/util/logging/Logger.log(Ljava/util/logging/Level;Ljava/lang/String;Ljava/lang/Object;)V", instance("log"));
+        put(m, "java/util/logging/Logger.log(Ljava/util/logging/Level;Ljava/lang/String;[Ljava/lang/Object;)V", instance("log"));
+        put(m, "java/util/logging/Logger.log(Ljava/util/logging/Level;Ljava/lang/String;Ljava/lang/Throwable;)V", instance("log"));
+        put(m, "java/util/logging/Logger.severe(Ljava/lang/String;)V", instance("severe"));
+        put(m, "java/util/logging/Logger.warning(Ljava/lang/String;)V", instance("warning"));
+        put(m, "java/util/logging/Logger.info(Ljava/lang/String;)V", instance("info"));
+        put(m, "java/util/logging/Logger.config(Ljava/lang/String;)V", instance("config"));
+        put(m, "java/util/logging/Logger.fine(Ljava/lang/String;)V", instance("fine"));
+        put(m, "java/util/logging/Logger.finer(Ljava/lang/String;)V", instance("finer"));
+        put(m, "java/util/logging/Logger.finest(Ljava/lang/String;)V", instance("finest"));
+        put(m, "java/util/logging/Level.intValue()I", instance("intValue"));
+        put(m, "java/util/logging/Level.getName()Ljava/lang/String;", instance("getName"));
     }
 
     private static void addLangMethods0(Map<String, ShimTarget> m) {
@@ -3179,7 +3206,20 @@ public final class ShimRegistry {
         addAwtFields1(m);
         addSwingFields0(m);
         addAwtFields2(m);
+        addUtilLoggingFields(m);
         return Map.copyOf(m);
+    }
+
+    private static void addUtilLoggingFields(Map<String, ShimTarget> m) {
+        put(m, "java/util/logging/Level.OFF Ljava/util/logging/Level;", statics("OFF"));
+        put(m, "java/util/logging/Level.SEVERE Ljava/util/logging/Level;", statics("SEVERE"));
+        put(m, "java/util/logging/Level.WARNING Ljava/util/logging/Level;", statics("WARNING"));
+        put(m, "java/util/logging/Level.INFO Ljava/util/logging/Level;", statics("INFO"));
+        put(m, "java/util/logging/Level.CONFIG Ljava/util/logging/Level;", statics("CONFIG"));
+        put(m, "java/util/logging/Level.FINE Ljava/util/logging/Level;", statics("FINE"));
+        put(m, "java/util/logging/Level.FINER Ljava/util/logging/Level;", statics("FINER"));
+        put(m, "java/util/logging/Level.FINEST Ljava/util/logging/Level;", statics("FINEST"));
+        put(m, "java/util/logging/Level.ALL Ljava/util/logging/Level;", statics("ALL"));
     }
 
     private static void addLangFields0(Map<String, ShimTarget> m) {

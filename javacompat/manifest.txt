@@ -226,6 +226,8 @@ java.util.List.cs
 java.util.ListIterator.cs
 java.util.Locale.cs
 java.util.LongSummaryStatistics.cs
+java.util.logging.Level.cs
+java.util.logging.Logger.cs
 java.util.Map$Entry.cs
 java.util.Map.cs
 java.util.NavigableMap.cs
