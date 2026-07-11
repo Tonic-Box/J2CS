@@ -28,7 +28,13 @@ public final class CallRenderer {
     }
 
     public boolean isShimOwner(String owner) {
-        return (owner.startsWith("java/") || owner.startsWith("javax/")) && !naming.isBootstrapped(owner);
+        if (naming.isBootstrapped(owner)) {
+            return false;
+        }
+        // java/* and javax/* route to shims by prefix (an unimplemented member then degrades to a
+        // clear stub rather than an app-resolution failure); registered shim types outside those
+        // roots (e.g. sun/misc/Unsafe) are recognized explicitly.
+        return owner.startsWith("java/") || owner.startsWith("javax/") || naming.isShimType(owner);
     }
 
     public String initCall(String owner, String desc, String receiverExpr, String args) {

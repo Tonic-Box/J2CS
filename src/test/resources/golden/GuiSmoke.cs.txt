@@ -46,6 +46,7 @@ internal static class Program
         try
         {
             global::j2cs.reflect.__Bootstrap.InitAll();
+            global::j2cs.reflect.ShimMeta.RegisterAll();
             global::jdefault.GuiSmoke.main(global::java.lang.JRuntime.Args(__args));
         }
         catch (global::java.lang.JThrow __e)

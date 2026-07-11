@@ -297,6 +297,8 @@ public final class ShimRegistry {
     }
 
     private static void addNioSupers0(Map<String, String> m) {
+        put(m, "java/nio/Buffer", "java/lang/Object");
+        put(m, "sun/misc/Unsafe", "java/lang/Object");
         put(m, "java/nio/channels/FileChannel", "java/lang/Object");
         put(m, "java/nio/charset/Charset", "java/lang/Object");
         put(m, "java/nio/charset/StandardCharsets", "java/lang/Object");
@@ -315,13 +317,13 @@ public final class ShimRegistry {
         put(m, "java/nio/file/FileVisitOption", "java/lang/Object");
         put(m, "java/nio/file/StandardCopyOption", "java/lang/Object");
         put(m, "java/nio/file/StandardOpenOption", "java/lang/Object");
-        put(m, "java/nio/ByteBuffer", "java/lang/Object");
+        put(m, "java/nio/ByteBuffer", "java/nio/Buffer");
         put(m, "java/io/File", "java/lang/Object");
         put(m, "java/nio/ByteOrder", "java/lang/Object");
-        put(m, "java/nio/IntBuffer", "java/lang/Object");
-        put(m, "java/nio/LongBuffer", "java/lang/Object");
-        put(m, "java/nio/DoubleBuffer", "java/lang/Object");
-        put(m, "java/nio/CharBuffer", "java/lang/Object");
+        put(m, "java/nio/IntBuffer", "java/nio/Buffer");
+        put(m, "java/nio/LongBuffer", "java/nio/Buffer");
+        put(m, "java/nio/DoubleBuffer", "java/nio/Buffer");
+        put(m, "java/nio/CharBuffer", "java/nio/Buffer");
         put(m, "java/io/InputStream", "java/lang/Object");
         put(m, "java/io/OutputStream", "java/lang/Object");
         put(m, "java/io/Reader", "java/lang/Object");
@@ -339,8 +341,8 @@ public final class ShimRegistry {
         put(m, "java/io/FileWriter", "java/io/Writer");
         put(m, "java/io/BufferedWriter", "java/io/Writer");
         put(m, "java/io/PrintWriter", "java/io/Writer");
-        put(m, "java/nio/ShortBuffer", "java/lang/Object");
-        put(m, "java/nio/FloatBuffer", "java/lang/Object");
+        put(m, "java/nio/ShortBuffer", "java/nio/Buffer");
+        put(m, "java/nio/FloatBuffer", "java/nio/Buffer");
         put(m, "java/nio/file/FileSystem", "java/lang/Object");
         put(m, "java/nio/file/FileSystems", "java/lang/Object");
         put(m, "java/nio/file/attribute/BasicFileAttributes", "java/lang/Object");
@@ -1355,6 +1357,27 @@ public final class ShimRegistry {
 
     private static void addNioMethods1(Map<String, ShimTarget> m) {
         put(m, "java/nio/ByteBuffer.allocate(I)Ljava/nio/ByteBuffer;", statics("allocate"));
+        put(m, "java/nio/ByteBuffer.allocateDirect(I)Ljava/nio/ByteBuffer;", statics("allocateDirect"));
+        put(m, "java/nio/Buffer.isDirect()Z", instance("isDirect"));
+        put(m, "sun/misc/Unsafe.objectFieldOffset(Ljava/lang/reflect/Field;)J", instance("objectFieldOffset"));
+        put(m, "sun/misc/Unsafe.allocateInstance(Ljava/lang/Class;)Ljava/lang/Object;", instance("allocateInstance"));
+        put(m, "sun/misc/Unsafe.pageSize()I", instance("pageSize"));
+        put(m, "sun/misc/Unsafe.copyMemory(Ljava/lang/Object;JLjava/lang/Object;JJ)V", instance("copyMemory"));
+        put(m, "sun/misc/Unsafe.setMemory(Ljava/lang/Object;JJB)V", instance("setMemory"));
+        put(m, "sun/misc/Unsafe.getByte(Ljava/lang/Object;J)B", instance("getByte"));
+        put(m, "sun/misc/Unsafe.putByte(Ljava/lang/Object;JB)V", instance("putByte"));
+        put(m, "sun/misc/Unsafe.getShort(Ljava/lang/Object;J)S", instance("getShort"));
+        put(m, "sun/misc/Unsafe.putShort(Ljava/lang/Object;JS)V", instance("putShort"));
+        put(m, "sun/misc/Unsafe.getInt(Ljava/lang/Object;J)I", instance("getInt"));
+        put(m, "sun/misc/Unsafe.putInt(Ljava/lang/Object;JI)V", instance("putInt"));
+        put(m, "sun/misc/Unsafe.getLong(Ljava/lang/Object;J)J", instance("getLong"));
+        put(m, "sun/misc/Unsafe.putLong(Ljava/lang/Object;JJ)V", instance("putLong"));
+        put(m, "sun/misc/Unsafe.getFloat(Ljava/lang/Object;J)F", instance("getFloat"));
+        put(m, "sun/misc/Unsafe.putFloat(Ljava/lang/Object;JF)V", instance("putFloat"));
+        put(m, "sun/misc/Unsafe.getDouble(Ljava/lang/Object;J)D", instance("getDouble"));
+        put(m, "sun/misc/Unsafe.putDouble(Ljava/lang/Object;JD)V", instance("putDouble"));
+        put(m, "sun/misc/Unsafe.getObject(Ljava/lang/Object;J)Ljava/lang/Object;", instance("getObject"));
+        put(m, "sun/misc/Unsafe.putObject(Ljava/lang/Object;JLjava/lang/Object;)V", instance("putObject"));
         put(m, "java/nio/ByteBuffer.wrap([B)Ljava/nio/ByteBuffer;", statics("wrap"));
         put(m, "java/nio/ByteBuffer.capacity()I", instance("capacity"));
         put(m, "java/nio/ByteBuffer.position()I", instance("position"));
@@ -3389,6 +3412,11 @@ public final class ShimRegistry {
         put(m, "java/math/RoundingMode.HALF_EVEN Ljava/math/RoundingMode;", statics("HALF_EVEN"));
         put(m, "java/math/RoundingMode.UNNECESSARY Ljava/math/RoundingMode;", statics("UNNECESSARY"));
         put(m, "java/nio/charset/StandardCharsets.UTF_8 Ljava/nio/charset/Charset;", statics("UTF_8"));
+        put(m, "java/nio/charset/StandardCharsets.US_ASCII Ljava/nio/charset/Charset;", statics("US_ASCII"));
+        put(m, "java/nio/charset/StandardCharsets.ISO_8859_1 Ljava/nio/charset/Charset;", statics("ISO_8859_1"));
+        put(m, "java/nio/charset/StandardCharsets.UTF_16BE Ljava/nio/charset/Charset;", statics("UTF_16BE"));
+        put(m, "java/nio/charset/StandardCharsets.UTF_16LE Ljava/nio/charset/Charset;", statics("UTF_16LE"));
+        put(m, "java/nio/charset/StandardCharsets.UTF_16 Ljava/nio/charset/Charset;", statics("UTF_16"));
         put(m, "java/nio/file/StandardCopyOption.REPLACE_EXISTING Ljava/nio/file/StandardCopyOption;", statics("REPLACE_EXISTING"));
         put(m, "java/nio/file/StandardCopyOption.ATOMIC_MOVE Ljava/nio/file/StandardCopyOption;", statics("ATOMIC_MOVE"));
         put(m, "java/nio/file/StandardCopyOption.COPY_ATTRIBUTES Ljava/nio/file/StandardCopyOption;", statics("COPY_ATTRIBUTES"));

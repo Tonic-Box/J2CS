@@ -1,9 +1,9 @@
 namespace java.nio
 {
-    public sealed class CharBuffer : global::java.lang.Object
+    public sealed class CharBuffer : global::java.nio.Buffer
     {
         private readonly char[] arr;
-        private readonly sbyte[] vbuf;
+        private readonly ByteStore vstore;
         private readonly int voff;
         private readonly bool vlittle;
         private readonly int cap;
@@ -13,13 +13,13 @@ namespace java.nio
 
         public CharBuffer(global::java.lang.RawNew r) : base(r) { arr = new char[0]; }
         internal CharBuffer(char[] backing) : base(global::java.lang.RawNew.I) { arr = backing; cap = backing.Length; lim = cap; }
-        internal CharBuffer(sbyte[] bytes, int off, int capElems, bool le) : base(global::java.lang.RawNew.I) { vbuf = bytes; voff = off; vlittle = le; cap = capElems; lim = capElems; }
+        internal CharBuffer(ByteStore bytes, int off, int capElems, bool le) : base(global::java.lang.RawNew.I) { vstore = bytes; voff = off; vlittle = le; cap = capElems; lim = capElems; address = bytes.IsDirect ? bytes.Address + off : 0; }
 
         public static CharBuffer allocate(int capacity) { return new CharBuffer(new char[capacity]); }
         public static CharBuffer wrap(char[] array) { return new CharBuffer(array); }
 
-        private char ElemGet(int i) { return vbuf != null ? ((char)global::java.nio.ByteBuffer.ReadBytes(vbuf, voff + i * 2, 2, vlittle)) : arr[i]; }
-        private void ElemSet(int i, char v) { if (vbuf != null) { global::java.nio.ByteBuffer.WriteBytes(vbuf, voff + i * 2, 2, v, vlittle); } else { arr[i] = v; } }
+        private char ElemGet(int i) { return vstore != null ? ((char)vstore.ReadBytes(voff + i * 2, 2, vlittle)) : arr[i]; }
+        private void ElemSet(int i, char v) { if (vstore != null) { vstore.WriteBytes(voff + i * 2, 2, v, vlittle); } else { arr[i] = v; } }
 
         public int capacity() { return cap; }
         public int position() { return pos; }

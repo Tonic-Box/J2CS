@@ -6,6 +6,7 @@ internal static class Program
         try
         {
             global::j2cs.reflect.__Bootstrap.InitAll();
+            global::j2cs.reflect.ShimMeta.RegisterAll();
             global::jdefault.Shapes.main(global::java.lang.JRuntime.Args(args));
             return 0;
         }

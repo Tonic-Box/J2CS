@@ -1,5 +1,6 @@
 j2cs.jni.J2csJni.cs
 j2cs.reflect.Meta.cs
+j2cs.reflect.ShimMeta.cs
 java.awt.BorderLayout.cs
 java.awt.CardLayout.cs
 java.awt.Color.cs
@@ -151,8 +152,10 @@ java.net.http.HttpRequest.cs
 java.net.http.HttpResponse$BodyHandler.cs
 java.net.http.HttpResponse$BodyHandlers.cs
 java.net.http.HttpResponse.cs
+java.nio.Buffer.cs
 java.nio.ByteBuffer.cs
 java.nio.ByteOrder.cs
+java.nio.ByteStore.cs
 java.nio.channels.FileChannel.cs
 java.nio.CharBuffer.cs
 java.nio.DoubleBuffer.cs
@@ -383,3 +386,4 @@ javax.swing.border.Border.cs
 javax.swing.border.TitledBorder.cs
 javax.swing.event.ChangeEvent.cs
 javax.swing.event.ChangeListener.cs
+sun.misc.Unsafe.cs

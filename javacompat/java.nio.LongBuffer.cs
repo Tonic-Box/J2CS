@@ -1,9 +1,9 @@
 namespace java.nio
 {
-    public sealed class LongBuffer : global::java.lang.Object
+    public sealed class LongBuffer : global::java.nio.Buffer
     {
         private readonly long[] arr;
-        private readonly sbyte[] vbuf;
+        private readonly ByteStore vstore;
         private readonly int voff;
         private readonly bool vlittle;
         private readonly int cap;
@@ -13,13 +13,13 @@ namespace java.nio
 
         public LongBuffer(global::java.lang.RawNew r) : base(r) { arr = new long[0]; }
         internal LongBuffer(long[] backing) : base(global::java.lang.RawNew.I) { arr = backing; cap = backing.Length; lim = cap; }
-        internal LongBuffer(sbyte[] bytes, int off, int capElems, bool le) : base(global::java.lang.RawNew.I) { vbuf = bytes; voff = off; vlittle = le; cap = capElems; lim = capElems; }
+        internal LongBuffer(ByteStore bytes, int off, int capElems, bool le) : base(global::java.lang.RawNew.I) { vstore = bytes; voff = off; vlittle = le; cap = capElems; lim = capElems; address = bytes.IsDirect ? bytes.Address + off : 0; }
 
         public static LongBuffer allocate(int capacity) { return new LongBuffer(new long[capacity]); }
         public static LongBuffer wrap(long[] array) { return new LongBuffer(array); }
 
-        private long ElemGet(int i) { return vbuf != null ? (global::java.nio.ByteBuffer.ReadBytes(vbuf, voff + i * 8, 8, vlittle)) : arr[i]; }
-        private void ElemSet(int i, long v) { if (vbuf != null) { global::java.nio.ByteBuffer.WriteBytes(vbuf, voff + i * 8, 8, v, vlittle); } else { arr[i] = v; } }
+        private long ElemGet(int i) { return vstore != null ? (vstore.ReadBytes(voff + i * 8, 8, vlittle)) : arr[i]; }
+        private void ElemSet(int i, long v) { if (vstore != null) { vstore.WriteBytes(voff + i * 8, 8, v, vlittle); } else { arr[i] = v; } }
 
         public int capacity() { return cap; }
         public int position() { return pos; }

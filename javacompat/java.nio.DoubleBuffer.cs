@@ -1,9 +1,9 @@
 namespace java.nio
 {
-    public sealed class DoubleBuffer : global::java.lang.Object
+    public sealed class DoubleBuffer : global::java.nio.Buffer
     {
         private readonly double[] arr;
-        private readonly sbyte[] vbuf;
+        private readonly ByteStore vstore;
         private readonly int voff;
         private readonly bool vlittle;
         private readonly int cap;
@@ -13,13 +13,13 @@ namespace java.nio
 
         public DoubleBuffer(global::java.lang.RawNew r) : base(r) { arr = new double[0]; }
         internal DoubleBuffer(double[] backing) : base(global::java.lang.RawNew.I) { arr = backing; cap = backing.Length; lim = cap; }
-        internal DoubleBuffer(sbyte[] bytes, int off, int capElems, bool le) : base(global::java.lang.RawNew.I) { vbuf = bytes; voff = off; vlittle = le; cap = capElems; lim = capElems; }
+        internal DoubleBuffer(ByteStore bytes, int off, int capElems, bool le) : base(global::java.lang.RawNew.I) { vstore = bytes; voff = off; vlittle = le; cap = capElems; lim = capElems; address = bytes.IsDirect ? bytes.Address + off : 0; }
 
         public static DoubleBuffer allocate(int capacity) { return new DoubleBuffer(new double[capacity]); }
         public static DoubleBuffer wrap(double[] array) { return new DoubleBuffer(array); }
 
-        private double ElemGet(int i) { return vbuf != null ? (global::System.BitConverter.Int64BitsToDouble(global::java.nio.ByteBuffer.ReadBytes(vbuf, voff + i * 8, 8, vlittle))) : arr[i]; }
-        private void ElemSet(int i, double v) { if (vbuf != null) { global::java.nio.ByteBuffer.WriteBytes(vbuf, voff + i * 8, 8, global::System.BitConverter.DoubleToInt64Bits(v), vlittle); } else { arr[i] = v; } }
+        private double ElemGet(int i) { return vstore != null ? (global::System.BitConverter.Int64BitsToDouble(vstore.ReadBytes(voff + i * 8, 8, vlittle))) : arr[i]; }
+        private void ElemSet(int i, double v) { if (vstore != null) { vstore.WriteBytes(voff + i * 8, 8, global::System.BitConverter.DoubleToInt64Bits(v), vlittle); } else { arr[i] = v; } }
 
         public int capacity() { return cap; }
         public int position() { return pos; }
