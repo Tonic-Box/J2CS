@@ -3593,6 +3593,102 @@ public final class ShimRegistry {
         return EXTENDABLE.contains(internalName);
     }
 
+    public static boolean isShimInterface(String internalName) {
+        return SHIM_INTERFACES.contains(internalName);
+    }
+
+    public static Set<String> shimInterfaces() {
+        return SHIM_INTERFACES;
+    }
+
+    // Shim types whose C# form is an interface (declared `public interface` in javacompat). Like an
+    // app interface, a C# interface does not expose the java.lang.Object shim's members, so an
+    // Object-member call on a receiver of one of these types must upcast to Object first. Kept in
+    // sync with the interface .cs files by ShimInterfaceDriftTest.
+    static final Set<String> SHIM_INTERFACES = Set.of(
+            "java/awt/KeyEventDispatcher",
+            "java/awt/LayoutManager",
+            "java/awt/event/ActionListener",
+            "java/awt/event/KeyListener",
+            "java/awt/event/MouseListener",
+            "java/awt/event/MouseMotionListener",
+            "java/awt/event/WindowListener",
+            "java/io/Closeable",
+            "java/lang/AutoCloseable",
+            "java/lang/CharSequence",
+            "java/lang/Comparable",
+            "java/lang/Iterable",
+            "java/lang/Runnable",
+            "java/lang/annotation/Annotation",
+            "java/nio/file/CopyOption",
+            "java/nio/file/FileVisitOption",
+            "java/nio/file/OpenOption",
+            "java/nio/file/attribute/FileAttribute",
+            "java/security/Key",
+            "java/security/PrivateKey",
+            "java/security/PublicKey",
+            "java/security/spec/AlgorithmParameterSpec",
+            "java/time/chrono/ChronoLocalDate",
+            "java/time/chrono/ChronoLocalDateTime",
+            "java/time/temporal/Temporal",
+            "java/util/Collection",
+            "java/util/Comparator",
+            "java/util/Deque",
+            "java/util/Enumeration",
+            "java/util/Iterator",
+            "java/util/List",
+            "java/util/ListIterator",
+            "java/util/Map",
+            "java/util/Map$Entry",
+            "java/util/NavigableMap",
+            "java/util/NavigableSet",
+            "java/util/Queue",
+            "java/util/Set",
+            "java/util/SortedMap",
+            "java/util/SortedSet",
+            "java/util/concurrent/BlockingQueue",
+            "java/util/concurrent/Callable",
+            "java/util/concurrent/Executor",
+            "java/util/concurrent/Future",
+            "java/util/concurrent/ThreadFactory",
+            "java/util/concurrent/locks/Lock",
+            "java/util/function/BiConsumer",
+            "java/util/function/BiFunction",
+            "java/util/function/BiPredicate",
+            "java/util/function/BinaryOperator",
+            "java/util/function/Consumer",
+            "java/util/function/DoubleBinaryOperator",
+            "java/util/function/DoubleConsumer",
+            "java/util/function/DoubleFunction",
+            "java/util/function/DoublePredicate",
+            "java/util/function/DoubleToIntFunction",
+            "java/util/function/DoubleToLongFunction",
+            "java/util/function/DoubleUnaryOperator",
+            "java/util/function/Function",
+            "java/util/function/IntBinaryOperator",
+            "java/util/function/IntConsumer",
+            "java/util/function/IntFunction",
+            "java/util/function/IntPredicate",
+            "java/util/function/IntToDoubleFunction",
+            "java/util/function/IntToLongFunction",
+            "java/util/function/IntUnaryOperator",
+            "java/util/function/LongBinaryOperator",
+            "java/util/function/LongConsumer",
+            "java/util/function/LongFunction",
+            "java/util/function/LongPredicate",
+            "java/util/function/LongToDoubleFunction",
+            "java/util/function/LongToIntFunction",
+            "java/util/function/LongUnaryOperator",
+            "java/util/function/Predicate",
+            "java/util/function/Supplier",
+            "java/util/function/ToDoubleFunction",
+            "java/util/function/ToIntFunction",
+            "java/util/function/ToLongFunction",
+            "java/util/function/UnaryOperator",
+            "javax/crypto/SecretKey",
+            "javax/swing/ListModel",
+            "javax/swing/event/ChangeListener");
+
     public static boolean isThrowableSubtype(String internalName) {
         return isShimSubtype(internalName, "java/lang/Throwable");
     }

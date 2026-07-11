@@ -123,8 +123,9 @@ public final class ClassHierarchy {
         if (declaringInternal.equals("java/lang/Object")) {
             // A C# interface does not expose the java.lang.Object shim's members, so an Object-member
             // call (e.g. getClass) on an interface-typed receiver must upcast to Object first; a class
-            // receiver inherits them directly and needs no cast.
-            return !isAppInterface(receiverInternal);
+            // receiver inherits them directly and needs no cast. Shim interfaces (List, Map, …) are C#
+            // interfaces too, so they need the cast just like app interfaces.
+            return !isAppInterface(receiverInternal) && !ShimRegistry.isShimInterface(receiverInternal);
         }
         if (classAncestors(receiverInternal).contains(declaringInternal)
                 || allSuperInterfaces(receiverInternal).contains(declaringInternal)) {
