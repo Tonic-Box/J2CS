@@ -121,6 +121,11 @@ namespace java.nio.file
             return global::System.IO.File.Exists(path.value) ? 1 : 0;
         }
 
+        public static int isReadable(Path path)
+        {
+            return global::System.IO.File.Exists(path.value) ? 1 : 0;
+        }
+
         public static int isSameFile(Path a, Path b)
         {
             return global::System.IO.Path.GetFullPath(a.value) == global::System.IO.Path.GetFullPath(b.value) ? 1 : 0;

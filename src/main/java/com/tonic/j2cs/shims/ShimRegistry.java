@@ -373,9 +373,11 @@ public final class ShimRegistry {
     }
 
     private static void addLangSupers4(Map<String, String> m) {
+        put(m, "java/lang/ClassLoader", "java/lang/Object");
         put(m, "java/lang/StringBuffer", "java/lang/Object");
         put(m, "java/lang/NoSuchFieldError", "java/lang/Error");
         put(m, "java/lang/LinkageError", "java/lang/Error");
+        put(m, "java/lang/UnsatisfiedLinkError", "java/lang/LinkageError");
     }
 
     private static void addAwtSupers0(Map<String, String> m) {
@@ -1335,6 +1337,7 @@ public final class ShimRegistry {
         put(m, "java/nio/file/Files.notExists(Ljava/nio/file/Path;[Ljava/nio/file/LinkOption;)Z", statics("notExists"));
         put(m, "java/nio/file/Files.isDirectory(Ljava/nio/file/Path;[Ljava/nio/file/LinkOption;)Z", statics("isDirectory"));
         put(m, "java/nio/file/Files.isRegularFile(Ljava/nio/file/Path;[Ljava/nio/file/LinkOption;)Z", statics("isRegularFile"));
+        put(m, "java/nio/file/Files.isReadable(Ljava/nio/file/Path;)Z", statics("isReadable"));
         put(m, "java/nio/file/Files.createDirectories(Ljava/nio/file/Path;[Ljava/nio/file/attribute/FileAttribute;)Ljava/nio/file/Path;", statics("createDirectories"));
         put(m, "java/nio/file/Files.createDirectory(Ljava/nio/file/Path;[Ljava/nio/file/attribute/FileAttribute;)Ljava/nio/file/Path;", statics("createDirectory"));
         put(m, "java/nio/file/Files.createFile(Ljava/nio/file/Path;[Ljava/nio/file/attribute/FileAttribute;)Ljava/nio/file/Path;", statics("createFile"));
@@ -1670,6 +1673,7 @@ public final class ShimRegistry {
         put(m, "java/lang/AutoCloseable.close()V", instance("close"));
         put(m, "java/lang/Throwable.toString()Ljava/lang/String;", instance("toString"));
         put(m, "java/lang/Throwable.printStackTrace()V", instance("printStackTrace"));
+        put(m, "java/lang/Throwable.printStackTrace(Ljava/io/PrintStream;)V", instance("printStackTrace"));
         put(m, "java/lang/String.format(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;", statics("format"));
         put(m, "java/lang/System.nanoTime()J", statics("nanoTime"));
         put(m, "java/lang/System.currentTimeMillis()J", statics("currentTimeMillis"));
@@ -1861,6 +1865,9 @@ public final class ShimRegistry {
         put(m, "java/lang/Class.desiredAssertionStatus()Z", instance("desiredAssertionStatus"));
         put(m, "java/lang/String.valueOf(Ljava/lang/Object;)Ljava/lang/String;", statics("valueOf"));
         put(m, "java/lang/Class.forName(Ljava/lang/String;)Ljava/lang/Class;", statics("forName"));
+        put(m, "java/lang/Class.getClassLoader()Ljava/lang/ClassLoader;", instance("getClassLoader"));
+        put(m, "java/lang/ClassLoader.getResource(Ljava/lang/String;)Ljava/net/URL;", instance("getResource"));
+        put(m, "java/lang/ClassLoader.getResourceAsStream(Ljava/lang/String;)Ljava/io/InputStream;", instance("getResourceAsStream"));
         put(m, "java/lang/Class.getName()Ljava/lang/String;", instance("getName"));
         put(m, "java/lang/Class.getSimpleName()Ljava/lang/String;", instance("getSimpleName"));
         put(m, "java/lang/Class.getCanonicalName()Ljava/lang/String;", instance("getCanonicalName"));

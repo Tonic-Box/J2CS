@@ -69,6 +69,7 @@ java.lang.Byte.cs
 java.lang.CharSequence.cs
 java.lang.Character.cs
 java.lang.Class.cs
+java.lang.ClassLoader.cs
 java.lang.ClassCastException.cs
 java.lang.ClassNotFoundException.cs
 java.lang.CloneNotSupportedException.cs
@@ -118,6 +119,7 @@ java.lang.System.cs
 java.lang.Thread.cs
 java.lang.ThreadLocal.cs
 java.lang.Throwable.cs
+java.lang.UnsatisfiedLinkError.cs
 java.lang.UnsupportedOperationException.cs
 java.lang.Void.cs
 java.lang.annotation.Annotation.cs

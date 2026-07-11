@@ -53,6 +53,16 @@ namespace java.lang
             global::System.Console.Error.WriteLine(toString().Value);
         }
 
+        public virtual void printStackTrace(global::java.io.PrintStream s)
+        {
+            if (s == null)
+            {
+                printStackTrace();
+                return;
+            }
+            s.println(toString());
+        }
+
         public void addSuppressed(Throwable exception)
         {
             if (exception == null)

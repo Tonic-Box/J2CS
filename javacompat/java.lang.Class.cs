@@ -41,6 +41,11 @@ namespace java.lang
             return m != null ? m.ClassObject : NameCache.GetOrAdd(name, n => new Class(n));
         }
 
+        public global::java.lang.ClassLoader getClassLoader()
+        {
+            return global::java.lang.ClassLoader.SystemClassLoader;
+        }
+
         public static Class forName(String name)
         {
             string n = name == null ? null : name.Value;

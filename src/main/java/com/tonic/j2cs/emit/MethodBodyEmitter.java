@@ -150,7 +150,11 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
         if (slot == null) {
             throw new UnsupportedBodyException("result v" + result.getId() + " has no slot");
         }
-        w.line("s" + slot + " = " + expr + ";");
+        // Coerce the value to the slot's declared type. This is a no-op when they match (the common
+        // case), but a slot merging mixed reference types is widened (e.g. to Object), so a narrower
+        // reference value stored into it needs an explicit upcast the C# compiler cannot infer.
+        String coerced = reconciler.coerce(slotCs.get(slot), result.getType(), expr);
+        w.line("s" + slot + " = " + coerced + ";");
     }
 
     @Override
