@@ -25,6 +25,49 @@ namespace j2cs.jni
         public static global::System.IntPtr Env;
         public static global::System.IntPtr JavaVm;
 
+        private static byte* envHits;
+        private static byte* vmHits;
+
+        [global::System.Runtime.InteropServices.DllImport("kernel32")]
+        private static extern int VirtualProtect(global::System.IntPtr addr, global::System.UIntPtr size, uint newProtect, out uint old);
+
+        /// <summary>
+        /// Points every function-table slot at a pure-native stub that records the slot was hit and
+        /// returns a pointer-sized zero. Two properties matter and rule out a managed callback here:
+        /// (1) these slots can be invoked while the Windows loader lock is held (a native library's
+        /// load-time init calling back through JNIEnv), and reentering the managed runtime under that
+        /// lock deadlocks/crashes; (2) native code reads the return register, so leaving it garbage is
+        /// read as a non-null jobject / pending exception / true and cascades into more calls — a
+        /// neutral zero makes an unimplemented slot degrade quietly. Real slots are assigned over these
+        /// afterward; whatever remains is a self-recording no-op whose hits are dumped at exit.
+        /// </summary>
+        private static void FillNeutralTraps(global::System.IntPtr* slots, int count, byte* hits)
+        {
+            byte* code = (byte*)global::System.Runtime.InteropServices.NativeMemory.Alloc((nuint)(count * 16));
+            for (int i = 0; i < count; i++)
+            {
+                byte* s = code + i * 16;
+                s[0] = 0x48; s[1] = 0xB8; *(long*)(s + 2) = (long)(hits + i); // mov rax, &hits[i]
+                s[10] = 0xC6; s[11] = 0x00; s[12] = 0x01;                     // mov byte [rax], 1
+                s[13] = 0x31; s[14] = 0xC0;                                   // xor eax, eax
+                s[15] = 0xC3;                                                 // ret
+                slots[i] = (global::System.IntPtr)s;
+            }
+            VirtualProtect((global::System.IntPtr)code, (global::System.UIntPtr)(uint)(count * 16), 0x40, out _);
+        }
+
+        private static void DumpUnimplementedSlots()
+        {
+            for (int i = 0; i < SlotCount; i++)
+            {
+                if (envHits[i] != 0) { global::System.Console.Error.WriteLine("j2cs: unimplemented JNIEnv slot " + i + " invoked by native code"); }
+            }
+            for (int i = 0; i < 8; i++)
+            {
+                if (vmHits[i] != 0) { global::System.Console.Error.WriteLine("j2cs: unimplemented JavaVM slot " + i + " invoked by native code"); }
+            }
+        }
+
         public static void EnsureInitialized()
         {
             lock (Gate)
@@ -36,12 +79,8 @@ namespace j2cs.jni
                 global::System.IntPtr* slots = (global::System.IntPtr*)
                     global::System.Runtime.InteropServices.NativeMemory.Alloc(
                         (nuint)SlotCount, (nuint)global::System.IntPtr.Size);
-                global::System.IntPtr trap =
-                    (global::System.IntPtr)(delegate* unmanaged[Cdecl]<void>)&TrapImpl;
-                for (int i = 0; i < SlotCount; i++)
-                {
-                    slots[i] = trap;
-                }
+                envHits = (byte*)global::System.Runtime.InteropServices.NativeMemory.AllocZeroed((nuint)SlotCount);
+                FillNeutralTraps(slots, SlotCount, envHits);
                 slots[4] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, int>)&GetVersionImpl;
                 slots[6] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr>)&FindClassImpl;
                 slots[33] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, global::System.IntPtr>)&GetMethodIDImpl;
@@ -80,12 +119,8 @@ namespace j2cs.jni
                 global::System.IntPtr* vmSlots = (global::System.IntPtr*)
                     global::System.Runtime.InteropServices.NativeMemory.Alloc(
                         (nuint)8, (nuint)global::System.IntPtr.Size);
-                global::System.IntPtr vmTrap =
-                    (global::System.IntPtr)(delegate* unmanaged[Cdecl]<void>)&TrapImpl;
-                for (int i = 0; i < 8; i++)
-                {
-                    vmSlots[i] = vmTrap;
-                }
+                vmHits = (byte*)global::System.Runtime.InteropServices.NativeMemory.AllocZeroed((nuint)8);
+                FillNeutralTraps(vmSlots, 8, vmHits);
                 vmSlots[4] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, int>)&AttachCurrentThreadImpl;
                 vmSlots[5] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, int>)&DetachCurrentThreadImpl;
                 vmSlots[6] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, int, int>)&GetEnvImpl;
@@ -94,6 +129,8 @@ namespace j2cs.jni
                     (nuint)global::System.IntPtr.Size);
                 *(global::System.IntPtr*)javaVmSlot = (global::System.IntPtr)vmSlots;
                 JavaVm = javaVmSlot;
+
+                global::System.AppDomain.CurrentDomain.ProcessExit += (_, _) => DumpUnimplementedSlots();
             }
         }
 
@@ -489,13 +526,6 @@ namespace j2cs.jni
         {
         }
 
-        [global::System.Runtime.InteropServices.UnmanagedCallersOnly(
-            CallConvs = new[] { typeof(global::System.Runtime.CompilerServices.CallConvCdecl) })]
-        private static void TrapImpl()
-        {
-            global::System.Console.Error.WriteLine(
-                "j2cs: unimplemented JNIEnv function invoked by native code");
-        }
 
 
 
