@@ -103,6 +103,18 @@ public final class TypeReconciler {
                     ? boxed
                     : "((" + target.csText() + ")" + boxed + ")";
         }
+        // A primitive value cannot be cast to the java.lang.Object shim class (e.g. `(Object)(float)`);
+        // it must be boxed to its wrapper, then downcast if the reference target is more specific. This
+        // arises when a slot merges a primitive with a reference type across control flow.
+        if (source != null && source.kind() == CsType.Kind.PRIMITIVE) {
+            String primDesc = primitiveDescriptor(source.csText());
+            if (primDesc != null) {
+                String boxed = Boxing.box(primDesc, expr);
+                return target.csText().equals("global::java.lang.Object")
+                        ? boxed
+                        : "((" + target.csText() + ")" + boxed + ")";
+            }
+        }
         return "(" + target.csText() + ")" + bridge(target, source) + "(" + expr + ")";
     }
 
@@ -111,6 +123,20 @@ public final class TypeReconciler {
      * array never derives from the java.lang.Object shim class); no detour needed when either
      * side already is java.lang.Object.
      */
+    private static String primitiveDescriptor(String csText) {
+        return switch (csText) {
+            case "int" -> "I";
+            case "long" -> "J";
+            case "float" -> "F";
+            case "double" -> "D";
+            case "boolean" -> "Z";
+            case "byte", "sbyte" -> "B";
+            case "char" -> "C";
+            case "short" -> "S";
+            default -> null;
+        };
+    }
+
     private static String bridge(CsType target, CsType source) {
         if (target.isArray()) {
             return "(object)";
