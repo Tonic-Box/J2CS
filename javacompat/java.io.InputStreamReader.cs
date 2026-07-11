@@ -21,6 +21,23 @@ namespace java.io
             Decode(input, cs == null ? new global::System.Text.UTF8Encoding(false) : cs.encoding);
         }
 
+        public void __init_Ljava_io_InputStream_Ljava_lang_String__V(InputStream input,
+                global::java.lang.String charsetName)
+        {
+            global::System.Text.Encoding enc;
+            try
+            {
+                enc = charsetName == null
+                    ? new global::System.Text.UTF8Encoding(false)
+                    : global::System.Text.Encoding.GetEncoding(charsetName.Value);
+            }
+            catch (global::System.Exception)
+            {
+                enc = new global::System.Text.UTF8Encoding(false);
+            }
+            Decode(input, enc);
+        }
+
         private void Decode(InputStream input, global::System.Text.Encoding enc)
         {
             content = enc.GetString(global::java.lang.JRuntime.UnsignedBytes(input.readAllBytes()));

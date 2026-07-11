@@ -41,6 +41,20 @@ namespace java.util
             threshold = TableSizeFor(initialCapacity);
         }
 
+        public void __init_Ljava_util_Map__V(Map source)
+        {
+            if (source == null)
+            {
+                return;
+            }
+            var it = source.entrySet().iterator();
+            while (it.hasNext() != 0)
+            {
+                var e = (global::java.util.Map_S_Entry)it.next();
+                put(e.getKey(), e.getValue());
+            }
+        }
+
         private static int Spread(global::java.lang.Object key)
         {
             if (key == null)
