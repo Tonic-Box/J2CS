@@ -124,12 +124,16 @@ final class StructuredBodyEmitter {
                 && body.get(count - 1) instanceof ReturnStmt r && r.getValue() == null) {
             count--;
         }
-        // A non-void method whose recovered body contains no return or throw anywhere (e.g. only
-        // hoisted declarations) is a degraded recovery, not real control flow. Reject it so the
-        // caller falls back to the goto emitter — which produces a real body or a clear stub —
-        // rather than emitting a body that just throws "fell off method end".
+        // Reject a degraded recovery so the caller falls back to the goto emitter (which yields a
+        // real body or a clear stub) instead of a body that does nothing or only throws "fell off
+        // method end": a non-void method with no return/throw anywhere (e.g. only hoisted
+        // declarations), or any method that recovered to an empty body while its bytecode plainly
+        // does real work (a genuinely empty method compiles to a handful of bytes).
         if (!"V".equals(returnDesc) && !containsTerminator(body)) {
             throw new UnsupportedBodyException("structured: non-void method has no terminating statement");
+        }
+        if (body.isEmpty() && hasNonTrivialBytecode(method)) {
+            throw new UnsupportedBodyException("structured: empty recovered body over non-trivial bytecode");
         }
         for (int i = 0; i < count; i++) {
             stmt(body.get(i));
@@ -539,6 +543,12 @@ final class StructuredBodyEmitter {
             selector = expr(sw.getSelector());
             cases = sw.getCases();
             labelNames = Map.of();
+            // JVM switch keys are ints; a char/byte/short selector keeps its narrower C# type, and C#
+            // rejects int case labels against it. Widen the selector to int so the labels match.
+            String selDesc = sw.getSelector().getType() == null ? null : descOf(sw.getSelector().getType());
+            if ("C".equals(selDesc) || "B".equals(selDesc) || "S".equals(selDesc)) {
+                selector = "(int)(" + selector + ")";
+            }
         }
         pushScope();
         w.open("switch (" + selector + ")");
@@ -645,6 +655,20 @@ final class StructuredBodyEmitter {
      */
     private static boolean alwaysReturns(List<Statement> statements) {
         return !statements.isEmpty() && alwaysReturns(statements.get(statements.size() - 1));
+    }
+
+    /**
+     * Whether the method's bytecode does enough that an empty recovered body must be a recovery
+     * failure rather than a genuinely empty method. A real no-op compiles to a lone {@code return}
+     * (one byte); anything meaningfully longer that recovered to nothing dropped its body.
+     */
+    private static boolean hasNonTrivialBytecode(MethodEntry method) {
+        com.tonic.parser.attribute.CodeAttribute code = method.getCodeAttribute();
+        if (code == null) {
+            return false;
+        }
+        byte[] bytes = code.getCode();
+        return bytes != null && bytes.length > 8;
     }
 
     /** Whether any return or throw appears anywhere in the statement tree. */

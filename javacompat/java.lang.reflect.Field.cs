@@ -55,6 +55,11 @@ namespace java.lang.reflect
 
         public string NameString => name;
 
+        public int isSynthetic()
+        {
+            return 0;
+        }
+
         public global::java.lang.Object get(global::java.lang.Object obj)
         {
             return getter(obj);

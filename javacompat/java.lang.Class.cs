@@ -281,7 +281,17 @@ namespace java.lang
 
         public int isAssignableFrom(Class other)
         {
-            return type != null && other != null && other.type != null && type.IsAssignableFrom(other.type) ? 1 : 0;
+            if (other == null)
+            {
+                return 0;
+            }
+            // Same class (including primitive Class objects like int, which have no CLR type and are
+            // cached one-per-name) is always assignable.
+            if (global::System.Object.ReferenceEquals(this, other))
+            {
+                return 1;
+            }
+            return type != null && other.type != null && type.IsAssignableFrom(other.type) ? 1 : 0;
         }
 
         public int isAnnotationPresent(Class type)

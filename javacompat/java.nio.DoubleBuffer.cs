@@ -6,10 +6,6 @@ namespace java.nio
         private readonly ByteStore vstore;
         private readonly int voff;
         private readonly bool vlittle;
-        private readonly int cap;
-        private int pos;
-        private int lim;
-        private int markPos = -1;
 
         public DoubleBuffer(global::java.lang.RawNew r) : base(r) { arr = new double[0]; }
         internal DoubleBuffer(double[] backing) : base(global::java.lang.RawNew.I) { arr = backing; cap = backing.Length; lim = cap; }

@@ -21,5 +21,10 @@ namespace java.lang
         {
             return null;
         }
+
+        public global::java.util.Enumeration getResources(String name)
+        {
+            return global::java.util.EmptyEnumeration.Instance;
+        }
     }
 }

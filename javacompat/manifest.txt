@@ -78,6 +78,8 @@ java.lang.Comparable.cs
 java.lang.Double.cs
 java.lang.Enum.cs
 java.lang.Error.cs
+java.lang.VirtualMachineError.cs
+java.lang.OutOfMemoryError.cs
 java.lang.Exception.cs
 java.lang.Float.cs
 java.lang.IllegalAccessException.cs
@@ -153,6 +155,8 @@ java.net.http.HttpResponse$BodyHandler.cs
 java.net.http.HttpResponse$BodyHandlers.cs
 java.net.http.HttpResponse.cs
 java.nio.Buffer.cs
+java.nio.BufferOverflowException.cs
+java.nio.BufferUnderflowException.cs
 java.nio.ByteBuffer.cs
 java.nio.ByteOrder.cs
 java.nio.ByteStore.cs
@@ -228,6 +232,7 @@ java.util.Deque.cs
 java.util.DescendingTreeMap.cs
 java.util.DoubleSummaryStatistics.cs
 java.util.EnumMap.cs
+java.util.Enumeration.cs
 java.util.EnumSet.cs
 java.util.Formatter.cs
 java.util.GregorianCalendar.cs

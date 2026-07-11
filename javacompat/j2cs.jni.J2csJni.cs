@@ -67,6 +67,9 @@ namespace j2cs.jni
                 slots[226] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr>)&NewRefImpl;
                 slots[227] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, void>)&DeleteRefImpl;
                 slots[228] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, byte>)&ExceptionCheckImpl;
+                slots[229] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, long, global::System.IntPtr>)&NewDirectByteBufferImpl;
+                slots[230] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr>)&GetDirectBufferAddressImpl;
+                slots[231] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, long>)&GetDirectBufferCapacityImpl;
 
                 envSlot = (global::System.IntPtr)global::System.Runtime.InteropServices.NativeMemory.Alloc(
                     (nuint)global::System.IntPtr.Size);
@@ -157,6 +160,30 @@ namespace j2cs.jni
         private static int GetVersionImpl(global::System.IntPtr env)
         {
             return 0x00010006;
+        }
+
+        [global::System.Runtime.InteropServices.UnmanagedCallersOnly(
+            CallConvs = new[] { typeof(global::System.Runtime.CompilerServices.CallConvCdecl) })]
+        private static global::System.IntPtr NewDirectByteBufferImpl(global::System.IntPtr env, global::System.IntPtr address, long capacity)
+        {
+            global::java.nio.ByteBuffer bb = global::java.nio.ByteBuffer.__wrapDirect((long)address, (int)capacity);
+            return Intern(bb);
+        }
+
+        [global::System.Runtime.InteropServices.UnmanagedCallersOnly(
+            CallConvs = new[] { typeof(global::System.Runtime.CompilerServices.CallConvCdecl) })]
+        private static global::System.IntPtr GetDirectBufferAddressImpl(global::System.IntPtr env, global::System.IntPtr buf)
+        {
+            return ResolveHandle(buf) is global::java.nio.ByteBuffer bb
+                ? (global::System.IntPtr)bb.DirectAddress
+                : global::System.IntPtr.Zero;
+        }
+
+        [global::System.Runtime.InteropServices.UnmanagedCallersOnly(
+            CallConvs = new[] { typeof(global::System.Runtime.CompilerServices.CallConvCdecl) })]
+        private static long GetDirectBufferCapacityImpl(global::System.IntPtr env, global::System.IntPtr buf)
+        {
+            return ResolveHandle(buf) is global::java.nio.ByteBuffer bb ? bb.DirectCapacity : -1;
         }
 
         [global::System.Runtime.InteropServices.UnmanagedCallersOnly(

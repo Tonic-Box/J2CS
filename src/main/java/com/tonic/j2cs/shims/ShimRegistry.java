@@ -90,6 +90,7 @@ public final class ShimRegistry {
     private static void addUtilSupers1(Map<String, String> m) {
         put(m, "java/lang/Iterable", "java/lang/Object");
         put(m, "java/util/Iterator", "java/lang/Object");
+        put(m, "java/util/Enumeration", "java/lang/Object");
         put(m, "java/util/Collection", "java/lang/Iterable");
         put(m, "java/util/List", "java/util/Collection");
         put(m, "java/util/ArrayList", "java/util/List");
@@ -318,6 +319,8 @@ public final class ShimRegistry {
         put(m, "java/nio/file/StandardCopyOption", "java/lang/Object");
         put(m, "java/nio/file/StandardOpenOption", "java/lang/Object");
         put(m, "java/nio/ByteBuffer", "java/nio/Buffer");
+        put(m, "java/nio/BufferOverflowException", "java/lang/RuntimeException");
+        put(m, "java/nio/BufferUnderflowException", "java/lang/RuntimeException");
         put(m, "java/io/File", "java/lang/Object");
         put(m, "java/nio/ByteOrder", "java/lang/Object");
         put(m, "java/nio/IntBuffer", "java/nio/Buffer");
@@ -504,6 +507,8 @@ public final class ShimRegistry {
         put(m, "java/lang/RuntimeException", "java/lang/Exception");
         put(m, "java/lang/Error", "java/lang/Throwable");
         put(m, "java/lang/AssertionError", "java/lang/Error");
+        put(m, "java/lang/VirtualMachineError", "java/lang/Error");
+        put(m, "java/lang/OutOfMemoryError", "java/lang/VirtualMachineError");
         put(m, "java/lang/NullPointerException", "java/lang/RuntimeException");
         put(m, "java/lang/ArithmeticException", "java/lang/RuntimeException");
         put(m, "java/lang/ClassCastException", "java/lang/RuntimeException");
@@ -755,6 +760,9 @@ public final class ShimRegistry {
         put(m, "java/lang/Object.clone()Ljava/lang/Object;", instance("clone"));
         put(m, "java/lang/String.length()I", instance("length"));
         put(m, "java/lang/String.charAt(I)C", instance("charAt"));
+        put(m, "java/lang/CharSequence.length()I", instance("length"));
+        put(m, "java/lang/CharSequence.charAt(I)C", instance("charAt"));
+        put(m, "java/lang/CharSequence.toString()Ljava/lang/String;", instance("toString"));
         put(m, "java/lang/String.isEmpty()Z", instance("isEmpty"));
         put(m, "java/lang/String.equals(Ljava/lang/Object;)Z", instance("equals"));
         put(m, "java/lang/String.hashCode()I", instance("hashCode"));
@@ -1386,6 +1394,8 @@ public final class ShimRegistry {
         put(m, "java/nio/ByteBuffer.hasRemaining()Z", instance("hasRemaining"));
         put(m, "java/nio/ByteBuffer.position(I)Ljava/nio/ByteBuffer;", instance("position"));
         put(m, "java/nio/ByteBuffer.limit(I)Ljava/nio/ByteBuffer;", instance("limit"));
+        put(m, "java/nio/ByteBuffer.position(I)Ljava/nio/Buffer;", instance("position"));
+        put(m, "java/nio/ByteBuffer.limit(I)Ljava/nio/Buffer;", instance("limit"));
         put(m, "java/nio/ByteBuffer.mark()Ljava/nio/ByteBuffer;", instance("mark"));
         put(m, "java/nio/ByteBuffer.reset()Ljava/nio/ByteBuffer;", instance("reset"));
         put(m, "java/nio/ByteBuffer.flip()Ljava/nio/ByteBuffer;", instance("flip"));
@@ -1396,6 +1406,7 @@ public final class ShimRegistry {
         put(m, "java/nio/ByteBuffer.put(B)Ljava/nio/ByteBuffer;", instance("put"));
         put(m, "java/nio/ByteBuffer.put(IB)Ljava/nio/ByteBuffer;", instance("put"));
         put(m, "java/nio/ByteBuffer.get([B)Ljava/nio/ByteBuffer;", instance("get"));
+        put(m, "java/nio/ByteBuffer.get([BII)Ljava/nio/ByteBuffer;", instance("get"));
         put(m, "java/nio/ByteBuffer.put([B)Ljava/nio/ByteBuffer;", instance("put"));
         put(m, "java/nio/ByteBuffer.getInt()I", instance("getInt"));
         put(m, "java/nio/ByteBuffer.putInt(I)Ljava/nio/ByteBuffer;", instance("putInt"));
@@ -1891,6 +1902,9 @@ public final class ShimRegistry {
         put(m, "java/lang/Class.getClassLoader()Ljava/lang/ClassLoader;", instance("getClassLoader"));
         put(m, "java/lang/ClassLoader.getResource(Ljava/lang/String;)Ljava/net/URL;", instance("getResource"));
         put(m, "java/lang/ClassLoader.getResourceAsStream(Ljava/lang/String;)Ljava/io/InputStream;", instance("getResourceAsStream"));
+        put(m, "java/lang/ClassLoader.getResources(Ljava/lang/String;)Ljava/util/Enumeration;", instance("getResources"));
+        put(m, "java/util/Enumeration.hasMoreElements()Z", instance("hasMoreElements"));
+        put(m, "java/util/Enumeration.nextElement()Ljava/lang/Object;", instance("nextElement"));
         put(m, "java/lang/Class.getName()Ljava/lang/String;", instance("getName"));
         put(m, "java/lang/Class.getSimpleName()Ljava/lang/String;", instance("getSimpleName"));
         put(m, "java/lang/Class.getCanonicalName()Ljava/lang/String;", instance("getCanonicalName"));
@@ -1966,6 +1980,7 @@ public final class ShimRegistry {
         put(m, "java/lang/reflect/Modifier.isPublic(I)Z", statics("isPublic"));
         put(m, "java/lang/reflect/Modifier.isPrivate(I)Z", statics("isPrivate"));
         put(m, "java/lang/reflect/Modifier.isProtected(I)Z", statics("isProtected"));
+        put(m, "java/lang/reflect/Field.isSynthetic()Z", instance("isSynthetic"));
         put(m, "java/lang/reflect/Modifier.isStatic(I)Z", statics("isStatic"));
         put(m, "java/lang/reflect/Modifier.isFinal(I)Z", statics("isFinal"));
         put(m, "java/lang/reflect/Modifier.isAbstract(I)Z", statics("isAbstract"));

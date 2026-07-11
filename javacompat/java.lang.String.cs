@@ -44,6 +44,17 @@ namespace java.lang
             Value = enc.GetString(global::java.lang.JRuntime.UnsignedBytes(bytes), offset, length);
         }
 
+        public void __init__BIII_V(sbyte[] ascii, int hibyte, int offset, int count)
+        {
+            char[] chars = new char[count];
+            int hi = (hibyte & 0xFF) << 8;
+            for (int i = 0; i < count; i++)
+            {
+                chars[i] = (char)(hi | (ascii[offset + i] & 0xFF));
+            }
+            Value = new string(chars);
+        }
+
         private String(string value) : base(RawNew.I)
         {
             Value = value;

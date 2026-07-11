@@ -6,10 +6,6 @@ namespace java.nio
         private readonly ByteStore vstore;
         private readonly int voff;
         private readonly bool vlittle;
-        private readonly int cap;
-        private int pos;
-        private int lim;
-        private int markPos = -1;
 
         public CharBuffer(global::java.lang.RawNew r) : base(r) { arr = new char[0]; }
         internal CharBuffer(char[] backing) : base(global::java.lang.RawNew.I) { arr = backing; cap = backing.Length; lim = cap; }

@@ -25,12 +25,45 @@ namespace j2cs.reflect
             }
             registered = true;
 
+            // java.nio.Buffer's mark/position/limit/capacity/address, exposed so LWJGL's MemoryUtil
+            // can locate them by value-probing a buffer's int fields (getFieldOffset) and read/write
+            // them through Unsafe. Names are cosmetic — the probe matches on type (int) and value.
+            Annotation[] noAnns = global::System.Array.Empty<Annotation>();
+            JClass intType = JClass.Of("int");
             ClassMeta buffer = ClassMeta.New("java.nio.Buffer", typeof(global::java.nio.Buffer), "java.lang.Object");
+            buffer.AddField("mark", intType, 0,
+                o => global::java.lang.Integer.valueOf(((global::java.nio.Buffer)o).markPos),
+                (o, v) => ((global::java.nio.Buffer)o).markPos = ((global::java.lang.Number)v).intValue(), noAnns);
+            buffer.AddField("position", intType, 0,
+                o => global::java.lang.Integer.valueOf(((global::java.nio.Buffer)o).pos),
+                (o, v) => ((global::java.nio.Buffer)o).pos = ((global::java.lang.Number)v).intValue(), noAnns);
+            buffer.AddField("limit", intType, 0,
+                o => global::java.lang.Integer.valueOf(((global::java.nio.Buffer)o).lim),
+                (o, v) => ((global::java.nio.Buffer)o).lim = ((global::java.lang.Number)v).intValue(), noAnns);
+            buffer.AddField("capacity", intType, 0,
+                o => global::java.lang.Integer.valueOf(((global::java.nio.Buffer)o).cap),
+                (o, v) => ((global::java.nio.Buffer)o).cap = ((global::java.lang.Number)v).intValue(), noAnns);
             buffer.AddField("address", JClass.Of("long"), 0,
                 o => global::java.lang.Long.valueOf(((global::java.nio.Buffer)o).address),
-                (o, v) => ((global::java.nio.Buffer)o).address = ((global::java.lang.Number)v).longValue(),
-                global::System.Array.Empty<Annotation>());
+                (o, v) => ((global::java.nio.Buffer)o).address = ((global::java.lang.Number)v).longValue(), noAnns);
+            // The attachment/parent link: a view (asIntBuffer/duplicate/slice) holds its source buffer
+            // here. MemoryUtil finds its offset via getFieldOffsetObject (a view's attachment equals its
+            // source). Typed as Buffer so the type carries a CLR type and is assignable from any buffer.
+            buffer.AddField("att", buffer.ClassObject, 0,
+                o => ((global::java.nio.Buffer)o).att,
+                (o, v) => ((global::java.nio.Buffer)o).att = v, noAnns);
             Registry.Register(buffer);
+
+            // Each concrete buffer type needs a super-chain (e.g. ByteBuffer -> Buffer -> Object) so
+            // getFieldOffset, which starts at the concrete class and walks up, reaches Buffer's fields.
+            // None declare int/reference fields of their own that would collide with the probes.
+            Registry.Register(ClassMeta.New("java.nio.ByteBuffer", typeof(global::java.nio.ByteBuffer), "java.nio.Buffer"));
+            Registry.Register(ClassMeta.New("java.nio.ShortBuffer", typeof(global::java.nio.ShortBuffer), "java.nio.Buffer"));
+            Registry.Register(ClassMeta.New("java.nio.CharBuffer", typeof(global::java.nio.CharBuffer), "java.nio.Buffer"));
+            Registry.Register(ClassMeta.New("java.nio.IntBuffer", typeof(global::java.nio.IntBuffer), "java.nio.Buffer"));
+            Registry.Register(ClassMeta.New("java.nio.LongBuffer", typeof(global::java.nio.LongBuffer), "java.nio.Buffer"));
+            Registry.Register(ClassMeta.New("java.nio.FloatBuffer", typeof(global::java.nio.FloatBuffer), "java.nio.Buffer"));
+            Registry.Register(ClassMeta.New("java.nio.DoubleBuffer", typeof(global::java.nio.DoubleBuffer), "java.nio.Buffer"));
 
             ClassMeta unsafe0 = ClassMeta.New("sun.misc.Unsafe", typeof(global::sun.misc.Unsafe), "java.lang.Object");
             unsafe0.AddField("theUnsafe", unsafe0.ClassObject, 8 /* Modifier.STATIC */,
