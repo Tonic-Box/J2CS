@@ -3,9 +3,9 @@ namespace java.nio
     public sealed class FloatBuffer : global::java.nio.Buffer
     {
         private readonly float[] arr;
-        private readonly ByteStore vstore;
+        private ByteStore vstore;
         private readonly int voff;
-        private readonly bool vlittle;
+        private bool vlittle;
 
         public FloatBuffer(global::java.lang.RawNew r) : base(r) { arr = new float[0]; }
         internal FloatBuffer(float[] backing) : base(global::java.lang.RawNew.I) { arr = backing; cap = backing.Length; lim = cap; }
@@ -14,8 +14,17 @@ namespace java.nio
         public static FloatBuffer allocate(int capacity) { return new FloatBuffer(new float[capacity]); }
         public static FloatBuffer wrap(float[] array) { return new FloatBuffer(array); }
 
-        private float ElemGet(int i) { return vstore != null ? (global::System.BitConverter.Int32BitsToSingle((int)vstore.ReadBytes(voff + i * 4, 4, vlittle))) : arr[i]; }
-        private void ElemSet(int i, float v) { if (vstore != null) { vstore.WriteBytes(voff + i * 4, 4, global::System.BitConverter.SingleToInt32Bits(v), vlittle); } else { arr[i] = v; } }
+        // A direct buffer LWJGL builds with Unsafe.allocateInstance (bypassing the ctor) has neither
+        // arr nor vstore set, only the poked native address/capacity; materialize a non-owning view
+        // over it on first access, in native byte order (JDK direct views are always native-order).
+        private ByteStore VStore()
+        {
+            if (vstore == null) { vstore = new ByteStore(address, cap * 4, false); vlittle = global::System.BitConverter.IsLittleEndian; }
+            return vstore;
+        }
+
+        private float ElemGet(int i) { return arr != null ? arr[i] : global::System.BitConverter.Int32BitsToSingle((int)VStore().ReadBytes(voff + i * 4, 4, vlittle)); }
+        private void ElemSet(int i, float v) { if (arr != null) { arr[i] = v; } else { VStore().WriteBytes(voff + i * 4, 4, global::System.BitConverter.SingleToInt32Bits(v), vlittle); } }
 
         public int capacity() { return cap; }
         public int position() { return pos; }

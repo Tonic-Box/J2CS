@@ -3,9 +3,9 @@ namespace java.nio
     public sealed class LongBuffer : global::java.nio.Buffer
     {
         private readonly long[] arr;
-        private readonly ByteStore vstore;
+        private ByteStore vstore;
         private readonly int voff;
-        private readonly bool vlittle;
+        private bool vlittle;
 
         public LongBuffer(global::java.lang.RawNew r) : base(r) { arr = new long[0]; }
         internal LongBuffer(long[] backing) : base(global::java.lang.RawNew.I) { arr = backing; cap = backing.Length; lim = cap; }
@@ -14,8 +14,17 @@ namespace java.nio
         public static LongBuffer allocate(int capacity) { return new LongBuffer(new long[capacity]); }
         public static LongBuffer wrap(long[] array) { return new LongBuffer(array); }
 
-        private long ElemGet(int i) { return vstore != null ? (vstore.ReadBytes(voff + i * 8, 8, vlittle)) : arr[i]; }
-        private void ElemSet(int i, long v) { if (vstore != null) { vstore.WriteBytes(voff + i * 8, 8, v, vlittle); } else { arr[i] = v; } }
+        // A direct buffer LWJGL builds with Unsafe.allocateInstance (bypassing the ctor) has neither
+        // arr nor vstore set, only the poked native address/capacity; materialize a non-owning view
+        // over it on first access, in native byte order (JDK direct views are always native-order).
+        private ByteStore VStore()
+        {
+            if (vstore == null) { vstore = new ByteStore(address, cap * 8, false); vlittle = global::System.BitConverter.IsLittleEndian; }
+            return vstore;
+        }
+
+        private long ElemGet(int i) { return arr != null ? arr[i] : VStore().ReadBytes(voff + i * 8, 8, vlittle); }
+        private void ElemSet(int i, long v) { if (arr != null) { arr[i] = v; } else { VStore().WriteBytes(voff + i * 8, 8, v, vlittle); } }
 
         public int capacity() { return cap; }
         public int position() { return pos; }
