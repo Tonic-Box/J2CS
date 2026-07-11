@@ -134,6 +134,16 @@ final class InvokeRenderer {
         if (type == null) {
             return new CallRenderer.Receiver(expr, null);
         }
+        // A slot widened to java.lang.Object (a mixed-type phi) makes the C# variable Object even
+        // though this value's own SSA type is narrower. The receiver cast must be decided from the
+        // storage type, so the call's declaring type is reached with an explicit narrowing cast.
+        SSAValue sv = (SSAValue) receiver;
+        if (slotOf.containsKey(sv)) {
+            IRType slotType = slotTypes.get(slotOf.get(sv));
+            if (slotType != null && "Ljava/lang/Object;".equals(slotType.getDescriptor())) {
+                return new CallRenderer.Receiver(expr, "java/lang/Object");
+            }
+        }
         String descriptor = type.getDescriptor();
         if (descriptor.startsWith("[")) {
             // A method on an array receiver is a java.lang.Object method (clone/length handled
