@@ -124,6 +124,13 @@ final class StructuredBodyEmitter {
                 && body.get(count - 1) instanceof ReturnStmt r && r.getValue() == null) {
             count--;
         }
+        // A non-void method whose recovered body contains no return or throw anywhere (e.g. only
+        // hoisted declarations) is a degraded recovery, not real control flow. Reject it so the
+        // caller falls back to the goto emitter — which produces a real body or a clear stub —
+        // rather than emitting a body that just throws "fell off method end".
+        if (!"V".equals(returnDesc) && !containsTerminator(body)) {
+            throw new UnsupportedBodyException("structured: non-void method has no terminating statement");
+        }
         for (int i = 0; i < count; i++) {
             stmt(body.get(i));
         }
@@ -638,6 +645,68 @@ final class StructuredBodyEmitter {
      */
     private static boolean alwaysReturns(List<Statement> statements) {
         return !statements.isEmpty() && alwaysReturns(statements.get(statements.size() - 1));
+    }
+
+    /** Whether any return or throw appears anywhere in the statement tree. */
+    private static boolean containsTerminator(List<Statement> statements) {
+        for (Statement s : statements) {
+            if (containsTerminator(s)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean containsTerminator(Statement s) {
+        if (s instanceof ReturnStmt || s instanceof ThrowStmt) {
+            return true;
+        }
+        if (s instanceof BlockStmt b) {
+            return containsTerminator(b.getStatements());
+        }
+        if (s instanceof IfStmt i) {
+            return containsTerminator(i.getThenBranch())
+                    || (i.getElseBranch() != null && containsTerminator(i.getElseBranch()));
+        }
+        if (s instanceof ForStmt f) {
+            return containsTerminator(f.getBody());
+        }
+        if (s instanceof WhileStmt w) {
+            return containsTerminator(w.getBody());
+        }
+        if (s instanceof DoWhileStmt d) {
+            return containsTerminator(d.getBody());
+        }
+        if (s instanceof ForEachStmt fe) {
+            return containsTerminator(fe.getBody());
+        }
+        if (s instanceof SynchronizedStmt sy) {
+            return containsTerminator(sy.getBody());
+        }
+        if (s instanceof LabeledStmt l) {
+            return containsTerminator(l.getStatement());
+        }
+        if (s instanceof TryCatchStmt t) {
+            if (containsTerminator(t.getTryBlock())
+                    || (t.getFinallyBlock() != null && containsTerminator(t.getFinallyBlock()))) {
+                return true;
+            }
+            for (CatchClause c : t.getCatches()) {
+                if (containsTerminator(c.body())) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        if (s instanceof SwitchStmt sw) {
+            for (SwitchCase c : sw.getCases()) {
+                if (c.statements() != null && containsTerminator(c.statements())) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        return false;
     }
 
     private static boolean alwaysReturns(Statement s) {

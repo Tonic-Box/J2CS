@@ -151,6 +151,7 @@ java.net.http.HttpResponse$BodyHandlers.cs
 java.net.http.HttpResponse.cs
 java.nio.ByteBuffer.cs
 java.nio.ByteOrder.cs
+java.nio.channels.FileChannel.cs
 java.nio.CharBuffer.cs
 java.nio.DoubleBuffer.cs
 java.nio.FloatBuffer.cs

@@ -297,6 +297,7 @@ public final class ShimRegistry {
     }
 
     private static void addNioSupers0(Map<String, String> m) {
+        put(m, "java/nio/channels/FileChannel", "java/lang/Object");
         put(m, "java/nio/charset/Charset", "java/lang/Object");
         put(m, "java/nio/charset/StandardCharsets", "java/lang/Object");
         put(m, "java/nio/file/Path", "java/lang/Object");
@@ -1664,6 +1665,7 @@ public final class ShimRegistry {
         put(m, "java/lang/Throwable.getMessage()Ljava/lang/String;", instance("getMessage"));
         put(m, "java/lang/Throwable.getCause()Ljava/lang/Throwable;", instance("getCause"));
         put(m, "java/lang/Throwable.addSuppressed(Ljava/lang/Throwable;)V", instance("addSuppressed"));
+        put(m, "java/nio/channels/FileChannel.close()V", instance("close"));
         put(m, "java/lang/Throwable.getSuppressed()[Ljava/lang/Throwable;", instance("getSuppressed"));
         put(m, "java/lang/AutoCloseable.close()V", instance("close"));
         put(m, "java/lang/Throwable.toString()Ljava/lang/String;", instance("toString"));

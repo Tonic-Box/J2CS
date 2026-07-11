@@ -29,10 +29,11 @@ final class InvokeRenderer {
     private final String currentClass;
     private final Integer thisSlot;
     private final Map<SSAValue, Integer> slotOf;
+    private final Map<Integer, IRType> slotTypes;
 
     InvokeRenderer(NamingContext naming, TypeReconciler reconciler, LambdaExpander lambdaExpander,
                    ValueNames names, String currentClass, Integer thisSlot,
-                   Map<SSAValue, Integer> slotOf) {
+                   Map<SSAValue, Integer> slotOf, Map<Integer, IRType> slotTypes) {
         this.naming = naming;
         this.reconciler = reconciler;
         this.lambdaExpander = lambdaExpander;
@@ -42,6 +43,7 @@ final class InvokeRenderer {
         this.currentClass = currentClass;
         this.thisSlot = thisSlot;
         this.slotOf = slotOf;
+        this.slotTypes = slotTypes;
     }
 
     String render(InvokeInstruction instr) {
@@ -177,7 +179,19 @@ final class InvokeRenderer {
 
 
     String storageAdjusted(CsType storage, Value value) {
-        IRType sourceType = value instanceof SSAValue ssa ? ssa.getType() : null;
+        IRType sourceType = value instanceof SSAValue ssa ? slotType(ssa) : null;
         return reconciler.coerce(storage, sourceType, names.ref(value));
+    }
+
+    /**
+     * The value's C# variable type — its slot's declared type, which is what {@code names.ref}
+     * renders. This is usually the SSA value's own type, but a slot merging mixed reference types
+     * is widened (e.g. to Object), and coercion must see that wider type to insert the narrowing
+     * cast a parameter/return position needs.
+     */
+    private IRType slotType(SSAValue ssa) {
+        Integer slot = slotOf.get(ssa);
+        IRType declared = slot == null ? null : slotTypes.get(slot);
+        return declared != null ? declared : ssa.getType();
     }
 }

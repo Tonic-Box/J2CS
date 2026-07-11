@@ -74,8 +74,12 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
         Integer thisSlot = loweredMethod.ir().isStatic() || loweredMethod.ir().getParameters().isEmpty()
                 ? null
                 : loweredMethod.slotOf().get(loweredMethod.ir().getParameters().get(0));
+        Map<Integer, com.tonic.analysis.ssa.type.IRType> slotTypes = new HashMap<>();
+        for (SlotDecl slot : loweredMethod.slots()) {
+            slotTypes.put(slot.slotId(), slot.computeType());
+        }
         this.invokes = new InvokeRenderer(naming, reconciler, lambdaExpander, names,
-                ownerInternalName, thisSlot, loweredMethod.slotOf());
+                ownerInternalName, thisSlot, loweredMethod.slotOf(), slotTypes);
 
         this.layout = new ExceptionLayout(loweredMethod);
         TypeMapper types = naming.typeMapper();
@@ -306,7 +310,10 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
             }
             case ARRAYLENGTH -> assign(instr, names.ref(instr.getOperand()) + ".Length");
             case ATHROW -> {
-                w.line("throw global::java.lang.JThrow.of(" + names.ref(instr.getOperand()) + ");");
+                // JThrow.of takes a Throwable; the thrown value's slot can be a wider reference type
+                // (e.g. an Object slot merged across a phi), so coerce it to Throwable.
+                CsType throwable = naming.typeMapper().storageType("Ljava/lang/Throwable;");
+                w.line("throw global::java.lang.JThrow.of(" + storageAdjusted(throwable, instr.getOperand()) + ");");
                 terminated = true;
             }
             case MONITORENTER, MONITOREXIT ->
