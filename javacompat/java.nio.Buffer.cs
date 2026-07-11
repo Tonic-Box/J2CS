@@ -33,5 +33,13 @@ namespace java.nio
         {
             return address != 0 ? 1 : 0;
         }
+
+        // Position/limit/capacity live on the base, so these read correctly whether the receiver's
+        // static type is a concrete buffer or java.nio.Buffer (LWJGL's Checks call them via Buffer).
+        public int position() { return pos; }
+        public int limit() { return lim; }
+        public int capacity() { return cap; }
+        public int remaining() { return lim - pos; }
+        public int hasRemaining() { return pos < lim ? 1 : 0; }
     }
 }

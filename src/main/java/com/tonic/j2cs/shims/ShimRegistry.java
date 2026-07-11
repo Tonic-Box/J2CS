@@ -1367,6 +1367,11 @@ public final class ShimRegistry {
         put(m, "java/nio/ByteBuffer.allocate(I)Ljava/nio/ByteBuffer;", statics("allocate"));
         put(m, "java/nio/ByteBuffer.allocateDirect(I)Ljava/nio/ByteBuffer;", statics("allocateDirect"));
         put(m, "java/nio/Buffer.isDirect()Z", instance("isDirect"));
+        put(m, "java/nio/Buffer.position()I", instance("position"));
+        put(m, "java/nio/Buffer.limit()I", instance("limit"));
+        put(m, "java/nio/Buffer.capacity()I", instance("capacity"));
+        put(m, "java/nio/Buffer.remaining()I", instance("remaining"));
+        put(m, "java/nio/Buffer.hasRemaining()Z", instance("hasRemaining"));
         put(m, "sun/misc/Unsafe.objectFieldOffset(Ljava/lang/reflect/Field;)J", instance("objectFieldOffset"));
         put(m, "sun/misc/Unsafe.allocateInstance(Ljava/lang/Class;)Ljava/lang/Object;", instance("allocateInstance"));
         put(m, "sun/misc/Unsafe.pageSize()I", instance("pageSize"));
