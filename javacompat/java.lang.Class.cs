@@ -41,6 +41,19 @@ namespace java.lang
             return m != null ? m.ClassObject : NameCache.GetOrAdd(name, n => new Class(n));
         }
 
+        public static Class forName(String name)
+        {
+            string n = name == null ? null : name.Value;
+            global::j2cs.reflect.ClassMeta m = n == null ? null : global::j2cs.reflect.Registry.ByName(n);
+            if (m != null)
+            {
+                return m.ClassObject;
+            }
+            var ex = new global::java.lang.ClassNotFoundException(RawNew.I);
+            ex.__init_Ljava_lang_String__V(name);
+            throw global::java.lang.JThrow.of(ex);
+        }
+
         public static Class forType(global::System.Type t)
         {
             global::j2cs.reflect.ClassMeta m = global::j2cs.reflect.Registry.ByType(t);
@@ -198,6 +211,42 @@ namespace java.lang
         public global::java.lang.reflect.Constructor[] getDeclaredConstructors()
         {
             return meta != null ? meta.Constructors() : global::System.Array.Empty<global::java.lang.reflect.Constructor>();
+        }
+
+        public global::java.lang.reflect.Constructor getConstructor(global::java.lang.Class[] parameterTypes)
+        {
+            global::java.lang.Class[] want = parameterTypes ?? global::System.Array.Empty<global::java.lang.Class>();
+            if (meta != null)
+            {
+                foreach (global::java.lang.reflect.Constructor c in meta.Constructors())
+                {
+                    if ((c.getModifiers() & 0x1) != 0 && ParametersMatch(c.getParameterTypes(), want))
+                    {
+                        return c;
+                    }
+                }
+            }
+            var ex = new global::java.lang.NoSuchMethodException(RawNew.I);
+            ex.__init_Ljava_lang_String__V(global::java.lang.String.Wrap((name ?? "?") + ".<init>"));
+            throw global::java.lang.JThrow.of(ex);
+        }
+
+        private static bool ParametersMatch(global::java.lang.Class[] declared, global::java.lang.Class[] want)
+        {
+            if (declared.Length != want.Length)
+            {
+                return false;
+            }
+            for (int i = 0; i < declared.Length; i++)
+            {
+                string a = declared[i] == null ? null : declared[i].getName().Value;
+                string b = want[i] == null ? null : want[i].getName().Value;
+                if (a != b)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
         public global::java.lang.reflect.Field getDeclaredField(String fieldName)

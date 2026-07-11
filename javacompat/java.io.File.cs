@@ -5,6 +5,9 @@ namespace java.io
         public static readonly global::java.lang.String separator =
                 global::java.lang.String.Wrap(global::System.IO.Path.DirectorySeparatorChar.ToString());
         public static readonly char separatorChar = global::System.IO.Path.DirectorySeparatorChar;
+        public static readonly global::java.lang.String pathSeparator =
+                global::java.lang.String.Wrap(global::System.IO.Path.PathSeparator.ToString());
+        public static readonly char pathSeparatorChar = global::System.IO.Path.PathSeparator;
 
         private static readonly char[] TrailSeparators =
         {

@@ -510,6 +510,8 @@ public final class ShimRegistry {
         put(m, "java/lang/IllegalStateException", "java/lang/RuntimeException");
         put(m, "java/lang/UnsupportedOperationException", "java/lang/RuntimeException");
         put(m, "java/lang/CloneNotSupportedException", "java/lang/Exception");
+        put(m, "java/lang/ReflectiveOperationException", "java/lang/Exception");
+        put(m, "java/lang/ClassNotFoundException", "java/lang/ReflectiveOperationException");
         put(m, "java/lang/ref/Reference", "java/lang/Object");
         put(m, "java/lang/ref/WeakReference", "java/lang/ref/Reference");
         put(m, "java/lang/ref/ReferenceQueue", "java/lang/Object");
@@ -1856,6 +1858,7 @@ public final class ShimRegistry {
         put(m, "java/lang/Enum.compareTo(Ljava/lang/Enum;)I", instance("compareTo"));
         put(m, "java/lang/Class.desiredAssertionStatus()Z", instance("desiredAssertionStatus"));
         put(m, "java/lang/String.valueOf(Ljava/lang/Object;)Ljava/lang/String;", statics("valueOf"));
+        put(m, "java/lang/Class.forName(Ljava/lang/String;)Ljava/lang/Class;", statics("forName"));
         put(m, "java/lang/Class.getName()Ljava/lang/String;", instance("getName"));
         put(m, "java/lang/Class.getSimpleName()Ljava/lang/String;", instance("getSimpleName"));
         put(m, "java/lang/Class.getCanonicalName()Ljava/lang/String;", instance("getCanonicalName"));
@@ -1865,6 +1868,7 @@ public final class ShimRegistry {
         put(m, "java/lang/Class.getDeclaredFields()[Ljava/lang/reflect/Field;", instance("getDeclaredFields"));
         put(m, "java/lang/Class.getDeclaredMethods()[Ljava/lang/reflect/Method;", instance("getDeclaredMethods"));
         put(m, "java/lang/Class.getDeclaredConstructors()[Ljava/lang/reflect/Constructor;", instance("getDeclaredConstructors"));
+        put(m, "java/lang/Class.getConstructor([Ljava/lang/Class;)Ljava/lang/reflect/Constructor;", instance("getConstructor"));
         put(m, "java/lang/Class.getDeclaredField(Ljava/lang/String;)Ljava/lang/reflect/Field;", instance("getDeclaredField"));
         put(m, "java/lang/Class.getDeclaredMethod(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;", instance("getDeclaredMethod"));
         put(m, "java/lang/Class.isInstance(Ljava/lang/Object;)Z", instance("isInstance"));
@@ -3389,6 +3393,8 @@ public final class ShimRegistry {
         put(m, "java/nio/file/LinkOption.NOFOLLOW_LINKS Ljava/nio/file/LinkOption;", statics("NOFOLLOW_LINKS"));
         put(m, "java/io/File.separator Ljava/lang/String;", statics("separator"));
         put(m, "java/io/File.separatorChar C", statics("separatorChar"));
+        put(m, "java/io/File.pathSeparator Ljava/lang/String;", statics("pathSeparator"));
+        put(m, "java/io/File.pathSeparatorChar C", statics("pathSeparatorChar"));
         put(m, "java/nio/ByteOrder.BIG_ENDIAN Ljava/nio/ByteOrder;", statics("BIG_ENDIAN"));
         put(m, "java/nio/ByteOrder.LITTLE_ENDIAN Ljava/nio/ByteOrder;", statics("LITTLE_ENDIAN"));
     }

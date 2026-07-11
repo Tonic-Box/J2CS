@@ -712,6 +712,12 @@ final class StructuredBodyEmitter {
             }
             return;
         }
+        if (e instanceof NewArrayExpr) {
+            // A bare `new T[n];` is not a valid C# statement expression; discard it so the allocation
+            // (and any NegativeArraySizeException) is preserved when the result is otherwise unused.
+            w.line("_ = " + expr(e) + ";");
+            return;
+        }
         w.line(expr(e) + ";");
     }
 

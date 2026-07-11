@@ -83,8 +83,23 @@ public final class PhiCoalescer {
                 slots.add(new SlotDecl(slot, effectiveType));
                 slotTypes.put(slot, csText);
             } else if (!slotTypes.get(slot).equals(csText)) {
-                throw new J2csException("phi group type conflict in slot s" + slot + ": "
-                        + slotTypes.get(slot) + " vs " + csText + " (v" + value.getId() + ")");
+                // A JVM slot reused across a merge can carry values of different but compatible
+                // reference types (e.g. an Object arm and a Throwable arm of a phi). C# needs one
+                // declared type, so widen the slot to java.lang.Object — every reference value
+                // stores into it and use sites narrow with a cast. A primitive on either side is a
+                // genuine type pun (int vs long, reference vs primitive) and stays an error.
+                boolean bothReference = slots.get(slot).computeType().isReference()
+                        && effectiveType.isReference();
+                if (!bothReference) {
+                    throw new J2csException("phi group type conflict in slot s" + slot + ": "
+                            + slotTypes.get(slot) + " vs " + csText + " (v" + value.getId() + ")");
+                }
+                IRType objectType = IRType.fromInternalName("java/lang/Object");
+                String objectCs = typeMapper.computeType(objectType).csText();
+                if (!objectCs.equals(slotTypes.get(slot))) {
+                    slots.set(slot, new SlotDecl(slot, objectType));
+                    slotTypes.put(slot, objectCs);
+                }
             }
             slotOf.put(value, slot);
         }

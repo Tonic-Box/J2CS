@@ -356,6 +356,12 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
         String expr = bracket < 0
                 ? "new " + csText + "[" + length + "]"
                 : "new " + csText.substring(0, bracket) + "[" + length + "]" + csText.substring(bracket);
+        // A dead array allocation (unused result) is not a valid C# statement expression as a bare
+        // `new T[n];`; discard it so the allocation — and any NegativeArraySizeException — is kept.
+        if (instr.getResult() == null) {
+            w.line("_ = " + expr + ";");
+            return null;
+        }
         assign(instr, expr);
         return null;
     }

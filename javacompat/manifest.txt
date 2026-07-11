@@ -70,6 +70,7 @@ java.lang.CharSequence.cs
 java.lang.Character.cs
 java.lang.Class.cs
 java.lang.ClassCastException.cs
+java.lang.ClassNotFoundException.cs
 java.lang.CloneNotSupportedException.cs
 java.lang.Comparable.cs
 java.lang.Double.cs
@@ -104,6 +105,7 @@ java.lang.Package.cs
 java.lang.Process.cs
 java.lang.ProcessBuilder.cs
 java.lang.RawNew.cs
+java.lang.ReflectiveOperationException.cs
 java.lang.Runnable.cs
 java.lang.Runtime.cs
 java.lang.RuntimeException.cs
