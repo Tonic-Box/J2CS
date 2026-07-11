@@ -111,6 +111,10 @@ final class StructuredBodyEmitter {
         this.declaredDesc = new HashMap<>();
         this.declaredEver = new HashSet<>();
         this.usedNames = new HashSet<>();
+        // A local must not shadow the enclosing class's own C# name: a static self-reference is
+        // emitted as `ClassName.member`, and in C# a same-named local shadows the type in that
+        // expression, so the reference would bind to the local instead of the class.
+        usedNames.add(CsNamer.classNameOf(currentClass));
         this.breakLabels = new HashMap<>();
         this.scopes = new java.util.ArrayDeque<>();
         this.hoistCounter = 0;
