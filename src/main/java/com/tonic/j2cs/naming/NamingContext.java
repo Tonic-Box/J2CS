@@ -69,7 +69,7 @@ public final class NamingContext {
                     mergeAncestor(name, namers.get(iface), inheritedAssignments, inheritedTaken);
                 } else if (ShimRegistry.isShimType(iface)) {
                     for (Map.Entry<String, String> shimVirtual
-                            : ShimRegistry.instanceVirtualsOf(iface).entrySet()) {
+                            : ShimRegistry.transitiveInstanceVirtualsOf(iface).entrySet()) {
                         inheritedAssignments.putIfAbsent(shimVirtual.getKey(), shimVirtual.getValue());
                         inheritedTaken.add(shimVirtual.getValue());
                     }
@@ -242,9 +242,6 @@ public final class NamingContext {
                 }
             }
         }
-        if (requiredMethod.isEmpty()) {
-            return List.of();
-        }
         addDeclaredMethods(classInternal, provided);
         for (String ancestor : hierarchy.classAncestors(classInternal)) {
             addDeclaredMethods(ancestor, provided);
@@ -267,7 +264,44 @@ public final class NamingContext {
                 out.add(new AbstractMethodDecl(csName, e.getValue().getDesc()));
             }
         }
+        addUnimplementedShimInterfaceMethods(classInternal, provided, out);
         return out;
+    }
+
+    /**
+     * Shim super-interfaces carry no app ClassFile, so their still-abstract members are not caught by
+     * the app-interface pass above. An abstract class implementing e.g. java/lang/Runnable without a
+     * run() body must re-declare it abstract in C#. Collect each direct shim interface of the class and
+     * its ancestors, walk the shim super-chain for the non-default virtuals, and emit any the class
+     * (or an ancestor) does not provide.
+     */
+    private void addUnimplementedShimInterfaceMethods(String classInternal, Set<String> provided,
+                                                      List<AbstractMethodDecl> out) {
+        Set<String> alreadyOut = new HashSet<>();
+        for (AbstractMethodDecl d : out) {
+            alreadyOut.add(d.csName() + d.desc());
+        }
+        List<String> classes = new ArrayList<>();
+        classes.add(classInternal);
+        classes.addAll(hierarchy.classAncestors(classInternal));
+        for (String c : classes) {
+            for (String iface : hierarchy.interfacesOf(c)) {
+                if (appClassFiles.containsKey(iface) || !ShimRegistry.isShimType(iface)) {
+                    continue;
+                }
+                for (Map.Entry<String, String> v : ShimRegistry.transitiveAbstractVirtualsOf(iface).entrySet()) {
+                    String key = v.getKey();
+                    int paren = key.indexOf('(');
+                    if (paren < 0 || provided.contains(key)) {
+                        continue;
+                    }
+                    String desc = key.substring(paren);
+                    if (alreadyOut.add(v.getValue() + desc)) {
+                        out.add(new AbstractMethodDecl(v.getValue(), desc));
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -304,7 +338,25 @@ public final class NamingContext {
                 }
             }
         }
-        return hasAbstract && !hasDefault;
+        if (hasDefault) {
+            return false;
+        }
+        if (hasAbstract) {
+            return true;
+        }
+        // A directly-implemented shim interface that declares this as a non-default virtual owns the
+        // slot too — an abstract class re-abstracts it (see addUnimplementedShimInterfaceMethods) and a
+        // concrete subclass must therefore emit `override`, not a new virtual.
+        String key = name + desc;
+        for (String iface : hierarchy.interfacesOf(classInternal)) {
+            if (appClassFiles.containsKey(iface) || !ShimRegistry.isShimType(iface)) {
+                continue;
+            }
+            if (ShimRegistry.transitiveAbstractVirtualsOf(iface).containsKey(key)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void addDeclaredMethods(String classInternal, Set<String> provided) {

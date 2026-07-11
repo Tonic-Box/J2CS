@@ -25,13 +25,13 @@ namespace java.util.concurrent
             {
                 task.run();
             }
-            return new Future((global::java.lang.Object)null);
+            return CompletableFuture.completedFuture(null);
         }
 
         public virtual Future submit(Callable task)
         {
             global::java.lang.Object result = task == null ? null : task.call();
-            return new Future(result);
+            return CompletableFuture.completedFuture(result);
         }
 
         public virtual void shutdown()

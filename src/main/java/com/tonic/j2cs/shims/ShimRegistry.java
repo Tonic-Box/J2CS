@@ -3673,6 +3673,45 @@ public final class ShimRegistry {
         return result;
     }
 
+    /**
+     * Instance virtuals of a shim interface and every shim supertype it inherits — so a class
+     * implementing e.g. java/util/List also reserves java/util/Collection.size() and
+     * java/util/Iterator.next(), which are declared on the super-interfaces. Walks the single-super
+     * chain in SHIM_SUPERS (java.util's interface hierarchy is linear); nearest declaration wins.
+     */
+    public static Map<String, String> transitiveInstanceVirtualsOf(String owner) {
+        Map<String, String> result = new java.util.LinkedHashMap<>();
+        String current = owner;
+        while (current != null && !current.equals("java/lang/Object")) {
+            for (Map.Entry<String, String> entry : instanceVirtualsOf(current).entrySet()) {
+                result.putIfAbsent(entry.getKey(), entry.getValue());
+            }
+            current = SHIM_SUPERS.get(current);
+        }
+        return result;
+    }
+
+    /**
+     * Like {@link #transitiveInstanceVirtualsOf} but only the methods a class must actually implement:
+     * excludes those the shim interface provides as C# default interface methods. Used to re-declare
+     * the still-abstract members as {@code abstract} on an abstract class implementing the interface.
+     */
+    public static Map<String, String> transitiveAbstractVirtualsOf(String owner) {
+        Map<String, String> result = new java.util.LinkedHashMap<>();
+        String current = owner;
+        while (current != null && !current.equals("java/lang/Object")) {
+            String prefix = current + ".";
+            for (Map.Entry<String, ShimTarget> entry : METHODS.entrySet()) {
+                if (entry.getKey().startsWith(prefix) && !entry.getValue().isStatic()
+                        && !DEFAULT_INTERFACE_METHODS.contains(entry.getKey())) {
+                    result.putIfAbsent(entry.getKey().substring(prefix.length()), entry.getValue().csMemberName());
+                }
+            }
+            current = SHIM_SUPERS.get(current);
+        }
+        return result;
+    }
+
     public static Map<String, ShimTarget> fields() {
         return FIELDS;
     }

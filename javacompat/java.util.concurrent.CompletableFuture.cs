@@ -5,15 +5,24 @@ namespace java.util.concurrent
     /// immediately, so get/join/whenComplete observe the finished result. Sufficient for
     /// fire-and-wait pipelines; does not model real overlap.
     /// </summary>
-    public sealed class CompletableFuture : Future
+    public sealed class CompletableFuture : global::java.lang.Object, Future
     {
+        internal global::java.lang.Object value;
+
         public CompletableFuture(global::java.lang.RawNew r) : base(r)
         {
         }
 
-        private CompletableFuture(global::java.lang.Object v) : base(v)
+        private CompletableFuture(global::java.lang.Object v) : base(global::java.lang.RawNew.I)
         {
+            this.value = v;
         }
+
+        public global::java.lang.Object get() { return value; }
+        public global::java.lang.Object get(long timeout, TimeUnit unit) { return value; }
+        public int isDone() { return 1; }
+        public int isCancelled() { return 0; }
+        public int cancel(int mayInterrupt) { return 0; }
 
         public static CompletableFuture runAsync(global::java.lang.Runnable action)
         {
