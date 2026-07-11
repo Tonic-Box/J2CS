@@ -522,6 +522,7 @@ public final class ShimRegistry {
         put(m, "java/lang/CloneNotSupportedException", "java/lang/Exception");
         put(m, "java/lang/ReflectiveOperationException", "java/lang/Exception");
         put(m, "java/lang/ClassNotFoundException", "java/lang/ReflectiveOperationException");
+        put(m, "java/io/IOException", "java/lang/Exception");
         put(m, "java/lang/ref/Reference", "java/lang/Object");
         put(m, "java/lang/ref/WeakReference", "java/lang/ref/Reference");
         put(m, "java/lang/ref/ReferenceQueue", "java/lang/Object");
@@ -552,6 +553,7 @@ public final class ShimRegistry {
             "java/lang/IllegalStateException",
             "java/lang/UnsupportedOperationException",
             "java/lang/CloneNotSupportedException",
+            "java/io/IOException",
             "java/lang/InterruptedException",
             "java/lang/IllegalAccessException",
             "java/lang/NoSuchFieldException",
