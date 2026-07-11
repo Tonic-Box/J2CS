@@ -34,14 +34,21 @@ public final class MemberNamer {
     private final Map<String, String> inheritedAssignments;
     private final Set<String> taken = new HashSet<>();
     private final Set<String> localReserved = new HashSet<>();
+    private final Set<String> inheritedFieldNames;
     private boolean classNameConflict;
 
     public MemberNamer(ClassFile classFile, TypeMapper typeMapper) {
-        this(classFile, typeMapper, Map.of(), Set.of());
+        this(classFile, typeMapper, Map.of(), Set.of(), Set.of());
     }
 
     public MemberNamer(ClassFile classFile, TypeMapper typeMapper,
                        Map<String, String> inheritedAssignments, Set<String> inheritedTaken) {
+        this(classFile, typeMapper, inheritedAssignments, inheritedTaken, Set.of());
+    }
+
+    public MemberNamer(ClassFile classFile, TypeMapper typeMapper,
+                       Map<String, String> inheritedAssignments, Set<String> inheritedTaken,
+                       Set<String> inheritedFieldNames) {
         this.inheritedAssignments = Map.copyOf(inheritedAssignments);
         String csClassName = CsNamer.classNameOf(classFile.getClassName());
         taken.add(csClassName);
@@ -49,6 +56,11 @@ public final class MemberNamer {
         taken.addAll(OBJECT_OVERRIDES.values());
         localReserved.addAll(OBJECT_OVERRIDES.values());
         taken.addAll(inheritedTaken);
+        // A new method must not take an inherited field's C# name (a C# method and field cannot share
+        // a name), so reserve inherited field names locally. Inherited method names stay out of
+        // localReserved so overrides/overloads can reuse them.
+        this.inheritedFieldNames = Set.copyOf(inheritedFieldNames);
+        localReserved.addAll(inheritedFieldNames);
         for (MethodEntry method : classFile.getMethods()) {
             String key = key(method.getName(), method.getDesc());
             methodAccess.put(key, method.getAccess());
@@ -149,6 +161,13 @@ public final class MemberNamer {
      */
     public Set<String> allMemberNames() {
         return Set.copyOf(taken);
+    }
+
+    /** This type's C# field names plus every inherited one, for a subtype to keep its methods off them. */
+    public Set<String> fieldCsNames() {
+        Set<String> all = new HashSet<>(inheritedFieldNames);
+        all.addAll(fieldNames.values());
+        return Set.copyOf(all);
     }
 
     public boolean hasClassNameConflict() {

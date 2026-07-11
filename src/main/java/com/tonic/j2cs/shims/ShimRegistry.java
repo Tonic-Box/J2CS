@@ -565,6 +565,8 @@ public final class ShimRegistry {
             "java/lang/ThreadLocal",
             "java/lang/Thread",
             "java/lang/ref/WeakReference",
+            "java/util/HashMap",
+            "java/util/ArrayList",
             "javax/swing/JFrame",
             "javax/swing/JDialog",
             "javax/swing/JPanel",

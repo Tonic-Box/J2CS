@@ -57,9 +57,11 @@ public final class NamingContext {
             ClassFile cf = byName.get(name);
             Map<String, String> inheritedAssignments = new LinkedHashMap<>();
             Set<String> inheritedTaken = new LinkedHashSet<>();
+            Set<String> inheritedFieldNames = new LinkedHashSet<>();
             String superName = hierarchy.superOf(name);
             if (superName != null && hierarchy.isAppClass(superName)) {
                 mergeAncestor(name, namers.get(superName), inheritedAssignments, inheritedTaken);
+                inheritedFieldNames.addAll(namers.get(superName).fieldCsNames());
             } else if (superName != null && ShimRegistry.isExtendable(superName)) {
                 inheritedAssignments.putAll(ShimRegistry.EXTENDABLE_VIRTUALS);
                 inheritedTaken.addAll(ShimRegistry.EXTENDABLE_MEMBER_NAMES);
@@ -75,7 +77,8 @@ public final class NamingContext {
                     }
                 }
             }
-            MemberNamer namer = new MemberNamer(cf, typeMapper, inheritedAssignments, inheritedTaken);
+            MemberNamer namer = new MemberNamer(cf, typeMapper, inheritedAssignments, inheritedTaken,
+                    inheritedFieldNames);
             if (namer.hasClassNameConflict()) {
                 classUnsupportedReasons.putIfAbsent(name,
                         "inherited member name collides with the class name");
