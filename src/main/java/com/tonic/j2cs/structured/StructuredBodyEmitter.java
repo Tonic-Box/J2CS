@@ -1062,7 +1062,7 @@ final class StructuredBodyEmitter {
         String owner = call.getOwnerClass();
         String name = call.getMethodName();
         String desc = require(call.getDescriptor(), "call descriptor for " + owner + "." + name);
-        String args = arguments(desc, call.getArguments());
+        String args = arguments(owner, name, desc, call.getArguments());
         if (name.equals("super")) {
             return calls.initCall(owner, desc, "this", args);
         }
@@ -1420,6 +1420,10 @@ final class StructuredBodyEmitter {
     }
 
     private String arguments(String methodDesc, List<Expression> args) {
+        return arguments(null, null, methodDesc, args);
+    }
+
+    private String arguments(String owner, String name, String methodDesc, List<Expression> args) {
         List<String> paramDescs = TypeMapper.splitParams(methodDesc);
         if (args.size() != paramDescs.size()) {
             throw new UnsupportedBodyException("structured: argument count mismatch for " + methodDesc);
@@ -1429,9 +1433,47 @@ final class StructuredBodyEmitter {
             if (i > 0) {
                 sb.append(", ");
             }
-            sb.append(coerced(paramDescs.get(i), args.get(i)));
+            String rendered = coerced(paramDescs.get(i), args.get(i));
+            // Disambiguate an overloaded call: when the argument is also assignable to this position's
+            // parameter in another same-arity overload, C# cannot resolve the overload the bytecode
+            // already chose, so cast to the resolved parameter type. Fires only on a genuine ambiguity
+            // (a call that would otherwise not compile), so an unambiguous call is unchanged.
+            if (owner != null && isOverloadAmbiguous(owner, name, paramDescs, i, args.get(i))) {
+                rendered = "((" + naming.typeMapper().storageType(paramDescs.get(i)).csText()
+                        + ")(" + rendered + "))";
+            }
+            sb.append(rendered);
         }
         return sb.toString();
+    }
+
+    /**
+     * Whether the argument at {@code i} is assignable to that position's parameter in two or more
+     * of the owner's same-arity overloads - the condition under which C# overload resolution is
+     * ambiguous. Only reference arguments (subtyping) can be ambiguous this way.
+     */
+    private boolean isOverloadAmbiguous(String owner, String name, List<String> paramDescs, int i, Expression arg) {
+        List<com.tonic.parser.MethodEntry> overloads = naming.methodsNamed(owner, name);
+        if (overloads.size() < 2) {
+            return false;
+        }
+        String argDesc = effectiveDesc(arg);
+        if (argDesc == null || !argDesc.startsWith("L")) {
+            return false;
+        }
+        CsType argType = naming.typeMapper().storageType(argDesc);
+        int matches = 0;
+        for (com.tonic.parser.MethodEntry m : overloads) {
+            List<String> params = TypeMapper.splitParams(m.getDesc());
+            if (params.size() != paramDescs.size() || i >= params.size() || !params.get(i).startsWith("L")) {
+                continue;
+            }
+            CsType paramType = naming.typeMapper().storageType(params.get(i));
+            if (paramType.csText().equals(argType.csText()) || reconciler.isAssignable(argType, paramType)) {
+                matches++;
+            }
+        }
+        return matches >= 2;
     }
 
     /**

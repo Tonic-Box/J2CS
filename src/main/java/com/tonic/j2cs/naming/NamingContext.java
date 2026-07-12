@@ -103,6 +103,21 @@ public final class NamingContext {
         return typeMapper;
     }
 
+    /** The methods an app class declares under the given name (its own overloads); empty for a non-app owner. */
+    public List<MethodEntry> methodsNamed(String owner, String name) {
+        ClassFile cf = appClassFiles.get(owner);
+        if (cf == null) {
+            return List.of();
+        }
+        List<MethodEntry> out = new ArrayList<>();
+        for (MethodEntry method : cf.getMethods()) {
+            if (method.getName().equals(name)) {
+                out.add(method);
+            }
+        }
+        return out;
+    }
+
     public ClassHierarchy hierarchy() {
         return hierarchy;
     }
