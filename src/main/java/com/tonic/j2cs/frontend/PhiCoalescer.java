@@ -3,6 +3,7 @@ package com.tonic.j2cs.frontend;
 import com.tonic.analysis.ssa.cfg.ExceptionHandler;
 import com.tonic.analysis.ssa.cfg.IRBlock;
 import com.tonic.analysis.ssa.cfg.IRMethod;
+import com.tonic.analysis.ssa.ir.CopyInstruction;
 import com.tonic.analysis.ssa.ir.IRInstruction;
 import com.tonic.analysis.ssa.lower.CopyInfo;
 import com.tonic.analysis.ssa.type.IRType;
@@ -102,6 +103,29 @@ public final class PhiCoalescer {
                 }
             }
             slotOf.put(value, slot);
+        }
+        // A copy that materializes a type-pun phi lands a primitive value in a separate, specific
+        // reference slot (the phi's other arms coalesced to that reference type). Coercing the copy
+        // would emit a nonsensical box+cast (e.g. (Vector3f)Float.valueOf(x)). Widen such a target
+        // slot to Object so the primitive boxes cleanly and its reference uses narrow with a cast.
+        IRType objectType = IRType.fromInternalName("java/lang/Object");
+        for (IRBlock block : blockOrder) {
+            for (IRInstruction instr : block.getInstructions()) {
+                if (!(instr instanceof CopyInstruction copy) || copy.getResult() == null
+                        || !(copy.getSource() instanceof SSAValue source)) {
+                    continue;
+                }
+                Integer targetSlot = slotOf.get(copy.getResult());
+                Integer sourceSlot = slotOf.get(source);
+                if (targetSlot == null || sourceSlot == null || targetSlot.equals(sourceSlot)) {
+                    continue;
+                }
+                IRType targetType = slots.get(targetSlot).computeType();
+                if (slots.get(sourceSlot).computeType().isPrimitive()
+                        && targetType.isReference() && !targetType.equals(objectType)) {
+                    slots.set(targetSlot, new SlotDecl(targetSlot, objectType));
+                }
+            }
         }
         return new LoweredMethod(ir, slotOf, slots, blockOrder,
                 Set.copyOf(captures.originalBlocks().isEmpty()

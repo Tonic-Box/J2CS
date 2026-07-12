@@ -54,6 +54,7 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
     private LoweredMethod lowered;
     private CsType returnType;
     private Map<Integer, CsType> slotCs;
+    private Map<Integer, IRType> slotIr;
     private boolean terminated;
     private ExceptionLayout layout;
     private InvokeRenderer invokes;
@@ -74,12 +75,12 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
         Integer thisSlot = loweredMethod.ir().isStatic() || loweredMethod.ir().getParameters().isEmpty()
                 ? null
                 : loweredMethod.slotOf().get(loweredMethod.ir().getParameters().get(0));
-        Map<Integer, com.tonic.analysis.ssa.type.IRType> slotTypes = new HashMap<>();
+        this.slotIr = new HashMap<>();
         for (SlotDecl slot : loweredMethod.slots()) {
-            slotTypes.put(slot.slotId(), slot.computeType());
+            slotIr.put(slot.slotId(), slot.computeType());
         }
         this.invokes = new InvokeRenderer(naming, reconciler, lambdaExpander, names,
-                ownerInternalName, thisSlot, loweredMethod.slotOf(), slotTypes);
+                ownerInternalName, thisSlot, loweredMethod.slotOf(), slotIr);
 
         this.layout = new ExceptionLayout(loweredMethod);
         TypeMapper types = naming.typeMapper();
@@ -174,10 +175,20 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
         }
         String expr = names.ref(source);
         if (source instanceof SSAValue ssa && targetSlot != null) {
-            expr = reconciler.coerce(slotCs.get(targetSlot), ssa.getType(), expr);
+            // Coerce from the source's slot (C#-visible) type, not the value's SSA type: a slot widened
+            // to Object holds a value whose SSA type is narrower, and using the SSA type would skip the
+            // downcast/unbox the C# expression (typed by the slot) actually needs.
+            expr = reconciler.coerce(slotCs.get(targetSlot), slotIrOf(ssa), expr);
         }
         assign(instr, expr);
         return null;
+    }
+
+    /** The source value's C#-visible type: its slot's declared type, which a widened slot makes wider than the SSA type. */
+    private IRType slotIrOf(SSAValue value) {
+        Integer slot = lowered.slotOf().get(value);
+        IRType slotType = slot == null ? null : slotIr.get(slot);
+        return slotType != null ? slotType : value.getType();
     }
 
     @Override
