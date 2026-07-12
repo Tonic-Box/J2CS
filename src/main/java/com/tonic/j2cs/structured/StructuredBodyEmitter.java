@@ -53,6 +53,7 @@ import com.tonic.j2cs.emit.UnsupportedBodyException;
 import com.tonic.j2cs.naming.CsNamer;
 import com.tonic.j2cs.naming.MemberNamer;
 import com.tonic.j2cs.naming.NamingContext;
+import com.tonic.j2cs.types.Coercions;
 import com.tonic.j2cs.types.CsType;
 import com.tonic.j2cs.types.TypeMapper;
 import com.tonic.parser.ClassFile;
@@ -1450,6 +1451,12 @@ final class StructuredBodyEmitter {
         }
         if (TypeMapper.isPrimitiveDescriptor(targetDesc) && TypeMapper.isPrimitiveDescriptor(sourceDesc)) {
             if (targetDesc.equals("Z") || sourceDesc.equals("Z")) {
+                // A boolean bridged into a value position renders as an int (`cond ? 1 : 0`); a
+                // byte/short/char slot still needs the narrowing cast on top of that bridge.
+                if (sourceDesc.equals("Z")
+                        && (targetDesc.equals("B") || targetDesc.equals("S") || targetDesc.equals("C"))) {
+                    return Coercions.coerce(naming.typeMapper().storageType(targetDesc), raw);
+                }
                 return raw;
             }
             // char/byte/short are real C# types but constants render as int, so a value entering
