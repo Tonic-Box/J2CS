@@ -3592,8 +3592,18 @@ public final class ShimRegistry {
         return TYPES;
     }
 
+    // A concrete shim class can serve as a C# base: any shim type whose C# form is a non-sealed class
+    // (not an interface, not a sealed class, not Object). The hand-curated EXTENDABLE set is kept as a
+    // union so nothing that was extendable stops being so. Deriving this from the shim's C# shape means
+    // an app class extending a shim class inherits its members instead of being dropped to Object.
     public static boolean isExtendable(String internalName) {
-        return EXTENDABLE.contains(internalName);
+        if (EXTENDABLE.contains(internalName)) {
+            return true;
+        }
+        return isShimType(internalName)
+                && !internalName.equals("java/lang/Object")
+                && !SHIM_INTERFACES.contains(internalName)
+                && !SEALED_SHIM_CLASSES.contains(internalName);
     }
 
     public static boolean isShimInterface(String internalName) {
@@ -3603,6 +3613,94 @@ public final class ShimRegistry {
     public static Set<String> shimInterfaces() {
         return SHIM_INTERFACES;
     }
+
+    public static Set<String> sealedShimClasses() {
+        return SEALED_SHIM_CLASSES;
+    }
+
+    // Shim types whose C# form is a sealed class (declared `public sealed class` in javacompat), so
+    // they cannot be a C# base — an app class extending one stays dropped to Object. These are final
+    // Java types plus a few abstract types shimmed as sealed. Kept in sync by ShimSealedDriftTest.
+    static final Set<String> SEALED_SHIM_CLASSES = Set.of(
+            "j2cs/reflect/Meta",
+            "java/awt/RenderingHints$Key",
+            "java/io/File",
+            "java/lang/Boolean",
+            "java/lang/Byte",
+            "java/lang/Character",
+            "java/lang/Double",
+            "java/lang/Float",
+            "java/lang/Integer",
+            "java/lang/JThrow",
+            "java/lang/Long",
+            "java/lang/Math",
+            "java/lang/Package",
+            "java/lang/RawNew",
+            "java/lang/Short",
+            "java/lang/StrictMath",
+            "java/lang/Void",
+            "java/lang/reflect/Array",
+            "java/lang/reflect/Constructor",
+            "java/lang/reflect/Field",
+            "java/lang/reflect/Method",
+            "java/lang/reflect/Modifier",
+            "java/math/BigDecimal",
+            "java/math/BigInteger",
+            "java/math/RoundingMode",
+            "java/net/URI",
+            "java/net/URL",
+            "java/nio/ByteOrder",
+            "java/nio/CharBuffer",
+            "java/nio/DoubleBuffer",
+            "java/nio/FloatBuffer",
+            "java/nio/IntBuffer",
+            "java/nio/LongBuffer",
+            "java/nio/ShortBuffer",
+            "java/nio/file/FileSystem",
+            "java/nio/file/FileSystems",
+            "java/nio/file/Files",
+            "java/nio/file/LinkOption",
+            "java/nio/file/Path",
+            "java/nio/file/Paths",
+            "java/nio/file/StandardCopyOption",
+            "java/nio/file/StandardOpenOption",
+            "java/nio/file/attribute/BasicFileAttributes",
+            "java/time/DayOfWeek",
+            "java/time/Duration",
+            "java/time/Instant",
+            "java/time/LocalDate",
+            "java/time/LocalTime",
+            "java/time/Month",
+            "java/time/Period",
+            "java/time/Year",
+            "java/util/Collections",
+            "java/util/Currency",
+            "java/util/DoubleSummaryStatistics",
+            "java/util/EnumSet",
+            "java/util/Formatter",
+            "java/util/IntSummaryStatistics",
+            "java/util/Locale",
+            "java/util/LongSummaryStatistics",
+            "java/util/Objects",
+            "java/util/Optional",
+            "java/util/OptionalDouble",
+            "java/util/OptionalInt",
+            "java/util/OptionalLong",
+            "java/util/Scanner",
+            "java/util/StringJoiner",
+            "java/util/StringTokenizer",
+            "java/util/concurrent/CompletableFuture",
+            "java/util/concurrent/Executors",
+            "java/util/concurrent/ScheduledFuture",
+            "java/util/concurrent/ThreadLocalRandom",
+            "java/util/regex/Matcher",
+            "java/util/regex/Pattern",
+            "java/util/stream/Collector",
+            "java/util/stream/Collectors",
+            "java/util/stream/DoubleStream",
+            "java/util/stream/IntStream",
+            "java/util/stream/LongStream",
+            "java/util/stream/Stream");
 
     // Shim types whose C# form is an interface (declared `public interface` in javacompat). Like an
     // app interface, a C# interface does not expose the java.lang.Object shim's members, so an
