@@ -1037,14 +1037,11 @@ final class StructuredBodyEmitter {
         }
         if (owner.equals("java/lang/System") && name.equals("arraycopy")
                 && desc.equals("(Ljava/lang/Object;ILjava/lang/Object;II)V")) {
-            StringBuilder raw = new StringBuilder();
-            for (Expression arg : call.getArguments()) {
-                if (!raw.isEmpty()) {
-                    raw.append(", ");
-                }
-                raw.append(expr(arg));
-            }
-            return "global::java.lang.System.arraycopy(" + raw + ")";
+            List<Expression> a = call.getArguments();
+            return "global::java.lang.System.arraycopy("
+                    + arrayCopyArg(a.get(0)) + ", " + expr(a.get(1)) + ", "
+                    + arrayCopyArg(a.get(2)) + ", " + expr(a.get(3)) + ", "
+                    + expr(a.get(4)) + ")";
         }
         String receiverDesc = call.getReceiver() == null ? null : descOf(call.getReceiver().getType());
         if (name.equals("clone") && receiverDesc != null && receiverDesc.startsWith("[")) {
@@ -1506,6 +1503,19 @@ final class StructuredBodyEmitter {
             throw new UnsupportedBodyException("structured: variable used out of scope: " + ref.getName());
         }
         return name;
+    }
+
+    /**
+     * An arraycopy array argument coerced to System.Array (the shim parameter type). A native array
+     * passes through — every C# array derives from System.Array — while an array carried as a boxed
+     * java.lang.Object is unwrapped to the underlying array.
+     */
+    private String arrayCopyArg(Expression arg) {
+        String descriptor = descOf(arg.getType());
+        if (descriptor != null && descriptor.startsWith("[")) {
+            return expr(arg);
+        }
+        return "global::java.lang.JRuntime.Unbox(" + expr(arg) + ")";
     }
 
     private String localName(String recovered) {

@@ -69,7 +69,11 @@ final class InvokeRenderer {
         }
         if (owner.equals("java/lang/System") && name.equals("arraycopy")
                 && desc.equals("(Ljava/lang/Object;ILjava/lang/Object;II)V")) {
-            return "global::java.lang.System.arraycopy(" + rawArguments(instr) + ")";
+            List<Value> a = instr.getMethodArguments();
+            return "global::java.lang.System.arraycopy("
+                    + arrayCopyArray(a.get(0)) + ", " + names.ref(a.get(1)) + ", "
+                    + arrayCopyArray(a.get(2)) + ", " + names.ref(a.get(3)) + ", "
+                    + names.ref(a.get(4)) + ")";
         }
         if (owner.startsWith("[") && name.equals("clone") && desc.equals("()Ljava/lang/Object;")
                 && instr.getResult() != null && instr.getResult().getType() != null
@@ -159,6 +163,21 @@ final class InvokeRenderer {
         return new CallRenderer.Receiver(expr, internal);
     }
 
+    /**
+     * An arraycopy array argument coerced to System.Array (the shim parameter type). A native array
+     * passes through — every C# array derives from System.Array — while an array carried as a boxed
+     * java.lang.Object is unwrapped to the underlying array.
+     */
+    private String arrayCopyArray(Value arg) {
+        IRType type = arg instanceof SSAValue ssa ? ssa.getType() : null;
+        String expr = names.ref(arg);
+        String descriptor = type == null ? null : type.getDescriptor();
+        if (descriptor != null && descriptor.startsWith("[")) {
+            return expr;
+        }
+        return "global::java.lang.JRuntime.Unbox(" + expr + ")";
+    }
+
     private String renderArguments(InvokeInstruction instr, String desc) {
         List<String> paramDescs = TypeMapper.splitParams(desc);
         List<Value> args = instr.getMethodArguments();
@@ -172,17 +191,6 @@ final class InvokeRenderer {
             }
             CsType storage = naming.typeMapper().storageType(paramDescs.get(i));
             sb.append(storageAdjusted(storage, args.get(i)));
-        }
-        return sb.toString();
-    }
-
-    private String rawArguments(InvokeInstruction instr) {
-        StringBuilder sb = new StringBuilder();
-        for (Value arg : instr.getMethodArguments()) {
-            if (!sb.isEmpty()) {
-                sb.append(", ");
-            }
-            sb.append(names.ref(arg));
         }
         return sb.toString();
     }
