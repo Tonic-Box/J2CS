@@ -873,6 +873,15 @@ final class StructuredBodyEmitter {
                 return declared;
             }
         }
+        if (lhs instanceof ArrayAccessExpr access) {
+            // The element type is one dimension peeled off the array's C#-visible type, not the
+            // access node's AST type - which for a T[][] store can be mis-narrowed to the base T,
+            // making the whole array RHS coerce to a scalar element.
+            String arrDesc = effectiveDesc(access.getArray());
+            if (arrDesc != null && arrDesc.startsWith("[")) {
+                return arrDesc.substring(1);
+            }
+        }
         return descOf(lhs.getType());
     }
 
