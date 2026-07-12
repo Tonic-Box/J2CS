@@ -53,6 +53,7 @@ import com.tonic.j2cs.emit.UnsupportedBodyException;
 import com.tonic.j2cs.naming.CsNamer;
 import com.tonic.j2cs.naming.MemberNamer;
 import com.tonic.j2cs.naming.NamingContext;
+import com.tonic.j2cs.emit.Boxing;
 import com.tonic.j2cs.types.Coercions;
 import com.tonic.j2cs.types.CsType;
 import com.tonic.j2cs.types.TypeMapper;
@@ -861,11 +862,18 @@ final class StructuredBodyEmitter {
     }
 
     /**
-     * The assignment target's descriptor: a declared local's C# variable holds its declared type, so
-     * coercion must target that (the lvalue reference's AST type can be a narrower phi-merge type, which
-     * would drop a needed cast — e.g. an interface value stored into an Object slot). Falls back to the
-     * expression's own type for fields and other lvalues.
+     * An array index expression rendered as a C# int. Array indices are always int-valued in the JVM,
+     * but a slot merged across disjoint lifetimes can leave the index a boxed/Object local (C# forbids
+     * a non-int index), so unbox a reference-typed index; a primitive index is emitted as-is.
      */
+    private String arrayIndex(Expression index) {
+        String desc = effectiveDesc(index);
+        if (desc != null && desc.startsWith("L")) {
+            return Boxing.unbox("I", expr(index));
+        }
+        return expr(index);
+    }
+
     private String lvalueDesc(Expression lhs) {
         if (lhs instanceof VarRefExpr v) {
             String declared = declaredDesc.get(localName(v.getName()));
@@ -910,7 +918,7 @@ final class StructuredBodyEmitter {
             return fieldRef(field);
         }
         if (e instanceof ArrayAccessExpr access) {
-            return expr(access.getArray()) + "[" + expr(access.getIndex()) + "]";
+            return expr(access.getArray()) + "[" + arrayIndex(access.getIndex()) + "]";
         }
         throw new UnsupportedBodyException("structured: assignment target "
                 + e.getClass().getSimpleName());
@@ -1021,7 +1029,7 @@ final class StructuredBodyEmitter {
                     + ") : (" + noHoist(() -> expr(t.getElseExpr())) + "))";
         }
         if (e instanceof ArrayAccessExpr access) {
-            return expr(access.getArray()) + "[" + expr(access.getIndex()) + "]";
+            return expr(access.getArray()) + "[" + arrayIndex(access.getIndex()) + "]";
         }
         if (e instanceof ClassExpr c) {
             String internal = internalOf(c.getClassType());
