@@ -43,6 +43,7 @@ bin/
 .DS_Store
 /DemoApp.jar
 /DemoGame-all.jar
+/DemoJar.jar
 /NativeSmokeBullet-all.jar
 /NativeSmokeGlfw-all.jar
 /NativeSmokeGlfwVersion-all.jar
