@@ -157,12 +157,20 @@ final class StructuredBodyEmitter {
         paramNames = new IdentityHashMap<>();
         List<SSAValue> params = recovered.ir().getParameters();
         boolean isStatic = recovered.ir().isStatic();
+        List<String> paramDescs = TypeMapper.splitParams(recovered.ir().getDescriptor());
         for (int i = 0; i < params.size(); i++) {
             SSAValue param = params.get(i);
             String pname = isStatic ? "p" + i : (i == 0 ? "this" : "p" + (i - 1));
             paramNames.put(param, pname);
             usedNames.add(pname);
             declareInScope(pname);
+            // Record the parameter's declared C# type. C# does not flow-narrow or -widen a parameter,
+            // so a use must be typed by the signature, not the AST's merged type - otherwise a param
+            // whose slot is reassigned (e.g. `p = null`) is seen as Object and gets a spurious bridge.
+            int descIdx = isStatic ? i : i - 1;
+            if (descIdx >= 0 && descIdx < paramDescs.size()) {
+                declaredDesc.put(pname, paramDescs.get(descIdx));
+            }
             // Map the parameter's recovered name straight to its slot. A body reference to a captured
             // parameter (common in lambda synthetic methods) can carry a mismatched or null SSA value,
             // so the SSA-identity walk below would miss it and the name would resolve out of scope.
