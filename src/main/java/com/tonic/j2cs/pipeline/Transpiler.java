@@ -169,7 +169,8 @@ public final class Transpiler {
                     methods.add(new com.tonic.analysis.ssa.SSA(cf.getConstPool()).lift(method));
                 }
             }
-            com.tonic.analysis.source.recovery.SwitchMapAnalyzer.analyzeClass(cf.getFields(), methods);
+            com.tonic.analysis.source.recovery.SwitchMapAnalyzer.analyzeClass(
+                    cf.getClassName(), cf.getFields(), methods);
         }
     }
 
