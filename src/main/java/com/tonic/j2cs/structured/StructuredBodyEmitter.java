@@ -1487,6 +1487,15 @@ final class StructuredBodyEmitter {
             }
             return raw;
         }
+        if (TypeMapper.isPrimitiveDescriptor(targetDesc) && sourceDesc.equals("Ljava/lang/Object;")) {
+            // A boxed value flowing into a primitive slot (argument, return, field) must be unboxed;
+            // C# has no auto-unboxing at the java.lang.Object boundary. This arises when a slot merged
+            // across disjoint lifetimes leaves the value boxed (e.g. Float.valueOf(...) stored into an
+            // Object local) where a primitive is expected. Restricted to Object - the merged type of
+            // such a slot - so a genuine non-wrapper reference in a primitive slot is left as the
+            // pre-existing type error rather than turned into a nonsensical unbox.
+            return Boxing.unbox(targetDesc, "(" + raw + ")");
+        }
         return reconciler.coerce(targetDesc, sourceDesc, raw);
     }
 
