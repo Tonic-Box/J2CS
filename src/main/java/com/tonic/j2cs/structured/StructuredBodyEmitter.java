@@ -1329,7 +1329,10 @@ final class StructuredBodyEmitter {
 
     private String cast(CastExpr c) {
         String targetDesc = descOf(c.getTargetType());
-        String sourceDesc = descOf(c.getExpression().getType());
+        // Use the operand's C#-visible (declared, possibly widened) type, not its flow-narrowed AST
+        // type: a `(Savable) value` where value is declared Object must keep the cast, but the AST may
+        // already narrow value to Savable, which would make the cast look redundant and get dropped.
+        String sourceDesc = effectiveDesc(c.getExpression());
         String operand = expr(c.getExpression());
         if (targetDesc == null) {
             throw new UnsupportedBodyException("structured: cast to " + c.getTargetType());
