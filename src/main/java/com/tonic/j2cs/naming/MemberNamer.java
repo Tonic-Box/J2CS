@@ -170,6 +170,17 @@ public final class MemberNamer {
         return Set.copyOf(all);
     }
 
+    /**
+     * The C# names this type declares as members (fields and methods). A member shadows a same-named
+     * type in unqualified expression context, so the using-rewriter must not shorten a qualified type
+     * reference to a simple name that collides with one of these.
+     */
+    public Set<String> declaredMemberCsNames() {
+        Set<String> all = new HashSet<>(fieldNames.values());
+        all.addAll(methodNames.values());
+        return Set.copyOf(all);
+    }
+
     public boolean hasClassNameConflict() {
         return classNameConflict;
     }

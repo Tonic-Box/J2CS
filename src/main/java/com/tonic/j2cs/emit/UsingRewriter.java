@@ -62,15 +62,19 @@ public final class UsingRewriter {
         this.namespaceTypes = namespaceTypes;
     }
 
-    public Map<String, String> rewriteAll(Map<String, String> files) {
+    public Map<String, String> rewriteAll(Map<String, String> files, Map<String, Set<String>> membersByFile) {
         Map<String, String> out = new java.util.LinkedHashMap<>();
         for (Map.Entry<String, String> e : files.entrySet()) {
-            out.put(e.getKey(), rewrite(e.getValue()));
+            out.put(e.getKey(), rewrite(e.getValue(), membersByFile.getOrDefault(e.getKey(), Set.of())));
         }
         return out;
     }
 
     public String rewrite(String cs) {
+        return rewrite(cs, Set.of());
+    }
+
+    public String rewrite(String cs, Set<String> memberNames) {
         Matcher nm = NAMESPACE.matcher(cs);
         if (!nm.find()) {
             return cs;
@@ -97,6 +101,12 @@ public final class UsingRewriter {
         List<Ref> candidates = new ArrayList<>();
         for (Ref r : refs) {
             if (fqnsBySimple.get(r.simple).size() != 1) {
+                continue;
+            }
+            // A member (field, enum constant, method) of this file's class shadows a same-named type
+            // in unqualified expression context, so the shortened simple name would bind to the member
+            // (e.g. an enum constant Float breaking a shortened java.lang.Float.TYPE). Keep it global::.
+            if (memberNames.contains(r.simple)) {
                 continue;
             }
             if (declared.contains(r.simple) && !r.namespace.equals(fileNs)) {

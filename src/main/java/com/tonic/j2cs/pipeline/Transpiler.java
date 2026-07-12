@@ -17,6 +17,7 @@ import com.tonic.j2cs.frontend.IrLifter;
 import com.tonic.j2cs.frontend.LoadedInput;
 import com.tonic.j2cs.model.MethodPlan;
 import com.tonic.j2cs.naming.CsNamer;
+import com.tonic.j2cs.naming.MemberNamer;
 import com.tonic.j2cs.naming.NamingContext;
 import com.tonic.j2cs.project.GeneratedSolution;
 import com.tonic.j2cs.project.NativeFragmentPackager;
@@ -128,9 +129,17 @@ public final class Transpiler {
         for (String dotted : stubFiles.keySet()) {
             addNamespaceType(ownSimpleNames, namespaceTypes, dotted);
         }
+        // Per-file member names so the using-rewriter never shortens a qualified type reference to a
+        // simple name that a member of that file's class shadows (e.g. an enum constant named Float
+        // shadowing java.lang.Float, which would break Float.TYPE).
+        Map<String, Set<String>> membersByFile = new java.util.HashMap<>();
+        for (ClassFile cf : allClasses) {
+            MemberNamer namer = naming.namerOf(cf.getClassName());
+            membersByFile.put(dottedName(cf.getClassName()), namer.declaredMemberCsNames());
+        }
         UsingRewriter usingRewriter = new UsingRewriter(ownSimpleNames, namespaceTypes);
-        genFiles = usingRewriter.rewriteAll(genFiles);
-        stubFiles = usingRewriter.rewriteAll(stubFiles);
+        genFiles = usingRewriter.rewriteAll(genFiles, membersByFile);
+        stubFiles = usingRewriter.rewriteAll(stubFiles, membersByFile);
 
         Path appDir = new SolutionGenerator().generate(options.outDir(),
                 new GeneratedSolution(genFiles, stubFiles, programCs, bootstrappedInternal, usesGui),
