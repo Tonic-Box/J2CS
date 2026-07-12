@@ -489,6 +489,17 @@ final class StructuredBodyEmitter {
             if (inScope(name)) {
                 return name + " = " + value;
             }
+            // Mirror emitVarDecl: a distinct same-named local declared in another scope forces a
+            // fresh name here, since C# forbids a nested scope (this for-init) reusing an enclosing
+            // block's local name - and equally forbids a later enclosing declaration colliding with
+            // this one, which registering the name in declaredEver lets that path rename instead.
+            if (declaredEver.contains(name)) {
+                String unique = CsNamer.unique(name, usedNames);
+                usedNames.add(unique);
+                names.put(v.getName(), unique);
+                name = unique;
+            }
+            declaredEver.add(name);
             declareInScope(name);
             return type.csText() + " " + name + " = " + value;
         }
