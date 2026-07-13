@@ -288,7 +288,10 @@ public final class ClassEmitter {
 
         List<String> paramDescs = TypeMapper.splitParams(desc);
         String retDesc = TypeMapper.returnDescriptor(desc);
-        boolean eligible = isBridgeableDescriptor(retDesc)
+        // Array parameters cross as jarray handles the native side pins via GetPrimitiveArrayCritical.
+        // An array return, by contrast, is built by the native code through NewArray/SetArrayRegion,
+        // which the synthesized JNIEnv does not provide, so array returns stay stubbed for now.
+        boolean eligible = isBridgeableDescriptor(retDesc) && !retDesc.startsWith("[")
                 && paramDescs.stream().allMatch(ClassEmitter::isBridgeableDescriptor);
         String prefix = MethodModifiers.prefixFor(naming, owner, method);
         if (!eligible) {
@@ -349,9 +352,9 @@ public final class ClassEmitter {
         return desc.equals("Ljava/lang/String;");
     }
 
-    /** A native parameter/return type J2CS can marshal: a primitive, or any object reference. */
+    /** A native parameter/return type J2CS can marshal: a primitive, an object reference, or an array. */
     private static boolean isBridgeableDescriptor(String desc) {
-        return TypeMapper.isPrimitiveDescriptor(desc) || desc.startsWith("L");
+        return TypeMapper.isPrimitiveDescriptor(desc) || desc.startsWith("L") || desc.startsWith("[");
     }
 
     /**
@@ -359,7 +362,7 @@ public final class ClassEmitter {
      * 8-bit); an object reference crosses as a handle (IntPtr) into the JNIEnv object table.
      */
     private static String nativeAbiType(String desc) {
-        if (desc.startsWith("L")) {
+        if (desc.startsWith("L") || desc.startsWith("[")) {
             return "global::System.IntPtr";
         }
         return switch (desc.charAt(0)) {
@@ -377,7 +380,7 @@ public final class ClassEmitter {
     }
 
     private static String toNativeArg(String desc, String expr) {
-        if (desc.startsWith("L")) {
+        if (desc.startsWith("L") || desc.startsWith("[")) {
             return "global::j2cs.jni.J2csJni.ToHandle(" + expr + ")";
         }
         return switch (desc.charAt(0)) {

@@ -15,6 +15,11 @@ namespace j2cs.jni
         private static readonly global::System.Collections.Generic.List<object> Handles
             = new global::System.Collections.Generic.List<object>();
 
+        // Primitive arrays pinned by GetPrimitiveArrayCritical, keyed by their jarray handle so the
+        // matching ReleasePrimitiveArrayCritical can unpin them.
+        private static readonly global::System.Collections.Generic.Dictionary<global::System.IntPtr, global::System.Runtime.InteropServices.GCHandle> PinnedArrays
+            = new global::System.Collections.Generic.Dictionary<global::System.IntPtr, global::System.Runtime.InteropServices.GCHandle>();
+
         [global::System.ThreadStatic]
         private static object PendingThrowable;
 
@@ -110,6 +115,9 @@ namespace j2cs.jni
                 slots[229] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, long, global::System.IntPtr>)&NewDirectByteBufferImpl;
                 slots[230] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr>)&GetDirectBufferAddressImpl;
                 slots[231] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, long>)&GetDirectBufferCapacityImpl;
+                slots[222] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, global::System.IntPtr>)&GetPrimitiveArrayCriticalImpl;
+                slots[223] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, int, void>)&ReleasePrimitiveArrayCriticalImpl;
+                slots[171] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, int>)&GetArrayLengthImpl;
 
                 envSlot = (global::System.IntPtr)global::System.Runtime.InteropServices.NativeMemory.Alloc(
                     (nuint)global::System.IntPtr.Size);
@@ -222,6 +230,50 @@ namespace j2cs.jni
         private static long GetDirectBufferCapacityImpl(global::System.IntPtr env, global::System.IntPtr buf)
         {
             return ResolveHandle(buf) is global::java.nio.ByteBuffer bb ? bb.DirectCapacity : -1;
+        }
+
+        // Pins the primitive array and hands native code a pointer straight into its storage; because the
+        // array is pinned (never a copy) isCopy is reported false and the matching release only unpins.
+        [global::System.Runtime.InteropServices.UnmanagedCallersOnly(
+            CallConvs = new[] { typeof(global::System.Runtime.CompilerServices.CallConvCdecl) })]
+        private static global::System.IntPtr GetPrimitiveArrayCriticalImpl(global::System.IntPtr env, global::System.IntPtr array, global::System.IntPtr isCopy)
+        {
+            if (isCopy != global::System.IntPtr.Zero)
+            {
+                *(byte*)isCopy = 0;
+            }
+            if (!(ResolveHandle(array) is global::System.Array arr))
+            {
+                return global::System.IntPtr.Zero;
+            }
+            global::System.Runtime.InteropServices.GCHandle gch =
+                global::System.Runtime.InteropServices.GCHandle.Alloc(arr, global::System.Runtime.InteropServices.GCHandleType.Pinned);
+            lock (Gate)
+            {
+                PinnedArrays[array] = gch;
+            }
+            return gch.AddrOfPinnedObject();
+        }
+
+        [global::System.Runtime.InteropServices.UnmanagedCallersOnly(
+            CallConvs = new[] { typeof(global::System.Runtime.CompilerServices.CallConvCdecl) })]
+        private static void ReleasePrimitiveArrayCriticalImpl(global::System.IntPtr env, global::System.IntPtr array, global::System.IntPtr carray, int mode)
+        {
+            lock (Gate)
+            {
+                if (PinnedArrays.TryGetValue(array, out global::System.Runtime.InteropServices.GCHandle gch))
+                {
+                    gch.Free();
+                    PinnedArrays.Remove(array);
+                }
+            }
+        }
+
+        [global::System.Runtime.InteropServices.UnmanagedCallersOnly(
+            CallConvs = new[] { typeof(global::System.Runtime.CompilerServices.CallConvCdecl) })]
+        private static int GetArrayLengthImpl(global::System.IntPtr env, global::System.IntPtr array)
+        {
+            return ResolveHandle(array) is global::System.Array arr ? arr.Length : 0;
         }
 
         [global::System.Runtime.InteropServices.UnmanagedCallersOnly(
