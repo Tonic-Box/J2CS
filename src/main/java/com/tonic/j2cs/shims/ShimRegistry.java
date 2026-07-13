@@ -1172,6 +1172,7 @@ public final class ShimRegistry {
         put(m, "java/lang/Character.isHighSurrogate(C)Z", statics("isHighSurrogate"));
         put(m, "java/lang/Character.isLowSurrogate(C)Z", statics("isLowSurrogate"));
         put(m, "java/lang/Character.toChars(I)[C", statics("toChars"));
+        put(m, "java/lang/Character.toCodePoint(CC)I", statics("toCodePoint"));
     }
 
     private static void addTextJoiner0(Map<String, ShimTarget> m) {

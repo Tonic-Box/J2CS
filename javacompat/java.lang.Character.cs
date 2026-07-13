@@ -177,6 +177,7 @@ namespace java.lang
         public static int isHighSurrogate(char c) { return global::System.Char.IsHighSurrogate(c) ? 1 : 0; }
         public static int isLowSurrogate(char c) { return global::System.Char.IsLowSurrogate(c) ? 1 : 0; }
         public static char[] toChars(int codePoint) { return global::System.Char.ConvertFromUtf32(codePoint).ToCharArray(); }
+        public static int toCodePoint(char high, char low) { return ((high << 10) + low) + (0x10000 - (0xD800 << 10) - 0xDC00); }
 
         public char charValue()
         {
