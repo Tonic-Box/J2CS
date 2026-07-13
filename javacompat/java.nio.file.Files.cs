@@ -164,6 +164,24 @@ namespace java.nio.file
             return target;
         }
 
+        public static long copy(global::java.io.InputStream inStream, Path target, global::java.nio.file.CopyOption[] options)
+        {
+            long total = 0;
+            var buf = new sbyte[8192];
+            var outBuf = new byte[8192];
+            using (var outStream = global::System.IO.File.Create(target.value))
+            {
+                int n;
+                while ((n = inStream.read(buf, 0, buf.Length)) != -1)
+                {
+                    global::System.Buffer.BlockCopy(buf, 0, outBuf, 0, n);
+                    outStream.Write(outBuf, 0, n);
+                    total += n;
+                }
+            }
+            return total;
+        }
+
         public static Path move(Path source, Path target, global::java.nio.file.CopyOption[] options)
         {
             if (HasReplace(options))

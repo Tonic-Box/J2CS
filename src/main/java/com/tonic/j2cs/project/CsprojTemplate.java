@@ -14,7 +14,7 @@ public final class CsprojTemplate {
 
     private static final String AVALONIA_VERSION = "11.2.1";
 
-    public static String csproj(boolean usesGui, java.util.List<String> nativeLibs) {
+    public static String csproj(boolean usesGui, java.util.List<String> nativeLibs, boolean hasResources) {
         return "<Project Sdk=\"Microsoft.NET.Sdk\">\n"
                 + "  <PropertyGroup>\n"
                 + "    <OutputType>Exe</OutputType>\n"
@@ -31,7 +31,25 @@ public final class CsprojTemplate {
                 + "  </PropertyGroup>\n"
                 + (usesGui ? avaloniaPackages() : "")
                 + nativeContent(nativeLibs)
+                + resourceContent(hasResources)
                 + "</Project>\n";
+    }
+
+    /**
+     * Copies the packaged resources/ tree next to the assembly, preserving each entry's relative path
+     * so it resolves under the runtime classpath root. A wildcard include avoids listing every file.
+     */
+    private static String resourceContent(boolean hasResources) {
+        if (!hasResources) {
+            return "";
+        }
+        return "  <ItemGroup>\n"
+                + "    <Content Include=\"resources\\**\">\n"
+                + "      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>\n"
+                + "      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>\n"
+                + "      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>\n"
+                + "    </Content>\n"
+                + "  </ItemGroup>\n";
     }
 
     private static String nativeContent(java.util.List<String> nativeLibs) {

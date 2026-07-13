@@ -52,6 +52,7 @@ java.io.FileReader.cs
 java.io.FileWriter.cs
 java.io.InputStream.cs
 java.io.IOException.cs
+java.io.UncheckedIOException.cs
 java.io.InputStreamReader.cs
 java.io.OutputStream.cs
 java.io.OutputStreamWriter.cs

@@ -8,6 +8,9 @@ namespace java.net
 
         public virtual void connect() { }
         public virtual global::java.io.InputStream getInputStream() { return null; }
+        public virtual long getLastModified() { return 0L; }
+        public virtual long getContentLengthLong() { return -1L; }
+        public virtual int getContentLength() { return -1; }
         public virtual void setRequestProperty(global::java.lang.String key, global::java.lang.String value) { }
         public virtual void setDoOutput(int doOutput) { }
         public virtual void setConnectTimeout(int timeout) { }

@@ -46,6 +46,30 @@ namespace java.lang
             return global::java.lang.ClassLoader.SystemClassLoader;
         }
 
+        public global::java.io.InputStream getResourceAsStream(String resourceName)
+        {
+            return global::java.lang.ClassLoader.OpenResource(ResolveResource(resourceName));
+        }
+
+        public global::java.net.URL getResource(String resourceName)
+        {
+            return global::java.lang.ClassLoader.ResourceUrl(ResolveResource(resourceName));
+        }
+
+        // A leading slash names a classpath-absolute resource; any other name is relative to this
+        // class's package (java.lang.Class.getResource semantics).
+        private string ResolveResource(String resourceName)
+        {
+            string n = resourceName == null ? "" : resourceName.Value;
+            if (n.StartsWith("/"))
+            {
+                return n.Substring(1);
+            }
+            int dot = (name ?? "").LastIndexOf('.');
+            string pkg = dot >= 0 ? name.Substring(0, dot).Replace('.', '/') + "/" : "";
+            return pkg + n;
+        }
+
         public static Class forName(String name)
         {
             string n = name == null ? null : name.Value;

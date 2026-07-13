@@ -73,6 +73,15 @@ namespace java.lang
             }
         }
 
+        public global::java.lang.ClassLoader getContextClassLoader()
+        {
+            return global::java.lang.ClassLoader.SystemClassLoader;
+        }
+
+        public void setContextClassLoader(global::java.lang.ClassLoader cl)
+        {
+        }
+
         public void join()
         {
             if (clr != null)

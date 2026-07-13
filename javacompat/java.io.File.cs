@@ -187,6 +187,35 @@ namespace java.io
             return global::System.IO.File.Exists(path) ? new global::System.IO.FileInfo(path).Length : 0L;
         }
 
+        public long lastModified()
+        {
+            try
+            {
+                return global::System.IO.File.Exists(path)
+                        ? new global::System.DateTimeOffset(
+                                global::System.IO.File.GetLastWriteTimeUtc(path)).ToUnixTimeMilliseconds()
+                        : 0L;
+            }
+            catch (global::System.Exception)
+            {
+                return 0L;
+            }
+        }
+
+        public int setLastModified(long time)
+        {
+            try
+            {
+                global::System.IO.File.SetLastWriteTimeUtc(path,
+                        global::System.DateTimeOffset.FromUnixTimeMilliseconds(time).UtcDateTime);
+                return 1;
+            }
+            catch (global::System.Exception)
+            {
+                return 0;
+            }
+        }
+
         public int canRead()
         {
             return exists();

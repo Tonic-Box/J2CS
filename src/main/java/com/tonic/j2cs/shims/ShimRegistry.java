@@ -524,6 +524,7 @@ public final class ShimRegistry {
         put(m, "java/lang/ReflectiveOperationException", "java/lang/Exception");
         put(m, "java/lang/ClassNotFoundException", "java/lang/ReflectiveOperationException");
         put(m, "java/io/IOException", "java/lang/Exception");
+        put(m, "java/io/UncheckedIOException", "java/lang/RuntimeException");
         put(m, "java/lang/ref/Reference", "java/lang/Object");
         put(m, "java/lang/ref/WeakReference", "java/lang/ref/Reference");
         put(m, "java/lang/ref/ReferenceQueue", "java/lang/Object");
@@ -1365,6 +1366,7 @@ public final class ShimRegistry {
         put(m, "java/nio/file/Files.lines(Ljava/nio/file/Path;)Ljava/util/stream/Stream;", statics("lines"));
         put(m, "java/nio/file/Files.list(Ljava/nio/file/Path;)Ljava/util/stream/Stream;", statics("list"));
         put(m, "java/nio/file/Files.copy(Ljava/nio/file/Path;Ljava/nio/file/Path;[Ljava/nio/file/CopyOption;)Ljava/nio/file/Path;", statics("copy"));
+        put(m, "java/nio/file/Files.copy(Ljava/io/InputStream;Ljava/nio/file/Path;[Ljava/nio/file/CopyOption;)J", statics("copy"));
         put(m, "java/nio/file/Files.move(Ljava/nio/file/Path;Ljava/nio/file/Path;[Ljava/nio/file/CopyOption;)Ljava/nio/file/Path;", statics("move"));
         put(m, "java/nio/file/Files.isSameFile(Ljava/nio/file/Path;Ljava/nio/file/Path;)Z", statics("isSameFile"));
         put(m, "java/nio/file/Files.walk(Ljava/nio/file/Path;[Ljava/nio/file/FileVisitOption;)Ljava/util/stream/Stream;", statics("walk"));
@@ -1446,6 +1448,8 @@ public final class ShimRegistry {
         put(m, "java/io/File.delete()Z", instance("delete"));
         put(m, "java/io/File.renameTo(Ljava/io/File;)Z", instance("renameTo"));
         put(m, "java/io/File.length()J", instance("length"));
+        put(m, "java/io/File.lastModified()J", instance("lastModified"));
+        put(m, "java/io/File.setLastModified(J)Z", instance("setLastModified"));
         put(m, "java/io/File.canRead()Z", instance("canRead"));
         put(m, "java/io/File.canWrite()Z", instance("canWrite"));
         put(m, "java/io/File.list()[Ljava/lang/String;", instance("list"));
@@ -1740,6 +1744,8 @@ public final class ShimRegistry {
 
     private static void addLangMethods5(Map<String, ShimTarget> m) {
         put(m, "java/lang/Thread.currentThread()Ljava/lang/Thread;", statics("currentThread"));
+        put(m, "java/lang/Thread.getContextClassLoader()Ljava/lang/ClassLoader;", instance("getContextClassLoader"));
+        put(m, "java/lang/Thread.setContextClassLoader(Ljava/lang/ClassLoader;)V", instance("setContextClassLoader"));
         put(m, "java/lang/Thread.interrupt()V", instance("interrupt"));
         put(m, "java/lang/Thread.start()V", instance("start"));
         put(m, "java/lang/Thread.run()V", instance("run"));
@@ -1913,6 +1919,8 @@ public final class ShimRegistry {
         put(m, "java/lang/String.valueOf(Ljava/lang/Object;)Ljava/lang/String;", statics("valueOf"));
         put(m, "java/lang/Class.forName(Ljava/lang/String;)Ljava/lang/Class;", statics("forName"));
         put(m, "java/lang/Class.getClassLoader()Ljava/lang/ClassLoader;", instance("getClassLoader"));
+        put(m, "java/lang/Class.getResourceAsStream(Ljava/lang/String;)Ljava/io/InputStream;", instance("getResourceAsStream"));
+        put(m, "java/lang/Class.getResource(Ljava/lang/String;)Ljava/net/URL;", instance("getResource"));
         put(m, "java/lang/ClassLoader.getResource(Ljava/lang/String;)Ljava/net/URL;", instance("getResource"));
         put(m, "java/lang/ClassLoader.getResourceAsStream(Ljava/lang/String;)Ljava/io/InputStream;", instance("getResourceAsStream"));
         put(m, "java/lang/ClassLoader.getResources(Ljava/lang/String;)Ljava/util/Enumeration;", instance("getResources"));
@@ -3249,6 +3257,9 @@ public final class ShimRegistry {
         put(m, "java/net/URL.openConnection()Ljava/net/URLConnection;", instance("openConnection"));
         put(m, "java/net/URLConnection.connect()V", instance("connect"));
         put(m, "java/net/URLConnection.getInputStream()Ljava/io/InputStream;", instance("getInputStream"));
+        put(m, "java/net/URLConnection.getLastModified()J", instance("getLastModified"));
+        put(m, "java/net/URLConnection.getContentLengthLong()J", instance("getContentLengthLong"));
+        put(m, "java/net/URLConnection.getContentLength()I", instance("getContentLength"));
         put(m, "java/net/URLConnection.setRequestProperty(Ljava/lang/String;Ljava/lang/String;)V", instance("setRequestProperty"));
         put(m, "java/net/URLConnection.setDoOutput(Z)V", instance("setDoOutput"));
         put(m, "java/net/URLConnection.setConnectTimeout(I)V", instance("setConnectTimeout"));
