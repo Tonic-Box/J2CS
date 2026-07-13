@@ -1590,6 +1590,7 @@ public final class ShimRegistry {
         put(m, "java/nio/CharBuffer.put(C)Ljava/nio/CharBuffer;", instance("put"));
         put(m, "java/nio/CharBuffer.put(IC)Ljava/nio/CharBuffer;", instance("put"));
         put(m, "java/nio/CharBuffer.get([C)Ljava/nio/CharBuffer;", instance("get"));
+        put(m, "java/nio/CharBuffer.get([CII)Ljava/nio/CharBuffer;", instance("get"));
         put(m, "java/nio/CharBuffer.put([C)Ljava/nio/CharBuffer;", instance("put"));
         put(m, "java/nio/CharBuffer.array()[C", instance("array"));
     }

@@ -44,6 +44,7 @@ namespace java.nio
         public CharBuffer put(char v) { ElemSet(pos++, v); return this; }
         public CharBuffer put(int index, char v) { ElemSet(index, v); return this; }
         public CharBuffer get(char[] dst) { for (int i = 0; i < dst.Length; i++) { dst[i] = ElemGet(pos++); } return this; }
+        public CharBuffer get(char[] dst, int offset, int length) { for (int i = 0; i < length; i++) { dst[offset + i] = ElemGet(pos++); } return this; }
         public CharBuffer put(char[] src) { for (int i = 0; i < src.Length; i++) { ElemSet(pos++, src[i]); } return this; }
 
         public char[] array() { return arr; }
