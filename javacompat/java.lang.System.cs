@@ -24,6 +24,11 @@ namespace java.lang
             Props["path.separator"] = global::System.IO.Path.PathSeparator.ToString();
             Props["line.separator"] = "\n";
             Props["java.io.tmpdir"] = global::System.IO.Path.GetTempPath();
+            // No JVM classpath exists; the transpiled classes live in the app executable. Report a
+            // stable, non-null value so callers that hash or scan it (e.g. jME's natives-cache key)
+            // work instead of dereferencing null.
+            Props["java.class.path"] = global::System.Environment.ProcessPath
+                    ?? global::System.AppContext.BaseDirectory;
             Props["user.dir"] = global::System.Environment.CurrentDirectory;
             Props["user.home"] = global::System.Environment.GetFolderPath(
                 global::System.Environment.SpecialFolder.UserProfile);

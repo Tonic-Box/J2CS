@@ -520,6 +520,7 @@ public final class ShimRegistry {
         put(m, "java/lang/IllegalArgumentException", "java/lang/RuntimeException");
         put(m, "java/lang/NumberFormatException", "java/lang/IllegalArgumentException");
         put(m, "java/lang/IllegalStateException", "java/lang/RuntimeException");
+        put(m, "java/lang/SecurityException", "java/lang/RuntimeException");
         put(m, "java/lang/UnsupportedOperationException", "java/lang/RuntimeException");
         put(m, "java/lang/CloneNotSupportedException", "java/lang/Exception");
         put(m, "java/lang/ReflectiveOperationException", "java/lang/Exception");

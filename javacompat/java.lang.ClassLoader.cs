@@ -71,8 +71,25 @@ namespace java.lang
             string path = PathOf(absolute);
             if (!global::System.IO.File.Exists(path))
             {
+                // Transpiled classes live in the app executable, not as .class files on disk. The
+                // "where am I loaded from" idiom (getResource("some/Type.class")) therefore resolves
+                // to the executable — a real file — so callers that stringify, time-stamp, or read the
+                // URL succeed instead of dereferencing null.
+                if (absolute.EndsWith(".class"))
+                {
+                    string exe = global::System.Environment.ProcessPath;
+                    if (exe != null && global::System.IO.File.Exists(exe))
+                    {
+                        return FileUrl(exe);
+                    }
+                }
                 return null;
             }
+            return FileUrl(path);
+        }
+
+        private static global::java.net.URL FileUrl(string path)
+        {
             var url = new global::java.net.URL(global::java.lang.RawNew.I);
             url.__init_Ljava_lang_String__V(global::java.lang.String.Wrap(
                     new global::System.Uri(global::System.IO.Path.GetFullPath(path)).AbsoluteUri));
