@@ -15,14 +15,27 @@ namespace java.lang
             Env = global::j2cs.jni.J2csJni.Env;
             string resolved = Resolve(path);
             global::System.IntPtr handle = global::System.Runtime.InteropServices.NativeLibrary.Load(resolved);
+            bool isNew;
             lock (Gate)
             {
-                if (!Handles.Contains(handle))
+                isNew = !Handles.Contains(handle);
+                if (isNew)
                 {
                     Handles.Add(handle);
                 }
             }
+            // A real JVM invokes JNI_OnLoad after loading a native library so the library can cache the
+            // JavaVM; libraries that dispatch callbacks (e.g. LWJGL's libffi closures) resolve their
+            // JNIEnv through that cached VM, and without it the callback path dereferences a null VM.
+            if (isNew && global::System.Runtime.InteropServices.NativeLibrary.TryGetExport(handle, "JNI_OnLoad", out global::System.IntPtr onLoad))
+            {
+                global::System.Runtime.InteropServices.Marshal.GetDelegateForFunctionPointer<JniOnLoadFn>(onLoad)(
+                    global::j2cs.jni.J2csJni.JavaVm, global::System.IntPtr.Zero);
+            }
         }
+
+        [global::System.Runtime.InteropServices.UnmanagedFunctionPointer(global::System.Runtime.InteropServices.CallingConvention.Cdecl)]
+        private delegate int JniOnLoadFn(global::System.IntPtr vm, global::System.IntPtr reserved);
 
         public static void LoadLibrary(string name)
         {
