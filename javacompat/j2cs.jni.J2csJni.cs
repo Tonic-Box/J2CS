@@ -46,10 +46,17 @@ namespace j2cs.jni
         /// neutral zero makes an unimplemented slot degrade quietly. Real slots are assigned over these
         /// afterward; whatever remains is a self-recording no-op whose hits are dumped at exit.
         /// </summary>
-        private static void FillNeutralTraps(global::System.IntPtr* slots, int count, byte* hits)
+        private static void FillNeutralTraps(global::System.IntPtr* slots, int count, byte* hits, int reservedCount)
         {
+            // The leading reserved slots of a JNI interface table are not callable functions but scratch
+            // the VM owns; LWJGL's ThreadLocalUtil stores per-thread capabilities in one of them and
+            // expects it null initially, so leave the reserved slots null rather than trap them.
+            for (int i = 0; i < reservedCount; i++)
+            {
+                slots[i] = global::System.IntPtr.Zero;
+            }
             byte* code = (byte*)global::System.Runtime.InteropServices.NativeMemory.Alloc((nuint)(count * 16));
-            for (int i = 0; i < count; i++)
+            for (int i = reservedCount; i < count; i++)
             {
                 byte* s = code + i * 16;
                 s[0] = 0x48; s[1] = 0xB8; *(long*)(s + 2) = (long)(hits + i); // mov rax, &hits[i]
@@ -85,7 +92,7 @@ namespace j2cs.jni
                     global::System.Runtime.InteropServices.NativeMemory.Alloc(
                         (nuint)SlotCount, (nuint)global::System.IntPtr.Size);
                 envHits = (byte*)global::System.Runtime.InteropServices.NativeMemory.AllocZeroed((nuint)SlotCount);
-                FillNeutralTraps(slots, SlotCount, envHits);
+                FillNeutralTraps(slots, SlotCount, envHits, 4);
                 slots[4] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, int>)&GetVersionImpl;
                 slots[6] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr>)&FindClassImpl;
                 slots[7] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr>)&FromReflectedMethodImpl;
@@ -129,7 +136,7 @@ namespace j2cs.jni
                     global::System.Runtime.InteropServices.NativeMemory.Alloc(
                         (nuint)8, (nuint)global::System.IntPtr.Size);
                 vmHits = (byte*)global::System.Runtime.InteropServices.NativeMemory.AllocZeroed((nuint)8);
-                FillNeutralTraps(vmSlots, 8, vmHits);
+                FillNeutralTraps(vmSlots, 8, vmHits, 3);
                 vmSlots[4] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, int>)&AttachCurrentThreadImpl;
                 vmSlots[5] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, int>)&DetachCurrentThreadImpl;
                 vmSlots[6] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, int, int>)&GetEnvImpl;
