@@ -27,6 +27,17 @@ public final class TypeReconciler {
     /** Coerce a source expression into a storage/assignment target (return, argument, field, slot). */
     public String coerce(CsType target, IRType sourceType, String sourceExpr) {
         if (!target.isReference()) {
+            // A boxed value read from an Object-widened slot into a primitive one must be unboxed; C#
+            // has no auto-unboxing at the java.lang.Object boundary. Restricted to Object — the merged
+            // type such a slot carries — so a genuine non-wrapper reference in a primitive position is
+            // left as the pre-existing type error rather than a nonsensical unbox.
+            if (sourceType != null) {
+                CsType source = naming.typeMapper().computeType(sourceType);
+                String prim = unboxDescriptor(target.csText());
+                if (prim != null && "java/lang/Object".equals(source.referenceInternalName())) {
+                    return Boxing.unbox(prim, "(" + sourceExpr + ")");
+                }
+            }
             return Coercions.coerce(target, sourceExpr);
         }
         if (sourceType == null) {
@@ -167,5 +178,20 @@ public final class TypeReconciler {
         }
         return naming.hierarchy().isAppClass(subInternal)
                 && naming.hierarchy().staticallyHasMember(subInternal, supInternal);
+    }
+
+    /** The JVM primitive descriptor for a C# primitive type name, or null if it is not a primitive. */
+    private static String unboxDescriptor(String csText) {
+        return switch (csText) {
+            case "int" -> "I";
+            case "long" -> "J";
+            case "float" -> "F";
+            case "double" -> "D";
+            case "short" -> "S";
+            case "sbyte" -> "B";
+            case "char" -> "C";
+            case "bool" -> "Z";
+            default -> null;
+        };
     }
 }

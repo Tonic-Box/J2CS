@@ -121,9 +121,22 @@ public final class PhiCoalescer {
                     continue;
                 }
                 IRType targetType = slots.get(targetSlot).computeType();
-                if (slots.get(sourceSlot).computeType().isPrimitive()
+                IRType sourceType = slots.get(sourceSlot).computeType();
+                if (sourceType.isPrimitive()
                         && targetType.isReference() && !targetType.equals(objectType)) {
                     slots.set(targetSlot, new SlotDecl(targetSlot, objectType));
+                } else if (sourceType.isPrimitive() && targetType.isPrimitive()) {
+                    // A copy lands a primitive value in a slot of a different primitive type — a reused
+                    // JVM slot that holds, say, a float on one path and an int on another. When the
+                    // source does not implicitly widen to the target (float into int), no cast is
+                    // value-preserving, so widen the target to Object: the source boxes cleanly and each
+                    // read unboxes to the type it expects (Number.floatValue/intValue), matching the
+                    // JVM's path-consistent typing. A widening copy (int into float) compiles as-is.
+                    String src = typeMapper.computeType(sourceType).csText();
+                    String dst = typeMapper.computeType(targetType).csText();
+                    if (!src.equals(dst) && !primitiveWidens(src, dst)) {
+                        slots.set(targetSlot, new SlotDecl(targetSlot, objectType));
+                    }
                 }
             }
         }
@@ -131,6 +144,21 @@ public final class PhiCoalescer {
                 Set.copyOf(captures.originalBlocks().isEmpty()
                         ? new LinkedHashSet<>(ir.getBlocks())
                         : captures.originalBlocks()));
+    }
+
+    /**
+     * Whether a value of C# primitive {@code from} implicitly converts to {@code to}. Compute-typed
+     * slots only ever carry int/long/float/double (byte/short/char fold to int), so this covers the
+     * numeric widening conversions among those; any other cross-primitive pairing is a narrowing that
+     * has no value-preserving cast.
+     */
+    private static boolean primitiveWidens(String from, String to) {
+        return switch (from) {
+            case "int" -> to.equals("long") || to.equals("float") || to.equals("double");
+            case "long" -> to.equals("float") || to.equals("double");
+            case "float" -> to.equals("double");
+            default -> false;
+        };
     }
 
     private static SSAValue find(Map<SSAValue, SSAValue> parent, SSAValue value) {

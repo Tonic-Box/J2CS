@@ -173,14 +173,17 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
                 && targetSlot.equals(lowered.slotOf().get(ssa))) {
             return null;
         }
-        String expr = names.ref(source);
         if (source instanceof SSAValue ssa && targetSlot != null) {
-            // Coerce from the source's slot (C#-visible) type, not the value's SSA type: a slot widened
-            // to Object holds a value whose SSA type is narrower, and using the SSA type would skip the
-            // downcast/unbox the C# expression (typed by the slot) actually needs.
-            expr = reconciler.coerce(slotCs.get(targetSlot), slotIrOf(ssa), expr);
+            // Coerce once, from the source's slot (C#-visible) type — not the value's SSA type: a slot
+            // widened to Object holds a value whose SSA type is narrower, and using the SSA type would
+            // skip the downcast/unbox the slot-typed expression needs. Emit directly rather than through
+            // assign(), whose own coerce keys on the result's un-widened SSA type and would re-apply the
+            // box/unbox (e.g. Integer.valueOf(Float.valueOf(x))).
+            String expr = reconciler.coerce(slotCs.get(targetSlot), slotIrOf(ssa), names.ref(source));
+            w.line("s" + targetSlot + " = " + expr + ";");
+            return null;
         }
-        assign(instr, expr);
+        assign(instr, names.ref(source));
         return null;
     }
 
