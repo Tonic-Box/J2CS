@@ -243,6 +243,7 @@ public final class ShimRegistry {
         put(m, "java/util/concurrent/CountDownLatch", "java/lang/Object");
         put(m, "java/util/concurrent/Semaphore", "java/lang/Object");
         put(m, "java/util/concurrent/CyclicBarrier", "java/lang/Object");
+        put(m, "java/util/concurrent/ConcurrentMap", "java/util/Map");
         put(m, "java/util/concurrent/ConcurrentHashMap", "java/util/HashMap");
         put(m, "java/util/concurrent/CopyOnWriteArrayList", "java/util/ArrayList");
         put(m, "java/util/concurrent/atomic/AtomicInteger", "java/lang/Number");
@@ -1927,6 +1928,7 @@ public final class ShimRegistry {
         put(m, "java/lang/Class.getDeclaredMethods()[Ljava/lang/reflect/Method;", instance("getDeclaredMethods"));
         put(m, "java/lang/Class.getDeclaredConstructors()[Ljava/lang/reflect/Constructor;", instance("getDeclaredConstructors"));
         put(m, "java/lang/Class.getConstructor([Ljava/lang/Class;)Ljava/lang/reflect/Constructor;", instance("getConstructor"));
+        put(m, "java/lang/Class.getDeclaredConstructor([Ljava/lang/Class;)Ljava/lang/reflect/Constructor;", instance("getDeclaredConstructor"));
         put(m, "java/lang/Class.getDeclaredField(Ljava/lang/String;)Ljava/lang/reflect/Field;", instance("getDeclaredField"));
         put(m, "java/lang/Class.getDeclaredMethod(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;", instance("getDeclaredMethod"));
         put(m, "java/lang/Class.isInstance(Ljava/lang/Object;)Z", instance("isInstance"));
@@ -2155,6 +2157,7 @@ public final class ShimRegistry {
         put(m, "java/util/Arrays.sort([Ljava/lang/Object;Ljava/util/Comparator;)V", statics("sort"));
         put(m, "java/util/Arrays.copyOf([II)[I", statics("copyOf"));
         put(m, "java/util/Arrays.copyOf([Ljava/lang/Object;I)[Ljava/lang/Object;", statics("copyOf"));
+        put(m, "java/util/Arrays.copyOf([Ljava/lang/Object;ILjava/lang/Class;)[Ljava/lang/Object;", statics("copyOf"));
         put(m, "java/util/Arrays.copyOfRange([III)[I", statics("copyOfRange"));
         put(m, "java/util/Arrays.copyOfRange([Ljava/lang/Object;II)[Ljava/lang/Object;", statics("copyOfRange"));
         put(m, "java/util/Arrays.equals([I[I)Z", statics("equals"));
@@ -2443,11 +2446,18 @@ public final class ShimRegistry {
         put(m, "java/util/Collection.isEmpty()Z", instance("isEmpty"));
         put(m, "java/util/Collection.contains(Ljava/lang/Object;)Z", instance("contains"));
         put(m, "java/util/Collection.remove(Ljava/lang/Object;)Z", instance("remove"));
+        put(m, "java/util/Collection.addAll(Ljava/util/Collection;)Z", instance("addAll"));
+        put(m, "java/util/Collection.containsAll(Ljava/util/Collection;)Z", instance("containsAll"));
+        put(m, "java/util/Collection.removeAll(Ljava/util/Collection;)Z", instance("removeAll"));
+        put(m, "java/util/Collection.retainAll(Ljava/util/Collection;)Z", instance("retainAll"));
+        put(m, "java/util/Collection.toArray()[Ljava/lang/Object;", instance("toArray"));
+        put(m, "java/util/Collection.toArray([Ljava/lang/Object;)[Ljava/lang/Object;", instance("toArray"));
         put(m, "java/util/List.get(I)Ljava/lang/Object;", instance("get"));
         put(m, "java/util/List.set(ILjava/lang/Object;)Ljava/lang/Object;", instance("set"));
         put(m, "java/util/List.add(ILjava/lang/Object;)V", instance("add"));
         put(m, "java/util/List.remove(I)Ljava/lang/Object;", instance("remove"));
         put(m, "java/util/List.indexOf(Ljava/lang/Object;)I", instance("indexOf"));
+        put(m, "java/util/List.addAll(ILjava/util/Collection;)Z", instance("addAll"));
         put(m, "java/util/Map.put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", instance("put"));
         put(m, "java/util/Map.get(Ljava/lang/Object;)Ljava/lang/Object;", instance("get"));
         put(m, "java/util/Map.containsKey(Ljava/lang/Object;)Z", instance("containsKey"));
@@ -2455,6 +2465,7 @@ public final class ShimRegistry {
         put(m, "java/util/Map.size()I", instance("size"));
         put(m, "java/util/Map.isEmpty()Z", instance("isEmpty"));
         put(m, "java/util/Map.keySet()Ljava/util/Set;", instance("keySet"));
+        put(m, "java/util/Map.putAll(Ljava/util/Map;)V", instance("putAll"));
         put(m, "java/util/Map.values()Ljava/util/Collection;", instance("values"));
         put(m, "java/util/Map.entrySet()Ljava/util/Set;", instance("entrySet"));
         put(m, "java/util/Map.clear()V", instance("clear"));
@@ -3043,6 +3054,7 @@ public final class ShimRegistry {
         put(m, "java/util/Properties.getProperty(Ljava/lang/String;)Ljava/lang/String;", instance("getProperty"));
         put(m, "java/util/Properties.getProperty(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;", instance("getProperty"));
         put(m, "java/util/Properties.stringPropertyNames()Ljava/util/Set;", instance("stringPropertyNames"));
+        put(m, "java/util/Properties.load(Ljava/io/InputStream;)V", instance("load"));
         put(m, "java/util/List.listIterator()Ljava/util/ListIterator;", instance("listIterator"));
         put(m, "java/util/List.listIterator(I)Ljava/util/ListIterator;", instance("listIterator"));
         put(m, "java/util/ListIterator.hasPrevious()Z", instance("hasPrevious"));
@@ -3749,6 +3761,7 @@ public final class ShimRegistry {
             "java/util/SortedSet",
             "java/util/concurrent/BlockingQueue",
             "java/util/concurrent/Callable",
+            "java/util/concurrent/ConcurrentMap",
             "java/util/concurrent/Executor",
             "java/util/concurrent/Future",
             "java/util/concurrent/ThreadFactory",
@@ -3834,7 +3847,15 @@ public final class ShimRegistry {
             "java/util/Collection.stream()Ljava/util/stream/Stream;",
             "java/util/Collection.parallelStream()Ljava/util/stream/Stream;",
             "java/util/Collection.forEach(Ljava/util/function/Consumer;)V",
+            "java/util/Collection.addAll(Ljava/util/Collection;)Z",
+            "java/util/Collection.containsAll(Ljava/util/Collection;)Z",
+            "java/util/Collection.removeAll(Ljava/util/Collection;)Z",
+            "java/util/Collection.retainAll(Ljava/util/Collection;)Z",
+            "java/util/Collection.toArray()[Ljava/lang/Object;",
+            "java/util/Collection.toArray([Ljava/lang/Object;)[Ljava/lang/Object;",
+            "java/util/List.addAll(ILjava/util/Collection;)Z",
             "java/util/Map.getOrDefault(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;",
+            "java/util/Map.putAll(Ljava/util/Map;)V",
             "java/util/Map.putIfAbsent(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;",
             "java/util/Map.computeIfAbsent(Ljava/lang/Object;Ljava/util/function/Function;)Ljava/lang/Object;",
             "java/util/Map.computeIfPresent(Ljava/lang/Object;Ljava/util/function/BiFunction;)Ljava/lang/Object;",

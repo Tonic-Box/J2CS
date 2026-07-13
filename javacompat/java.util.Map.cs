@@ -122,5 +122,15 @@ namespace java.util
                 action.accept(e.getKey(), e.getValue());
             }
         }
+
+        void putAll(global::java.util.Map m)
+        {
+            var it = m.entrySet().iterator();
+            while (it.hasNext() != 0)
+            {
+                var e = (Map_S_Entry)it.next();
+                put(e.getKey(), e.getValue());
+            }
+        }
     }
 }

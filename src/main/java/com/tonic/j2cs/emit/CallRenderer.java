@@ -77,8 +77,13 @@ public final class CallRenderer {
             return ref + "." + appMethod.csName() + "(" + args + ")";
         }
         if (resolved instanceof Resolved.ShimMethod shim) {
-            return adjusted(shim.ownerInternal(), receiver) + "."
-                    + shim.target().csMemberName() + "(" + args + ")";
+            // A default interface method (e.g. Map.putAll inherited by a HashMap subclass) is only
+            // dispatchable through an interface-typed reference in C#, so cast to the declaring
+            // interface; a concrete shim member is reached directly on the adjusted receiver.
+            String ref = ShimRegistry.isDefaultInterfaceMethod(shim.ownerInternal(), name, desc)
+                    ? reconciler.castTo(shim.ownerInternal(), receiver.expr())
+                    : adjusted(shim.ownerInternal(), receiver);
+            return ref + "." + shim.target().csMemberName() + "(" + args + ")";
         }
         throw new UnsupportedBodyException(((Resolved.Unresolved) resolved).reason());
     }

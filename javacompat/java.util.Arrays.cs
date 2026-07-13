@@ -129,6 +129,14 @@ namespace java.util
             return r;
         }
 
+        public static global::java.lang.Object[] copyOf(global::java.lang.Object[] original, int newLength, global::java.lang.Class newType)
+        {
+            var elem = newType.getComponentType().ClrType();
+            var r = (global::java.lang.Object[])global::System.Array.CreateInstance(elem, newLength);
+            global::System.Array.Copy(original, r, global::System.Math.Min(original.Length, newLength));
+            return r;
+        }
+
         public static int[] copyOfRange(int[] original, int from, int to)
         {
             int len = to - from;

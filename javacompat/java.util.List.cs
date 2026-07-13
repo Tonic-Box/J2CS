@@ -48,5 +48,19 @@ namespace java.util
         {
             global::java.util.Collections.sort(this, c);
         }
+
+        int addAll(int index, global::java.util.Collection c)
+        {
+            int i = index;
+            int modified = 0;
+            var it = c.iterator();
+            while (it.hasNext() != 0)
+            {
+                add(i, it.next());
+                i = i + 1;
+                modified = 1;
+            }
+            return modified;
+        }
     }
 }

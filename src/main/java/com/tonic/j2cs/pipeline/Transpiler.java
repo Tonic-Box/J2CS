@@ -236,22 +236,87 @@ public final class Transpiler {
     private static String reflectionBootstrap(List<ClassFile> reflectClasses, NamingContext naming,
                                               AnnotationEmitter annoEmitter) {
         ReflectionMetadataEmitter emitter = new ReflectionMetadataEmitter(naming, annoEmitter);
+
+        // The C# compiler caches every non-capturing lambda of a class in one hidden <>c display type,
+        // whose method count the CLR caps near 2^16. Each registrar emits a getter+setter per field and
+        // an invoker per method/constructor as non-capturing lambdas, so putting them all in one class
+        // overflows <>c on a large program (a TypeLoadException at startup). Partition the registrars
+        // across distinct classes, keeping each class's lambda total under a safe budget.
+        final int lambdaBudget = 30000;
+        List<List<Integer>> partitions = new ArrayList<>();
+        List<Integer> current = new ArrayList<>();
+        int running = 0;
+        for (int i = 0; i < reflectClasses.size(); i++) {
+            ClassFile cf = reflectClasses.get(i);
+            CsWriter probe = new CsWriter();
+            emitter.emit(probe, "Register_" + i, cf, naming.namerOf(cf.getClassName()), naming.typeMapper());
+            int lambdas = countOccurrences(probe.toString(), "=>");
+            if (!current.isEmpty() && running + lambdas > lambdaBudget) {
+                partitions.add(current);
+                current = new ArrayList<>();
+                running = 0;
+            }
+            current.add(i);
+            running += lambdas;
+        }
+        if (!current.isEmpty()) {
+            partitions.add(current);
+        }
+
         CsWriter w = new CsWriter();
         w.open("namespace j2cs.reflect");
         w.open("internal static class __Bootstrap");
         w.open("internal static void InitAll()");
-        for (int i = 0; i < reflectClasses.size(); i++) {
-            w.line("Register_" + i + "();");
+        // A program that fits in one partition keeps the registrars directly on __Bootstrap (no <>c
+        // overflow risk); only a program that needs splitting pays for the extra partition classes.
+        boolean split = partitions.size() > 1;
+        if (split) {
+            for (int p = 0; p < partitions.size(); p++) {
+                w.line("__Bootstrap_" + p + ".Register();");
+            }
+        } else {
+            for (int i = 0; i < reflectClasses.size(); i++) {
+                w.line("Register_" + i + "();");
+            }
         }
         w.close();
-        for (int i = 0; i < reflectClasses.size(); i++) {
-            ClassFile cf = reflectClasses.get(i);
+        if (!split) {
+            for (int i = 0; i < reflectClasses.size(); i++) {
+                ClassFile cf = reflectClasses.get(i);
+                w.line();
+                emitter.emit(w, "Register_" + i, cf, naming.namerOf(cf.getClassName()), naming.typeMapper());
+            }
+            w.close();
+            w.close();
+            return w.toString();
+        }
+        w.close();
+        for (int p = 0; p < partitions.size(); p++) {
             w.line();
-            emitter.emit(w, "Register_" + i, cf, naming.namerOf(cf.getClassName()), naming.typeMapper());
+            w.open("internal static class __Bootstrap_" + p);
+            w.open("internal static void Register()");
+            for (int i : partitions.get(p)) {
+                w.line("Register_" + i + "();");
+            }
+            w.close();
+            for (int i : partitions.get(p)) {
+                ClassFile cf = reflectClasses.get(i);
+                w.line();
+                emitter.emit(w, "Register_" + i, cf, naming.namerOf(cf.getClassName()), naming.typeMapper());
+            }
+            w.close();
         }
-        w.close();
         w.close();
         return w.toString();
+    }
+
+    /** Count of non-overlapping occurrences of {@code needle} in {@code text}. */
+    private static int countOccurrences(String text, String needle) {
+        int count = 0;
+        for (int i = text.indexOf(needle); i >= 0; i = text.indexOf(needle, i + needle.length())) {
+            count++;
+        }
+        return count;
     }
 
     private static Map<MethodEntry, MethodPlan> planMethods(ClassFile cf, MethodPlanner planner) {

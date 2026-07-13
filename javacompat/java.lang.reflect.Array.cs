@@ -114,7 +114,15 @@ namespace java.lang.reflect
                     {
                         t = global::System.Type.GetType(desc.Substring(1, desc.Length - 2).Replace('/', '.'));
                     }
-                    return t ?? typeof(global::java.lang.Object);
+                    // A CLR interface-typed array is not covariance-compatible with the java.lang.Object[]
+                    // storage model J2CS uses for reference arrays (an interface is not a subtype of the
+                    // Object shim class), so materialize interface- (and unresolved-) component arrays as
+                    // Object[]; a concrete class stays typed and remains covariant to Object[].
+                    if (t == null || t.IsInterface)
+                    {
+                        return typeof(global::java.lang.Object);
+                    }
+                    return t;
             }
         }
     }

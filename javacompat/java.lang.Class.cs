@@ -236,6 +236,24 @@ namespace java.lang
             throw global::java.lang.JThrow.of(ex);
         }
 
+        public global::java.lang.reflect.Constructor getDeclaredConstructor(global::java.lang.Class[] parameterTypes)
+        {
+            global::java.lang.Class[] want = parameterTypes ?? global::System.Array.Empty<global::java.lang.Class>();
+            if (meta != null)
+            {
+                foreach (global::java.lang.reflect.Constructor c in meta.Constructors())
+                {
+                    if (ParametersMatch(c.getParameterTypes(), want))
+                    {
+                        return c;
+                    }
+                }
+            }
+            var ex = new global::java.lang.NoSuchMethodException(RawNew.I);
+            ex.__init_Ljava_lang_String__V(global::java.lang.String.Wrap((name ?? "?") + ".<init>"));
+            throw global::java.lang.JThrow.of(ex);
+        }
+
         private static bool ParametersMatch(global::java.lang.Class[] declared, global::java.lang.Class[] want)
         {
             if (declared.Length != want.Length)

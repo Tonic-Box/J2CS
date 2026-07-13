@@ -281,6 +281,7 @@ java.util.concurrent.Callable.cs
 java.util.concurrent.CompletableFuture.cs
 java.util.concurrent.ConcurrentHashMap.cs
 java.util.concurrent.ConcurrentLinkedQueue.cs
+java.util.concurrent.ConcurrentMap.cs
 java.util.concurrent.CopyOnWriteArrayList.cs
 java.util.concurrent.CountDownLatch.cs
 java.util.concurrent.CyclicBarrier.cs
