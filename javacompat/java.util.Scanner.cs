@@ -20,6 +20,24 @@ namespace java.util
                     global::java.lang.JRuntime.UnsignedBytes(input.readAllBytes()));
         }
 
+        public void __init_Ljava_io_InputStream_Ljava_lang_String__V(
+            global::java.io.InputStream input, global::java.lang.String charsetName)
+        {
+            byte[] bytes = global::java.lang.JRuntime.UnsignedBytes(input.readAllBytes());
+            global::System.Text.Encoding encoding;
+            try
+            {
+                encoding = charsetName == null
+                    ? new global::System.Text.UTF8Encoding(false)
+                    : global::System.Text.Encoding.GetEncoding(charsetName.Value);
+            }
+            catch
+            {
+                encoding = new global::System.Text.UTF8Encoding(false);
+            }
+            content = encoding.GetString(bytes);
+        }
+
         private void SkipWs()
         {
             while (pos < content.Length && char.IsWhiteSpace(content[pos])) { pos++; }
@@ -92,5 +110,8 @@ namespace java.util
         }
 
         public void close() { }
+
+        // Parsing already uses invariant culture, so pinning a locale is a no-op that keeps the chain.
+        public Scanner useLocale(global::java.util.Locale locale) { return this; }
     }
 }

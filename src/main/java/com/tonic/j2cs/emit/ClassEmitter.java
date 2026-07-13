@@ -301,14 +301,24 @@ public final class ClassEmitter {
             return;
         }
 
-        String symbol = JniMangler.entryPoint(owner, name, desc, isOverloadedNative(classFile, name));
+        boolean overloaded = isOverloadedNative(classFile, name);
+        String symbol = JniMangler.entryPoint(owner, name, desc, overloaded);
+        // The JVM tries the short mangled symbol first, then the descriptor-suffixed long form; a library
+        // may export either (LWJGL exports a mix). Offer both for a non-overloaded native so resolution
+        // succeeds whichever form the library chose. An overloaded native has only the long form.
+        StringBuilder symbols = new StringBuilder(CsStrings.quote(symbol));
+        if (!overloaded) {
+            String longSymbol = JniMangler.longName(owner, name, desc);
+            if (!longSymbol.equals(symbol)) {
+                symbols.append(", ").append(CsStrings.quote(longSymbol));
+            }
+        }
         String fnPtrType = nativeFnPtrType(paramDescs, retDesc);
         String field = "__np_" + symbol;
         w.line("private static unsafe " + fnPtrType + " " + field + ";");
         w.open(prefix + "unsafe " + signature);
         w.open("if (" + field + " == null)");
-        w.line(field + " = (" + fnPtrType + ")global::java.lang.J2csNative.Export("
-                + CsStrings.quote(symbol) + ");");
+        w.line(field + " = (" + fnPtrType + ")global::java.lang.J2csNative.Export(" + symbols + ");");
         w.close();
         String receiver = Modifiers.isStatic(method.getAccess())
                 ? "global::System.IntPtr.Zero"

@@ -1396,6 +1396,13 @@ public final class ShimRegistry {
         put(m, "java/nio/Buffer.capacity()I", instance("capacity"));
         put(m, "java/nio/Buffer.remaining()I", instance("remaining"));
         put(m, "java/nio/Buffer.hasRemaining()Z", instance("hasRemaining"));
+        put(m, "java/nio/Buffer.position(I)Ljava/nio/Buffer;", instance("position"));
+        put(m, "java/nio/Buffer.limit(I)Ljava/nio/Buffer;", instance("limit"));
+        put(m, "java/nio/Buffer.clear()Ljava/nio/Buffer;", instance("clear"));
+        put(m, "java/nio/Buffer.flip()Ljava/nio/Buffer;", instance("flip"));
+        put(m, "java/nio/Buffer.rewind()Ljava/nio/Buffer;", instance("rewind"));
+        put(m, "java/nio/Buffer.mark()Ljava/nio/Buffer;", instance("mark"));
+        put(m, "java/nio/Buffer.reset()Ljava/nio/Buffer;", instance("reset"));
         put(m, "sun/misc/Unsafe.objectFieldOffset(Ljava/lang/reflect/Field;)J", instance("objectFieldOffset"));
         put(m, "sun/misc/Unsafe.allocateInstance(Ljava/lang/Class;)Ljava/lang/Object;", instance("allocateInstance"));
         put(m, "sun/misc/Unsafe.pageSize()I", instance("pageSize"));
@@ -1519,6 +1526,8 @@ public final class ShimRegistry {
         put(m, "java/nio/IntBuffer.hasRemaining()Z", instance("hasRemaining"));
         put(m, "java/nio/IntBuffer.position(I)Ljava/nio/IntBuffer;", instance("position"));
         put(m, "java/nio/IntBuffer.limit(I)Ljava/nio/IntBuffer;", instance("limit"));
+        put(m, "java/nio/IntBuffer.position(I)Ljava/nio/Buffer;", instance("position"));
+        put(m, "java/nio/IntBuffer.limit(I)Ljava/nio/Buffer;", instance("limit"));
         put(m, "java/nio/IntBuffer.mark()Ljava/nio/IntBuffer;", instance("mark"));
         put(m, "java/nio/IntBuffer.reset()Ljava/nio/IntBuffer;", instance("reset"));
         put(m, "java/nio/IntBuffer.flip()Ljava/nio/IntBuffer;", instance("flip"));
@@ -1548,6 +1557,8 @@ public final class ShimRegistry {
         put(m, "java/nio/LongBuffer.hasRemaining()Z", instance("hasRemaining"));
         put(m, "java/nio/LongBuffer.position(I)Ljava/nio/LongBuffer;", instance("position"));
         put(m, "java/nio/LongBuffer.limit(I)Ljava/nio/LongBuffer;", instance("limit"));
+        put(m, "java/nio/LongBuffer.position(I)Ljava/nio/Buffer;", instance("position"));
+        put(m, "java/nio/LongBuffer.limit(I)Ljava/nio/Buffer;", instance("limit"));
         put(m, "java/nio/LongBuffer.mark()Ljava/nio/LongBuffer;", instance("mark"));
         put(m, "java/nio/LongBuffer.reset()Ljava/nio/LongBuffer;", instance("reset"));
         put(m, "java/nio/LongBuffer.flip()Ljava/nio/LongBuffer;", instance("flip"));
@@ -1577,6 +1588,8 @@ public final class ShimRegistry {
         put(m, "java/nio/DoubleBuffer.hasRemaining()Z", instance("hasRemaining"));
         put(m, "java/nio/DoubleBuffer.position(I)Ljava/nio/DoubleBuffer;", instance("position"));
         put(m, "java/nio/DoubleBuffer.limit(I)Ljava/nio/DoubleBuffer;", instance("limit"));
+        put(m, "java/nio/DoubleBuffer.position(I)Ljava/nio/Buffer;", instance("position"));
+        put(m, "java/nio/DoubleBuffer.limit(I)Ljava/nio/Buffer;", instance("limit"));
         put(m, "java/nio/DoubleBuffer.mark()Ljava/nio/DoubleBuffer;", instance("mark"));
         put(m, "java/nio/DoubleBuffer.reset()Ljava/nio/DoubleBuffer;", instance("reset"));
         put(m, "java/nio/DoubleBuffer.flip()Ljava/nio/DoubleBuffer;", instance("flip"));
@@ -1606,6 +1619,8 @@ public final class ShimRegistry {
         put(m, "java/nio/CharBuffer.hasRemaining()Z", instance("hasRemaining"));
         put(m, "java/nio/CharBuffer.position(I)Ljava/nio/CharBuffer;", instance("position"));
         put(m, "java/nio/CharBuffer.limit(I)Ljava/nio/CharBuffer;", instance("limit"));
+        put(m, "java/nio/CharBuffer.position(I)Ljava/nio/Buffer;", instance("position"));
+        put(m, "java/nio/CharBuffer.limit(I)Ljava/nio/Buffer;", instance("limit"));
         put(m, "java/nio/CharBuffer.mark()Ljava/nio/CharBuffer;", instance("mark"));
         put(m, "java/nio/CharBuffer.reset()Ljava/nio/CharBuffer;", instance("reset"));
         put(m, "java/nio/CharBuffer.flip()Ljava/nio/CharBuffer;", instance("flip"));
@@ -1791,6 +1806,9 @@ public final class ShimRegistry {
         put(m, "java/lang/Thread.setContextClassLoader(Ljava/lang/ClassLoader;)V", instance("setContextClassLoader"));
         put(m, "java/lang/Thread.interrupt()V", instance("interrupt"));
         put(m, "java/lang/Thread.start()V", instance("start"));
+        put(m, "java/lang/Thread.isAlive()Z", instance("isAlive"));
+        put(m, "java/lang/Thread.setPriority(I)V", instance("setPriority"));
+        put(m, "java/lang/Thread.getPriority()I", instance("getPriority"));
         put(m, "java/lang/Thread.run()V", instance("run"));
         put(m, "java/lang/Thread.join()V", instance("join"));
         put(m, "java/lang/Thread.join(J)V", instance("join"));
@@ -2854,6 +2872,8 @@ public final class ShimRegistry {
         put(m, "java/nio/ShortBuffer.hasRemaining()Z", instance("hasRemaining"));
         put(m, "java/nio/ShortBuffer.position(I)Ljava/nio/ShortBuffer;", instance("position"));
         put(m, "java/nio/ShortBuffer.limit(I)Ljava/nio/ShortBuffer;", instance("limit"));
+        put(m, "java/nio/ShortBuffer.position(I)Ljava/nio/Buffer;", instance("position"));
+        put(m, "java/nio/ShortBuffer.limit(I)Ljava/nio/Buffer;", instance("limit"));
         put(m, "java/nio/ShortBuffer.mark()Ljava/nio/ShortBuffer;", instance("mark"));
         put(m, "java/nio/ShortBuffer.reset()Ljava/nio/ShortBuffer;", instance("reset"));
         put(m, "java/nio/ShortBuffer.flip()Ljava/nio/ShortBuffer;", instance("flip"));
@@ -2880,6 +2900,8 @@ public final class ShimRegistry {
         put(m, "java/nio/FloatBuffer.hasRemaining()Z", instance("hasRemaining"));
         put(m, "java/nio/FloatBuffer.position(I)Ljava/nio/FloatBuffer;", instance("position"));
         put(m, "java/nio/FloatBuffer.limit(I)Ljava/nio/FloatBuffer;", instance("limit"));
+        put(m, "java/nio/FloatBuffer.position(I)Ljava/nio/Buffer;", instance("position"));
+        put(m, "java/nio/FloatBuffer.limit(I)Ljava/nio/Buffer;", instance("limit"));
         put(m, "java/nio/FloatBuffer.mark()Ljava/nio/FloatBuffer;", instance("mark"));
         put(m, "java/nio/FloatBuffer.reset()Ljava/nio/FloatBuffer;", instance("reset"));
         put(m, "java/nio/FloatBuffer.flip()Ljava/nio/FloatBuffer;", instance("flip"));
@@ -2985,6 +3007,7 @@ public final class ShimRegistry {
         put(m, "java/util/Scanner.nextDouble()D", instance("nextDouble"));
         put(m, "java/util/Scanner.hasNextLine()Z", instance("hasNextLine"));
         put(m, "java/util/Scanner.nextLine()Ljava/lang/String;", instance("nextLine"));
+        put(m, "java/util/Scanner.useLocale(Ljava/util/Locale;)Ljava/util/Scanner;", instance("useLocale"));
         put(m, "java/util/Scanner.close()V", instance("close"));
         put(m, "java/util/StringTokenizer.countTokens()I", instance("countTokens"));
         put(m, "java/util/StringTokenizer.hasMoreTokens()Z", instance("hasMoreTokens"));

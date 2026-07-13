@@ -11,6 +11,7 @@ namespace java.lang
         private volatile bool daemon;
         private volatile bool interruptedFlag;
         private String threadName;
+        private int priority = 5;
 
         public Thread(RawNew r) : base(r)
         {
@@ -108,6 +109,23 @@ namespace java.lang
             {
                 clr.Join((int)(millis > int.MaxValue ? int.MaxValue : millis));
             }
+        }
+
+        public int isAlive()
+        {
+            return clr != null && clr.IsAlive ? 1 : 0;
+        }
+
+        // Priority is an advisory scheduling hint; store it so getPriority round-trips without imposing
+        // a lossy mapping onto the CLR thread scheduler.
+        public void setPriority(int newPriority)
+        {
+            priority = newPriority;
+        }
+
+        public int getPriority()
+        {
+            return priority;
         }
 
         public void setDaemon(int on)

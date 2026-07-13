@@ -62,19 +62,26 @@ namespace java.lang
             return "lib" + name + ".so";
         }
 
-        public static global::System.IntPtr Export(string symbol)
+        // The JVM resolves a native method by trying the short mangled name first, then the long form
+        // with the argument-descriptor suffix. A library may export either (LWJGL exports a mix), so the
+        // emitter passes every candidate and the first that resolves across the loaded libraries wins.
+        public static global::System.IntPtr Export(params string[] symbols)
         {
             lock (Gate)
             {
-                foreach (global::System.IntPtr handle in Handles)
+                foreach (string symbol in symbols)
                 {
-                    if (global::System.Runtime.InteropServices.NativeLibrary.TryGetExport(handle, symbol, out global::System.IntPtr addr))
+                    foreach (global::System.IntPtr handle in Handles)
                     {
-                        return addr;
+                        if (global::System.Runtime.InteropServices.NativeLibrary.TryGetExport(handle, symbol, out global::System.IntPtr addr))
+                        {
+                            return addr;
+                        }
                     }
                 }
             }
-            throw new global::System.EntryPointNotFoundException("j2cs: native symbol not found: " + symbol);
+            throw new global::System.EntryPointNotFoundException(
+                "j2cs: native symbol not found: " + string.Join(" / ", symbols));
         }
 
         /**

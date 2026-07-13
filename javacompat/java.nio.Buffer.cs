@@ -41,5 +41,16 @@ namespace java.nio
         public int capacity() { return cap; }
         public int remaining() { return lim - pos; }
         public int hasRemaining() { return pos < lim ? 1 : 0; }
+
+        // Chainable navigation defined on java.nio.Buffer itself (returning Buffer). Code holding a
+        // statically-typed java.nio.Buffer reference calls these; concrete buffers hide them with their
+        // own covariant overrides. Position/limit/mark live on the base, so mutating here is shared.
+        public Buffer position(int newPosition) { pos = newPosition; if (markPos > newPosition) { markPos = -1; } return this; }
+        public Buffer limit(int newLimit) { lim = newLimit; if (pos > newLimit) { pos = newLimit; } if (markPos > newLimit) { markPos = -1; } return this; }
+        public Buffer clear() { pos = 0; lim = cap; markPos = -1; return this; }
+        public Buffer flip() { lim = pos; pos = 0; markPos = -1; return this; }
+        public Buffer rewind() { pos = 0; markPos = -1; return this; }
+        public Buffer mark() { markPos = pos; return this; }
+        public Buffer reset() { if (markPos >= 0) { pos = markPos; } return this; }
     }
 }
