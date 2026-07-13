@@ -83,6 +83,7 @@ namespace j2cs.jni
                 FillNeutralTraps(slots, SlotCount, envHits);
                 slots[4] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, int>)&GetVersionImpl;
                 slots[6] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr>)&FindClassImpl;
+                slots[7] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr>)&FromReflectedMethodImpl;
                 slots[33] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, global::System.IntPtr>)&GetMethodIDImpl;
                 slots[94] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, global::System.IntPtr>)&GetFieldIDImpl;
                 slots[102] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, float>)&GetFloatFieldImpl;
@@ -246,6 +247,16 @@ namespace j2cs.jni
             string dotted = DecodeModifiedUtf8((byte*)name).Replace('/', '.');
             global::j2cs.reflect.ClassMeta meta = global::j2cs.reflect.Registry.ByName(dotted);
             return meta != null ? Intern(meta) : global::System.IntPtr.Zero;
+        }
+
+        // FromReflectedMethod: a jmethodID here is an interned java.lang.reflect.Method, so resolving
+        // the reflected method and re-interning it yields the id LWJGL's callback setup expects.
+        [global::System.Runtime.InteropServices.UnmanagedCallersOnly(
+            CallConvs = new[] { typeof(global::System.Runtime.CompilerServices.CallConvCdecl) })]
+        private static global::System.IntPtr FromReflectedMethodImpl(global::System.IntPtr env, global::System.IntPtr method)
+        {
+            return ResolveHandle(method) is global::java.lang.reflect.Method m
+                    ? Intern(m) : global::System.IntPtr.Zero;
         }
 
         [global::System.Runtime.InteropServices.UnmanagedCallersOnly(
