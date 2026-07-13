@@ -242,6 +242,12 @@ namespace java.lang
             return meta != null ? meta.Constructors() : global::System.Array.Empty<global::java.lang.reflect.Constructor>();
         }
 
+        public global::java.lang.Object newInstance()
+        {
+            return getDeclaredConstructor(global::System.Array.Empty<global::java.lang.Class>())
+                .newInstance(global::System.Array.Empty<global::java.lang.Object>());
+        }
+
         public global::java.lang.reflect.Constructor getConstructor(global::java.lang.Class[] parameterTypes)
         {
             global::java.lang.Class[] want = parameterTypes ?? global::System.Array.Empty<global::java.lang.Class>();

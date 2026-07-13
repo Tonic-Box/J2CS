@@ -132,6 +132,7 @@ java.lang.UnsatisfiedLinkError.cs
 java.lang.UnsupportedOperationException.cs
 java.lang.Void.cs
 java.lang.annotation.Annotation.cs
+java.lang.ref.PhantomReference.cs
 java.lang.ref.Reference.cs
 java.lang.ref.ReferenceQueue.cs
 java.lang.ref.WeakReference.cs
@@ -310,6 +311,7 @@ java.util.concurrent.atomic.AtomicReference.cs
 java.util.concurrent.atomic.AtomicReferenceArray.cs
 java.util.concurrent.locks.Lock.cs
 java.util.concurrent.locks.ReentrantLock.cs
+java.util.concurrent.locks.StampedLock.cs
 java.util.function.BiConsumer.cs
 java.util.function.BiFunction.cs
 java.util.function.BiPredicate.cs

@@ -74,6 +74,31 @@ namespace java.util
             return removeMatching(c, false);
         }
 
+        // Snapshot the elements the predicate accepts before removing them, so mutation does not disturb
+        // the in-progress iteration.
+        int removeIf(global::java.util.function.Predicate filter)
+        {
+            var toRemove = new global::System.Collections.Generic.List<global::java.lang.Object>();
+            var it = iterator();
+            while (it.hasNext() != 0)
+            {
+                var e = it.next();
+                if (filter.test(e) != 0)
+                {
+                    toRemove.Add(e);
+                }
+            }
+            int modified = 0;
+            foreach (var e in toRemove)
+            {
+                if (remove(e) != 0)
+                {
+                    modified = 1;
+                }
+            }
+            return modified;
+        }
+
         // Snapshot the elements to drop before mutating, so the removal does not disturb an in-progress
         // iteration. removeAll drops elements found in c; retainAll drops those absent from c.
         private int removeMatching(global::java.util.Collection c, bool removeWhenPresent)
