@@ -28,9 +28,13 @@ public final class ReflectionMetadataEmitter {
         this.annotations = annotations;
     }
 
-    /** App, non-bootstrapped, non-interface classes carry generated reflection metadata. */
-    public static boolean hasMetadata(NamingContext naming, String internalName, boolean isInterface) {
-        return !isInterface && naming.isAppClass(internalName) && !naming.isBootstrapped(internalName);
+    /**
+     * App, non-bootstrapped classes carry generated reflection metadata, interfaces included: their
+     * abstract members are reflectively looked up (e.g. LWJGL resolves {@code CallbackI.callback} to
+     * bind its native dispatcher), and their static fields/default/static methods are equally visible.
+     */
+    public static boolean hasMetadata(NamingContext naming, String internalName) {
+        return naming.isAppClass(internalName) && !naming.isBootstrapped(internalName);
     }
 
     public void emit(CsWriter w, String methodName, ClassFile classFile, MemberNamer namer, TypeMapper types) {

@@ -83,8 +83,7 @@ public final class Transpiler {
                 Map<MethodEntry, MethodPlan> plans = planMethods(cf, planner);
                 ClosureScanner.collectReferencedTypes(cf, plans, referenced);
                 genFiles.put(dottedName(cf.getClassName()), classEmitter.emit(cf, plans));
-                if (ReflectionMetadataEmitter.hasMetadata(naming, cf.getClassName(),
-                        Modifiers.isInterface(cf.getAccess()))) {
+                if (ReflectionMetadataEmitter.hasMetadata(naming, cf.getClassName())) {
                     reflectClasses.add(cf);
                 }
             } catch (RuntimeException e) {

@@ -29,9 +29,34 @@ namespace j2cs.reflect
         internal static void InitAll()
         {
             Register_0();
+            Register_1();
+            Register_2();
+            Register_3();
         }
 
         private static void Register_0()
+        {
+            var __m = ClassMeta.New("Fn", typeof(Fn), "java.lang.Object").WithAnnotations(global::System.Array.Empty<Annotation>());
+            __m.AddMethod("apply", new Class[]{ Class.Of("java.lang.Object") }, Class.Of("java.lang.Object"), 1025, (__o, __a) => (Object)(((Fn)__o).apply((Object)__a[0])), global::System.Array.Empty<Annotation>());
+            Registry.Register(__m);
+        }
+
+        private static void Register_1()
+        {
+            var __m = ClassMeta.New("Greeter", typeof(Greeter), "java.lang.Object").WithAnnotations(global::System.Array.Empty<Annotation>());
+            __m.AddMethod("greet", global::System.Array.Empty<Class>(), Class.Of("java.lang.String"), 1025, (__o, __a) => (Object)(((Greeter)__o).greet()), global::System.Array.Empty<Annotation>());
+            __m.AddMethod("loud", global::System.Array.Empty<Class>(), Class.Of("java.lang.String"), 1, (__o, __a) => (Object)(((Greeter)__o).loud()), global::System.Array.Empty<Annotation>());
+            Registry.Register(__m);
+        }
+
+        private static void Register_2()
+        {
+            var __m = ClassMeta.New("IntOp", typeof(IntOp), "java.lang.Object").WithAnnotations(global::System.Array.Empty<Annotation>());
+            __m.AddMethod("apply", new Class[]{ Class.Of("int"), Class.Of("int") }, Class.Of("int"), 1025, (__o, __a) => Integer.valueOf(((IntOp)__o).apply(((Number)__a[0]).intValue(), ((Number)__a[1]).intValue())), global::System.Array.Empty<Annotation>());
+            Registry.Register(__m);
+        }
+
+        private static void Register_3()
         {
             var __m = ClassMeta.New("Lambdas1", typeof(Lambdas1), "java.lang.Object").WithAnnotations(global::System.Array.Empty<Annotation>());
             __m.AddField("stored", Class.Of("IntOp"), 8, __o => (Object)(Lambdas1.stored), (__o, __v) => Lambdas1.stored = (IntOp)__v, global::System.Array.Empty<Annotation>());
