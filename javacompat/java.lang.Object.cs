@@ -38,5 +38,40 @@ namespace java.lang
         {
             return (global::java.lang.Object)MemberwiseClone();
         }
+
+        // Java's monitor wait/notify map onto Monitor.Wait/Pulse/PulseAll (all require the calling
+        // thread to hold the object's monitor, which the enclosing synchronized guarantees). wait(0)
+        // and wait(0, 0) block indefinitely; a positive millisecond timeout bounds the wait.
+        public void notify()
+        {
+            global::System.Threading.Monitor.Pulse(this);
+        }
+
+        public void notifyAll()
+        {
+            global::System.Threading.Monitor.PulseAll(this);
+        }
+
+        public void wait()
+        {
+            global::System.Threading.Monitor.Wait(this);
+        }
+
+        public void wait(long timeout)
+        {
+            if (timeout <= 0L)
+            {
+                global::System.Threading.Monitor.Wait(this);
+            }
+            else
+            {
+                global::System.Threading.Monitor.Wait(this, unchecked((int)timeout));
+            }
+        }
+
+        public void wait(long timeout, int nanos)
+        {
+            wait(timeout);
+        }
     }
 }

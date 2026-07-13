@@ -95,6 +95,46 @@ namespace java.lang
             return r;
         }
 
+        /// <summary>Enters the argument's monitor, mirroring a Java monitorenter (re-entrant and
+        /// thread-affine). Routed through here so generated bodies never name System.Threading, whose
+        /// root segment collides with the java.lang.System shim type when java.lang is imported.</summary>
+        public static void MonitorEnter(object o)
+        {
+            global::System.Threading.Monitor.Enter(o);
+        }
+
+        /// <summary>Exits the argument's monitor, mirroring a Java monitorexit.</summary>
+        public static void MonitorExit(object o)
+        {
+            global::System.Threading.Monitor.Exit(o);
+        }
+
+        /// <summary>Casts a reference array to a specific element type. Returns the value unchanged when
+        /// it is already that array type (concrete-element arrays, preserving identity); when it is the
+        /// java.lang.Object[] used to store interface-element arrays, copies into a properly typed array
+        /// (an interface array is not covariance-compatible with the Object[] storage).</summary>
+        public static T[] ToTypedArray<T>(object src)
+        {
+            if (src == null)
+            {
+                return null;
+            }
+            if (src is T[] typed)
+            {
+                return typed;
+            }
+            if (src is global::java.lang.Object[] arr)
+            {
+                var dst = new T[arr.Length];
+                for (int i = 0; i < arr.Length; i++)
+                {
+                    dst[i] = (T)(object)arr[i];
+                }
+                return dst;
+            }
+            return (T[])src;
+        }
+
         /// <summary>Recover the native array from a boxed java.lang.Object; the caller casts the
         /// result to the concrete array type. Throws ClassCastException for a non-array Object.</summary>
         public static global::System.Array Unbox(global::java.lang.Object o)

@@ -770,6 +770,11 @@ public final class ShimRegistry {
         put(m, "java/lang/Object.hashCode()I", instance("hashCode"));
         put(m, "java/lang/Object.equals(Ljava/lang/Object;)Z", instance("equals"));
         put(m, "java/lang/Object.getClass()Ljava/lang/Class;", instance("getClass"));
+        put(m, "java/lang/Object.notify()V", instance("notify"));
+        put(m, "java/lang/Object.notifyAll()V", instance("notifyAll"));
+        put(m, "java/lang/Object.wait()V", instance("wait"));
+        put(m, "java/lang/Object.wait(J)V", instance("wait"));
+        put(m, "java/lang/Object.wait(JI)V", instance("wait"));
         put(m, "java/lang/Object.clone()Ljava/lang/Object;", instance("clone"));
         put(m, "java/lang/String.length()I", instance("length"));
         put(m, "java/lang/String.charAt(I)C", instance("charAt"));
@@ -2733,6 +2738,7 @@ public final class ShimRegistry {
     }
 
     private static void addLangMethods13(Map<String, ShimTarget> m) {
+        put(m, "java/lang/System.getenv(Ljava/lang/String;)Ljava/lang/String;", statics("getenv"));
         put(m, "java/lang/System.getProperty(Ljava/lang/String;)Ljava/lang/String;", statics("getProperty"));
         put(m, "java/lang/System.getProperty(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;", statics("getProperty"));
         put(m, "java/lang/System.setProperty(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;", statics("setProperty"));

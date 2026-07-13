@@ -106,6 +106,15 @@ public final class TypeReconciler {
             if (target.csText().equals("global::java.lang.Object[]")) {
                 return "global::java.lang.JRuntime.ToObjectArray(" + expr + ")";
             }
+            // A single-dimension reference-element array whose runtime value may be a java.lang.Object[]
+            // (interface-element arrays are stored that way) is not C#-castable to the typed array.
+            // Convert through a helper that returns the value unchanged when it is already the right
+            // type (a concrete-element array, preserving identity) and copies otherwise.
+            String desc = target.descriptor();
+            if (desc != null && desc.startsWith("[L")) {
+                String element = target.csText().substring(0, target.csText().length() - 2);
+                return "global::java.lang.JRuntime.ToTypedArray<" + element + ">(" + expr + ")";
+            }
             return "((" + target.csText() + ")(object)(" + expr + "))";
         }
         if (source != null && source.isArray()) {

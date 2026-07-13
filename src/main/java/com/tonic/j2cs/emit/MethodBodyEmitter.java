@@ -334,8 +334,13 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
                 w.line("throw global::java.lang.JThrow.of(" + storageAdjusted(throwable, instr.getOperand()) + ");");
                 terminated = true;
             }
-            case MONITORENTER, MONITOREXIT ->
-                    throw new UnsupportedBodyException("monitors not supported");
+            // The goto-form body preserves the bytecode's monitorenter/monitorexit pairing (javac emits
+            // the unlock on both the normal and exception paths), so the calls stay balanced; both mirror
+            // synchronized's re-entrant, thread-affine locking via Monitor under JRuntime.
+            case MONITORENTER ->
+                    w.line("global::java.lang.JRuntime.MonitorEnter(" + names.ref(instr.getOperand()) + ");");
+            case MONITOREXIT ->
+                    w.line("global::java.lang.JRuntime.MonitorExit(" + names.ref(instr.getOperand()) + ");");
         }
         return null;
     }

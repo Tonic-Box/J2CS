@@ -87,6 +87,16 @@ namespace java.lang
             return v != null ? v : def;
         }
 
+        public static String getenv(String name)
+        {
+            if (name == null)
+            {
+                return null;
+            }
+            string v = global::System.Environment.GetEnvironmentVariable(name.Value);
+            return v != null ? String.Wrap(v) : null;
+        }
+
         public static String setProperty(String key, String value)
         {
             if (key == null)
