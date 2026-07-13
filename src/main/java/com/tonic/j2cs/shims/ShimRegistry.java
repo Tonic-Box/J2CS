@@ -104,6 +104,7 @@ public final class ShimRegistry {
         put(m, "java/util/Set", "java/util/Collection");
         put(m, "java/util/Map", "java/lang/Object");
         put(m, "java/util/Map$Entry", "java/lang/Object");
+        put(m, "java/lang/Thread$UncaughtExceptionHandler", "java/lang/Object");
         put(m, "java/util/HashMap", "java/util/Map");
         put(m, "java/util/HashSet", "java/util/Set");
         put(m, "java/util/TreeSet", "java/util/NavigableSet");
@@ -118,6 +119,7 @@ public final class ShimRegistry {
         put(m, "java/net/URI", "java/lang/Object");
         put(m, "java/net/URL", "java/lang/Object");
         put(m, "java/net/MalformedURLException", "java/io/IOException");
+        put(m, "java/net/URISyntaxException", "java/lang/Exception");
         put(m, "java/net/Socket", "java/lang/Object");
         put(m, "java/net/ServerSocket", "java/lang/Object");
         put(m, "java/net/InetAddress", "java/lang/Object");
@@ -1335,6 +1337,7 @@ public final class ShimRegistry {
 
     private static void addNioMethods0(Map<String, ShimTarget> m) {
         put(m, "java/nio/file/Paths.get(Ljava/lang/String;[Ljava/lang/String;)Ljava/nio/file/Path;", statics("get"));
+        put(m, "java/nio/file/Paths.get(Ljava/net/URI;)Ljava/nio/file/Path;", statics("get"));
         put(m, "java/nio/file/Path.getFileName()Ljava/nio/file/Path;", instance("getFileName"));
         put(m, "java/nio/file/Path.getParent()Ljava/nio/file/Path;", instance("getParent"));
         put(m, "java/nio/file/Path.getNameCount()I", instance("getNameCount"));
@@ -2490,6 +2493,9 @@ public final class ShimRegistry {
         put(m, "java/util/Map.merge(Ljava/lang/Object;Ljava/lang/Object;Ljava/util/function/BiFunction;)Ljava/lang/Object;", instance("merge"));
         put(m, "java/util/Map.replace(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", instance("replace"));
         put(m, "java/util/Map.forEach(Ljava/util/function/BiConsumer;)V", instance("forEach"));
+        put(m, "java/lang/Thread$UncaughtExceptionHandler.uncaughtException(Ljava/lang/Thread;Ljava/lang/Throwable;)V", instance("uncaughtException"));
+        put(m, "java/lang/Thread.setUncaughtExceptionHandler(Ljava/lang/Thread$UncaughtExceptionHandler;)V", instance("setUncaughtExceptionHandler"));
+        put(m, "java/lang/Thread.getUncaughtExceptionHandler()Ljava/lang/Thread$UncaughtExceptionHandler;", instance("getUncaughtExceptionHandler"));
         put(m, "java/util/Map$Entry.getKey()Ljava/lang/Object;", instance("getKey"));
         put(m, "java/util/Map$Entry.getValue()Ljava/lang/Object;", instance("getValue"));
     }
@@ -3770,6 +3776,7 @@ public final class ShimRegistry {
             "java/util/ListIterator",
             "java/util/Map",
             "java/util/Map$Entry",
+            "java/lang/Thread$UncaughtExceptionHandler",
             "java/util/NavigableMap",
             "java/util/NavigableSet",
             "java/util/Queue",

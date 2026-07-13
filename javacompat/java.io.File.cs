@@ -50,6 +50,19 @@ namespace java.io
                     p.Length == 0 ? c : global::System.IO.Path.Combine(p, c));
         }
 
+        public void __init_Ljava_net_URI__V(global::java.net.URI uri)
+        {
+            try
+            {
+                path = new global::System.Uri(uri.toString().Value).LocalPath;
+            }
+            catch (global::System.Exception)
+            {
+                var p = uri.getPath();
+                path = p == null ? "" : p.Value;
+            }
+        }
+
         public global::java.lang.String getName()
         {
             return global::java.lang.String.Wrap(global::System.IO.Path.GetFileName(path.TrimEnd(TrailSeparators)));

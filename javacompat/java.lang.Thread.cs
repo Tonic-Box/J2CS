@@ -78,6 +78,18 @@ namespace java.lang
             return global::java.lang.ClassLoader.SystemClassLoader;
         }
 
+        private global::java.lang.Thread_S_UncaughtExceptionHandler uncaughtHandler;
+
+        public void setUncaughtExceptionHandler(global::java.lang.Thread_S_UncaughtExceptionHandler h)
+        {
+            uncaughtHandler = h;
+        }
+
+        public global::java.lang.Thread_S_UncaughtExceptionHandler getUncaughtExceptionHandler()
+        {
+            return uncaughtHandler;
+        }
+
         public void setContextClassLoader(global::java.lang.ClassLoader cl)
         {
         }

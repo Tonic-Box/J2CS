@@ -21,5 +21,20 @@ namespace java.nio.file
             }
             return new Path(p);
         }
+
+        public static Path get(global::java.net.URI uri)
+        {
+            string local;
+            try
+            {
+                local = new global::System.Uri(uri.toString().Value).LocalPath;
+            }
+            catch (global::System.Exception)
+            {
+                var p = uri.getPath();
+                local = p == null ? "" : p.Value;
+            }
+            return new Path(Path.Normalize(local));
+        }
     }
 }
