@@ -2441,6 +2441,8 @@ public final class ShimRegistry {
 
     private static void addLangMethods11(Map<String, ShimTarget> m) {
         put(m, "java/lang/Package.getName()Ljava/lang/String;", instance("getName"));
+        put(m, "java/lang/Package.getSpecificationVersion()Ljava/lang/String;", instance("getSpecificationVersion"));
+        put(m, "java/lang/Package.getImplementationVersion()Ljava/lang/String;", instance("getImplementationVersion"));
         put(m, "java/lang/Class.getPackage()Ljava/lang/Package;", instance("getPackage"));
     }
 

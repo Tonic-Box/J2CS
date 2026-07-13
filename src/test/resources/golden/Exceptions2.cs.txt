@@ -219,43 +219,31 @@ namespace jdefault
         {
             try
             {
-                try
+                if (p0 == 0)
                 {
-                    if (p0 == 0)
-                    {
-                        throw JThrow.of(new MyException(String.Intern("zero")));
-                    }
-                    if (p0 == 1)
-                    {
-                        IllegalStateException __t0 = new IllegalStateException(RawNew.I);
-                        __t0.__init_Ljava_lang_String__V(String.Intern("one"));
-                        throw JThrow.of(__t0);
-                    }
-                    return String.Intern("none");
+                    throw JThrow.of(new MyException(String.Intern("zero")));
                 }
-                catch (global::System.Exception __e1)
+                if (p0 == 1)
                 {
-                    if (__e1 is global::System.NotSupportedException) throw;
-                    Throwable __ex2 = JRuntime.Normalize(__e1);
-                    if (__ex2 is RuntimeException)
-                    {
-                        RuntimeException local1_1 = (RuntimeException)__ex2;
-                        return String.Wrap("rt:" + JRuntime.Str(local1_1.getMessage()));
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    IllegalStateException __t0 = new IllegalStateException(RawNew.I);
+                    __t0.__init_Ljava_lang_String__V(String.Intern("one"));
+                    throw JThrow.of(__t0);
                 }
+                return String.Intern("none");
             }
-            catch (global::System.Exception __e3)
+            catch (global::System.Exception __e1)
             {
-                if (__e3 is global::System.NotSupportedException) throw;
-                Throwable __ex4 = JRuntime.Normalize(__e3);
-                if (__ex4 is MyException)
+                if (__e1 is global::System.NotSupportedException) throw;
+                Throwable __ex2 = JRuntime.Normalize(__e1);
+                if (__ex2 is MyException)
                 {
-                    MyException local1 = (MyException)__ex4;
+                    MyException local1 = (MyException)__ex2;
                     return String.Wrap("my:" + JRuntime.Str(local1.getMessage()));
+                }
+                else if (__ex2 is RuntimeException)
+                {
+                    RuntimeException local1_1 = (RuntimeException)__ex2;
+                    return String.Wrap("rt:" + JRuntime.Str(local1_1.getMessage()));
                 }
                 else
                 {

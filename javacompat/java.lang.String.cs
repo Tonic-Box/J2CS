@@ -17,6 +17,11 @@ namespace java.lang
             Value = value == null ? "" : new string(value);
         }
 
+        public void __init__CII_V(char[] value, int offset, int count)
+        {
+            Value = value == null ? "" : new string(value, offset, count);
+        }
+
         public void __init_Ljava_lang_String__V(String original)
         {
             Value = original == null ? "" : original.Value;

@@ -69,7 +69,25 @@ public final class InputLoader {
             if (manifest != null) {
                 manifestMain = manifest.getMainAttributes().getValue("Main-Class");
             }
-            pool.loadJar(jar);
+            // Load only the base classes. A multi-release jar's META-INF/versions/N/ entries are
+            // overrides for newer JVMs — often reimplemented with module-system APIs (Class.getModule,
+            // ModuleDescriptor, ...) that don't apply here — whereas the base variant is always present
+            // (JEP 238) and is the simplest, most portable form to transpile.
+            java.util.Enumeration<java.util.jar.JarEntry> entries = jar.entries();
+            while (entries.hasMoreElements()) {
+                java.util.jar.JarEntry entry = entries.nextElement();
+                String name = entry.getName();
+                if (entry.isDirectory() || !name.endsWith(".class")
+                        || name.startsWith("META-INF/versions/")) {
+                    continue;
+                }
+                try (InputStream in = jar.getInputStream(entry)) {
+                    pool.loadClass(in);
+                } catch (RuntimeException | IOException e) {
+                    // A malformed or unsupported entry is skipped; a genuinely referenced but missing
+                    // class degrades to a per-class stub downstream rather than aborting the load.
+                }
+            }
             return manifestMain;
         } catch (IOException e) {
             throw new J2csException("failed to read jar " + input + ": " + e.getMessage(), e);
