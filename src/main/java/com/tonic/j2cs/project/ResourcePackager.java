@@ -15,9 +15,10 @@ import java.util.jar.JarFile;
  * Extracts the input jar's non-class resources into the generated solution's resources/ directory,
  * preserving each entry's path so they resolve under the transpiled runtime's classpath root. The
  * transpiler's class loader discards non-class entries, so the jar is re-opened here (as with the
- * native-library packager). Class files and native libraries are skipped — the former are transpiled,
- * the latter packaged separately into nativelibs/. Runtime lookups (Class/ClassLoader.getResource*)
- * read from this directory.
+ * native-library packager). Only class files are skipped (they are transpiled); everything else,
+ * including bundled native libraries, is a classpath resource — engine loaders such as jME's
+ * NativeLibraryLoader locate their native libs via getResourceAsStream before extracting and loading
+ * them. Runtime lookups (Class/ClassLoader.getResource*) read from this directory.
  */
 public final class ResourcePackager {
 
@@ -60,11 +61,6 @@ public final class ResourcePackager {
     }
 
     private static boolean isResource(String name) {
-        String lower = name.toLowerCase(Locale.ROOT);
-        if (lower.endsWith(".class")) {
-            return false;
-        }
-        return !lower.endsWith(".dll") && !lower.endsWith(".so")
-                && !lower.endsWith(".dylib") && !lower.endsWith(".jnilib");
+        return !name.toLowerCase(Locale.ROOT).endsWith(".class");
     }
 }

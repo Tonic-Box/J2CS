@@ -53,6 +53,7 @@ java.io.FileWriter.cs
 java.io.InputStream.cs
 java.io.IOException.cs
 java.io.UncheckedIOException.cs
+java.net.MalformedURLException.cs
 java.io.InputStreamReader.cs
 java.io.OutputStream.cs
 java.io.OutputStreamWriter.cs

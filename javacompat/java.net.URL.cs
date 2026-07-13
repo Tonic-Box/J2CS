@@ -62,9 +62,16 @@ namespace java.net
 
         public URLConnection openConnection()
         {
-            var c = new HttpURLConnection(global::java.lang.RawNew.I);
+            URLConnection c = "file".Equals(protocol)
+                    ? new URLConnection(global::java.lang.RawNew.I)
+                    : new HttpURLConnection(global::java.lang.RawNew.I);
             c.SetUrl(full);
             return c;
+        }
+
+        public global::java.io.InputStream openStream()
+        {
+            return openConnection().getInputStream();
         }
 
         public override int equals(global::java.lang.Object o) { return o is URL u && u.full == full ? 1 : 0; }

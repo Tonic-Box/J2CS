@@ -117,6 +117,7 @@ public final class ShimRegistry {
         put(m, "java/lang/ProcessBuilder", "java/lang/Object");
         put(m, "java/net/URI", "java/lang/Object");
         put(m, "java/net/URL", "java/lang/Object");
+        put(m, "java/net/MalformedURLException", "java/io/IOException");
         put(m, "java/net/Socket", "java/lang/Object");
         put(m, "java/net/ServerSocket", "java/lang/Object");
         put(m, "java/net/InetAddress", "java/lang/Object");
@@ -3255,8 +3256,10 @@ public final class ShimRegistry {
         put(m, "java/net/InetAddress.getHostName()Ljava/lang/String;", instance("getHostName"));
         put(m, "java/net/InetAddress.isLoopbackAddress()Z", instance("isLoopbackAddress"));
         put(m, "java/net/URL.openConnection()Ljava/net/URLConnection;", instance("openConnection"));
+        put(m, "java/net/URL.openStream()Ljava/io/InputStream;", instance("openStream"));
         put(m, "java/net/URLConnection.connect()V", instance("connect"));
         put(m, "java/net/URLConnection.getInputStream()Ljava/io/InputStream;", instance("getInputStream"));
+        put(m, "java/net/URLConnection.getOutputStream()Ljava/io/OutputStream;", instance("getOutputStream"));
         put(m, "java/net/URLConnection.getLastModified()J", instance("getLastModified"));
         put(m, "java/net/URLConnection.getContentLengthLong()J", instance("getContentLengthLong"));
         put(m, "java/net/URLConnection.getContentLength()I", instance("getContentLength"));

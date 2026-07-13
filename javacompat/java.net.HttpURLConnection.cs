@@ -10,8 +10,6 @@ namespace java.net
 
         public HttpURLConnection(global::java.lang.RawNew r) : base(r) { }
 
-        internal void SetUrl(string u) { urlStr = u; }
-
         public void setRequestMethod(global::java.lang.String m) { method = m == null ? "GET" : m.Value; }
 
         public override void setRequestProperty(global::java.lang.String key, global::java.lang.String value)
