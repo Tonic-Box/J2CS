@@ -106,6 +106,7 @@ public final class ShimRegistry {
         put(m, "java/util/Map$Entry", "java/lang/Object");
         put(m, "java/lang/Thread$UncaughtExceptionHandler", "java/lang/Object");
         put(m, "java/util/HashMap", "java/util/Map");
+        put(m, "java/util/AbstractMap", "java/lang/Object");
         put(m, "java/util/HashSet", "java/util/Set");
         put(m, "java/util/TreeSet", "java/util/NavigableSet");
         put(m, "java/util/SortedSet", "java/util/Set");

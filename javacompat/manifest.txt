@@ -230,6 +230,7 @@ java.time.format.DateTimeFormatter.cs
 java.time.temporal.ChronoUnit.cs
 java.time.temporal.Temporal.cs
 java.util.ArrayDeque.cs
+java.util.AbstractMap.cs
 java.util.ArrayList.cs
 java.util.Arrays.cs
 java.util.Base64$Decoder.cs
