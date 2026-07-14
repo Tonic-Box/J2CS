@@ -246,6 +246,7 @@ java.util.Formatter.cs
 java.util.GregorianCalendar.cs
 java.util.HashMap.cs
 java.util.HashSet.cs
+java.util.IdentityHashMap.cs
 java.util.IntSummaryStatistics.cs
 java.util.Iterator.cs
 java.util.JCollections.cs

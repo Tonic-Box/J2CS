@@ -124,6 +124,11 @@ namespace java.lang
             return global::System.DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
         }
 
+        public static int identityHashCode(global::java.lang.Object x)
+        {
+            return x == null ? 0 : global::System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(x);
+        }
+
         public static void exit(int status)
         {
             global::System.Environment.Exit(status);

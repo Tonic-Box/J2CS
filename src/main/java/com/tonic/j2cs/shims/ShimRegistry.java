@@ -377,6 +377,7 @@ public final class ShimRegistry {
     private static void addUtilSupers5(Map<String, String> m) {
         put(m, "java/util/LinkedList", "java/util/ArrayList");
         put(m, "java/util/LinkedHashMap", "java/util/HashMap");
+        put(m, "java/util/IdentityHashMap", "java/util/HashMap");
         put(m, "java/util/TreeMap", "java/util/HashMap");
         put(m, "java/util/IntSummaryStatistics", "java/lang/Object");
         put(m, "java/util/LongSummaryStatistics", "java/lang/Object");
@@ -1786,6 +1787,7 @@ public final class ShimRegistry {
         put(m, "java/lang/Throwable.printStackTrace(Ljava/io/PrintStream;)V", instance("printStackTrace"));
         put(m, "java/lang/String.format(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;", statics("format"));
         put(m, "java/lang/System.nanoTime()J", statics("nanoTime"));
+        put(m, "java/lang/System.identityHashCode(Ljava/lang/Object;)I", statics("identityHashCode"));
         put(m, "java/lang/System.currentTimeMillis()J", statics("currentTimeMillis"));
     }
 

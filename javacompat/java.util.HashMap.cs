@@ -55,21 +55,29 @@ namespace java.util
             }
         }
 
-        private static int Spread(global::java.lang.Object key)
+        // Instance (not static) so IdentityHashMap can key on reference identity: it hashes by the
+        // runtime identity hash and matches keys only by reference, never by equals/hashCode.
+        private int Spread(global::java.lang.Object key)
         {
             if (key == null)
             {
                 return 0;
             }
-            int h = key.hashCode();
+            int h = this is global::java.util.IdentityHashMap
+                    ? global::System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(key)
+                    : key.hashCode();
             return h ^ (int)((uint)h >> 16);
         }
 
-        private static bool SameKey(global::java.lang.Object a, global::java.lang.Object b)
+        private bool SameKey(global::java.lang.Object a, global::java.lang.Object b)
         {
             if (ReferenceEquals(a, b))
             {
                 return true;
+            }
+            if (this is global::java.util.IdentityHashMap)
+            {
+                return false;
             }
             return a != null && b != null && a.equals(b) != 0;
         }
