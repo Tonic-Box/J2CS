@@ -54,6 +54,7 @@ java.io.InputStream.cs
 java.io.IOException.cs
 java.io.UncheckedIOException.cs
 java.lang.SecurityException.cs
+java.lang.Thread$State.cs
 java.lang.Thread$UncaughtExceptionHandler.cs
 java.net.MalformedURLException.cs
 java.net.URISyntaxException.cs

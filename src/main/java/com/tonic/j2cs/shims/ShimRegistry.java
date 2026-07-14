@@ -149,6 +149,7 @@ public final class ShimRegistry {
         put(m, "java/lang/InstantiationException", "java/lang/Exception");
         put(m, "java/lang/reflect/InvocationTargetException", "java/lang/Exception");
         put(m, "java/lang/Thread", "java/lang/Object");
+        put(m, "java/lang/Thread$State", "java/lang/Object");
         put(m, "java/lang/Runtime", "java/lang/Object");
         put(m, "java/lang/CharSequence", "java/lang/Object");
         put(m, "java/lang/Comparable", "java/lang/Object");
@@ -1807,6 +1808,7 @@ public final class ShimRegistry {
         put(m, "java/lang/Thread.interrupt()V", instance("interrupt"));
         put(m, "java/lang/Thread.start()V", instance("start"));
         put(m, "java/lang/Thread.isAlive()Z", instance("isAlive"));
+        put(m, "java/lang/Thread.getState()Ljava/lang/Thread$State;", instance("getState"));
         put(m, "java/lang/Thread.setPriority(I)V", instance("setPriority"));
         put(m, "java/lang/Thread.getPriority()I", instance("getPriority"));
         put(m, "java/lang/Thread.run()V", instance("run"));
@@ -3541,6 +3543,12 @@ public final class ShimRegistry {
         put(m, "java/math/BigInteger.ONE Ljava/math/BigInteger;", statics("ONE"));
         put(m, "java/math/BigInteger.TWO Ljava/math/BigInteger;", statics("TWO"));
         put(m, "java/math/BigInteger.TEN Ljava/math/BigInteger;", statics("TEN"));
+        put(m, "java/lang/Thread$State.NEW Ljava/lang/Thread$State;", statics("NEW"));
+        put(m, "java/lang/Thread$State.RUNNABLE Ljava/lang/Thread$State;", statics("RUNNABLE"));
+        put(m, "java/lang/Thread$State.BLOCKED Ljava/lang/Thread$State;", statics("BLOCKED"));
+        put(m, "java/lang/Thread$State.WAITING Ljava/lang/Thread$State;", statics("WAITING"));
+        put(m, "java/lang/Thread$State.TIMED_WAITING Ljava/lang/Thread$State;", statics("TIMED_WAITING"));
+        put(m, "java/lang/Thread$State.TERMINATED Ljava/lang/Thread$State;", statics("TERMINATED"));
         put(m, "java/math/RoundingMode.UP Ljava/math/RoundingMode;", statics("UP"));
         put(m, "java/math/RoundingMode.DOWN Ljava/math/RoundingMode;", statics("DOWN"));
         put(m, "java/math/RoundingMode.CEILING Ljava/math/RoundingMode;", statics("CEILING"));
@@ -3749,6 +3757,7 @@ public final class ShimRegistry {
             "java/lang/RawNew",
             "java/lang/Short",
             "java/lang/StrictMath",
+            "java/lang/Thread$State",
             "java/lang/Void",
             "java/lang/reflect/Array",
             "java/lang/reflect/Constructor",

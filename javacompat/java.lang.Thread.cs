@@ -116,6 +116,32 @@ namespace java.lang
             return clr != null && clr.IsAlive ? 1 : 0;
         }
 
+        // Maps the CLR thread state onto java.lang.Thread.State. A thread object that was never
+        // started reports NEW; a finished thread reports TERMINATED; a blocking wait/sleep/join maps
+        // to WAITING. The finer WAITING/TIMED_WAITING/BLOCKED distinction is not observable through
+        // the CLR, so all blocking maps to WAITING; callers that only test TERMINATED are unaffected.
+        public global::java.lang.Thread_S_State getState()
+        {
+            if (clr == null)
+            {
+                return global::java.lang.Thread_S_State.NEW;
+            }
+            global::System.Threading.ThreadState st = clr.ThreadState;
+            if ((st & global::System.Threading.ThreadState.Unstarted) != 0)
+            {
+                return global::java.lang.Thread_S_State.NEW;
+            }
+            if ((st & (global::System.Threading.ThreadState.Stopped | global::System.Threading.ThreadState.Aborted)) != 0)
+            {
+                return global::java.lang.Thread_S_State.TERMINATED;
+            }
+            if ((st & global::System.Threading.ThreadState.WaitSleepJoin) != 0)
+            {
+                return global::java.lang.Thread_S_State.WAITING;
+            }
+            return global::java.lang.Thread_S_State.RUNNABLE;
+        }
+
         // Priority is an advisory scheduling hint; store it so getPriority round-trips without imposing
         // a lossy mapping onto the CLR thread scheduler.
         public void setPriority(int newPriority)
