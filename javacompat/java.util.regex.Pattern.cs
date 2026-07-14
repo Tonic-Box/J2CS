@@ -39,12 +39,14 @@ namespace java.util.regex
 
         public static Pattern compile(global::java.lang.String regex)
         {
-            return new Pattern(regex, new global::System.Text.RegularExpressions.Regex(regex.Value));
+            return new Pattern(regex, new global::System.Text.RegularExpressions.Regex(
+                    global::java.lang.JRuntime.TranslateJavaRegex(regex.Value)));
         }
 
         public static Pattern compile(global::java.lang.String regex, int flags)
         {
-            return new Pattern(regex, new global::System.Text.RegularExpressions.Regex(regex.Value, MapFlags(flags)));
+            return new Pattern(regex, new global::System.Text.RegularExpressions.Regex(
+                    global::java.lang.JRuntime.TranslateJavaRegex(regex.Value), MapFlags(flags)));
         }
 
         public Matcher matcher(global::java.lang.CharSequence input)

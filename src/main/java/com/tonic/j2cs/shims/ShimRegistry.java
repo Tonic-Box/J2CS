@@ -1959,6 +1959,7 @@ public final class ShimRegistry {
 
     private static void addLangMethods6(Map<String, ShimTarget> m) {
         put(m, "java/lang/String.getBytes(Ljava/nio/charset/Charset;)[B", instance("getBytes"));
+        put(m, "java/lang/String.getBytes(Ljava/lang/String;)[B", instance("getBytes"));
         put(m, "java/lang/String.trim()Ljava/lang/String;", instance("trim"));
     }
 
@@ -2842,6 +2843,7 @@ public final class ShimRegistry {
         put(m, "java/io/Writer.flush()V", instance("flush"));
         put(m, "java/io/Writer.close()V", instance("close"));
         put(m, "java/io/ByteArrayOutputStream.toByteArray()[B", instance("toByteArray"));
+        put(m, "java/io/ByteArrayOutputStream.toString(Ljava/lang/String;)Ljava/lang/String;", instance("toString"));
         put(m, "java/io/ByteArrayOutputStream.size()I", instance("size"));
         put(m, "java/io/ByteArrayOutputStream.reset()V", instance("reset"));
         put(m, "java/io/ByteArrayOutputStream.writeTo(Ljava/io/OutputStream;)V", instance("writeTo"));

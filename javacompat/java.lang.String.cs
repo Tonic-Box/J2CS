@@ -166,6 +166,22 @@ namespace java.lang
             return global::java.lang.JRuntime.SignedBytes(encoding.GetBytes(Value));
         }
 
+        public sbyte[] getBytes(global::java.lang.String charsetName)
+        {
+            global::System.Text.Encoding encoding;
+            try
+            {
+                encoding = charsetName == null
+                    ? new global::System.Text.UTF8Encoding(false)
+                    : global::System.Text.Encoding.GetEncoding(charsetName.Value);
+            }
+            catch (global::System.Exception)
+            {
+                encoding = new global::System.Text.UTF8Encoding(false);
+            }
+            return global::java.lang.JRuntime.SignedBytes(encoding.GetBytes(Value));
+        }
+
         public static String format(String fmt, global::java.lang.Object[] args)
         {
             return Wrap(global::java.lang.JRuntime.Format(fmt == null ? null : fmt.Value, args));
@@ -310,12 +326,14 @@ namespace java.lang
 
         public String replaceAll(String regex, String replacement)
         {
-            return Wrap(global::System.Text.RegularExpressions.Regex.Replace(Value, regex.Value, replacement.Value));
+            return Wrap(global::System.Text.RegularExpressions.Regex.Replace(
+                    Value, global::java.lang.JRuntime.TranslateJavaRegex(regex.Value), replacement.Value));
         }
 
         public String replaceFirst(String regex, String replacement)
         {
-            var re = new global::System.Text.RegularExpressions.Regex(regex.Value);
+            var re = new global::System.Text.RegularExpressions.Regex(
+                    global::java.lang.JRuntime.TranslateJavaRegex(regex.Value));
             return Wrap(re.Replace(Value, replacement.Value, 1));
         }
 
@@ -378,7 +396,8 @@ namespace java.lang
 
         public String[] split(String regex, int limit)
         {
-            var re = new global::System.Text.RegularExpressions.Regex(regex.Value);
+            var re = new global::System.Text.RegularExpressions.Regex(
+                    global::java.lang.JRuntime.TranslateJavaRegex(regex.Value));
             if (limit == 0 && !re.IsMatch(Value))
             {
                 return new String[] { Wrap(Value) };

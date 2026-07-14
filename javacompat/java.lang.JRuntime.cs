@@ -698,5 +698,34 @@ namespace java.lang
                 sb.Append(' ', padLen).Append(body);
             }
         }
+
+        // Translates Java-only regex property classes to their .NET equivalents. Java exposes
+        // \p{java...} classes backed by java.lang.Character predicates that System.Text.RegularExpressions
+        // does not recognize; the shared regex shims (String.split, Pattern) route patterns through here so
+        // a Java pattern compiles. Only the properties with a faithful .NET class are mapped; anything else
+        // is left untouched.
+        public static string TranslateJavaRegex(string pattern)
+        {
+            if (pattern == null
+                    || (pattern.IndexOf("\\p{java", global::System.StringComparison.Ordinal) < 0
+                        && pattern.IndexOf("\\P{java", global::System.StringComparison.Ordinal) < 0))
+            {
+                return pattern;
+            }
+            return global::System.Text.RegularExpressions.Regex.Replace(
+                    pattern, "\\\\([pP])\\{java(\\w+)\\}", m =>
+            {
+                bool negate = m.Groups[1].Value == "P";
+                switch (m.Groups[2].Value)
+                {
+                    case "Whitespace": return negate ? "\\S" : "\\s";
+                    case "Digit": return negate ? "\\D" : "\\d";
+                    case "LowerCase": return negate ? "\\P{Ll}" : "\\p{Ll}";
+                    case "UpperCase": return negate ? "\\P{Lu}" : "\\p{Lu}";
+                    case "Letter": return negate ? "\\P{L}" : "\\p{L}";
+                    default: return m.Value;
+                }
+            });
+        }
     }
 }

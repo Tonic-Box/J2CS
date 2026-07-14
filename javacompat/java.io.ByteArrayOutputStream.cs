@@ -56,5 +56,22 @@ namespace java.io
                     new global::System.Text.UTF8Encoding(false).GetString(
                             global::java.lang.JRuntime.UnsignedBytes(buf.ToArray())));
         }
+
+        public global::java.lang.String toString(global::java.lang.String charsetName)
+        {
+            global::System.Text.Encoding enc;
+            try
+            {
+                enc = charsetName == null
+                    ? new global::System.Text.UTF8Encoding(false)
+                    : global::System.Text.Encoding.GetEncoding(charsetName.Value);
+            }
+            catch (global::System.Exception)
+            {
+                enc = new global::System.Text.UTF8Encoding(false);
+            }
+            return global::java.lang.String.Wrap(
+                    enc.GetString(global::java.lang.JRuntime.UnsignedBytes(buf.ToArray())));
+        }
     }
 }
