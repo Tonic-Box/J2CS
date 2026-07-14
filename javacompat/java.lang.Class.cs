@@ -130,6 +130,31 @@ namespace java.lang
             return componentDesc != null ? 1 : 0;
         }
 
+        // Primitive Class objects (int, long, ...) are name-only: no CLR type, not an array. A regular
+        // class always carries a CLR type or a fully-qualified name, so a bare primitive name is unambiguous.
+        public int isPrimitive()
+        {
+            if (type != null || componentDesc != null)
+            {
+                return 0;
+            }
+            switch (name)
+            {
+                case "int":
+                case "long":
+                case "double":
+                case "float":
+                case "boolean":
+                case "byte":
+                case "char":
+                case "short":
+                case "void":
+                    return 1;
+                default:
+                    return 0;
+            }
+        }
+
         internal global::System.Type ClrType()
         {
             return type;
@@ -320,6 +345,22 @@ namespace java.lang
                 throw global::java.lang.JThrow.of(new IllegalStateException(RawNew.I));
             }
             return m;
+        }
+
+        // getMethod resolves inherited methods too, so walk the superclass chain (getDeclaredMethod is
+        // this class only). Access filtering is not modeled; the first name+params match wins.
+        public global::java.lang.reflect.Method getMethod(String methodName, Class[] paramTypes)
+        {
+            for (Class c = this; c != null; c = c.getSuperclass())
+            {
+                global::java.lang.reflect.Method m = c.meta != null
+                        ? c.meta.FindMethod(methodName.Value, paramTypes) : null;
+                if (m != null)
+                {
+                    return m;
+                }
+            }
+            throw global::java.lang.JThrow.of(new IllegalStateException(RawNew.I));
         }
 
         public int isInstance(global::java.lang.Object o)

@@ -1998,6 +1998,7 @@ public final class ShimRegistry {
         put(m, "java/lang/Class.getSimpleName()Ljava/lang/String;", instance("getSimpleName"));
         put(m, "java/lang/Class.getCanonicalName()Ljava/lang/String;", instance("getCanonicalName"));
         put(m, "java/lang/Class.isArray()Z", instance("isArray"));
+        put(m, "java/lang/Class.isPrimitive()Z", instance("isPrimitive"));
         put(m, "java/lang/Class.getComponentType()Ljava/lang/Class;", instance("getComponentType"));
         put(m, "java/lang/Class.getSuperclass()Ljava/lang/Class;", instance("getSuperclass"));
         put(m, "java/lang/Class.getDeclaredFields()[Ljava/lang/reflect/Field;", instance("getDeclaredFields"));
@@ -2008,6 +2009,7 @@ public final class ShimRegistry {
         put(m, "java/lang/Class.getDeclaredConstructor([Ljava/lang/Class;)Ljava/lang/reflect/Constructor;", instance("getDeclaredConstructor"));
         put(m, "java/lang/Class.getDeclaredField(Ljava/lang/String;)Ljava/lang/reflect/Field;", instance("getDeclaredField"));
         put(m, "java/lang/Class.getDeclaredMethod(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;", instance("getDeclaredMethod"));
+        put(m, "java/lang/Class.getMethod(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;", instance("getMethod"));
         put(m, "java/lang/Class.isInstance(Ljava/lang/Object;)Z", instance("isInstance"));
         put(m, "java/lang/Class.isAssignableFrom(Ljava/lang/Class;)Z", instance("isAssignableFrom"));
         put(m, "java/lang/Class.cast(Ljava/lang/Object;)Ljava/lang/Object;", instance("cast"));
