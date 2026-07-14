@@ -36,7 +36,9 @@ public final class ShimPackager {
     }
 
     private static boolean isGuiShim(String fileName) {
-        return fileName.startsWith("javax.swing.") || fileName.startsWith("java.awt.");
+        return fileName.startsWith("javax.swing.")
+                || fileName.startsWith("java.awt.")
+                || fileName.startsWith("javax.imageio.");
     }
 
     private static String internalNameOf(String fileName) {

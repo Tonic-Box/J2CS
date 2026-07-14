@@ -13,6 +13,7 @@ public final class CsprojTemplate {
     public static final String TARGET_FRAMEWORK = "net9.0";
 
     private static final String AVALONIA_VERSION = "11.2.1";
+    private static final String SKIA_VERSION = "2.88.8";
 
     public static String csproj(boolean usesGui, java.util.List<String> nativeLibs, boolean hasResources) {
         return "<Project Sdk=\"Microsoft.NET.Sdk\">\n"
@@ -74,6 +75,7 @@ public final class CsprojTemplate {
                 + "    <PackageReference Include=\"Avalonia\" Version=\"" + AVALONIA_VERSION + "\" />\n"
                 + "    <PackageReference Include=\"Avalonia.Desktop\" Version=\"" + AVALONIA_VERSION + "\" />\n"
                 + "    <PackageReference Include=\"Avalonia.Themes.Fluent\" Version=\"" + AVALONIA_VERSION + "\" />\n"
+                + "    <PackageReference Include=\"SkiaSharp\" Version=\"" + SKIA_VERSION + "\" />\n"
                 + "  </ItemGroup>\n";
     }
 }

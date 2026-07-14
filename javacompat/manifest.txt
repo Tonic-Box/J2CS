@@ -39,7 +39,13 @@ java.awt.event.WindowAdapter.cs
 java.awt.event.WindowEvent.cs
 java.awt.event.WindowListener.cs
 java.awt.geom.AffineTransform.cs
+java.awt.color.ColorSpace.cs
 java.awt.geom.Point2D.cs
+java.awt.image.BufferedImage.cs
+java.awt.image.ColorModel.cs
+java.awt.image.ComponentColorModel.cs
+java.awt.image.DirectColorModel.cs
+java.io.BufferedInputStream.cs
 java.io.BufferedReader.cs
 java.io.BufferedWriter.cs
 java.io.ByteArrayInputStream.cs
@@ -360,6 +366,7 @@ javax.crypto.Mac.cs
 javax.crypto.SecretKey.cs
 javax.crypto.spec.IvParameterSpec.cs
 javax.crypto.spec.SecretKeySpec.cs
+javax.imageio.ImageIO.cs
 javax.swing.AbstractButton.cs
 javax.swing.BorderFactory.cs
 javax.swing.Box.cs

@@ -338,6 +338,7 @@ public final class ShimRegistry {
         put(m, "java/io/Reader", "java/lang/Object");
         put(m, "java/io/Writer", "java/lang/Object");
         put(m, "java/io/ByteArrayInputStream", "java/io/InputStream");
+        put(m, "java/io/BufferedInputStream", "java/io/InputStream");
         put(m, "java/io/FileInputStream", "java/io/InputStream");
         put(m, "java/io/ByteArrayOutputStream", "java/io/OutputStream");
         put(m, "java/io/FileOutputStream", "java/io/OutputStream");
@@ -397,6 +398,12 @@ public final class ShimRegistry {
         put(m, "java/awt/Container", "java/awt/Component");
         put(m, "java/awt/Window", "java/awt/Container");
         put(m, "java/awt/Frame", "java/awt/Window");
+        put(m, "java/awt/image/BufferedImage", "java/lang/Object");
+        put(m, "java/awt/image/ColorModel", "java/lang/Object");
+        put(m, "java/awt/image/DirectColorModel", "java/awt/image/ColorModel");
+        put(m, "java/awt/image/ComponentColorModel", "java/awt/image/ColorModel");
+        put(m, "java/awt/color/ColorSpace", "java/lang/Object");
+        put(m, "javax/imageio/ImageIO", "java/lang/Object");
     }
 
     private static void addSwingSupers0(Map<String, String> m) {
@@ -2474,6 +2481,16 @@ public final class ShimRegistry {
         put(m, "java/util/TreeSet.pollLast()Ljava/lang/Object;", instance("pollLast"));
         put(m, "java/util/TreeSet.floor(Ljava/lang/Object;)Ljava/lang/Object;", instance("floor"));
         put(m, "java/util/TreeSet.ceiling(Ljava/lang/Object;)Ljava/lang/Object;", instance("ceiling"));
+        put(m, "javax/imageio/ImageIO.read(Ljava/io/InputStream;)Ljava/awt/image/BufferedImage;", statics("read"));
+        put(m, "javax/imageio/ImageIO.setUseCache(Z)V", statics("setUseCache"));
+        put(m, "javax/imageio/ImageIO.getImageReadersBySuffix(Ljava/lang/String;)Ljava/util/Iterator;", statics("getImageReadersBySuffix"));
+        put(m, "java/awt/image/BufferedImage.getWidth()I", instance("getWidth"));
+        put(m, "java/awt/image/BufferedImage.getHeight()I", instance("getHeight"));
+        put(m, "java/awt/image/BufferedImage.getType()I", instance("getType"));
+        put(m, "java/awt/image/BufferedImage.getRGB(II)I", instance("getRGB"));
+        put(m, "java/awt/image/BufferedImage.setRGB(III)V", instance("setRGB"));
+        put(m, "java/awt/image/BufferedImage.getTransparency()I", instance("getTransparency"));
+        put(m, "java/awt/color/ColorSpace.getInstance(I)Ljava/awt/color/ColorSpace;", statics("getInstance"));
     }
 
     private static void addSwingMethods0(Map<String, ShimTarget> m) {
