@@ -2952,6 +2952,7 @@ public final class ShimRegistry {
         put(m, "java/nio/FloatBuffer.put(F)Ljava/nio/FloatBuffer;", instance("put"));
         put(m, "java/nio/FloatBuffer.put(IF)Ljava/nio/FloatBuffer;", instance("put"));
         put(m, "java/nio/FloatBuffer.get([F)Ljava/nio/FloatBuffer;", instance("get"));
+        put(m, "java/nio/FloatBuffer.get([FII)Ljava/nio/FloatBuffer;", instance("get"));
         put(m, "java/nio/FloatBuffer.put([F)Ljava/nio/FloatBuffer;", instance("put"));
         put(m, "java/nio/FloatBuffer.array()[F", instance("array"));
         put(m, "java/nio/ByteBuffer.asIntBuffer()Ljava/nio/IntBuffer;", instance("asIntBuffer"));

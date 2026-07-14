@@ -44,6 +44,7 @@ namespace java.nio
         public FloatBuffer put(float v) { ElemSet(pos++, v); return this; }
         public FloatBuffer put(int index, float v) { ElemSet(index, v); return this; }
         public FloatBuffer get(float[] dst) { for (int i = 0; i < dst.Length; i++) { dst[i] = ElemGet(pos++); } return this; }
+        public FloatBuffer get(float[] dst, int offset, int length) { for (int i = 0; i < length; i++) { dst[offset + i] = ElemGet(pos++); } return this; }
         public FloatBuffer put(float[] src) { for (int i = 0; i < src.Length; i++) { ElemSet(pos++, src[i]); } return this; }
 
         public float[] array() { return arr; }
