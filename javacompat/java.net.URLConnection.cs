@@ -56,6 +56,7 @@ namespace java.net
         }
 
         public virtual void setRequestProperty(global::java.lang.String key, global::java.lang.String value) { }
+        public virtual void setUseCaches(int useCaches) { }
         public virtual void setDoOutput(int doOutput) { }
         public virtual void setConnectTimeout(int timeout) { }
         public virtual void setReadTimeout(int timeout) { }

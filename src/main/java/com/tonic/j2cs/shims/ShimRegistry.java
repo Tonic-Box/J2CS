@@ -3357,6 +3357,7 @@ public final class ShimRegistry {
         put(m, "java/net/URLConnection.getContentLengthLong()J", instance("getContentLengthLong"));
         put(m, "java/net/URLConnection.getContentLength()I", instance("getContentLength"));
         put(m, "java/net/URLConnection.setRequestProperty(Ljava/lang/String;Ljava/lang/String;)V", instance("setRequestProperty"));
+        put(m, "java/net/URLConnection.setUseCaches(Z)V", instance("setUseCaches"));
         put(m, "java/net/URLConnection.setDoOutput(Z)V", instance("setDoOutput"));
         put(m, "java/net/URLConnection.setConnectTimeout(I)V", instance("setConnectTimeout"));
         put(m, "java/net/URLConnection.setReadTimeout(I)V", instance("setReadTimeout"));
