@@ -259,6 +259,7 @@ java.util.Iterator.cs
 java.util.JCollections.cs
 java.util.LinkedHashMap.cs
 java.util.LinkedList.cs
+java.util.NoSuchElementException.cs
 java.util.List.cs
 java.util.ListIterator.cs
 java.util.Locale.cs

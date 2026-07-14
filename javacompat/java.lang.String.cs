@@ -197,6 +197,11 @@ namespace java.lang
             return Wrap(Value.Substring(beginIndex, endIndex - beginIndex));
         }
 
+        public global::java.lang.CharSequence subSequence(int beginIndex, int endIndex)
+        {
+            return substring(beginIndex, endIndex);
+        }
+
         public int indexOf(int ch)
         {
             return Value.IndexOf((char)ch);

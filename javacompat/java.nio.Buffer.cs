@@ -34,6 +34,11 @@ namespace java.nio
             return address != 0 ? 1 : 0;
         }
 
+        public int isReadOnly()
+        {
+            return 0;
+        }
+
         // Position/limit/capacity live on the base, so these read correctly whether the receiver's
         // static type is a concrete buffer or java.nio.Buffer (LWJGL's Checks call them via Buffer).
         public int position() { return pos; }

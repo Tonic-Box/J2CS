@@ -533,6 +533,7 @@ public final class ShimRegistry {
         put(m, "java/lang/IllegalArgumentException", "java/lang/RuntimeException");
         put(m, "java/lang/NumberFormatException", "java/lang/IllegalArgumentException");
         put(m, "java/lang/IllegalStateException", "java/lang/RuntimeException");
+        put(m, "java/util/NoSuchElementException", "java/lang/RuntimeException");
         put(m, "java/lang/SecurityException", "java/lang/RuntimeException");
         put(m, "java/lang/UnsupportedOperationException", "java/lang/RuntimeException");
         put(m, "java/lang/CloneNotSupportedException", "java/lang/Exception");
@@ -1401,6 +1402,7 @@ public final class ShimRegistry {
         put(m, "java/nio/ByteBuffer.allocate(I)Ljava/nio/ByteBuffer;", statics("allocate"));
         put(m, "java/nio/ByteBuffer.allocateDirect(I)Ljava/nio/ByteBuffer;", statics("allocateDirect"));
         put(m, "java/nio/Buffer.isDirect()Z", instance("isDirect"));
+        put(m, "java/nio/Buffer.isReadOnly()Z", instance("isReadOnly"));
         put(m, "java/nio/Buffer.position()I", instance("position"));
         put(m, "java/nio/Buffer.limit()I", instance("limit"));
         put(m, "java/nio/Buffer.capacity()I", instance("capacity"));
@@ -1655,6 +1657,7 @@ public final class ShimRegistry {
     private static void addLangMethods1(Map<String, ShimTarget> m) {
         put(m, "java/lang/String.substring(I)Ljava/lang/String;", instance("substring"));
         put(m, "java/lang/String.substring(II)Ljava/lang/String;", instance("substring"));
+        put(m, "java/lang/String.subSequence(II)Ljava/lang/CharSequence;", instance("subSequence"));
         put(m, "java/lang/String.indexOf(I)I", instance("indexOf"));
         put(m, "java/lang/String.indexOf(Ljava/lang/String;)I", instance("indexOf"));
         put(m, "java/lang/String.startsWith(Ljava/lang/String;)Z", instance("startsWith"));
