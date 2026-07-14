@@ -3184,6 +3184,7 @@ public final class ShimRegistry {
 
     private static void addEnumStrMethods0(Map<String, ShimTarget> m) {
         put(m, "java/util/EnumMap.put(Ljava/lang/Enum;Ljava/lang/Object;)Ljava/lang/Object;", instance("put"));
+        put(m, "java/util/EnumSet.clear()V", instance("clear"));
         put(m, "java/util/EnumSet.noneOf(Ljava/lang/Class;)Ljava/util/EnumSet;", statics("noneOf"));
         put(m, "java/util/EnumSet.of(Ljava/lang/Enum;)Ljava/util/EnumSet;", statics("of"));
         put(m, "java/util/EnumSet.of(Ljava/lang/Enum;Ljava/lang/Enum;)Ljava/util/EnumSet;", statics("of"));

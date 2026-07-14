@@ -41,6 +41,7 @@ namespace java.util
 
         public int size() { return items.Count; }
         public int isEmpty() { return items.Count == 0 ? 1 : 0; }
+        public void clear() { items.Clear(); }
 
         public Iterator iterator()
         {
