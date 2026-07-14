@@ -12,6 +12,22 @@ namespace java.util
 
         int remove(global::java.lang.Object o);
 
+        // Snapshot the elements before removing them so the mutation does not disturb the in-progress
+        // iteration. Concrete collections override this with a direct storage reset.
+        void clear()
+        {
+            var toRemove = new global::System.Collections.Generic.List<global::java.lang.Object>();
+            var it = iterator();
+            while (it.hasNext() != 0)
+            {
+                toRemove.Add(it.next());
+            }
+            foreach (var e in toRemove)
+            {
+                remove(e);
+            }
+        }
+
         global::java.util.stream.Stream stream()
         {
             var list = new global::System.Collections.Generic.List<global::java.lang.Object>();

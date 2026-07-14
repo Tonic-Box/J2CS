@@ -301,12 +301,14 @@ java.util.concurrent.ConcurrentMap.cs
 java.util.concurrent.CopyOnWriteArrayList.cs
 java.util.concurrent.CountDownLatch.cs
 java.util.concurrent.CyclicBarrier.cs
+java.util.concurrent.ExecutionException.cs
 java.util.concurrent.Executor.cs
 java.util.concurrent.ExecutorService.cs
 java.util.concurrent.Executors.cs
 java.util.concurrent.Future.cs
 java.util.concurrent.LinkedBlockingQueue.cs
 java.util.concurrent.ScheduledExecutorService.cs
+java.util.concurrent.ScheduledThreadPoolExecutor.cs
 java.util.concurrent.ScheduledFuture.cs
 java.util.concurrent.Semaphore.cs
 java.util.concurrent.ThreadFactory.cs

@@ -43,6 +43,11 @@ namespace java.util
             return map.remove(o) != null ? 1 : 0;
         }
 
+        public void clear()
+        {
+            map.clear();
+        }
+
         public int size()
         {
             return map.size();

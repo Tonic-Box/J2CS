@@ -59,6 +59,7 @@ namespace java.util.concurrent
 
         internal int Size() { lock (gate) { return q.Count; } }
         internal int RemainingCapacity() { lock (gate) { return cap - q.Count; } }
+        internal void Clear() { lock (gate) { q.Clear(); global::System.Threading.Monitor.PulseAll(gate); } }
 
         internal int Contains(global::java.lang.Object o)
         {
@@ -118,6 +119,7 @@ namespace java.util.concurrent
         public int remainingCapacity() { return core.RemainingCapacity(); }
         public int contains(global::java.lang.Object o) { return core.Contains(o); }
         public int remove(global::java.lang.Object o) { return core.Remove(o); }
+        public void clear() { core.Clear(); }
         public global::java.util.Iterator iterator() { return core.Iterator(); }
     }
 }

@@ -261,6 +261,7 @@ public final class ShimRegistry {
         put(m, "java/util/concurrent/Future", "java/lang/Object");
         put(m, "java/util/concurrent/ExecutorService", "java/lang/Object");
         put(m, "java/util/concurrent/ScheduledExecutorService", "java/util/concurrent/ExecutorService");
+        put(m, "java/util/concurrent/ScheduledThreadPoolExecutor", "java/util/concurrent/ScheduledExecutorService");
         put(m, "java/util/concurrent/ScheduledFuture", "java/util/concurrent/Future");
         put(m, "java/util/concurrent/Executors", "java/lang/Object");
         put(m, "java/util/concurrent/CompletableFuture", "java/util/concurrent/Future");
@@ -541,6 +542,7 @@ public final class ShimRegistry {
         put(m, "java/lang/ClassNotFoundException", "java/lang/ReflectiveOperationException");
         put(m, "java/io/IOException", "java/lang/Exception");
         put(m, "java/io/UncheckedIOException", "java/lang/RuntimeException");
+        put(m, "java/util/concurrent/ExecutionException", "java/lang/Exception");
         put(m, "java/lang/ref/Reference", "java/lang/Object");
         put(m, "java/lang/ref/WeakReference", "java/lang/ref/Reference");
         put(m, "java/lang/ref/PhantomReference", "java/lang/ref/Reference");
@@ -2554,6 +2556,7 @@ public final class ShimRegistry {
         put(m, "java/util/Collection.isEmpty()Z", instance("isEmpty"));
         put(m, "java/util/Collection.contains(Ljava/lang/Object;)Z", instance("contains"));
         put(m, "java/util/Collection.remove(Ljava/lang/Object;)Z", instance("remove"));
+        put(m, "java/util/Collection.clear()V", instance("clear"));
         put(m, "java/util/Collection.addAll(Ljava/util/Collection;)Z", instance("addAll"));
         put(m, "java/util/Collection.containsAll(Ljava/util/Collection;)Z", instance("containsAll"));
         put(m, "java/util/Collection.removeAll(Ljava/util/Collection;)Z", instance("removeAll"));
