@@ -2457,6 +2457,12 @@ public final class ShimRegistry {
         put(m, "java/util/Deque.getLast()Ljava/lang/Object;", instance("getLast"));
         put(m, "java/util/Deque.removeFirst()Ljava/lang/Object;", instance("removeFirst"));
         put(m, "java/util/Deque.removeLast()Ljava/lang/Object;", instance("removeLast"));
+        put(m, "java/util/LinkedList.addFirst(Ljava/lang/Object;)V", instance("addFirst"));
+        put(m, "java/util/LinkedList.addLast(Ljava/lang/Object;)V", instance("addLast"));
+        put(m, "java/util/LinkedList.getFirst()Ljava/lang/Object;", instance("getFirst"));
+        put(m, "java/util/LinkedList.getLast()Ljava/lang/Object;", instance("getLast"));
+        put(m, "java/util/LinkedList.removeFirst()Ljava/lang/Object;", instance("removeFirst"));
+        put(m, "java/util/LinkedList.removeLast()Ljava/lang/Object;", instance("removeLast"));
         put(m, "java/util/TreeSet.first()Ljava/lang/Object;", instance("first"));
         put(m, "java/util/TreeSet.last()Ljava/lang/Object;", instance("last"));
         put(m, "java/util/TreeSet.pollFirst()Ljava/lang/Object;", instance("pollFirst"));
