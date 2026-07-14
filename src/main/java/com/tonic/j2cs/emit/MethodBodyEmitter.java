@@ -174,6 +174,18 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
             return null;
         }
         if (source instanceof SSAValue ssa && targetSlot != null) {
+            IRType targetType = slotIr.get(targetSlot);
+            IRType sourceType = slotIrOf(ssa);
+            if (targetType != null && sourceType != null
+                    && targetType.isReference() != sourceType.isReference()) {
+                // A copy across the primitive/reference divide is the dead half of a reused slot: a phi
+                // whose slot carries an int in one range and a reference in another (e.g. a loop counter
+                // and, later, a try-with-resources primary exception). Boxing the primitive into the
+                // reference slot (or vice versa) and later casting it crashes; the value is unread on this
+                // path, so store the slot type's default instead of coercing across the divide.
+                w.line("s" + targetSlot + " = " + defaultForSlot(targetType, slotCs.get(targetSlot).csText()) + ";");
+                return null;
+            }
             // Coerce once, from the source's slot (C#-visible) type — not the value's SSA type: a slot
             // widened to Object holds a value whose SSA type is narrower, and using the SSA type would
             // skip the downcast/unbox the slot-typed expression needs. Emit directly rather than through
@@ -185,6 +197,20 @@ public final class MethodBodyEmitter implements IRVisitor<Void> {
         }
         assign(instr, names.ref(source));
         return null;
+    }
+
+    /** The C# default literal for a slot of the given IR/C# type: null for a reference, the zero of the primitive otherwise. */
+    private static String defaultForSlot(IRType type, String csType) {
+        if (type.isReference()) {
+            return "null";
+        }
+        return switch (csType) {
+            case "long" -> "0L";
+            case "float" -> "0f";
+            case "double" -> "0.0";
+            case "bool" -> "false";
+            default -> "0";
+        };
     }
 
     /** The source value's C#-visible type: its slot's declared type, which a widened slot makes wider than the SSA type. */
