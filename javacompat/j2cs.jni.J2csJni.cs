@@ -227,8 +227,8 @@ namespace j2cs.jni
             CallConvs = new[] { typeof(global::System.Runtime.CompilerServices.CallConvCdecl) })]
         private static global::System.IntPtr GetDirectBufferAddressImpl(global::System.IntPtr env, global::System.IntPtr buf)
         {
-            return ResolveHandle(buf) is global::java.nio.ByteBuffer bb
-                ? (global::System.IntPtr)bb.DirectAddress
+            return ResolveHandle(buf) is global::java.nio.Buffer b
+                ? (global::System.IntPtr)b.DirectAddress
                 : global::System.IntPtr.Zero;
         }
 
@@ -236,7 +236,7 @@ namespace j2cs.jni
             CallConvs = new[] { typeof(global::System.Runtime.CompilerServices.CallConvCdecl) })]
         private static long GetDirectBufferCapacityImpl(global::System.IntPtr env, global::System.IntPtr buf)
         {
-            return ResolveHandle(buf) is global::java.nio.ByteBuffer bb ? bb.DirectCapacity : -1;
+            return ResolveHandle(buf) is global::java.nio.Buffer b ? b.DirectCapacity : -1;
         }
 
         // Pins the primitive array and hands native code a pointer straight into its storage; because the

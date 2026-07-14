@@ -34,6 +34,11 @@ namespace java.nio
             return address != 0 ? 1 : 0;
         }
 
+        // JNI GetDirectBufferAddress/Capacity apply to every direct buffer type (FloatBuffer, IntBuffer,
+        // ...), not just ByteBuffer, so expose the base native address and element capacity for the bridge.
+        internal long DirectAddress => address;
+        internal long DirectCapacity => cap;
+
         public int isReadOnly()
         {
             return 0;
