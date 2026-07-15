@@ -8,6 +8,41 @@ namespace java.util
         public void __init__V() { }
         public void __init_I_V(int nbits) { }
 
+        public override int hashCode()
+        {
+            // Java BitSet.hashCode: h ^= words[i] * (i+1); return (int)((h>>32) ^ h). XOR is commutative,
+            // so the (word-index -> word) order does not matter. Value-based so equal sets hash equally -
+            // required for BitSet (and DefineList) to work as a HashMap key.
+            long h = 1234L;
+            var words = new global::System.Collections.Generic.Dictionary<int, long>();
+            foreach (int b in bits)
+            {
+                int wi = b >> 6;
+                words.TryGetValue(wi, out long w);
+                words[wi] = w | (1L << (b & 63));
+            }
+            foreach (var kv in words)
+            {
+                h ^= kv.Value * (kv.Key + 1);
+            }
+            return (int)((h >> 32) ^ h);
+        }
+
+        public override int equals(global::java.lang.Object o)
+        {
+            if (global::System.Object.ReferenceEquals(this, o)) return 1;
+            if (!(o is BitSet other)) return 0;
+            return bits.SetEquals(other.bits) ? 1 : 0;
+        }
+
+        public override global::java.lang.Object clone()
+        {
+            var c = new BitSet(global::java.lang.RawNew.I);
+            c.__init__V();
+            foreach (int b in bits) { c.bits.Add(b); }
+            return c;
+        }
+
         public void set(int bitIndex) { bits.Add(bitIndex); }
         public void set(int bitIndex, int value) { if (value != 0) { bits.Add(bitIndex); } else { bits.Remove(bitIndex); } }
         public void clear(int bitIndex) { bits.Remove(bitIndex); }
