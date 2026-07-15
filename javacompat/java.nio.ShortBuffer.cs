@@ -45,6 +45,7 @@ namespace java.nio
         public ShortBuffer put(int index, short v) { ElemSet(index, v); return this; }
         public ShortBuffer get(short[] dst) { for (int i = 0; i < dst.Length; i++) { dst[i] = ElemGet(pos++); } return this; }
         public ShortBuffer put(short[] src) { for (int i = 0; i < src.Length; i++) { ElemSet(pos++, src[i]); } return this; }
+        public ShortBuffer put(ShortBuffer src) { int n = src.remaining(); for (int i = 0; i < n; i++) { ElemSet(pos++, src.get()); } return this; }
 
         public short[] array() { return arr; }
     }

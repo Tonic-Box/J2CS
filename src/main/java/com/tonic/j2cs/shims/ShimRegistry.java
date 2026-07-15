@@ -1466,6 +1466,7 @@ public final class ShimRegistry {
         put(m, "java/nio/ByteBuffer.get([B)Ljava/nio/ByteBuffer;", instance("get"));
         put(m, "java/nio/ByteBuffer.get([BII)Ljava/nio/ByteBuffer;", instance("get"));
         put(m, "java/nio/ByteBuffer.put([B)Ljava/nio/ByteBuffer;", instance("put"));
+        put(m, "java/nio/ByteBuffer.put(Ljava/nio/ByteBuffer;)Ljava/nio/ByteBuffer;", instance("put"));
         put(m, "java/nio/ByteBuffer.getInt()I", instance("getInt"));
         put(m, "java/nio/ByteBuffer.putInt(I)Ljava/nio/ByteBuffer;", instance("putInt"));
         put(m, "java/nio/ByteBuffer.getLong()J", instance("getLong"));
@@ -2929,6 +2930,7 @@ public final class ShimRegistry {
         put(m, "java/nio/ShortBuffer.put(IS)Ljava/nio/ShortBuffer;", instance("put"));
         put(m, "java/nio/ShortBuffer.get([S)Ljava/nio/ShortBuffer;", instance("get"));
         put(m, "java/nio/ShortBuffer.put([S)Ljava/nio/ShortBuffer;", instance("put"));
+        put(m, "java/nio/ShortBuffer.put(Ljava/nio/ShortBuffer;)Ljava/nio/ShortBuffer;", instance("put"));
         put(m, "java/nio/ShortBuffer.array()[S", instance("array"));
         put(m, "java/nio/FloatBuffer.allocate(I)Ljava/nio/FloatBuffer;", statics("allocate"));
         put(m, "java/nio/FloatBuffer.wrap([F)Ljava/nio/FloatBuffer;", statics("wrap"));

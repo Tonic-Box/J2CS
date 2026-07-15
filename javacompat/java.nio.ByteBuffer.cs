@@ -120,6 +120,13 @@ namespace java.nio
             return this;
         }
 
+        public ByteBuffer put(ByteBuffer src)
+        {
+            int n = src.remaining();
+            for (int i = 0; i < n; i++) { Store()[offset + pos++] = src.get(); }
+            return this;
+        }
+
         public short getShort() { short v = (short)Store().ReadBytes(offset + pos, 2, little); pos += 2; return v; }
         public short getShort(int index) { return (short)Store().ReadBytes(offset + index, 2, little); }
         public ByteBuffer putShort(short v) { Store().WriteBytes(offset + pos, 2, v, little); pos += 2; return this; }
