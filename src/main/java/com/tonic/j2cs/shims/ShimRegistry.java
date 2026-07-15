@@ -2735,6 +2735,7 @@ public final class ShimRegistry {
 
     private static void addLangMethods12(Map<String, ShimTarget> m) {
         put(m, "java/lang/Thread.sleep(J)V", statics("sleep"));
+        put(m, "java/lang/Thread.yield()V", statics("yield"));
     }
 
     private static void addSwingMethods5(Map<String, ShimTarget> m) {

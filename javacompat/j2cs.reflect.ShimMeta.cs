@@ -66,7 +66,7 @@ namespace j2cs.reflect
             Registry.Register(ClassMeta.New("java.nio.DoubleBuffer", typeof(global::java.nio.DoubleBuffer), "java.nio.Buffer"));
 
             ClassMeta unsafe0 = ClassMeta.New("sun.misc.Unsafe", typeof(global::sun.misc.Unsafe), "java.lang.Object");
-            unsafe0.AddField("theUnsafe", unsafe0.ClassObject, 8 /* Modifier.STATIC */,
+            unsafe0.AddField("theUnsafe", unsafe0.ClassObject, 24 /* Modifier.STATIC | Modifier.FINAL */,
                 o => global::sun.misc.Unsafe.theUnsafe,
                 (o, v) => { },
                 global::System.Array.Empty<Annotation>());

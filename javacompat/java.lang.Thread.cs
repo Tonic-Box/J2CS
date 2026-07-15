@@ -218,5 +218,10 @@ namespace java.lang
                 global::System.Threading.Thread.Sleep((int)(millis > int.MaxValue ? int.MaxValue : millis));
             }
         }
+
+        public static void yield()
+        {
+            global::System.Threading.Thread.Yield();
+        }
     }
 }
