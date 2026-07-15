@@ -65,6 +65,21 @@ namespace j2cs.reflect
             Registry.Register(ClassMeta.New("java.nio.FloatBuffer", typeof(global::java.nio.FloatBuffer), "java.nio.Buffer"));
             Registry.Register(ClassMeta.New("java.nio.DoubleBuffer", typeof(global::java.nio.DoubleBuffer), "java.nio.Buffer"));
 
+            // Native code (e.g. libbulletjme collecting ray/sweep test hits) resolves java/util/List
+            // and calls List.add(Object) to append each result; without reflection metadata FindClass
+            // returned null, GetMethodID got a null class, and every add silently no-op'd - so the
+            // result list came back empty. The invoker dispatches to the receiver's concrete add.
+            JClass objType = JClass.Of("java.lang.Object");
+            JClass boolType = JClass.Of("boolean");
+            ClassMeta collection = ClassMeta.New("java.util.Collection", typeof(global::java.util.Collection), "java.lang.Object");
+            collection.AddMethod("add", new JClass[] { objType }, boolType, 1,
+                (o, a) => (JObject)global::java.lang.Boolean.valueOf(((global::java.util.Collection)o).add(a[0])), noAnns);
+            Registry.Register(collection);
+            ClassMeta listMeta = ClassMeta.New("java.util.List", typeof(global::java.util.List), "java.util.Collection");
+            listMeta.AddMethod("add", new JClass[] { objType }, boolType, 1,
+                (o, a) => (JObject)global::java.lang.Boolean.valueOf(((global::java.util.Collection)o).add(a[0])), noAnns);
+            Registry.Register(listMeta);
+
             ClassMeta unsafe0 = ClassMeta.New("sun.misc.Unsafe", typeof(global::sun.misc.Unsafe), "java.lang.Object");
             unsafe0.AddField("theUnsafe", unsafe0.ClassObject, 24 /* Modifier.STATIC | Modifier.FINAL */,
                 o => global::sun.misc.Unsafe.theUnsafe,

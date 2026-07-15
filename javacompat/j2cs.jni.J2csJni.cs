@@ -95,6 +95,7 @@ namespace j2cs.jni
                 FillNeutralTraps(slots, SlotCount, envHits, 4);
                 slots[4] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, int>)&GetVersionImpl;
                 slots[6] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr>)&FindClassImpl;
+                slots[31] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr>)&GetObjectClassImpl;
                 slots[27] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr>)&AllocObjectImpl;
                 slots[7] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr>)&FromReflectedMethodImpl;
                 slots[33] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, global::System.IntPtr>)&GetMethodIDImpl;
@@ -330,6 +331,24 @@ namespace j2cs.jni
         // constructor via AllocObject, then populates it through setters; an unimplemented neutral trap
         // returned null and the follow-up setter call NRE'd, which poisoned the JNI exception state and
         // stalled the physics tick. Allocate an uninitialized instance of the class's CLR type.
+        // GetObjectClass: native resolves an object's runtime class to look up a method id on it (e.g.
+        // to call List.add when appending a ray/sweep test result). Walk up the CLR type hierarchy to
+        // the nearest registered ClassMeta; leaving this a neutral trap returned null, so the follow-up
+        // GetMethodID got a null class and every such call silently no-op'd.
+        [global::System.Runtime.InteropServices.UnmanagedCallersOnly(
+            CallConvs = new[] { typeof(global::System.Runtime.CompilerServices.CallConvCdecl) })]
+        private static global::System.IntPtr GetObjectClassImpl(global::System.IntPtr env, global::System.IntPtr obj)
+        {
+            object o = ResolveHandle(obj);
+            if (o == null) { return global::System.IntPtr.Zero; }
+            for (global::System.Type t = o.GetType(); t != null; t = t.BaseType)
+            {
+                global::j2cs.reflect.ClassMeta meta = global::j2cs.reflect.Registry.ByType(t);
+                if (meta != null) { return Intern(meta); }
+            }
+            return global::System.IntPtr.Zero;
+        }
+
         [global::System.Runtime.InteropServices.UnmanagedCallersOnly(
             CallConvs = new[] { typeof(global::System.Runtime.CompilerServices.CallConvCdecl) })]
         private static global::System.IntPtr AllocObjectImpl(global::System.IntPtr env, global::System.IntPtr cls)
@@ -459,11 +478,17 @@ namespace j2cs.jni
             }
             string methodName = DecodeModifiedUtf8((byte*)name);
             int paramCount = CountParams(DecodeModifiedUtf8((byte*)sig));
-            foreach (global::java.lang.reflect.Method m in meta.Methods())
+            // Walk the super-chain: a method id resolved on an interface/class may be declared on a
+            // supertype (e.g. List.add lives on Collection), so the flat method list is not enough.
+            for (global::j2cs.reflect.ClassMeta m2 = meta; m2 != null;
+                    m2 = m2.SuperName != null ? global::j2cs.reflect.Registry.ByName(m2.SuperName) : null)
             {
-                if (m.NameString == methodName && m.ParamTypesInternal.Length == paramCount)
+                foreach (global::java.lang.reflect.Method m in m2.Methods())
                 {
-                    return Intern(m);
+                    if (m.NameString == methodName && m.ParamTypesInternal.Length == paramCount)
+                    {
+                        return Intern(m);
+                    }
                 }
             }
             return Intern(methodName);
