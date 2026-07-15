@@ -47,7 +47,7 @@ class NativeAotSmokeTest {
         ExecResult published = runner.publish(result.appDir(), PublishMode.NATIVE_AOT, publishDir);
         DotnetRunner.requireSuccess(published, "NativeAOT publish of FizzBuzz");
 
-        ExecResult run = runner.exec(publishDir.resolve("App.exe"), List.of(), publishDir);
+        ExecResult run = runner.exec(publishDir.resolve(result.appDir().getFileName().toString() + ".exe"), List.of(), publishDir);
         DotnetRunner.requireSuccess(run, "running native FizzBuzz.exe");
         assertEquals(expected.replace("\r\n", "\n"), run.stdout().replace("\r\n", "\n"));
     }

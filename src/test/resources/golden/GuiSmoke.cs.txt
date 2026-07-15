@@ -1,4 +1,4 @@
-// ==== App.csproj ====
+// ==== GuiSmoke.csproj ====
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -9,7 +9,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PublishAot>false</PublishAot>
     <InvariantGlobalization>true</InvariantGlobalization>
-    <AssemblyName>App</AssemblyName>
+    <AssemblyName>GuiSmoke</AssemblyName>
     <RootNamespace></RootNamespace>
     <NoWarn>CS0108;CS0162;CS0164;CS0219;CS0414;CS0649;CS1717</NoWarn>
   </PropertyGroup>

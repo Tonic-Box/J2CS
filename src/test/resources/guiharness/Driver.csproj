@@ -14,9 +14,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Driver.cs" />
-    <Compile Include="../App/gen/**/*.cs" />
-    <Compile Include="../App/javacompat/**/*.cs" />
-    <Compile Include="../App/stubs/**/*.cs" />
+    <Compile Include="../*/gen/**/*.cs" />
+    <Compile Include="../*/javacompat/**/*.cs" />
+    <Compile Include="../*/stubs/**/*.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.2.1" />

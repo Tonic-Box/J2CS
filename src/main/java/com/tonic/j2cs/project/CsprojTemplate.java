@@ -1,9 +1,10 @@
 package com.tonic.j2cs.project;
 
 /**
- * The single App.csproj template. The default self-contained publish overrides PublishAot on
+ * The single project-file template. The default self-contained publish overrides PublishAot on
  * the command line rather than using a different project file. NoWarn suppresses the warning
- * classes that goto-style emitted bodies produce systematically.
+ * classes that goto-style emitted bodies produce systematically. The assembly name is supplied by
+ * the caller so the produced exe is named after the input.
  */
 public final class CsprojTemplate {
 
@@ -15,7 +16,7 @@ public final class CsprojTemplate {
     private static final String AVALONIA_VERSION = "11.2.1";
     private static final String SKIA_VERSION = "2.88.8";
 
-    public static String csproj(boolean usesGui, java.util.List<String> nativeLibs, boolean hasResources) {
+    public static String csproj(String assemblyName, boolean usesGui, java.util.List<String> nativeLibs, boolean hasResources) {
         return "<Project Sdk=\"Microsoft.NET.Sdk\">\n"
                 + "  <PropertyGroup>\n"
                 + "    <OutputType>Exe</OutputType>\n"
@@ -26,7 +27,7 @@ public final class CsprojTemplate {
                 + "    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>\n"
                 + "    <PublishAot>" + (usesGui ? "false" : "true") + "</PublishAot>\n"
                 + "    <InvariantGlobalization>true</InvariantGlobalization>\n"
-                + "    <AssemblyName>App</AssemblyName>\n"
+                + "    <AssemblyName>" + assemblyName + "</AssemblyName>\n"
                 + "    <RootNamespace></RootNamespace>\n"
                 + "    <NoWarn>CS0108;CS0162;CS0164;CS0219;CS0414;CS0649;CS1717</NoWarn>\n"
                 + "  </PropertyGroup>\n"

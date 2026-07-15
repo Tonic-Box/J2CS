@@ -8,10 +8,7 @@ import com.tonic.j2cs.dotnet.PublishMode;
 import com.tonic.j2cs.pipeline.TranspileResult;
 import com.tonic.j2cs.pipeline.Transpiler;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 /**
@@ -113,50 +110,15 @@ public final class Cli {
         System.out.println("publishing (" + mode + ") ...");
         ExecResult published = runner.publish(result.appDir(), mode, publishDir.toAbsolutePath());
         DotnetRunner.requireSuccess(published, "dotnet publish (" + mode + ")");
-        Path exe = copyNamedExe(options, publishDir);
+        Path exe = publishDir.resolve(result.appDir().getFileName().toString() + ".exe");
         System.out.println("exe: " + exe);
         if (options.run()) {
-            ExecResult run = runner.exec(exe.toAbsolutePath(), List.of(), options.outDir());
+            ExecResult run = runner.exec(exe.toAbsolutePath(), List.of(), publishDir);
             System.out.print(run.stdout());
             System.err.print(run.stderr());
             return run.exitCode();
         }
         return 0;
-    }
-
-    private static Path copyNamedExe(CliOptions options, Path publishDir) {
-        Path source = publishDir.resolve("App.exe");
-        String fileName = options.input().getFileName().toString();
-        int dot = fileName.lastIndexOf('.');
-        String baseName = dot > 0 ? fileName.substring(0, dot) : fileName;
-        Path target = options.outDir().resolve(baseName + ".exe");
-        try {
-            Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
-            copyNativeLibsSidecar(publishDir.resolve("nativelibs"), options.outDir().resolve("nativelibs"));
-        } catch (IOException e) {
-            throw new J2csException("failed to copy exe to " + target + ": " + e.getMessage(), e);
-        }
-        return target;
-    }
-
-    /**
-     * The named exe is copied out of the single-file publish directory; its external nativelibs
-     * (kept beside the exe rather than bundled) must travel with it or the loaded library's exports
-     * cannot be resolved at runtime.
-     */
-    private static void copyNativeLibsSidecar(Path sourceDir, Path targetDir) throws IOException {
-        if (!Files.isDirectory(sourceDir)) {
-            return;
-        }
-        Files.createDirectories(targetDir);
-        try (java.util.stream.Stream<Path> files = Files.list(sourceDir)) {
-            for (Path file : (Iterable<Path>) files::iterator) {
-                if (Files.isRegularFile(file)) {
-                    Files.copy(file, targetDir.resolve(file.getFileName()),
-                            StandardCopyOption.REPLACE_EXISTING);
-                }
-            }
-        }
     }
 
     public static CliOptions parse(String[] args) {

@@ -56,7 +56,8 @@ public final class Differential {
         DotnetRunner.requireSuccess(build, "dotnet build of " + fixtureName);
 
         Path dll = result.appDir()
-                .resolve(Path.of("bin", "Release", CsprojTemplate.TARGET_FRAMEWORK, "App.dll"))
+                .resolve(Path.of("bin", "Release", CsprojTemplate.TARGET_FRAMEWORK,
+                        result.appDir().getFileName().toString() + ".dll"))
                 .toAbsolutePath();
         ExecResult run = runner.run(List.of("dotnet", dll.toString()), result.appDir(), 60_000);
         DotnetRunner.requireSuccess(run, "running transpiled " + fixtureName);

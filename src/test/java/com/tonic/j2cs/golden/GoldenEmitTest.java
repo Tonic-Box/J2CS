@@ -80,7 +80,8 @@ class GoldenEmitTest {
     private static String canonicalText(Path appDir, boolean includeCsproj) throws IOException {
         StringBuilder sb = new StringBuilder();
         if (includeCsproj) {
-            appendFile(sb, "App.csproj", Files.readString(appDir.resolve("App.csproj")));
+            String csproj = appDir.getFileName().toString() + ".csproj";
+            appendFile(sb, csproj, Files.readString(appDir.resolve(csproj)));
         }
         appendFile(sb, "Program.cs", Files.readString(appDir.resolve("Program.cs")));
         Path gen = appDir.resolve("gen");
