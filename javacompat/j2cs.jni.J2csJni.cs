@@ -95,11 +95,16 @@ namespace j2cs.jni
                 FillNeutralTraps(slots, SlotCount, envHits, 4);
                 slots[4] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, int>)&GetVersionImpl;
                 slots[6] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr>)&FindClassImpl;
+                slots[27] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr>)&AllocObjectImpl;
                 slots[7] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr>)&FromReflectedMethodImpl;
                 slots[33] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, global::System.IntPtr>)&GetMethodIDImpl;
                 slots[94] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, global::System.IntPtr>)&GetFieldIDImpl;
                 slots[102] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, float>)&GetFloatFieldImpl;
                 slots[111] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, float, void>)&SetFloatFieldImpl;
+                slots[95] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, global::System.IntPtr>)&GetObjectFieldImpl;
+                slots[100] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, int>)&GetIntFieldImpl;
+                slots[104] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, void>)&SetObjectFieldImpl;
+                slots[109] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, int, void>)&SetIntFieldImpl;
                 slots[13] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, int>)&ThrowImpl;
                 slots[15] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr>)&ExceptionOccurredImpl;
                 slots[16] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, void>)&ExceptionDescribeImpl;
@@ -110,6 +115,8 @@ namespace j2cs.jni
                 slots[25] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr>)&NewRefImpl;
                 slots[113] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, global::System.IntPtr>)&GetStaticMethodIDImpl;
                 slots[35] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, global::System.IntPtr>)&CallObjectMethodVImpl;
+                slots[38] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, byte>)&CallBooleanMethodVImpl;
+                slots[61] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, long, long, void>)&CallVoidMethodImpl;
                 slots[62] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, void>)&CallVoidMethodVImpl;
                 slots[141] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, void>)&CallStaticVoidMethodImpl;
                 slots[142] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, void>)&CallStaticVoidMethodImpl;
@@ -124,6 +131,17 @@ namespace j2cs.jni
                 slots[231] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, long>)&GetDirectBufferCapacityImpl;
                 slots[222] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, global::System.IntPtr>)&GetPrimitiveArrayCriticalImpl;
                 slots[223] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, int, void>)&ReleasePrimitiveArrayCriticalImpl;
+                // Get/Release<Type>ArrayElements (183-190 / 191-198): native code (e.g. LWJGL's
+                // glfwGetFramebufferSize into an int[]) pins a primitive array to read/write it. Pinning
+                // is a non-copying view, so the critical get/release impls satisfy every element type.
+                for (int __i = 183; __i <= 190; __i++)
+                {
+                    slots[__i] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, global::System.IntPtr>)&GetPrimitiveArrayCriticalImpl;
+                }
+                for (int __i = 191; __i <= 198; __i++)
+                {
+                    slots[__i] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, global::System.IntPtr, int, void>)&ReleasePrimitiveArrayCriticalImpl;
+                }
                 slots[171] = (global::System.IntPtr)(delegate* unmanaged[Cdecl]<global::System.IntPtr, global::System.IntPtr, int>)&GetArrayLengthImpl;
 
                 envSlot = (global::System.IntPtr)global::System.Runtime.InteropServices.NativeMemory.Alloc(
@@ -308,6 +326,22 @@ namespace j2cs.jni
             return meta != null ? Intern(meta) : global::System.IntPtr.Zero;
         }
 
+        // Native code (e.g. libbulletjme returning a Vector3f result) allocates a Java object with no
+        // constructor via AllocObject, then populates it through setters; an unimplemented neutral trap
+        // returned null and the follow-up setter call NRE'd, which poisoned the JNI exception state and
+        // stalled the physics tick. Allocate an uninitialized instance of the class's CLR type.
+        [global::System.Runtime.InteropServices.UnmanagedCallersOnly(
+            CallConvs = new[] { typeof(global::System.Runtime.CompilerServices.CallConvCdecl) })]
+        private static global::System.IntPtr AllocObjectImpl(global::System.IntPtr env, global::System.IntPtr cls)
+        {
+            if (ResolveHandle(cls) is global::j2cs.reflect.ClassMeta meta && meta.Type != null)
+            {
+                object o = global::System.Runtime.CompilerServices.RuntimeHelpers.GetUninitializedObject(meta.Type);
+                return o == null ? global::System.IntPtr.Zero : Intern(o);
+            }
+            return global::System.IntPtr.Zero;
+        }
+
         // FromReflectedMethod: a jmethodID here is an interned java.lang.reflect.Method, so resolving
         // the reflected method and re-interning it yields the id LWJGL's callback setup expects.
         [global::System.Runtime.InteropServices.UnmanagedCallersOnly(
@@ -352,6 +386,51 @@ namespace j2cs.jni
             {
                 field.setFloat(ResolveHandle(obj) as global::java.lang.Object, value);
             }
+        }
+
+        // Set/Get Object and Int fields: native code populates result structs (e.g. a sweep/ray test's
+        // PhysicsSweepTestResult - its collision object and part indices) through these; the neutral
+        // trap left the fields untouched so the result list came back empty.
+        [global::System.Runtime.InteropServices.UnmanagedCallersOnly(
+            CallConvs = new[] { typeof(global::System.Runtime.CompilerServices.CallConvCdecl) })]
+        private static void SetObjectFieldImpl(global::System.IntPtr env, global::System.IntPtr obj,
+            global::System.IntPtr fieldId, global::System.IntPtr value)
+        {
+            if (ResolveHandle(fieldId) is global::java.lang.reflect.Field field)
+            {
+                field.set(ResolveHandle(obj) as global::java.lang.Object, ResolveHandle(value) as global::java.lang.Object);
+            }
+        }
+
+        [global::System.Runtime.InteropServices.UnmanagedCallersOnly(
+            CallConvs = new[] { typeof(global::System.Runtime.CompilerServices.CallConvCdecl) })]
+        private static void SetIntFieldImpl(global::System.IntPtr env, global::System.IntPtr obj,
+            global::System.IntPtr fieldId, int value)
+        {
+            if (ResolveHandle(fieldId) is global::java.lang.reflect.Field field)
+            {
+                field.setInt(ResolveHandle(obj) as global::java.lang.Object, value);
+            }
+        }
+
+        [global::System.Runtime.InteropServices.UnmanagedCallersOnly(
+            CallConvs = new[] { typeof(global::System.Runtime.CompilerServices.CallConvCdecl) })]
+        private static global::System.IntPtr GetObjectFieldImpl(global::System.IntPtr env, global::System.IntPtr obj, global::System.IntPtr fieldId)
+        {
+            if (ResolveHandle(fieldId) is global::java.lang.reflect.Field field)
+            {
+                global::java.lang.Object v = field.get(ResolveHandle(obj) as global::java.lang.Object);
+                return v == null ? global::System.IntPtr.Zero : Intern(v);
+            }
+            return global::System.IntPtr.Zero;
+        }
+
+        [global::System.Runtime.InteropServices.UnmanagedCallersOnly(
+            CallConvs = new[] { typeof(global::System.Runtime.CompilerServices.CallConvCdecl) })]
+        private static int GetIntFieldImpl(global::System.IntPtr env, global::System.IntPtr obj, global::System.IntPtr fieldId)
+        {
+            return ResolveHandle(fieldId) is global::java.lang.reflect.Field field
+                ? field.getInt(ResolveHandle(obj) as global::java.lang.Object) : 0;
         }
 
         [global::System.Runtime.InteropServices.UnmanagedCallersOnly(
@@ -425,6 +504,59 @@ namespace j2cs.jni
                 try
                 {
                     m.invoke(receiver, ReadVarArgs(vaList, m.ParamTypesInternal));
+                }
+                catch (global::System.Exception e)
+                {
+                    PendingThrowable = e;
+                }
+            }
+        }
+
+        // Native code (e.g. libbulletjme's broadphase overlap-filter callback) invokes boolean-returning
+        // Java methods through this slot; leaving it a neutral trap returns 0/false and silently rejects
+        // every candidate, so the actual method result must be returned.
+        [global::System.Runtime.InteropServices.UnmanagedCallersOnly(
+            CallConvs = new[] { typeof(global::System.Runtime.CompilerServices.CallConvCdecl) })]
+        private static byte CallBooleanMethodVImpl(global::System.IntPtr env,
+            global::System.IntPtr obj, global::System.IntPtr methodId, global::System.IntPtr vaList)
+        {
+            if (ResolveHandle(methodId) is global::java.lang.reflect.Method m)
+            {
+                var receiver = ResolveHandle(obj) as global::java.lang.Object;
+                try
+                {
+                    global::java.lang.Object result = m.invoke(receiver, ReadVarArgs(vaList, m.ParamTypesInternal));
+                    if (result is global::java.lang.Boolean b) { return (byte)(b.booleanValue() != 0 ? 1 : 0); }
+                    if (result is global::java.lang.Number n) { return (byte)(n.intValue() != 0 ? 1 : 0); }
+                    return 0;
+                }
+                catch (global::System.Exception e)
+                {
+                    PendingThrowable = e;
+                }
+            }
+            return 0;
+        }
+
+        // LWJGL's libffi callback handler dispatches every GLFW/GL callback by calling the Java
+        // CallbackI.callback(long ret, long args) through the varargs CallVoidMethod slot (not the
+        // va_list `V` slot bullet uses). All LWJGL callbacks share that fixed (jlong, jlong) shape, so
+        // the two trailing pointers arrive as ordinary arguments; without this the input callbacks no-op.
+        [global::System.Runtime.InteropServices.UnmanagedCallersOnly(
+            CallConvs = new[] { typeof(global::System.Runtime.CompilerServices.CallConvCdecl) })]
+        private static void CallVoidMethodImpl(global::System.IntPtr env,
+            global::System.IntPtr obj, global::System.IntPtr methodId, long arg0, long arg1)
+        {
+            if (ResolveHandle(methodId) is global::java.lang.reflect.Method m)
+            {
+                var receiver = ResolveHandle(obj) as global::java.lang.Object;
+                try
+                {
+                    global::java.lang.Class[] pts = m.ParamTypesInternal;
+                    var args = new global::java.lang.Object[pts.Length];
+                    if (pts.Length >= 1) { args[0] = global::java.lang.Long.valueOf(arg0); }
+                    if (pts.Length >= 2) { args[1] = global::java.lang.Long.valueOf(arg1); }
+                    m.invoke(receiver, args);
                 }
                 catch (global::System.Exception e)
                 {
